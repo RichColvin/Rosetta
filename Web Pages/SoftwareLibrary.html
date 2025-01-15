@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+
+<!-- ################################################### -->
+<!-- Style Sheet for header image max size                                         -->
+<style>
+    img.Image { max-width: 500px;}
+</style>
+
+<!-- ################################################### -->
+<!-- Style Sheet for Horizontal Rule - Style 0           -->
+ <style>
+    hr.style0 {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right,
+                rgba(0,0,256, 2),
+                rgba(0,0,256, 2),
+                rgba(0,0,256, 2),
+    }
+</style>
+
+<!-- ################################################### -->
+<!-- Style Sheet for Horizontal Rule - Style 1           -->
+ <style>
+    hr.style1 {
+        border: 0;
+        height: 3px;
+        background-image: linear-gradient(to right,
+            rgba(0, 0, 0, 0),
+            rgba(0,0,256, 2),
+            rgba(0, 0, 0, 0));
+    }
+</style>
+
+<!-- ################################################### -->
+<!-- Style Sheet for Horizontal Rule - Style 2           -->
+ <style>
+    hr.style2 {
+        border: 0;
+        height: 6px;
+        background-image: linear-gradient(to right,
+            rgba(0, 0, 0, 0),
+            rgba(0,0,256, 2),
+            rgba(0, 0, 0, 0));
+    }
+</style>
+
+<!-- ################################################### -->
+<!-- Style Sheet for indented paragraphs                 -->
+<style>
+    .indented { padding-left: 33pt; padding-right: 33pt; }
+</style>
+
+<!-- ################################################### -->
+<!-- Header                                              -->
+<!-- ################################################### -->
+
+<head bgcolor=#E6E6E6>
+<title>ELFOS</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+
+<font face="Georgia">
+
+<table width="100%" border=0>
+    <col width="10%">
+    <col width="*">
+    <col width="10%">
+
+    <tr valign="bottom">
+        <td align="left">
+            &nbsp;
+        </td>
+        <td align="center" valign="top">
+            <font color="DarkBlue" size="6"><b>Rosetta</b></font>
+            <br>
+            <font color="DarkBlue" size="5"><b>Software Library</b></font>
+        </td>
+        <td align="right">
+            <img src="Images/Rosetta%20Logo%20Black.png" width="65px">
+        </td>
+    </tr>
+</table>
+</head>
+
+<hr>
+
+<!-- ################################################### -->
+<!-- Body                                                -->
+<!-- ################################################### -->
+
+<body bgcolor=#E6E6E6 background="Images/DevBackground.png">
+<font face="Georgia">
+
+<p>These files are used with the Rosetta manual, <a href="Documents/Rosetta Instructions for Building.pdf" target="_new">Instructions for Building</a>.
+
+<!-- ################################################### -->
+<!-- Step 1                                              -->
+<!-- ################################################### -->
+<hr class="style2">
+<h2><font color="DarkBlue">Step 1 - Get software needed to setup Rosetta</h2>
+
+<table border=1 align="right" style="border-collapse: collapse; ">
+    <col width="75px">
+    <col width="300px">
+
+    <tr bgcolor="DarkBlue" valign="bottom">
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="White" size="4"><b>
+            Version
+            </b></font>
+        </td>
+
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <font color="White" size="4"><b>
+            Files
+            </b></font>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="center" bgcolor="#d8ecff" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="DarkBlue" size="4">1.0</font>
+        </td>
+        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <ol style="margin-top: 0; margin-bottom: 0;">
+                <li><a href="SystemFiles/V1.0/7i92t_rosettad.bin" download>7i92t_rosettad.bin</a></li>
+                
+                <br>
+                <li><a href="SystemFiles/V1.0/7i92t_rosettad.pin" download>7i92t_rosettad.pin</a></li>
+                
+                <br>
+                <li><a href="SystemFiles/V1.0/PIN_RosettaD_34.vhd" download>PIN_RosettaD_34.vhd</a></li>
+            </ol>
+        </td>
+    </tr>
+</table>
+
+<p><font color="blue">Download these files to the Downloads library on your Raspberry Pi.</font>
+            
+<p><mark style="background-color:Yellow;">To save the file, click on the file's name on the right side of the screen (e.g., &quot;7i92t_rosettad.bin&quot;).</mark>
+
+<!-- ################################################### -->
+<!-- Step 2                                              -->
+<!-- ################################################### -->
+<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
+
+<hr class="style2">
+<h2><font color="DarkBlue">Step 2 - Get extras files</h2>
+
+<table border=1 align="right" style="border-collapse: collapse; ">
+    <col width="75px">
+    <col width="300px">
+
+    <tr bgcolor="DarkBlue" valign="bottom">
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="White" size="4"><b>
+            Version
+            </b></font>
+        </td>
+
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <font color="White" size="4"><b>
+            Files
+            </b></font>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="center" bgcolor="#d8ecff" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="DarkBlue" size="4">1.0</font>
+        </td>
+        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <ol style="margin-top: 0; margin-bottom: 0;">
+                <li><a href="SystemFiles/V1.0/Rosetta.png" download>Rosetta.png</a></li>
+            </ol>
+        </td>
+    </tr>
+</table>
+
+<p><font color="blue">Download these files to the Downloads library on your Raspberry Pi.</font>
+
+<!-- ################################################### -->
+<!-- Footer                                              -->
+<!-- ################################################### -->
+<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
+
+<hr>
+<font size="3">
+<table width="100%">
+    <col width="67%">
+    <col width="33%">
+
+    <tr valign="top">
+        <td align="left">
+            Questions or comments?  Contact us at
+            <br><a href="mailto:ColvinTools@Gmail.com?Subject=General" target="_new">ColvinTools@Gmail.com</a>
+        </td>
+        <td align="right">
+            <a href="../index-Disclaimers.html">Disclaimers</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
