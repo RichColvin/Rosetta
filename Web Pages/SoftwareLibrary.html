@@ -58,11 +58,11 @@
 <!-- ################################################### -->
 
 <head bgcolor=#E6E6E6>
-<title>ELFOS</title>
+<title>Rosetta</title>
 <link rel="shortcut icon" type="image/ico" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
 
-<font face="Georgia">
+<font face="Arial">
 
 <table width="100%" border=0>
     <col width="10%">
@@ -71,15 +71,15 @@
 
     <tr valign="bottom">
         <td align="left">
-            &nbsp;
+            <img src="Images/Rosetta%20Logo%20Black.png" width="95px">
         </td>
         <td align="center" valign="top">
-            <font color="DarkBlue" size="6"><b>Rosetta</b></font>
+            <font color="DarkBlue" size="8" face="Garamond"><b>Rosetta</b></font>
             <br>
-            <font color="DarkBlue" size="5"><b>Software Library</b></font>
+            <font color="DarkBlue" size="6"><b>Software Library</b></font>
         </td>
         <td align="right">
-            <img src="Images/Rosetta%20Logo%20Black.png" width="65px">
+            &nbsp;
         </td>
     </tr>
 </table>
@@ -92,20 +92,21 @@
 <!-- ################################################### -->
 
 <body bgcolor=#E6E6E6 background="Images/DevBackground.png">
-<font face="Georgia">
 
 <p>These files are used with the Rosetta manual, <a href="Documents/Rosetta Instructions for Building.pdf" target="_new">Instructions for Building</a>.
+
+<p><mark style="background-color:Yellow;">To save any of the files, click on the file's name on the right side of the screen (e.g., &quot;7i92t_rosettad.bin&quot;).</mark>
 
 <!-- ################################################### -->
 <!-- Step 1                                              -->
 <!-- ################################################### -->
 <hr class="style2">
-<h2><font color="DarkBlue">Step 1 - Get software needed to setup Rosetta</h2>
+<h2><font color="DarkBlue">Step 1 - Get software & other files needed to setup Rosetta</font></h2>
 
 <!-- *************************************************** -->
 <!-- Step 1a                                             -->
 <!-- *************************************************** -->
-<h3><font color="DarkBlue">Step 1a - Mesa card support software</h3>
+<h3><font color="DarkBlue">Step 1a - Mesa card support software</font></h3>
 
 <table border=1 align="right" style="border-collapse: collapse; ">
     <col width="75px">
@@ -166,12 +167,17 @@
     </tr>
 </table>
 
-<p><font color="blue">Download these files to the Downloads library on your Raspberry Pi.</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
             
-<p><mark style="background-color:Yellow;">To save the file, click on the file's name on the right side of the screen (e.g., &quot;7i92t_rosettad.bin&quot;).</mark>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/usr/lib/firmware/hm2/hostmot2</font>
 
-<p>These files get put into the library,
-<p style="padding-left: 33pt;"><font color="black" face="Courier New">/usr/lib/firmware/hm2/hostmot2</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get used for configuring the system and the Mesa card.   
+
 
 <!-- *************************************************** -->
 <!-- Step 1b                                             -->
@@ -179,7 +185,7 @@
 <table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
 
 <hr class="style1">
-<h3><font color="DarkBlue">Step 1b - Rosetta applicaton files</h3>
+<h3><font color="DarkBlue">Step 1b - Rosetta applicaton files</font></h3>
 
 <table border=1 align="right" style="border-collapse: collapse; ">
     <col width="75px">
@@ -237,12 +243,34 @@
     </tr>
 </table>
 
-<p><mark style="background-color:pink;">These files will be updated once we get the final configuration completed. - Rich</mark>
+<!-- *************************************************** -->
+<!-- COMMENT - Remove later                              -->
+<!-- *************************************************** -->
+<table>
+    <tr>
+        <td>
+            <font size=7>&#11088;</font>
+        </td>
+        <td bgcolor="pink">
+            These files will be updated once we get the final configuration completed. There may be more. The goal is to get the configuration so that we only need to place files onto the system and not use pncconf for each machine.  If nothing else, these will make the process repeatable.
+        </td>
+    </tr>
+</table>
+<!-- *************************************************** -->
+<!-- END OF COMMENT                                      -->
+<!-- *************************************************** -->
 
-<p><font color="blue">Download these files to the Downloads library on your Raspberry Pi.</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
 
-<p>These files get put into the library,
-<p style="padding-left: 33pt;"><font color="black" face="Courier New">/home/cnc/Desktop/Rosetta</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Desktop/Rosetta</font>
+
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files define the system and Mesa card connectons.
+
 
 <!-- *************************************************** -->
 <!-- Step 1c                                             -->
@@ -250,7 +278,7 @@
 <table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
 
 <hr class="style1">
-<h3><font color="DarkBlue">Step 1c - Logo files</h3>
+<h3><font color="DarkBlue">Step 1c - Rosetta application logo files</font></h3>
 
 <table border=1 align="right" style="border-collapse: collapse; ">
     <col width="75px">
@@ -299,16 +327,98 @@
                 border-left-width: medium; 
                 border-right-width: thick; ">
             <ol style="margin-top: 0; margin-bottom: 0;">
-                <li><a href="SystemFiles/v1.0/Rosetta.gif" download="Rosetta.gif">Rosetta.gif</a></li>
+                <li><a href="SystemFiles/v1.0/RosettaLogo-Silver.gif" download>RosettaLogo-Silver.gif</a></li>
+                
+                <br>
+                <li><a href="SystemFiles/v1.0/RosettaLogo-Black.gif" download>RosettaLogo-Black.gif</a></li>
             </ol>
         </td>
     </tr>
 </table>
 
-<p><font color="blue">Download these files to the Downloads library on your Raspberry Pi.</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
 
-<p>These files get put into the library,
-<p style="padding-left: 33pt;"><font color="black" face="Courier New">/usr/share/linuxcnc</font>
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Desktop/Rosetta</font>
+
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get used for changing the image on the destop icon for starting the system.
+
+<!-- *************************************************** -->
+<!-- Step 1d                                             -->
+<!-- *************************************************** -->
+<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
+
+<hr class="style1">
+<h3><font color="DarkBlue">Step 1d - Startup Image File</font></h3>
+
+<table border=1 align="right" style="border-collapse: collapse; ">
+    <col width="75px">
+    <col width="300px">
+
+    <tr bgcolor="DarkBlue" valign="bottom">
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="White" size="4"><b>
+            Version
+            </b></font>
+        </td>
+
+        <td align="center" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <font color="White" size="4"><b>
+            Files
+            </b></font>
+        </td>
+    </tr>
+
+    <tr>
+        <td align="center" bgcolor="#d8ecff" style="
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: thick; 
+                border-right-width: medium; ">
+            <font color="DarkBlue" size="4">1.0</font>
+        </td>
+        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <ol style="margin-top: 0; margin-bottom: 0;">
+                <li><a href="SystemFiles/v1.0/RosettaStartupImage.gif" download="Rosetta.gif">RosettaStartupImage.gif</a></li>
+            </ol>
+        </td>
+    </tr>
+</table>
+
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download this file to the Downloads library on the Raspberry Pi.
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
+
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">This file gets moved later into the library,
+<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/usr/share/linuxcnc</font>
+
+<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
+<p style="margin-top: 0; padding-left: 33pt;">This file gets used in the startup before the main screen appears.  It replaces the default image file.
+
 
 <!-- ################################################### -->
 <!-- Footer                                              -->
