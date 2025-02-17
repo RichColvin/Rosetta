@@ -1,87 +1,483 @@
 <html>
-<head bgcolor=#E6E6E6>
-    <title>Rosetta User Manual</title>
-</head>
+<!-- ################################################### -->
+<!-- Code for Including Standard HTML files from the     -->
+<!-- server					                             -->
+<!-- ################################################### -->
+<script src="library.js"></script>
 
-<!-- ################################################### -->
-<!-- Style Sheet for Horizontal Rule - Style 1           -->
-<!-- ################################################### -->
-<style>
-hr.style1 {
-    border: 0;
-    height: 3px;
-    background-image: linear-gradient(to right,
-        rgba(0, 0, 0, 0),
-        rgba(0, 0, 255, 0.75),
-        rgba(0, 0, 0, 0));
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
     }
-</style>
+  }
+}
+</script> 
 
 <!-- ################################################### -->
-<!-- Style Sheet for Horizontal Rule - Style 2 -->
+<!-- Standard horizontal rule definitions		         -->
 <!-- ################################################### -->
-<style>
-hr.style2 {
-    border: 0;
-    height: 1.5px;
-    background-image: linear-gradient(to right,
-        rgba(0, 0, 0, 0),
-        rgba(0, 128, 0, 0.75),
-        rgba(0, 0, 0, 0));
-    }
-</style>
+<div w3-include-html="include-Horizontal-Rules.html"></div> 
+<script>
+    includeHTML();
+</script> 
 
 <!-- ################################################### -->
-<!-- Style Sheet for indented paragraphs -->
+<!-- Header                                              -->
 <!-- ################################################### -->
-<style>
-    .indented { padding-left: 10pt; }
-</style>
+<div w3-include-html="include-Header.html"></div> 
+<script>
+    includeHTML();
+</script> 
 
+<!-- ################################################### -->
+<!-- Stuff which could not be included                   -->
 <!-- ################################################### -->
 <body bgcolor=#E6E6E6>
 <font face="Arial">
 
 <!-- ################################################### -->
-<!-- Style Sheet for header image max size -->
+<!-- Body                                                -->
 <!-- ################################################### -->
-<style>
-img.Image { max-width: 1000px;}
-</style>
 
-<!-- ################################################### -->
-<!-- Header -->
-<!-- ################################################### -->
-<IMG SRC="Images/Rosetta - Users Manual.png" width="300px">
+<h2 style="margin-bottom: 0;">Overview</h2>
+<p style="margin-top: 0;">The Rosetta system is designed to 
 
-<!-- 
-<table width=100%>
-    <tr valign="TOP">
-        <td align="left" width="100px">
-            <IMG SRC="Images/Rosetta Logo Black.png" width="100px">
+    <ol style="margin-top: 0; margin-bottom: 0; ">
+        <li>provide the ornamental turner a way for linking activities using synchronisation of stepper motors, and</li>
+        <li>assist the ornamantal turner with automating onerous tasks.</li>
+    </ol>
+
+<p>It is based on <a href="https://www.linuxcnc.org/" target="_new">LinuxCNC</a> running on a <a href="https://www.raspberrypi.com/" target="_new">Raspberry Pi</a>.  Details about the configuration are in the <a href="https://rosetta.colvintools.com/" target="_new">Rosetta library</a>.
+
+<hr class="style1">
+
+<p>
+<table align="right" style="width: calc(100% - 425px); 
+        border-collapse: collapse; 
+        margin-left: 5px; margin-right: 0px;
+        margin-top: 0px; margin-bottom: 5px;
+        padding-left: 0px; padding-right: 0px;
+        padding-top: 0px; padding-bottom: 0px;
+        border: 1px solid grey; text-align: left; ">
+    <col width="50px">
+    <col width="250px">
+    <col width="*">
+
+    <tr bgcolor="#536878" valign="bottom" align="center">
+        <th colspan="999" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thick;
+                border-top-width: thick; border-bottom-width: medium; ">
+            <font size="5" color="White"><b>Lathe Axes</b></font>
+        </th>
+    </tr>
+    <tr bgcolor="#536878" valign="bottom">
+        <th align="center" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <font color="White">Axis</font>
+        </th>
+        <th align="center" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <font color="White">Potential Use</font>
+        </th>
+        <th align="center" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <font color="White">Comments</font>
+        </th>
+    </tr>
+
+<!-- Spindle -->
+    <tr bgcolor="#dcdcdc" valign="top">
+        <td bgcolor="black" valign="middle" align="center" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; ">
+            <font color="white"><b>Sp</b></font>
         </td>
-        <td align="left">
-            <font color="DarkBlue" size="7">
-            Rosetta User's Manual
-            </font>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Spindle</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; ">
+            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+        </td>
+    </tr>
+    
+<!-- X Axis -->
+    <tr bgcolor="#add8e6" valign="top">
+        <td bgcolor="Blue" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="white"><b>X</b></font>
+        </td>
+        <td valign="middle" align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Cross Slide</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is towards the user
+        </td>
+    </tr>
+    
+<!-- Y Axis -->
+    <tr bgcolor="#ff9999" valign="top">
+        <td bgcolor="red" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="white"><b>Y</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Dome Chuck</li>
+                <li style="position: relative; left: -20px; ">Straight-Line Chuck</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is down
+        </td>
+    </tr>
+    
+<!-- Z Axis -->
+    <tr bgcolor="#98fb98" valign="top">
+        <td bgcolor="green" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <font color="white"><b>Z</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Cross Slide</li>
+                <li style="position: relative; left: -20px; ">Curvilinear Slide</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is away from the headstock
+        </td>
+    </tr>
+    
+<!-- A Axis -->
+    <tr bgcolor="#a9a9a9" valign="top">
+        <td valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="lightgray"><b>A</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="lightgray"><center>n/a - axis not configured</center></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><font color="lightgray">A is rotation around X</font>
+        </td>
+    </tr>
+
+<!-- B Axis -->
+    <tr bgcolor="#ffffe0" valign="top">
+        <td bgcolor="#eee600" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>B</b>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Spherical Slide</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">B is rotation around Y
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is CCW
+        </td>
+    </tr>
+
+<!-- C Axis -->
+    <tr bgcolor="white" valign="top">
+        <td valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <b>C</b>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Rosette Phaser / Multiplier</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">C is rotation around Z, the same as the Spindle
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is CCW
+        </td>
+    </tr>
+    
+<!-- U Axis -->
+    <tr bgcolor="#ffe4e1" valign="top">
+        <td bgcolor="#cc3366" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="white"><b>U</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Retractor</li>
+                <li style="position: relative; left: -20px; ">Dynamic Rubber</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">U is parallel to X
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is towards the user
+        </td>
+    </tr>
+    
+<!-- V Axis -->
+    <tr bgcolor="#d8bfd8" valign="top">
+        <td bgcolor="purple" valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="white"><b>V</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li style="position: relative; left: -20px; ">Dynamic Amplitude Adjuster</li>
+            </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">V is parallel to Y
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is down
+        </td>
+    </tr>
+    
+<!-- W Axis -->
+    <tr bgcolor="#a9a9a9" valign="top">
+        <td valign="middle" align="center" style=" 
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <font color="lightgray"><b>W</b></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <font color="lightgray"><center>n/a - axis not configured</center></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><font color="lightgray">W is parallel to Z</font>
         </td>
     </tr>
 </table>
--->
+
+<p>The Rosetta system supports 8 axes (Spindle + 7 other), and the ones outlined below were selected as they match to identifiable uses for a rose engine.  These axes are also depicted in the picture below.
+
+<div style=" float: left; width: 400px; 
+	margin-left: 0px; margin-right: 5px;
+	margin-top: 0px; margin-bottom: 5px;
+	padding-left: 5px; padding-right: 5px;
+	padding-top: 5px; padding-bottom: 5px;
+	border: 1px solid grey; text-align: left; ">
+    <img src="Images/Axes.png" width="100%" align="right"/>
+    <i><b>Lathe Axes</b></i>
+</div>
+
+<h3 style="margin-bottom: 0;">Axis Colours</h3>
+<p style="margin-top: 0;">The colours used for the axes are the ones designated for that respective axis.  The use of colour coding for each axis is to help the ornamental turner ensure they are pluging the stepper motor cable into the correct receptacle for that axis.  The cabling and stepper motor enclosures should match those colours.
 
 <!-- ################################################### -->
-<!-- Body -->
+<!--Footer                                               -->
 <!-- ################################################### -->
-<hr>
-
-(Nothing here yet ...)
-
-<!-- ################################################### -->
-<!--Footer -->
-<!-- ################################################### -->
-<hr>
-<font size=2>
-<center>Questions or comments?  Contact us at <a href="mailto:ColvinTools@Gmail.com?Subject=General" >ColvinTools@Gmail.com</a></center>
-</font>
-</body>
+<div w3-include-html="include-Footer.html"></div> 
+<script>
+    includeHTML();
+</script> 
 </html>
