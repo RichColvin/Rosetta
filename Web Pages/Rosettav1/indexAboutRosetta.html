@@ -96,45 +96,6 @@ function includeHTML() {
 <h4 style="margin-bottom: 0;">Use of Colour Coding</h4>
 <p style="margin-top: 0;">The intent is that the stepper motor enclosures will be printed with the respective colour for the axis on which they are to be used.  Then a matching Ethernet cable is used to connect that stepper motor to the base unit.
 
-<!-- ################################################### -->
-<!-- System Hardware                                     -->
-<hr class="style1">
-<h2 style="margin-bottom: 0;">System Hardware</h2>
-<p style="margin-top: 0;">The Rosetta system is based on 
-
-    <ul style="margin-top: 0; margin-bottom: 0; ">
-        <li><a href="https://www.linuxcnc.org/" target="_new">LinuxCNC</a> (the version of LinuxCNC on which this help system is based is noted in the header of each page),</li>
-        
-        <br>
-        <li>running on the <a href="https://www.debian.org" target="_new">Debian Linux</a> <a href="https://en.wikipedia.org/wiki/Real-time_operating_system" target="_new">real-time operating system</a>,</li>
-        
-        <br>
-        <li>which is operating on a <a href="https://www.raspberrypi.com/" target="_new">Raspberry Pi 5</a>.</li>
-    </ul>
-    
-<p>The underlying compents are:
-
-    <ul style="margin-top: 0; margin-bottom: 0; ">
-        <li>Mesa 7i92TH, which is a low cost, general purpose, <a href="https://en.wikipedia.org/wiki/Field-programmable_gate_array" target="_new"></a>field-programmable gate array</a> (FPGA) based programmable I/O card with a 100 BaseT Ethernet host connection, and</li>
-        
-        <br>
-        <li>DM542T digital stepper drives.</li>
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li>Supports peak amp draws from 1.0 to 4.2A.  The system is set for 6,400 microstep's per revolution.  The spindle's gearing is 9:1, so this results in indexing to about 0.5&deg; of resolution.</li>
-                <li>Supports microstep resolution from 400 to 25,000. The base system is set for 6,400.</li>
-                <li>Supports stepper motors sized from NEMA 17 to NEMA 24.  We have tested these motors:</li>
-                    <ul style="margin-top: 0; margin-bottom: 0; ">
-                        <li>Stepper Online's NEMA 17 stepper motor with a single shaft (p/n 17HS19).  With 59 Ncm (83.55 oz in) of holding torque, it works quite well.</li>
-                        <li>Stepper Online's NEMA 17 stepper motor with a dual shaft (p/n 17HD19).  The shaft extending from both sides of the motor is very useful if you want to drive a lead screw with one end, and add a handwheel on the other end for manually moving the driven part.</li>
-                        
-                        <br>
-                        <li>Stepper Online's NEMA 23 stepper motor with a single shaft (p/n 23HS30).    With 1.9 Nm (269.06 oz in) of holding torque, this motor works well to drive the spindle.</li>
-                        <li>Stepper Online's NEMA 23 stepper motor with a dual shaft (p/n 23HD30).</li>
-                    </ul>
-            </ul>
-    </ul>
-
-<p>Further details about the Rosetta system are published in the <a href="https://rosetta.colvintools.com/" target="_new">Rosetta Library</a>.  
 
 <!-- ################################################### -->
 <!-- Legal Stuff                                         -->
