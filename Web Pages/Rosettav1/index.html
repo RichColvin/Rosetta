@@ -36,9 +36,9 @@ function includeHTML() {
 </script> 
 
 <!-- ################################################### -->
-<!-- Standard horizontal rule definitions		         -->
+<!-- Standard site-wide definitions         	         -->
 <!-- ################################################### -->
-<div w3-include-html="include-Horizontal-Rules.html"></div> 
+<div w3-include-html="include-SiteStandards.html"></div> 
 <script>
     includeHTML();
 </script> 
@@ -61,6 +61,8 @@ function includeHTML() {
 <!-- Body                                                -->
 <!-- ################################################### -->
 
+<!-- ################################################### -->
+<!-- Overview -->
 <h2 style="margin-bottom: 0;">Overview</h2>
 <p style="margin-top: 0;">The Rosetta system is designed to 
 
@@ -69,12 +71,12 @@ function includeHTML() {
         <li>assist the ornamantal turner with automating onerous tasks.</li>
     </ol>
 
-<p>It is based on <a href="https://www.linuxcnc.org/" target="_new">LinuxCNC</a> running on a <a href="https://www.raspberrypi.com/" target="_new">Raspberry Pi</a>.  Details about the configuration are in the <a href="https://rosetta.colvintools.com/" target="_new">Rosetta library</a>.
-
+<!-- ################################################### -->
+<!-- Axes -->
 <hr class="style1">
 
 <p>
-<table align="right" style="width: calc(100% - 425px); 
+<table align="right" style="width: calc(100% - 375px); 
         border-collapse: collapse; 
         margin-left: 5px; margin-right: 0px;
         margin-top: 0px; margin-bottom: 5px;
@@ -83,6 +85,7 @@ function includeHTML() {
         border: 1px solid grey; text-align: left; ">
     <col width="50px">
     <col width="250px">
+    <col width="75px">
     <col width="*">
 
     <tr bgcolor="#536878" valign="bottom" align="center">
@@ -111,6 +114,14 @@ function includeHTML() {
                 border-left-width: medium; border-right-width: medium;
                 border-top-width: medium; border-bottom-width: medium; "> 
             <font color="White">Potential Use</font>
+        </th>
+        <th align="center" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <font color="White">Movement Type</font>
         </th>
         <th align="center" style="
                 padding-left: 5px; padding-right: 5px; 
@@ -147,9 +158,18 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            Rotary
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; ">
-            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+            <p style="margin-top: 0; margin-bottom: 0">+ is CCW (as on a traditional lathe)
         </td>
     </tr>
     
@@ -174,6 +194,15 @@ function includeHTML() {
             <ul style="margin-top: 0; margin-bottom: 0; ">
                 <li style="position: relative; left: -20px; ">Cross Slide</li>
             </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
         </td>
         <td align="left" style="
                 padding-left: 5px; padding-right: 5px; 
@@ -213,6 +242,15 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
@@ -247,6 +285,15 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            Linear
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
@@ -273,6 +320,15 @@ function includeHTML() {
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             <font color="lightgray"><center>n/a - axis not configured</center></font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <font color="lightgray">Rotary</font>
         </td>
         <td align="left" style="
                 padding-left: 5px; padding-right: 5px; 
@@ -311,6 +367,15 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Rotary
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
@@ -341,6 +406,15 @@ function includeHTML() {
             <ul style="margin-top: 0; margin-bottom: 0; ">
                 <li style="position: relative; left: -20px; ">Rosette Phaser / Multiplier</li>
             </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            Rotary
         </td>
         <td align="left" style="
                 padding-left: 5px; padding-right: 5px; 
@@ -382,6 +456,15 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
@@ -412,6 +495,15 @@ function includeHTML() {
             <ul style="margin-top: 0; margin-bottom: 0; ">
                 <li style="position: relative; left: -20px; ">Dynamic Amplitude Adjuster</li>
             </ul>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
         </td>
         <td align="left" style="
                 padding-left: 5px; padding-right: 5px; 
@@ -450,6 +542,15 @@ function includeHTML() {
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <font color="lightgray">Linear</font>
+        </td>
+        <td align="left" style="
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
@@ -458,9 +559,10 @@ function includeHTML() {
     </tr>
 </table>
 
-<p>The Rosetta system supports 8 axes (Spindle + 7 other), and the ones outlined below were selected as they match to identifiable uses for a rose engine.  These axes are also depicted in the picture below.
+<h2 style="margin-bottom: 0;">Axes</h2>
+<p style="margin-top: 0;">The Rosetta system supports 8 axes (Spindle + 7 other), and the ones outlined below were selected as they match to identifiable uses for a rose engine.  These axes are also depicted in the picture below.
 
-<div style=" float: left; width: 400px; 
+<div style=" float: left; width: 350px; 
 	margin-left: 0px; margin-right: 5px;
 	margin-top: 0px; margin-bottom: 5px;
 	padding-left: 5px; padding-right: 5px;

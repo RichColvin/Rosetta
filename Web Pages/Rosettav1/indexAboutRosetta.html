@@ -1,0 +1,168 @@
+<!-- ################################################### -->
+<!-- Code for Including Standard HTML files from the     -->
+<!-- server					                             -->
+<!-- ################################################### -->
+<script src="library.js"></script>
+
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
+    }
+  }
+}
+</script> 
+
+<!-- ################################################### -->
+<!-- Standard site-wide definitions         	         -->
+<!-- ################################################### -->
+<div w3-include-html="include-SiteStandards.html"></div> 
+<script>
+    includeHTML();
+</script> 
+
+<!-- ################################################### -->
+<!-- Header                                              -->
+<!-- ################################################### -->
+<div w3-include-html="include-Header.html"></div> 
+<script>
+    includeHTML();
+</script> 
+
+<!-- ################################################### -->
+<!-- Stuff which could not be included                   -->
+<!-- ################################################### -->
+<body bgcolor=#E6E6E6>
+<font face="Arial">
+
+<!-- ################################################### -->
+<!-- Body                                                -->
+<!-- ################################################### -->
+
+<!-- ################################################### -->
+<!-- Design Goals                                        -->
+<h2 style="margin-bottom: 0;">Design Goals</h2>
+<p style="margin-top: 0;">The Rosetta system is designed for use by an ornamental turner.  It is to: 
+
+    <ol style="margin-top: 0; margin-bottom: 0; ">
+        <li>provide the ornamental turner a way for linking activities using synchronisation of stepper motors, and</li>
+        <li>assist the ornamantal turner with automating onerous tasks</li>
+    </ol>
+
+<br>whilst providing this functionality at a reasonable cost.
+
+<p>The design goal was not to enable a push-button system where the ornamental turner can leave all the work to the computer.
+
+<hr class="style2">
+<h3 style="margin-bottom: 0;">Secondary Goals</h3>
+<p style="margin-top: 0;">The secondary goals were around ease-of-use.
+
+<h4 style="margin-bottom: 0;">System Interface</h4>
+<p style="margin-top: 0;">The LinuxCNC system is configured like many CNC-based machines in the modern machine shop.  This interface is commonly used by many ornamental turners, or is considered easy to learn.  
+
+<p>Basic functions are menu-driven, and advanced functionality is available by using gCode.
+
+<h4 style="margin-bottom: 0;">Use of gCode</h4>
+<p style="margin-top: 0;">Experience has shown that most of the more complex ornamental turning operations are easy to implement in gCode (e.g., adding threading).  To that end, we are also providing a library of gCode functions which can be modified by the ornamental turner to achieve the desired output.
+
+<h4 style="margin-bottom: 0;">Use of Off-the-Shelf Parts</h4>
+<p style="margin-top: 0;">The use of standardly available, off-the-shelf parts is to keep the unit cost down.
+
+<p>The wiring standard we are establishing uses off-the-shelf Ethernet cables, and the system unit has standard RJ-45 plugs where the wires can be easly plugged into the system.
+
+<p>On the other end of that Ethernet cable, where it plugs into the stepper motor, we have also publised standard designs for stepper motor enclosures which can be 3D-printed and which provision for an RJ-45 plug. 
+
+<h4 style="margin-bottom: 0;">Use of Colour Coding</h4>
+<p style="margin-top: 0;">The intent is that the stepper motor enclosures will be printed with the respective colour for the axis on which they are to be used.  Then a matching Ethernet cable is used to connect that stepper motor to the base unit.
+
+<!-- ################################################### -->
+<!-- System Hardware                                     -->
+<hr class="style1">
+<h2 style="margin-bottom: 0;">System Hardware</h2>
+<p style="margin-top: 0;">The Rosetta system is based on 
+
+    <ul style="margin-top: 0; margin-bottom: 0; ">
+        <li><a href="https://www.linuxcnc.org/" target="_new">LinuxCNC</a> (the version of LinuxCNC on which this help system is based is noted in the header of each page),</li>
+        
+        <br>
+        <li>running on the <a href="https://www.debian.org" target="_new">Debian Linux</a> <a href="https://en.wikipedia.org/wiki/Real-time_operating_system" target="_new">real-time operating system</a>,</li>
+        
+        <br>
+        <li>which is operating on a <a href="https://www.raspberrypi.com/" target="_new">Raspberry Pi 5</a>.</li>
+    </ul>
+    
+<p>The underlying compents are:
+
+    <ul style="margin-top: 0; margin-bottom: 0; ">
+        <li>Mesa 7i92TH, which is a low cost, general purpose, <a href="https://en.wikipedia.org/wiki/Field-programmable_gate_array" target="_new"></a>field-programmable gate array</a> (FPGA) based programmable I/O card with a 100 BaseT Ethernet host connection, and</li>
+        
+        <br>
+        <li>DM542T digital stepper drives.</li>
+            <ul style="margin-top: 0; margin-bottom: 0; ">
+                <li>Supports peak amp draws from 1.0 to 4.2A.  The system is set for 6,400 microstep's per revolution.  The spindle's gearing is 9:1, so this results in indexing to about 0.5&deg; of resolution.</li>
+                <li>Supports microstep resolution from 400 to 25,000. The base system is set for 6,400.</li>
+                <li>Supports stepper motors sized from NEMA 17 to NEMA 24.  We have tested these motors:</li>
+                    <ul style="margin-top: 0; margin-bottom: 0; ">
+                        <li>Stepper Online's NEMA 17 stepper motor with a single shaft (p/n 17HS19).  With 59 Ncm (83.55 oz in) of holding torque, it works quite well.</li>
+                        <li>Stepper Online's NEMA 17 stepper motor with a dual shaft (p/n 17HD19).  The shaft extending from both sides of the motor is very useful if you want to drive a lead screw with one end, and add a handwheel on the other end for manually moving the driven part.</li>
+                        
+                        <br>
+                        <li>Stepper Online's NEMA 23 stepper motor with a single shaft (p/n 23HS30).    With 1.9 Nm (269.06 oz in) of holding torque, this motor works well to drive the spindle.</li>
+                        <li>Stepper Online's NEMA 23 stepper motor with a dual shaft (p/n 23HD30).</li>
+                    </ul>
+            </ul>
+    </ul>
+
+<p>Further details about the Rosetta system are published in the <a href="https://rosetta.colvintools.com/" target="_new">Rosetta Library</a>.  
+
+<!-- ################################################### -->
+<!-- Legal Stuff                                         -->
+<hr class="style1">
+<h2 style="margin-bottom: 0;">The Legal Stuff</h2>
+<div style="float: right; width: 160px; margin: 15px 5px 5px 5px; padding: 0px; border: 0px solid black; text-align: center;">
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_new"><IMG SRC="Images/cc.logo.large.png"  style="padding: 0px 5px; float: Center;" width=150 /></a>
+</div>
+
+<p style="margin-top: 0;">The Rosetta system is licensed under the Creative Commons "Attribution - ShareAlike" license. See the <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_new">Creative Commons web site</a> for its terms.  To the extent that material may appear to be infringed, I assert that such alleged infringement is permissible under fair use principles in U.S. copyright laws.  If you believe material has been used in an unauthorized manner, please contact me at the eMail noted below.
+
+<p>The designs and configurations we created are published for personal use only.  No license is grated for making this for sale.
+
+<!-- ################################################### -->
+<!-- Legal Stuff                                         -->
+<hr class="style0">
+
+<p>We hope you find this system useful and make some really pretty stuff with it.
+
+    <p class="indented">With kindest regards,
+    <br>Rich Colvin &amp; Chuck Peplinski
+
+<!-- ################################################### -->
+<!-- Footer                                              -->
+<!-- ################################################### -->
+<div w3-include-html="include-Footer.html"></div> 
+<script>
+includeHTML();
+</script> 
+</body>
+</html>
