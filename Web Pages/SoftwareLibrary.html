@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <!-- ################################################### -->
 <!-- DOCUMENT NOTES                                      -->
 <!-- 							 						 -->
@@ -6,91 +7,78 @@
 <!-- code used by many html files.						 -->
 <!-- 													 -->
 <!-- 2025-02-18 - R. Colvin - initial file		 		 -->
+<!-- 2025-03-04 - R. Colvin - updated for HTML 5 and     -->
+<!--      for additional files needed for Rosetta        -->
 <!-- ################################################### -->
+<head>
+<title>Rosetta</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+</head>
 
+<body style="background-color: #E6E6E6; font: 16px Arial; ">
 
 <!-- ################################################### -->
-<!-- Style Sheet for header image max size                                         -->
-<style>
-    img.Image { max-width: 500px;}
-</style>
-
+<!-- Code for Including Standard HTML files on the 	 -->
+<!-- server					         -->
 <!-- ################################################### -->
-<!-- Style Sheet for Horizontal Rule - Style 0           -->
- <style>
-    hr.style0 {
-        border: 0;
-        height: 1px;
-        background-image: linear-gradient(to right,
-                rgba(0,0,256, 2),
-                rgba(0,0,256, 2),
-                rgba(0,0,256, 2),
+<script src="library.js"></script>
+
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
     }
-</style>
+  }
+}
+</script> 
 
 <!-- ################################################### -->
-<!-- Style Sheet for Horizontal Rule - Style 1           -->
- <style>
-    hr.style1 {
-        border: 0;
-        height: 3px;
-        background-image: linear-gradient(to right,
-            rgba(0, 0, 0, 0),
-            rgba(0,0,256, 2),
-            rgba(0, 0, 0, 0));
-    }
-</style>
-
-<!-- ################################################### -->
-<!-- Style Sheet for Horizontal Rule - Style 2           -->
- <style>
-    hr.style2 {
-        border: 0;
-        height: 6px;
-        background-image: linear-gradient(to right,
-            rgba(0, 0, 0, 0),
-            rgba(0,0,256, 2),
-            rgba(0, 0, 0, 0));
-    }
-</style>
-
-<!-- ################################################### -->
-<!-- Style Sheet for indented paragraphs                 -->
-<style>
-    .indented { padding-left: 33pt; padding-right: 33pt; }
-</style>
+<!-- Standard horizontal rule definitions		  		 -->
+<div w3-include-html="include-SiteStandards.html"></div> 
+<script>
+includeHTML();
+</script>
 
 <!-- ################################################### -->
 <!-- Header                                              -->
 <!-- ################################################### -->
 
-<head bgcolor=#E6E6E6>
-<title>Rosetta</title>
-<link rel="shortcut icon" type="image/ico" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
-
-<font face="Arial">
-
-<table width="100%" border=0>
-    <col width="10%">
-    <col width="*">
-    <col width="10%">
-
-    <tr valign="bottom">
-        <td align="left">
-            <img src="Images/Rosetta%20Logo%20Black.png" width="95px">
+<table style="width: 100%">
+    <tr>
+        <td style="width: 10%; vertical-align: bottom; text-align: left; ">
+            <img src="Images/Rosetta%20Logo%20Black.png" alt="Rosetta Logo" style="width:95px; ">
         </td>
-        <td align="center" valign="top">
-            <font color="DarkBlue" size="8" face="Garamond"><b>Rosetta</b></font>
-            <br>
-            <font color="DarkBlue" size="6"><b>Software Library</b></font>
+        <td style="vertical-align: bottom; text-align: left; ">
+            <p class="TextXL" style="font: 55px Garamond; color: #191970; margin-top: 0; margin-bottom: 0; "><b>Rosetta</b></p>
+            <p class="TextXL" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Software Library</b></p>
         </td>
-        <td align="right">
+        <td style="width: 10%; vertical-align: bottom; text-align: right; ">
             &nbsp;
         </td>
     </tr>
 </table>
-</head>
 
 <hr>
 
@@ -98,338 +86,488 @@
 <!-- Body                                                -->
 <!-- ################################################### -->
 
-<body bgcolor=#E6E6E6 background="Images/DevBackground.png">
-
-<p>These files are used with the Rosetta manual, <a href="Documents/Rosetta Instructions for Building.pdf" target="_new">Instructions for Building</a>.
+<p>These files are used with the Rosetta manual, <a href="Documents/Rosetta%20Instructions%20for%20Building.pdf" target="new">Instructions for Building</a>.
 
 <p><mark style="background-color:Yellow;">To save any of the files, click on the file's name on the right side of the screen (e.g., &quot;7i92t_rosettad.bin&quot;).</mark>
 
+<table style="width: 100%">
+<tr><td>
 <!-- ################################################### -->
 <!-- Step 1                                              -->
 <!-- ################################################### -->
-<hr class="style2">
-<h2><font color="DarkBlue">Step 1 - Get software & other files needed to setup Rosetta</font></h2>
+<hr class="style1">
+<h2>Step 1 - Get tools needed to setup Rosetta</h2>
+
+</td></tr><tr><td>
 
 <!-- *************************************************** -->
 <!-- Step 1a                                             -->
 <!-- *************************************************** -->
-<h3><font color="DarkBlue">Step 1a - Mesa card support software</font></h3>
+<h3>Step 1a - Get the Bash file</h3>
 
-<table border=1 align="right" style="border-collapse: collapse; ">
-    <col width="75px">
-    <col width="300px">
-
-    <tr bgcolor="DarkBlue" valign="bottom">
-        <td align="center" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="White" size="4"><b>
-            Version
-            </b></font>
+<table style="border-collapse: collapse; float: right;
+		margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Ver</b></p>
         </td>
 
-        <td align="center" style="
+        <td style="width: 250px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <font color="White" size="4"><b>
-            Files
-            </b></font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Files</b></p>
         </td>
     </tr>
 
     <tr>
-        <td align="center" bgcolor="#d8ecff" style="
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="DarkBlue" size="4">1.0</font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            1.0
         </td>
-        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <ol style="margin-top: 0; margin-bottom: 0;">
-                <li><a href="SystemFiles/v1.0/7i92t_rosettad.bin" download>7i92t_rosettad.bin</a></li>
-                
-                <br>
-                <li><a href="SystemFiles/v1.0/7i92t_rosettad.pin" download>7i92t_rosettad.pin</a></li>
-                
-                <br>
-                <li><a href="SystemFiles/v1.0/PIN_RosettaD_34.vhd" download>PIN_RosettaD_34.vhd</a></li>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            <ol style="padding-left: 30px; margin-top: 0; margin-bottom: 0;">
+                <li style="margin-top: 0; margin-bottom: 0; "><a href="SystemFiles/v1.0/MoveFiles.sh" download>MoveFiles.sh</a></li>
             </ol>
         </td>
     </tr>
 </table>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
-            
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/usr/lib/firmware/hm2/hostmot2</font>
+<h4 style="margin-top: 0; ">Usage</h4>
+<p style="margin-top: 0; padding-left: 33pt;">This file gets used for moving the needed files to their needed locations.
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
+<h4 style="margin-top: 0; ">Download Instructions</h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download this file to the Downloads library on the Raspberry Pi.
+<p style="padding-left: 66pt; color: black; font: 16px Courier; ">/home/cnc/Downloads</p>
+            
+</td></tr><tr><td>
+
+
+<!-- ################################################### -->
+<!-- Step 2                                              -->
+<!-- ################################################### -->
+<hr class="style1">
+<h2>Step 2 - Get software & other files needed to run Rosetta</h2>
+
+</td></tr><tr><td>
+
+<!-- *************************************************** -->
+<!-- Step 2a                                             -->
+<!-- *************************************************** -->
+<h3>Step 2a - Mesa card support software</h3>
+
+<table style="border-collapse: collapse; float: right;
+		margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Ver</b></p>
+        </td>
+
+        <td style="width: 250px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Files</b></p>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            1.0
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            <ol style="padding-left: 30px; margin-top: 0; margin-bottom: 0;">
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/7i92t_rosettad.bin" download>7i92t_rosettad.bin</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/7i92t_rosettad.pin" download>7i92t_rosettad.pin</a></li>
+
+                <li style="margin-top: 0; margin-bottom: 0; "><a href="SystemFiles/v1.0/PIN_RosettaD_34.vhd" download>PIN_RosettaD_34.vhd</a></li>
+            </ol>
+        </td>
+    </tr>
+</table>
+
+<h4 style="margin-top: 0; ">Usage</h4>
 <p style="margin-top: 0; padding-left: 33pt;">These files get used for configuring the system and the Mesa card.   
 
-
-<!-- *************************************************** -->
-<!-- Step 1b                                             -->
-<!-- *************************************************** -->
-<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
-
-<hr class="style1">
-<h3><font color="DarkBlue">Step 1b - Rosetta application files</font></h3>
-
-<table border=1 align="right" style="border-collapse: collapse; ">
-    <col width="75px">
-    <col width="300px">
-
-    <tr bgcolor="DarkBlue" valign="bottom">
-        <td align="center" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="White" size="4"><b>
-            Version
-            </b></font>
-        </td>
-
-        <td align="center" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <font color="White" size="4"><b>
-            Files
-            </b></font>
-        </td>
-    </tr>
-
-    <tr>
-        <td align="center" bgcolor="#d8ecff" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="DarkBlue" size="4">1.0</font>
-        </td>
-        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <ol style="margin-top: 0; margin-bottom: 0;">
-                <li><a href="SystemFiles/v1.0/Rosetta.hal" download>Rosetta.hal</a></li>
-                
-                <br>
-                <li><a href="SystemFiles/v1.0/Rosetta.ini" download>Rosetta.ini</a></li>
-            </ol>
-        </td>
-    </tr>
-</table>
-
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
+<h4 style="margin-top: 0; ">Download Instructions</h4>
 <p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
+<p style="padding-left: 66pt; color: black; font: 16px Courier; ">/home/cnc/Downloads</p>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Desktop/Rosetta</font>
-
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">These files define the system and Mesa card connectons.
+</td></tr><tr><td>
 
 
 <!-- *************************************************** -->
-<!-- Step 1c                                             -->
+<!-- Step 2b                                             -->
 <!-- *************************************************** -->
-<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
-
-<hr class="style1">
-<h3><font color="DarkBlue">Step 1c - Rosetta application logo files</font></h3>
-
-<table border=1 align="right" style="border-collapse: collapse; ">
-    <col width="75px">
-    <col width="300px">
-
-    <tr bgcolor="DarkBlue" valign="bottom">
-        <td align="center" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="White" size="4"><b>
-            Version
-            </b></font>
+<hr class="style2">
+<h3>Step 2b - Rosetta files for LinuxCNC</h3>
+<table style="border-collapse: collapse; float: right;
+		margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Ver</b></p>
         </td>
 
-        <td align="center" style="
+        <td style="width: 250px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <font color="White" size="4"><b>
-            Files
-            </b></font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Files</b></p>
         </td>
     </tr>
 
     <tr>
-        <td align="center" bgcolor="#d8ecff" style="
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="DarkBlue" size="4">1.0</font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            1.0
         </td>
-        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <ol style="margin-top: 0; margin-bottom: 0;">
-                <li><a href="SystemFiles/v1.0/RosettaLogo-Silver.gif" download>RosettaLogo-Silver.gif</a></li>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            <ol style="padding-left: 30px; margin-top: 0; margin-bottom: 0;">
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/Rosetta.hal" download>Rosetta.hal</a></li>
                 
-                <br>
-                <li><a href="SystemFiles/v1.0/RosettaLogo-Black.gif" download>RosettaLogo-Black.gif</a></li>
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/Rosetta.ini" download>Rosetta.ini</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/custom.hal" download>custom.hal</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/custom_gvcp.hal" download>custom_gvcp.hal</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/shutdown.hal" download>shutdown.hal</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 0; "><a href="SystemFiles/v1.0/tool.tbl" download>tool.tbl</a></li>
             </ol>
         </td>
     </tr>
 </table>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
+<h4 style="margin-top: 0; ">Usage</h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files define the Rosetta system and Mesa card connectons.</p>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">These files get moved later into the library,
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Desktop/Rosetta</font>
+<h4 style="margin-top: 0; ">Download Instructions</h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.</p>
+<p style="padding-left: 66pt; color: black; font: 16px Courier; ">/home/cnc/Downloads</p>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">These files get used for changing the image on the destop icon for starting the system.
+</td></tr><tr><td>
+
 
 <!-- *************************************************** -->
-<!-- Step 1d                                             -->
+<!-- Step 2c                                             -->
 <!-- *************************************************** -->
-<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
+<hr class="style2">
+<h3>Step 2c - Rosetta application logo files</h3>
 
-<hr class="style1">
-<h3><font color="DarkBlue">Step 1d - Startup Image File</font></h3>
-
-<table border=1 align="right" style="border-collapse: collapse; ">
-    <col width="75px">
-    <col width="300px">
-
-    <tr bgcolor="DarkBlue" valign="bottom">
-        <td align="center" style="
-                border-style: solid; 
-                border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="White" size="4"><b>
-            Version
-            </b></font>
+<table style="border-collapse: collapse; float: right;
+		margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Ver</b></p>
         </td>
 
-        <td align="center" style="
+        <td style="width: 250px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: medium; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <font color="White" size="4"><b>
-            Files
-            </b></font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Files</b></p>
         </td>
     </tr>
 
     <tr>
-        <td align="center" bgcolor="#d8ecff" style="
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: thick; 
-                border-right-width: medium; ">
-            <font color="DarkBlue" size="4">1.0</font>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            1.0
         </td>
-        <td valign="middle" align="left" valign="top" bgcolor="#d8ecff" style=" border-style: solid; 
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
                 border-color: black; 
-                border-top-width: thick; 
-                border-bottom-width: thick; 
-                border-left-width: medium; 
-                border-right-width: thick; ">
-            <ol style="margin-top: 0; margin-bottom: 0;">
-                <li><a href="SystemFiles/v1.0/RosettaStartupImage.gif" download="Rosetta.gif">RosettaStartupImage.gif</a></li>
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            <ol style="padding-left: 30px; margin-top: 0; margin-bottom: 0;">
+                <li style="margin-top: 0; margin-bottom: 12px; "><a href="SystemFiles/v1.0/RosettaLogo-Silver.gif" download>RosettaLogo-Silver.gif</a></li>
+                
+                <li style="margin-top: 0; margin-bottom: 0; "><a href="SystemFiles/v1.0/RosettaLogo-Black.gif" download>RosettaLogo-Black.gif</a></li>
             </ol>
         </td>
     </tr>
 </table>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Download Instructions</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">Download this file to the Downloads library on the Raspberry Pi.
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/home/cnc/Downloads</font>
+<h4 style="margin-top: 0; ">Usage</h4>
+<p style="margin-top: 0; padding-left: 33pt;">These files get used for changing the image on the destop icon for starting the system.</p>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Final Location</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">This file gets moved later into the library,
-<p style="padding-left: 66pt;"><font color="black" size=4 face="Courier">/usr/share/linuxcnc</font>
+<h4 style="margin-top: 0; ">Download Instructions</h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download these files to the Downloads library on the Raspberry Pi.</p>
+<p style="padding-left: 66pt; color: black; font: 16px Courier; ">/home/cnc/Downloads</p>
 
-<h4 style="margin-bottom: 0"><font color="DarkBlue">Usage</font></h4>
-<p style="margin-top: 0; padding-left: 33pt;">This file gets used in the startup before the main screen appears.  It replaces the default image file.
+</td></tr><tr><td>
 
+
+<!-- *************************************************** -->
+<!-- Step 2d                                             -->
+<!-- *************************************************** -->
+<hr class="style2">
+<h3>Step 2d - LinuxCNC startup Image File</h3>
+
+<table style="border-collapse: collapse; float: right;
+		margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Ver</b></p>
+        </td>
+
+        <td style="width: 250px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Files</b></p>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            1.0
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thin; 
+                border-bottom-width: thin; 
+                border-left-width: thin; 
+                border-right-width: thin; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            <ol style="padding-left: 30px; margin-top: 0; margin-bottom: 0;">
+                <li style="margin-top: 0; margin-bottom: 0; "><a href="SystemFiles/v1.0/RosettaStartupImage.gif" download="RosettaStartupImage.gif">RosettaStartupImage.gif</a></li>
+            </ol>
+        </td>
+    </tr>
+</table>
+
+<h4 style="margin-top: 0; ">Usage</h4>
+<p style="margin-top: 0; padding-left: 33pt;">This file gets used in the startup before the main screen appears.  It replaces the default image file.</p>
+
+<h4 style="margin-top: 0; ">Download Instructions</h4>
+<p style="margin-top: 0; padding-left: 33pt;">Download this file to the Downloads library on the Raspberry Pi.</p>
+<p style="padding-left: 66pt; color: black; font: 16px Courier; ">/home/cnc/Downloads</p>
+
+</td></tr><tr><td>
+
+
+<!-- ################################################### -->
+<!-- Step 3                                              -->
+<!-- ################################################### -->
+<hr class="style1">
+<h2>Step 3 - Execute the script file used to put the Rosetta files into the needed locations</h2>
+
+</td></tr><tr><td>
+
+<!-- *************************************************** -->
+<!-- Step 3a                                             -->
+<!-- *************************************************** -->
+<h3>Step 3a - Run the Bash file</h3>
+
+<h4 style="margin-top: 0; ">Usage</h4>
+<p style="margin-top: 0; padding-left: 33pt;">This script file gets used for moving the needed files to their needed locations.
+
+<h4 style="margin-top: 0; ">Instructions</h4>
+<p style="margin-top: 0; padding-left: 33pt;">Open a command prompt and enter these commands to create the location where the files need to be kept
+
+<table style="width: 650px; border-collapse: collapse; ">
+	<tr>
+		<td style="width: 33pt; ">
+			&nbsp;
+		</td>
+		<td style="width: calc(100% - 33pt); 
+				background-color: #fff2cc; 
+				vertical-align: top; text-align: left;
+                border-style: solid; border-color: black; 
+                border-top-width: thin; border-bottom-width: thin; 
+                border-left-width: thin; border-right-width: thin;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 2px; padding-bottom: 2px; 
+                 ">
+    		<p style="padding-left: 22px; text-indent: -22px; margin-top: 0; margin-bottom: 0; color: black; font: 16px Courier; ">cd /home/cnc/Downloads</p>
+    		<p style="padding-left: 22px; text-indent: -22px; margin-top: 0; margin-bottom: 0; color: black; font: 16px Courier; ">sudo bash MoveFiles.sh</p>
+    	</td>
+	</tr>
+</table>
+
+</td></tr></table>
 
 <!-- ################################################### -->
 <!-- Footer                                              -->
 <!-- ################################################### -->
-<table width="100%" style="margin-top: 0; margin-bottom: 0;"><tr style="margin-top: 0; margin-bottom: 0;"><td>&nbsp;</td></tr></table>
-
-<hr>
-<font size="3">
-<table width="100%">
-    <col width="67%">
-    <col width="33%">
-
-    <tr valign="top">
-        <td align="left">
-            Questions or comments?  Contact us at
-            <br><a href="mailto:ColvinTools@Gmail.com?Subject=General" target="_new">ColvinTools@Gmail.com</a>
-        </td>
-        <td align="right">
-            <a href="../index-Disclaimers.html">Disclaimers</a>
-        </td>
-    </tr>
-</table>
+<div w3-include-html="include-Footer.html"></div> 
+<script>
+includeHTML();
+</script> 
 </body>
 </html>
