@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- ################################################### -->
+<!-- DOCUMENT NOTES                                      -->
+<!-- 							 						 -->
+<!-- This include file is for including the standard     -->
+<!-- code used by many html files.						 -->
+<!-- 													 -->
+<!-- 2025-02-18 - R. Colvin - initial file		 		 -->
+<!-- ################################################### -->
+
+<head>
+<title>Rosetta</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+</head>
+
+<body style="background-color: #E6E6E6; font: 16px Arial; ">
+
+<!-- ################################################### -->
+<!-- Code for Including Standard HTML files from the     -->
+<!-- server					                             -->
+<!-- ################################################### -->
+<script src="library.js"></script>
+
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
+    }
+  }
+}
+</script> 
+
+<!-- ################################################### -->
+<!-- Standard site-wide definitions         	         -->
+<!-- ################################################### -->
+<div w3-include-html="include-SiteStandards.html"></div> 
+<script>
+    includeHTML();
+</script> 
+
+<!-- ################################################### -->
+<!-- Header                                              -->
+<!-- ################################################### -->
+<div w3-include-html="include-Header.html"></div> 
+<script>
+    includeHTML();
+</script> 
+
+
+<!-- ################################################### -->
+<!-- Body                                                -->
+<!-- ################################################### -->
+<h1 style="margin-bottom: 0; color: DarkRed;">Key Warnings</h2>
+<h2 style="margin-top: 3px; margin-bottom: 0; color: DarkRed;">Stepper Motors</h2>
+<p style="margin-top: 0;">This system was designed and tested for the stepper motors in the table below.  Use of other stepper motors may cause system failures.</p>
+
+<table style="border-collapse: collapse; width: 100%;
+		margin-left: 0px; margin-right: 0px; 
+        margin-top: 5px; margin-bottom: 5px; 
+		">
+    <tr>
+        <td style="width: 75px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thick; border-bottom-width: medium; 
+                border-left-width: thick; border-right-width: medium;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Axis</b></p>
+        </td>
+        <td style="width: 100px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thick; border-bottom-width: medium; 
+                border-left-width: medium; border-right-width: medium;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Stepper Motors Allowed</b></p>
+        </td>
+        <td style="width: 50px;
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; border-color: black; 
+                border-top-width: thick; border-bottom-width: medium; 
+                border-left-width: medium; border-right-width: medium;
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                 ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Max Amps</b></p>
+        </td>
+
+        <td style="
+        		background-color: #FFE4B5;
+        		vertical-align: bottom; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: thick; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; ">
+            <p class="TextMedLG" style="color: #191970; margin-top: 0; margin-bottom: 0; "><b>Comments</b></p>
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- Spindle -->
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>Spindle</b>
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- X Axis -->
+    <tr>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>X</b>
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- Y Axis -->
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>Y</b>
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- Z Axis -->
+    <tr>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>Z</b>
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- A Axis -->
+    <tr>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">A</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">n/a</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">n/a</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- B Axis -->
+    <tr>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>B</b>
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- C Axis -->
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>C</b>
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- U Axis -->
+    <tr>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>U</b>
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #ffffff;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- V Axis -->
+    <tr>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <b>V</b>
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            NEMA 17
+            <br>
+            NEMA 23
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            2.4
+        </td>
+        <td style="
+        		background-color: #d3d3d3;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: medium; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+<!-- ********************** -->
+<!-- W Axis -->
+    <tr>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: thick; 
+                border-left-width: thick; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">W</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">n/a</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: middle; text-align: center;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: medium; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 0px; padding-bottom: 0px; 
+                ">
+            <span style="color: lightgray; ">n/a</span>
+        </td>
+        <td style="
+        		background-color: #808080;
+        		vertical-align: top; text-align: left;
+                border-style: solid; 
+                border-color: black; 
+                border-top-width: medium; 
+                border-bottom-width: thick; 
+                border-left-width: medium; 
+                border-right-width: thick; 
+		        padding-left: 5px; padding-right: 5px; 
+        		padding-top: 5px; padding-bottom: 5px; 
+                ">
+            &nbsp;
+        </td>
+    </tr>
+
+</table>
+
+<p>Use of other stepper motors invalidates any warranty for this system.</p>
+
+<!-- ################################################### -->
+<!--Footer                                               -->
+<!-- ################################################### -->
+<div w3-include-html="include-Footer.html"></div> 
+<script>
+    includeHTML();
+</script> 
+</html>

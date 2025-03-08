@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <!-- ################################################### -->
 <!-- DOCUMENT NOTES                                      -->
 <!-- 							 						 -->
@@ -7,6 +8,13 @@
 <!-- 													 -->
 <!-- 2025-02-18 - R. Colvin - initial file		 		 -->
 <!-- ################################################### -->
+<head>
+<title>Rosetta</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+</head>
+
+<body style="background-color: #E6E6E6; font: 16px Arial; ">
 
 <!-- ################################################### -->
 <!-- Code for Including Standard HTML files from the     -->
@@ -49,7 +57,7 @@ function includeHTML() {
 <!-- ################################################### -->
 <div w3-include-html="include-SiteStandards.html"></div> 
 <script>
-    includeHTML();
+includeHTML();
 </script> 
 
 <!-- ################################################### -->
@@ -57,109 +65,114 @@ function includeHTML() {
 <!-- ################################################### -->
 <div w3-include-html="include-Header.html"></div> 
 <script>
-    includeHTML();
+includeHTML();
 </script> 
-
-<!-- ################################################### -->
-<!-- Stuff which could not be included                   -->
-<!-- ################################################### -->
-<body bgcolor=#E6E6E6>
-<font face="Arial">
 
 <!-- ################################################### -->
 <!-- Body                                                -->
 <!-- ################################################### -->
 
-<p><table align="right" style="width: calc(100% - 375px); 
+<p><table style="float: right; width: calc(100% - 375px); 
         border-collapse: collapse; 
         margin-left: 5px; margin-right: 0px;
         margin-top: 0px; margin-bottom: 5px;
         padding-left: 0px; padding-right: 0px;
         padding-top: 0px; padding-bottom: 0px;
         border: 1px solid grey; text-align: left; ">
-    <col width="50px">
-    <col width="250px">
-    <col width="75px">
-    <col width="*">
-
-    <tr bgcolor="#536878" valign="bottom" align="center">
-        <th colspan="999" style="
+    <tr>
+        <th colspan="4" style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: thick;
                 border-top-width: thick; border-bottom-width: medium; ">
-            <font size="5" color="White"><b>Lathe Axes</b></font>
+            <p class="TextTableHdrLg" style="color: white; "><b>Lathe Axes</b></p>
         </th>
     </tr>
-    <tr bgcolor="#536878" valign="bottom">
-        <th align="center" style="
+    <tr>
+        <th style="width: 50px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium;
                 border-top-width: medium; border-bottom-width: medium; "> 
-            <font color="White">Axis</font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Axis</p>
         </th>
-        <th align="center" style="
+        <th style="width: 250px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium;
                 border-top-width: medium; border-bottom-width: medium; "> 
-            <font color="White">Potential Use</font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Potential Use</p>
         </th>
-        <th align="center" style="
+        <th style="width: 75px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium;
                 border-top-width: medium; border-bottom-width: medium; "> 
-            <font color="White">Movement Type</font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Movement Type</p>
         </th>
-        <th align="center" style="
+        <th style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick;
                 border-top-width: medium; border-bottom-width: medium; "> 
-            <font color="White">Comments</font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Comments</p>
         </th>
     </tr>
 
 <!-- Spindle -->
-    <tr bgcolor="#dcdcdc" valign="top">
-        <td bgcolor="black" valign="middle" align="center" style="
+    <tr>
+        <td style="
+				background-color: #000000;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; ">
-            <font color="white"><b>Sp</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Sp</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #dcdcdc;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Spindle</li>
-            </ul>
+            Spindle
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #dcdcdc;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
             Rotary
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #dcdcdc;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; ">
@@ -168,39 +181,45 @@ function includeHTML() {
     </tr>
     
 <!-- X Axis -->
-    <tr bgcolor="#add8e6" valign="top">
-        <td bgcolor="Blue" valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: blue;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="white"><b>X</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>X</b></p>
         </td>
-        <td valign="middle" align="left" style="
+        <td style="
+				background-color: #add8e6;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Cross Slide</li>
-            </ul>
+            Cross Slide
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #add8e6;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Linear
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #add8e6;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
@@ -210,40 +229,46 @@ function includeHTML() {
     </tr>
     
 <!-- Y Axis -->
-    <tr bgcolor="#ff9999" valign="top">
-        <td bgcolor="red" valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: Red;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="white"><b>Y</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Y</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ff9999;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Dome Chuck</li>
-                <li style="position: relative; left: -20px; ">Straight-Line Chuck</li>
-            </ul>
+            Dome Chuck
+            Straight-Line Chuck
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ff9999;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Linear
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ff9999;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
@@ -253,40 +278,46 @@ function includeHTML() {
     </tr>
     
 <!-- Z Axis -->
-    <tr bgcolor="#98fb98" valign="top">
-        <td bgcolor="green" valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: Green;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <font color="white"><b>Z</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Z</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #98fb98;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Cross Slide</li>
-                <li style="position: relative; left: -20px; ">Curvilinear Slide</li>
-            </ul>
+            Cross Slide
+            Curvilinear Slide
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #98fb98;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
             Linear
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #98fb98;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; 
@@ -296,79 +327,93 @@ function includeHTML() {
     </tr>
     
 <!-- A Axis -->
-    <tr bgcolor="#a9a9a9" valign="top">
-        <td valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: #a9a9a9;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="lightgray"><b>A</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: lightgray; "><b>A</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="lightgray"><center>n/a - axis not configured</center></font>
+            <span style="color: lightgray; ">n/a - axis not configured</span>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="lightgray">Rotary</font>
+            <span style="color: lightgray; ">Rotary</span>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0"><font color="lightgray">A is rotation around X</font>
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: lightgray; ">A is rotation around X</span>
         </td>
     </tr>
 
 <!-- B Axis -->
-    <tr bgcolor="#ffffe0" valign="top">
-        <td bgcolor="#eee600" valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: #eee600;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <b>B</b>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>B</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffe0;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Spherical Slide</li>
-            </ul>
+            Spherical Slide
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffe0;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Rotary
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffe0;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
@@ -380,39 +425,47 @@ function includeHTML() {
     </tr>
 
 <!-- C Axis -->
-    <tr bgcolor="white" valign="top">
-        <td valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 0; padding-bottom: 0;
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <b>C</b>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>C</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffff;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Rosette Phaser / Multiplier</li>
-            </ul>
+            Rosette Phaser / Multiplier
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffff;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
             Rotary
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffffff;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; 
@@ -424,40 +477,46 @@ function includeHTML() {
     </tr>
     
 <!-- U Axis -->
-    <tr bgcolor="#ffe4e1" valign="top">
-        <td bgcolor="#cc3366" valign="middle" align="center" style=" 
+    <tr>
+        <td style=" 
+				background-color: #cc3366;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="white"><b>U</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>U</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffe4e1;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Retractor</li>
-                <li style="position: relative; left: -20px; ">Dynamic Rubber</li>
-            </ul>
+            Retractor
+            Dynamic Rubber
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffe4e1;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Linear
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #ffe4e1;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
@@ -469,39 +528,45 @@ function includeHTML() {
     </tr>
     
 <!-- V Axis -->
-    <tr bgcolor="#d8bfd8" valign="top">
-        <td bgcolor="purple" valign="middle" align="center" style=" 
+    <tr>
+        <td style="
+				background-color: Purple;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <font color="white"><b>V</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>V</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #d8bfd8;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <ul style="margin-top: 0; margin-bottom: 0; ">
-                <li style="position: relative; left: -20px; ">Dynamic Amplitude Adjuster</li>
-            </ul>
+            Dynamic Amplitude Adjuster
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #d8bfd8;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Linear
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #d8bfd8;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: medium; 
@@ -513,42 +578,50 @@ function includeHTML() {
     </tr>
     
 <!-- W Axis -->
-    <tr bgcolor="#a9a9a9" valign="top">
-        <td valign="middle" align="center" style=" 
+    <tr>
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <font color="lightgray"><b>W</b></font>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: lightgray; "><b>W</b></p>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <font color="lightgray"><center>n/a - axis not configured</center></font>
+            <span style="color: lightgray; ">n/a - axis not configured</span>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <font color="lightgray">Linear</font>
+            <span style="color: lightgray; ">Linear</span>
         </td>
-        <td align="left" style="
+        <td style="
+				background-color: #a9a9a9;
+        		vertical-align: top; text-align: left;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0"><font color="lightgray">W is parallel to Z</font>
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: lightgray; ">W is parallel to Z</span>
         </td>
     </tr>
 </table>
@@ -562,11 +635,12 @@ function includeHTML() {
 	padding-left: 5px; padding-right: 5px;
 	padding-top: 5px; padding-bottom: 5px;
 	border: 1px solid grey; text-align: left; ">
-    <img src="Images/Axes.png" width="100%" align="right"/>
+    <img src="Images/Axes.png" alt="Axes" style="width:100%; "/>
     <i><b>Lathe Axes</b></i>
 </div>
 
 <p>&nbsp;
+<hr class="style1">
 
 <h3 style="margin-bottom: 0;">Axis Colours</h3>
 <p style="margin-top: 0;">The colours used for the axes are the ones designated for that respective axis.  The use of colour coding for each axis is to help the ornamental turner ensure they are pluging the stepper motor cable into the correct receptacle for that axis.  The cabling and stepper motor enclosures should match those colours.
