@@ -77,6 +77,9 @@ function includeHTML() {
 <h2 style="margin-top: 3px; margin-bottom: 0; color: DarkRed;">Stepper Motors</h2>
 <p style="margin-top: 0;">This system was designed and tested for the stepper motors in the table below.  Use of other stepper motors may cause system failures.</p>
 
+<p>The color of the Ethernet cable should match the color of the end cap on the stepper motor, and the jack on the Rosetta base unit.</p>
+
+
 <table style="border-collapse: collapse; width: 100%;
 		margin-left: 0px; margin-right: 0px; 
         margin-top: 5px; margin-bottom: 5px; 
@@ -85,7 +88,7 @@ function includeHTML() {
         <td style="width: 75px;
         		background-color: #FFE4B5;
         		vertical-align: bottom; text-align: center;
-                border-style: solid; border-color: black; 
+                border-style: solid; border-color: gray; 
                 border-top-width: thick; border-bottom-width: medium; 
                 border-left-width: thick; border-right-width: medium;
 		        padding-left: 5px; padding-right: 5px; 
@@ -96,7 +99,7 @@ function includeHTML() {
         <td style="width: 100px;
         		background-color: #FFE4B5;
         		vertical-align: bottom; text-align: center;
-                border-style: solid; border-color: black; 
+                border-style: solid; border-color: gray; 
                 border-top-width: thick; border-bottom-width: medium; 
                 border-left-width: medium; border-right-width: medium;
 		        padding-left: 5px; padding-right: 5px; 
@@ -107,7 +110,7 @@ function includeHTML() {
         <td style="width: 50px;
         		background-color: #FFE4B5;
         		vertical-align: bottom; text-align: center;
-                border-style: solid; border-color: black; 
+                border-style: solid; border-color: gray; 
                 border-top-width: thick; border-bottom-width: medium; 
                 border-left-width: medium; border-right-width: medium;
 		        padding-left: 5px; padding-right: 5px; 
@@ -120,7 +123,7 @@ function includeHTML() {
         		background-color: #FFE4B5;
         		vertical-align: bottom; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: thick; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -133,24 +136,25 @@ function includeHTML() {
 <!-- Spindle -->
     <tr>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #000000;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
+                border-right-color: gray; 
                 border-right-width: medium; 
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <b>Spindle</b>
+            <span style="color: white;"><b>Spindle</b></span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #000000;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -158,15 +162,15 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            NEMA 17
+            <span style="color: white;">NEMA 17
             <br>
-            NEMA 23
+            NEMA 23</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #000000;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -174,13 +178,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            2.4
+            <span style="color: white;">2.4</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #000000;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -188,7 +192,9 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0;"><span style="color: white;">The wiring design for the spindle does not support limit switches.  Instead, two of the Ethernet wires are used for each stepper motor wire (i.e., brown & brown/white are used for A+).<span>
+
+            <p style="margin-bottom: 0;"><span style="color: white;">The cable designated for the stepper motor for the spindle should be black, and should <span style="color: red"><b>NOT</b></span> be used for any other axes.<span></p>
         </td>
     </tr>
 
@@ -196,10 +202,10 @@ function includeHTML() {
 <!-- X Axis -->
     <tr>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #4030f2;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -207,13 +213,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <b>X</b>
+            <span style="color: white;"><b>X</b></span>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #4030f2;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -221,15 +227,15 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            NEMA 17
+            <span style="color: white;">NEMA 17
             <br>
-            NEMA 23
+            NEMA 23</span>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #4030f2;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -237,13 +243,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            2.4
+            <span style="color: white;">2.4</span>
         </td>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #4030f2;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -251,7 +257,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: white;">The cable designated for this axis should be blue, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</span></p>
         </td>
     </tr>
 
@@ -259,10 +265,10 @@ function includeHTML() {
 <!-- Y Axis -->
     <tr>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #f42300;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -270,13 +276,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <b>Y</b>
+            <span style="color: white;"><b>Y</b></span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #f42300;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -284,15 +290,15 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            NEMA 17
+            <span style="color: white;">NEMA 17
             <br>
-            NEMA 23
+            NEMA 23</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #f42300;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -300,13 +306,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            2.4
+            <span style="color: white;">2.4</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #f42300;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -314,7 +320,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: white;">The cable designated for this axis should be red, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</span></p>
         </td>
     </tr>
 
@@ -322,10 +328,10 @@ function includeHTML() {
 <!-- Z Axis -->
     <tr>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #1da500;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -333,13 +339,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <b>Z</b>
+            <span style="color: white;"><b>Z</b></span>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #1da500;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -347,15 +353,15 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            NEMA 17
+            <span style="color: white;">NEMA 17
             <br>
-            NEMA 23
+            NEMA 23</span>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #1da500;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -363,13 +369,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            2.4
+            <span style="color: white;">2.4</span>
         </td>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #1da500;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -377,7 +383,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: white;">The cable designated for this axis should be green, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</span></p>
         </td>
     </tr>
 
@@ -385,10 +391,10 @@ function includeHTML() {
 <!-- A Axis -->
     <tr>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -396,13 +402,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">A</span>
+            <span style="color: lightgray; "><i>A</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -410,13 +416,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">n/a</span>
+            <span style="color: lightgray; "><i>n/a</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -424,13 +430,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">n/a</span>
+            <span style="color: lightgray; "><i>n/a</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -438,7 +444,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: lightgray; "><i>This axis is not configured for use.</i></span></p>
         </td>
     </tr>
 
@@ -446,10 +452,10 @@ function includeHTML() {
 <!-- B Axis -->
     <tr>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #eee600;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -460,10 +466,10 @@ function includeHTML() {
             <b>B</b>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #eee600;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -476,10 +482,10 @@ function includeHTML() {
             NEMA 23
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #eee600;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -490,10 +496,10 @@ function includeHTML() {
             2.4
         </td>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #eee600;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -501,7 +507,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;">The cable designated for this axis should be yellow, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</p>
         </td>
     </tr>
 
@@ -509,10 +515,10 @@ function includeHTML() {
 <!-- C Axis -->
     <tr>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #ffffff;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -523,10 +529,10 @@ function includeHTML() {
             <b>C</b>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -539,10 +545,10 @@ function includeHTML() {
             NEMA 23
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #ffffff;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -553,10 +559,10 @@ function includeHTML() {
             2.4
         </td>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #ffffff;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -564,7 +570,9 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0;">The wiring design for the spindle does not support limit switches.  Instead, two of the Ethernet wires are used for each stepper motor wire (i.e., brown & brown/white are used for A+).</p>
+
+            <p style="margin-bottom: 0;">The cable designated for the stepper motor for this axis should be white, and should <span style="color: red"><b>NOT</b></span> be used for any other axes.</p>
         </td>
     </tr>
 
@@ -572,10 +580,10 @@ function includeHTML() {
 <!-- U Axis -->
     <tr>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #ffaca9;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -586,10 +594,10 @@ function includeHTML() {
             <b>U</b>
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #ffaca9;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -602,10 +610,10 @@ function includeHTML() {
             NEMA 23
         </td>
         <td style="
-        		background-color: #ffffff;
-        		vertical-align: top; text-align: center;
+        		background-color: #ffaca9;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -616,10 +624,10 @@ function includeHTML() {
             2.4
         </td>
         <td style="
-        		background-color: #ffffff;
+        		background-color: #ffaca9;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -627,7 +635,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;">The cable designated for this axis should be pink, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</p>
         </td>
     </tr>
 
@@ -635,10 +643,10 @@ function includeHTML() {
 <!-- V Axis -->
     <tr>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #8f25aa;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: thick; 
@@ -646,13 +654,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <b>V</b>
+            <span style="color: white;"><b>V</b></span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #8f25aa;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -660,15 +668,15 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            NEMA 17
+            <span style="color: white;">NEMA 17
             <br>
-            NEMA 23
+            NEMA 23</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
-        		vertical-align: top; text-align: center;
+        		background-color: #8f25aa;
+        		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -676,13 +684,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            2.4
+            <span style="color: white;">2.4</span>
         </td>
         <td style="
-        		background-color: #d3d3d3;
+        		background-color: #8f25aa;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: medium; 
                 border-left-width: medium; 
@@ -690,7 +698,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: white;">The cable designated for this axis should be purple, and should <span style="color: red"><b>NOT</b></span> be used for the stepper motor on the spindle nor the one used for the C axis (rosette phaser / multiplier).</span></p>
         </td>
     </tr>
 
@@ -698,10 +706,10 @@ function includeHTML() {
 <!-- W Axis -->
     <tr>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: thick; 
                 border-left-width: thick; 
@@ -709,13 +717,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">W</span>
+            <span style="color: lightgray; "><i>W</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: thick; 
                 border-left-width: medium; 
@@ -723,13 +731,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">n/a</span>
+            <span style="color: lightgray; "><i>n/a</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: middle; text-align: center;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: thick; 
                 border-left-width: medium; 
@@ -737,13 +745,13 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 0px; padding-bottom: 0px; 
                 ">
-            <span style="color: lightgray; ">n/a</span>
+            <span style="color: lightgray; "><i>n/a</i></span>
         </td>
         <td style="
-        		background-color: #808080;
+        		background-color: #9F9F9F;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
-                border-color: black; 
+                border-color: gray; 
                 border-top-width: medium; 
                 border-bottom-width: thick; 
                 border-left-width: medium; 
@@ -751,7 +759,7 @@ function includeHTML() {
 		        padding-left: 5px; padding-right: 5px; 
         		padding-top: 5px; padding-bottom: 5px; 
                 ">
-            &nbsp;
+            <p style="margin-top: 0; margin-bottom: 0;"><span style="color: lightgray; "><i>This axis is not configured for use.</i></span></p>
         </td>
     </tr>
 
