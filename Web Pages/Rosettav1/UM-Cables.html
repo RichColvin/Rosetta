@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- ################################################### -->
+<!-- DOCUMENT NOTES                                      -->
+<!-- 							 						 -->
+<!-- This include file is for including the standard     -->
+<!-- code used by many html files.						 -->
+<!-- 													 -->
+<!-- 2025-02-18 - R. Colvin - initial file		 		 -->
+<!-- ################################################### -->
+<head>
+<title>Rosetta</title>
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+</head>
+
+<body style="background-color: #E6E6E6; font: 16px Arial; ">
+
+<!-- ################################################### -->
+<!-- Code for Including Standard HTML files from the     -->
+<!-- server					                             -->
+<!-- ################################################### -->
+<script src="library.js"></script>
+
+<script>
+function includeHTML() {
+  var z, i, elmnt, file, xhttp;
+  /* Loop through a collection of all HTML elements: */
+  z = document.getElementsByTagName("*");
+  for (i = 0; i < z.length; i++) {
+    elmnt = z[i];
+    /*search for elements with a certain atrribute:*/
+    file = elmnt.getAttribute("w3-include-html");
+    if (file) {
+      /* Make an HTTP request using the attribute value as the file name: */
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+          if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+          if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+          /* Remove the attribute, and call this function once more: */
+          elmnt.removeAttribute("w3-include-html");
+          includeHTML();
+        }
+      }
+      xhttp.open("GET", file, true);
+      xhttp.send();
+      /* Exit the function: */
+      return;
+    }
+  }
+}
+</script> 
+
+<!-- ################################################### -->
+<!-- Standard site-wide definitions         	         -->
+<!-- ################################################### -->
+<div w3-include-html="include-SiteStandards.html"></div> 
+<script>
+includeHTML();
+</script> 
+
+<!-- ################################################### -->
+<!-- Header                                              -->
+<!-- ################################################### -->
+<div w3-include-html="include-Header.html"></div> 
+<script>
+includeHTML();
+</script> 
+
+<!-- ################################################### -->
+<!-- Body                                                -->
+<!-- ################################################### -->
+
+<div style=" float: right; Width: 650px; 
+        margin-left: 5px; margin-right: 0px; 
+        margin-top: 0px; margin-bottom: 5px; 
+        padding-left: 5px; padding-right: 0px; 
+        padding-top: 5px; padding-bottom: 0px; 
+        border: 1px solid darkgray; text-align: left;  ">
+    <img src="Images/EthernetCable-Std.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%;"/>
+    <p class="TextSMImage"><b><i>Cabling a device to the Rosetta System</i></b></p>
+</div>
+
+<h2 style="margin-bottom: 0;">Cable Wire Color Scheme</h2>
+<p style="margin-top: 0;">The Rosetta system cable wire color scheme is outlined in the table below.
+
+<p>This follows the overall scheme as outlined ot the right.
+
+<p style="color: red;"><b>Note</b>:This scheme is not used for the Spindle nor the C Axis (Rosette Phaser/Multiplier).</p>
+
+<p>Ethernet wire numbering follows the EIA/TIA-568A standard.  
+
+
+<p><table style=" width: 100% ; 
+        border-collapse: collapse; 
+        border: 1px solid grey; ">
+    <tr>
+        <th colspan="6" style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thick;
+                border-top-width: thick; border-bottom-width: medium; ">
+            <p class="TextTableHdrLg" style="color: white; "><b>Ethernet Cabling</b></p>
+        </th>
+    </tr>
+    <tr>
+        <th colspan=2 style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: thin; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Ethernet Cable</p>
+        </th>
+        <th colspan=2 style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: thin; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Stepper Motor</p>
+        </th>
+        <th rowspan=2 style="width: 150px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Limit Switch</p>
+        </th>
+        <th rowspan=2 style="
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick;
+                border-top-width: medium; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Comments</p>
+        </th>
+    </tr>
+
+    <tr>
+        <th style="width: 50px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin;
+                border-top-width: thin; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Wire Number</p>
+        </th>
+        <th style="width: 100px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium;
+                border-top-width: thin; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Wire Color</p>
+        </th>
+        <th style="width: 100px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin;
+                border-top-width: thin; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">StepperOnline Wire Color</p>
+        </th>
+        <th style="width: 150px;
+        		background-color: #536878; 
+        		vertical-align: bottom; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium;
+                border-top-width: thin; border-bottom-width: medium; "> 
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Used For</p>
+        </th>
+    </tr>
+
+<!-- Wire 1 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>1</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-GreenWhite.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">Limit Switch 1
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+        </td>
+    </tr>
+
+<!-- Wire 2 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>2</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Green.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Green.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>A-</b>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">On the ELFOS system, this is pin 2 on the GX-16/4 connector.
+        </td>
+    </tr>
+
+<!-- Wire 3 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>3</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-OrangeWhite.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Limit Switch 2
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+        </td>
+    </tr>
+
+<!-- Wire 4 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>4</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Blue.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Blue.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>B-</b>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">On the ELFOS system, this is pin 4 on the GX-16/4 connector.
+        </td>
+    </tr>
+
+<!-- Wire 5 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>5</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-BlueWhite.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Home Switch
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+        </td>
+    </tr>
+
+<!-- Wire 6 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>6</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Orange.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-Red.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>B+</b>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">On the ELFOS system, this is pin 3 on the GX-16/4 connector.
+        </td>
+    </tr>
+
+<!-- Wire 7 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>7</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <img src="Images/EthernetWire-BrownWhite.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>GND</b>
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
+        </td>
+    </tr>
+    
+<!-- Wire 8 -->
+    <tr>
+        <td style="
+				
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 0; padding-bottom: 0;
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: thick; ">
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>8</b></p>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: left;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thin; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <img src="Images/EthernetWire-Brown.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 0px; padding-right: 0px; 
+                padding-top: 5px; padding-bottom: 0px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <img src="Images/EthernetWire-Black.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%; height: 25px; "/>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><b>A+</b>
+        </td>
+        <td style="
+        		vertical-align: middle; text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thin; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
+        </td>
+        <td style="
+        		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; ">
+            <p style="margin-top: 0; margin-bottom: 0">On the ELFOS system, this is pin 1 on the GX-16/4 connector.
+        </td>
+    </tr>
+    
+</table>
+
+<!-- ################################################### -->
+<!--Footer                                               -->
+<!-- ################################################### -->
+<div w3-include-html="include-Footer.html"></div> 
+<script>
+    includeHTML();
+</script> 
+</html>
