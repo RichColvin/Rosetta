@@ -31,7 +31,9 @@ echo -e "\e[1;33;1;44m>>>>>>>>>>>>>>>>>> Step 1b <<<<<<<<<<<<<<<<<<\e[0m"
 echo -e "\e[0;33;1;44m Creating location for the files to reside \e[0m"
 cd /home/cnc
 sudo mkdir linuxcnc
+sudo chmod 777 -R /home/cnc/linuxcnc
 cd linuxcnc
+sudo mkdir nc_files
 sudo mkdir configs
 cd configs
 sudo mkdir Rosetta
