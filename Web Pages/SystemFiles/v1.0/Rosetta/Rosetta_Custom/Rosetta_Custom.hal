@@ -1,0 +1,34 @@
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
+#
+# LinuxCNC configuration for use with a Rose Engine
+#
+# File:
+#   RosettaCustom.hal
+#
+# Purpose:
+#   This is used for any user customization to the hardware abstraction
+#   layer for LinuxCNC.
+#
+#   Changes to this file are not supported by Colvin Tools.
+#
+# End User Customisation:
+#   The end user of the Rosetta system may modify this as they wish.
+#
+# Version
+#   1.0 - dd mmm yyyy, pgmr
+#
+# ********************************************************************
+
+# Include your custom HAL commands here

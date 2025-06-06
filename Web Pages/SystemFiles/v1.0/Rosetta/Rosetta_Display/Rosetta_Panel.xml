@@ -1,0 +1,183 @@
+<!-- 
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
+
+ LinuxCNC configuration for use with a Rose Engine
+
+ File:
+   Rosetta_Panel.xml
+
+ Purpose:
+   This shows up on the right side of the AXIS display.
+
+ End User Customisation:
+   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.
+
+   Changes to this file are not supported by Colvin Tools.
+
+ Version
+   1.0 - dd mmm 2025, R. Colvin
+
+ Copyright Colvin Tools
+********************************************************************
+
+Details about the fields are available in
+  the LinuxCNC 2.9.4 System Manual, 
+  §12 Virtual Control Panels, starting on
+  pg. 952
+
+********************************************************************
+ -->
+<pyvcp>
+
+<!-- Spindle 0 -->
+ <labelframe text="Spindle">
+    <font>("Helvetica",12)</font>  
+
+	<!-- rpm -->
+    <hbox>
+        <label>
+            <text>"RPM     "</text>
+        </label>
+		<number> 
+			<halpin>"spindle.0-speed"</halpin>
+			<font>("Helvetica",14)</font>  
+			<format>"+4.3f"</format>
+		</number>
+	</hbox>
+
+	<!-- enabled status -->
+    <hbox>
+        <label>
+            <text>"Enabled "</text>
+        </label>
+        <led>
+            <halpin>"spindle.0-enabled"</halpin>
+            <size>15</size>
+            <on_color>"green"</on_color>
+            <off_color>"red"</off_color>
+        </led>
+    </hbox>
+</labelframe>
+
+<!-- Rosette Phaser/Multiplier -->
+<labelframe text="Rosette Phaser/Multiplier">
+    <font>("Helvetica",12)</font>  
+
+	<!-- rpm -->
+    <hbox>
+        <label>
+            <text>"RPM     "</text>
+        </label>
+		<number> 
+			<halpin>"spindle.1-speed"</halpin>
+			<font>("Helvetica",14)</font>  
+			<format>"+4.3f"</format>
+		</number>
+	</hbox>
+
+	<!-- enabled status -->
+    <hbox>
+        <label>
+            <text>"Enabled "</text>
+        </label>
+        <led>
+            <halpin>"spindle.1-enabled"</halpin>
+            <size>15</size>
+            <on_color>"green"</on_color>
+            <off_color>"red"</off_color>
+        </led>
+    </hbox>
+</labelframe>
+
+<labelframe text="Axes">
+    <font>("Helvetica",16)</font>  
+    <vbox>
+        <hbox>
+<!-- 
+            <checkbutton>
+                <halpin>"axis-x-enableset"</halpin>
+                <text>"X Axis"</text>
+                <initval>1</initval>
+            </checkbutton>
+ -->
+            <button>
+                <halpin>"axis-x-enableset"</halpin>
+                <text>"X Axis"</text>
+            </button>
+            <led>
+                <halpin>"axis-x-enable"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+        </hbox>
+        <hbox>
+            <led>
+                <halpin>"axis-y-enabled"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+            <label>
+                <text>"Y Enabled"</text>
+            </label>
+        </hbox>
+        <hbox>
+            <led>
+                <halpin>"axis-z-enabled"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+            <label>
+                <text>"Z Enabled"</text>
+            </label>
+        </hbox>
+        <hbox>
+            <led>
+                <halpin>"axis-b-enabled"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+            <label>
+                <text>"B Enabled"</text>
+            </label>
+        </hbox>
+        <hbox>
+            <led>
+                <halpin>"axis-u-enabled"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+            <label>
+                <text>"U Enabled"</text>
+            </label>
+        </hbox>
+        <hbox>
+            <led>
+                <halpin>"axis-v-enabled"</halpin>
+                <size>15</size>
+                <on_color>"green"</on_color>
+                <off_color>"red"</off_color>
+            </led>
+            <label>
+                <text>"V Enabled"</text>
+            </label>
+        </hbox>
+    </vbox>
+</labelframe>
+</pyvcp>

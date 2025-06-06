@@ -1,0 +1,64 @@
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
+#
+# LinuxCNC configuration for use with a Rose Engine
+#
+# File:
+#   Rosetta_PostGUI.hal
+#
+# Purpose:
+#   This is used to setup the connections between the virtual control
+#   panel variables and the hardware abstraction layer.
+#
+# End User Customisation:
+#   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.
+#
+#   Changes to this file are not supported by Colvin Tools.
+#
+# Version
+#   1.0 - dd mmm 2025, R. Colvin
+#
+# Copyright Colvin Tools
+# ********************************************************************
+#
+# Details about the fields are available in 
+#   the LinuxCNC 2.9.4 System Manual
+#   §12 Virtual Control Panels, starting on 
+#   pg. 952
+#
+# ******************************************
+
+
+# ******************************************
+# Setup the variables needed for the PyVCP 
+# Virtual Control Panels
+
+# Spindle Speeds
+net spindle.0-vel-cmd-rpm 				 => pyvcp.spindle.0-speed
+net spindle.0-enable                     => pyvcp.spindle.0-enabled
+
+net spindle.1-vel-cmd-rpm 				 => pyvcp.spindle.1-speed
+net spindle.1-enable                     => pyvcp.spindle.1-enabled
+
+
+net x-enable                			 => pyvcp.axis-x-enable
+# net x-enable                			<=  pyvcp.axis-x-enableset
+net joint.0.amp-enable.out     			<=> pyvcp.axis-x-enableset
+net y-enable                			 => pyvcp.axis-y-enabled
+net z-enable                			 => pyvcp.axis-z-enabled
+
+net b-enable                			 => pyvcp.axis-b-enabled
+
+net u-enable                			 => pyvcp.axis-u-enabled
+net v-enable                			 => pyvcp.axis-v-enabled

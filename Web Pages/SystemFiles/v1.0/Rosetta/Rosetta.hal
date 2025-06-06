@@ -1,39 +1,66 @@
-# ******************************************
-# Rosetta.hal for use with LinuxCNC on a Rose Engine
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
 #
-# Details about the fields are available in the 
-#   LinuxCNC 2.9.4 System Manual, 
-#   §5.2 HAL Basics, starting on pg. 201
+# LinuxCNC configuration for use with a Rose Engine
 #
-# ******************************************
-#   Ver 1.0 - 28 May 2025, R. Colvin
-
-# ************************************************************
+# File:
+#   Rosetta.hal
+#
+# Purpose:
+#   This is used to setup hardware abstraction layer for LinuxCNC.
+#
+# End User Customisation:
+#   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.
+#
+#   Changes to this file are not supported by Colvin Tools.
+#
+# Version
+#   1.0 - dd mmm 2025, R. Colvin
+#
+# Copyright Colvin Tools
+# ********************************************************************
 # Configuration values
 #
-#                                 Home
-#  Axis  Joint  Channel   Type     Seq
-#  ----  -----  -------  -------  ----
-#   X      0       02    LINEAR     1
-#   Y      1       03    LINEAR     2
-#   Z      2       00    LINEAR     3
+#                                 Home   PCB
+#  Axis  Joint  Channel   Type     Seq  Plug  Comments
+#  ----  -----  -------  -------  ----  ----  ------------------------
+#   X      0       02    LINEAR     1    P13
+#   Y      1       03    LINEAR     2    P14
+#   Z      2       00    LINEAR     3    P11
 #
 #   A      -       --    ------     -
-#   B      3       06    ANGULAR    4
+#   B      3       06    ANGULAR    4    P17
 #   C      -       --    ------     -
 #
-#   U      4       04    LINEAR     5
-#   V      5       01    LINEAR     6
+#   U      4       04    LINEAR     5    P15
+#   V      5       01    LINEAR     6    P12
 #   W      -       --    ------     -
 #
-#  Sp0     7       05      n/a     n/a
-#  Sp1     6       07      n/a     n/a
-# ************************************************************
+#  Sp0     7       05      n/a     n/a   P16
+#  Sp1     6       07      n/a     n/a   P18  Previously the C axis
+# ********************************************************************
+
+# ********************************************************************
+# Details about the fields are available in the 
+#   LinuxCNC 2.9.4 System Manual, §5.2 HAL Basics, starting on pg. 201
+# ********************************************************************
 
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS num_spindles=[TRAJ]SPINDLES
 loadrt hostmot2
 loadrt hm2_eth board_ip="192.168.1.121" config="num_encoders=0 num_pwmgens=0 num_stepgens=8" 
+# loadusr -Wn RosettaPanel pyvcp -c RosettaPanel Rosetta_Display/Main.xml
 
 setp  hm2_7i92.0.watchdog.timeout_ns 5000000
 
@@ -446,6 +473,7 @@ sets spindle.1-at-speed                     true
 # Maintain existing stepgen scaling
 # setp hm2_7i92.0.stepgen.04.position-scale [JOINT_4]STEP_SCALE
 
+
 #******************************
 # connect miscellaneous signals
 #******************************
@@ -527,5 +555,5 @@ net estop-out                            => iocontrol.0.emc-enable-in
 # net tool-prepare-request              <=  iocontrol.0.tool-prepare
 # net tool-prepare-confirmed             => iocontrol.0.tool-prepared
 
-# ********************* NOTHING FOLLOWS **********************
-# ************************************************************
+# *********************** NOTHING FOLLOWS ****************************
+# ********************************************************************

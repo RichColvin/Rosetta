@@ -1,0 +1,44 @@
+;######################################################################
+;                                                                     #
+;   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+;   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+;   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+;   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+;   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+;   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+;   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+;   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+;   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+;                                                                     #
+;######################################################################
+;
+; LinuxCNC configuration for use with a Rose Engine
+;
+; File:
+;   RosettaTool.tbl
+;
+; Purpose:
+;   This is used for setting up the tools table.
+;
+; End User Customisation:
+;   The end user of the Rosetta system may modify this as they wish.
+;
+;   Changes to this file are not supported by Colvin Tools.
+;
+; Version
+;   1.0 - dd mmm yyyy, pgmr
+;
+; The tool table line format is:
+;    T - tool number (tool numbers must be unique)
+;    P - pocket number, 1-1000 (pocket numbers must be unique, Pocket 0 represents the spindle)
+;    X..W - tool offset on specified axis - floating-point
+;    D - tool diameter - floating-point, absolute value
+;    I - front angle (lathe only) - floating-point
+;    J - back angle (lathe only) - floating-point
+;    Q - tool orientation (lathe only) - integer, 0-9
+;    ; - beginning of comment or remark - text
+; ********************************************************************
+; T1 P1 Z0.511 D0.125 ;1/8 end mill Sample Tool
+; T2 P2 Z0.1 D0.0625 ;1/16 end mill Sample Tool
+; T3 P3 Z1.273 D0.201 ;#7 tap drill Sample Tool
+; T4 P4 Z0 D2 ; 2 inch mill Sample Tool
