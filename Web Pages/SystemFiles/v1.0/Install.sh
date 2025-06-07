@@ -1,9 +1,36 @@
 #! /home/cnc/Downloads
-# ##################################################
-# Rosetta Application
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
 #
-# This installs the Rosetta application
-#    2025-03-03 - R. Colvin - initial file
+# LinuxCNC configuration for use with a Rose Engine
+#
+# File:
+#   Install.sh
+#
+# Purpose:
+#   This is used to install the Rosetta application.
+#
+# End User Customisation:
+#   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.
+#
+#   Changes to this file are not supported by Colvin Tools.
+#
+# Version
+#   1.0 - dd mmm 2025, R. Colvin
+#
+# Copyright Colvin Tools
+# ********************************************************************
 #
 # 		  	  Fore	  Back
 # Colors   	   Gnd     Gnd
@@ -31,7 +58,7 @@ KEYNOTE='\033[0;37;0;41m'	# Lt Gray on Red
 COMMENT='\033[0;30;0;47m'	# Black on Lt Gray
 NOCOLOR='\e[0m'
 #
-# ##################################################
+# ********************************************************************
 # Step 1 - Setup the Mesa card.
 # 
 echo -e "${TITLE}##################################################${NOCOLOR}"
@@ -53,7 +80,7 @@ sudo cp /home/cnc/Downloads/PIN_Rosetta_34.vhd .
 echo -e "${COMMENT}Flashing the Mesa Card Configuration${NOCOLOR}"
 mesaflash --device 7i92t --addr 192.168.1.121 --write 7i92t_rosetta.bin --reload
 #
-# ##################################################
+# ********************************************************************
 # Step 2 - Copy Rosetta Files
 echo -e "${TITLE}##################################################${NOCOLOR}"
 echo -e "${TITLE}Step 2 - Rosetta configuration for LinuxCNC${NOCOLOR}"
