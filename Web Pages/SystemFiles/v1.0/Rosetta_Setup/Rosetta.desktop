@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Rosetta
+Comment=Desktop launcher for Rosetta
+Exec=linuxcnc /home/cnc/linuxcnc/configs/Rosetta/Rosetta.ini
+Icon=/home/cnc/linuxcnc/configs/Rosetta_Images/RosettaLogo-Silver.gif
+Path=/home/cnc/linuxcnc/configs/Rosetta
+Terminal=false
+StartupNotify=false

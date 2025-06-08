@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Restore Files
+Comment=Restore Rosetta configuration files
+Exec=sudo bash Restore.sh
+Icon=/home/cnc/linuxcnc/configs/Rosetta_Images/Rosetta_Restore.gif
+Path=/home/cnc/linuxcnc/
+Terminal=true
+StartupNotify=true
