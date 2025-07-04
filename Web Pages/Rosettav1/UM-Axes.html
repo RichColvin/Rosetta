@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- ################################################### -->
-<!-- DOCUMENT NOTES                                      -->
-<!-- 							 						 -->
-<!-- This include file is for including the standard     -->
-<!-- code used by many html files.						 -->
-<!-- 													 -->
-<!-- 2025-02-18 - R. Colvin - initial file		 		 -->
-<!-- ################################################### -->
-<head>
-<title>Rosetta</title>
-<link rel="shortcut icon" type="image/ico" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
+
+<!-- ####################################################################### -->
+<!-- #                                                                     # -->
+<!-- #   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     # -->
+<!-- #   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    # -->
+<!-- #   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   # -->
+<!-- #   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   # -->
+<!-- #   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   # -->
+<!-- #   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   # -->
+<!-- #   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   # -->
+<!-- #   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   # -->
+<!-- #   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   # -->
+<!-- #                                                                     # -->
+<!-- ####################################################################### -->
+<!--                                                                         -->
+<!-- This is a user manual page.			                         		 -->
+<!--                                                                         -->
+<!-- File:                                                                   -->
+<!--    UM-Axes.html                                                         -->
+<!--                                                                         -->
+<!-- File:                                                                   -->
+<!--    1.0 - 02 Jul 2025, R. Colvin                                         -->
+<!--                                                                         -->
+<!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
+<!--                                                                         -->
+<!-- ####################################################################### -->
+
+<head bgcolor=#E6E6E6>
+    <title>Rosetta</title>
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
 </head>
 
 <body style="background-color: #E6E6E6; font: 16px Arial; ">
@@ -102,7 +121,7 @@ includeHTML();
                 border-top-width: medium; border-bottom-width: medium; "> 
             <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Axis</p>
         </th>
-        <th style="width: 250px;
+        <th style="width: 200px;
         		background-color: #536878; 
         		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
@@ -112,7 +131,7 @@ includeHTML();
                 border-top-width: medium; border-bottom-width: medium; "> 
             <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Potential Use</p>
         </th>
-        <th style="width: 75px;
+        <th style="width: 60px;
         		background-color: #536878; 
         		vertical-align: bottom; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
@@ -120,7 +139,7 @@ includeHTML();
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium;
                 border-top-width: medium; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Movement Type</p>
+            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Mvmt Type</p>
         </th>
         <th style="
         		background-color: #536878; 
@@ -135,31 +154,71 @@ includeHTML();
     </tr>
 
 <!-- Spindle -->
-    <tr>
+    <tr style="background-color: White; vertical-align: top; ">
         <td style="
-				background-color: #000000;
-        		vertical-align: middle; text-align: center;
+        		text-align: center;
                 padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
+                padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Sp</b></p>
+                border-top-width: medium; border-bottom-width: medium; ">
+            <b>Sp0</b>
         </td>
         <td style="
-				background-color: #dcdcdc;
-        		vertical-align: top; text-align: left;
+        		text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Spindle
+        </td>
+        <td style="
+        		text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Rotary
+        </td>
+        <td style="
+        		text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; ">
+            <p style="margin-top: 0; margin-bottom: 0">+ is CCW (as on a traditional lathe)
+        </td>
+    </tr>
+    
+<!-- C Axis -->
+    <tr style="background-color: White; vertical-align: top; ">
+        <td style=" 
+				text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <b>Sp1</b>
+        </td>
+        <td style="
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            Spindle
+            Rosette Phaser / Multiplier
         </td>
         <td style="
-				background-color: #dcdcdc;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -169,33 +228,31 @@ includeHTML();
             Rotary
         </td>
         <td style="
-				background-color: #dcdcdc;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: thick; ">
-            <p style="margin-top: 0; margin-bottom: 0">+ is CCW (as on a traditional lathe)
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is CCW
         </td>
     </tr>
     
 <!-- X Axis -->
-    <tr>
+    <tr style="background-color: #add8e6; vertical-align: top; ">
         <td style=" 
-				background-color: blue;
-        		vertical-align: middle; text-align: center;
+				text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>X</b></p>
+            <b>X</b>
         </td>
         <td style="
-				background-color: #add8e6;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -205,8 +262,7 @@ includeHTML();
             Cross Slide
         </td>
         <td style="
-				background-color: #add8e6;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -216,8 +272,7 @@ includeHTML();
             Linear
         </td>
         <td style="
-				background-color: #add8e6;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -229,21 +284,19 @@ includeHTML();
     </tr>
     
 <!-- Y Axis -->
-    <tr>
+    <tr style="background-color: #ffe4e1; vertical-align: top; ">
         <td style=" 
-				background-color: Red;
-        		vertical-align: middle; text-align: center;
+				text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Y</b></p>
+            <b>Y</b>
         </td>
         <td style="
-				background-color: #ff9999;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -251,11 +304,11 @@ includeHTML();
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
             Dome Chuck
+            <br>
             Straight-Line Chuck
         </td>
         <td style="
-				background-color: #ff9999;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -265,8 +318,7 @@ includeHTML();
             Linear
         </td>
         <td style="
-				background-color: #ff9999;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -278,21 +330,19 @@ includeHTML();
     </tr>
     
 <!-- Z Axis -->
-    <tr>
+    <tr style="background-color: #ccffcc; vertical-align: top; ">
         <td style=" 
-				background-color: Green;
-        		vertical-align: middle; text-align: center;
+				text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>Z</b></p>
+            <b>Z</b>
         </td>
         <td style="
-				background-color: #98fb98;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -300,11 +350,11 @@ includeHTML();
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
             Cross Slide
+            <br>
             Curvilinear Slide
         </td>
         <td style="
-				background-color: #98fb98;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -314,8 +364,7 @@ includeHTML();
             Linear
         </td>
         <td style="
-				background-color: #98fb98;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -327,7 +376,7 @@ includeHTML();
     </tr>
     
 <!-- A Axis -->
-    <tr>
+    <tr style="background-color: #add8e6; vertical-align: top; ">
         <td style=" 
 				background-color: #a9a9a9;
         		vertical-align: middle; text-align: center;
@@ -337,7 +386,7 @@ includeHTML();
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: lightgray; "><b>A</b></p>
+            <p style="margin-top: 0; margin-bottom: 0; color: lightgray; "><b>A</b></p>
         </td>
         <td style="
 				background-color: #a9a9a9;
@@ -375,21 +424,19 @@ includeHTML();
     </tr>
 
 <!-- B Axis -->
-    <tr>
+    <tr style="background-color: #ffe4e1; vertical-align: top; ">
         <td style=" 
-				background-color: #eee600;
-        		vertical-align: middle; text-align: center;
+				text-align: center;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: medium; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>B</b></p>
+            <b>B</b>
         </td>
         <td style="
-				background-color: #ffffe0;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -399,8 +446,7 @@ includeHTML();
             Spherical Slide
         </td>
         <td style="
-				background-color: #ffffe0;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -410,8 +456,7 @@ includeHTML();
             Rotary
         </td>
         <td style="
-				background-color: #ffffe0;
-        		vertical-align: top; text-align: left;
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -425,161 +470,8 @@ includeHTML();
     </tr>
 
 <!-- C Axis -->
-    <tr>
+    <tr style="background-color: #add8e6; vertical-align: top; ">
         <td style=" 
-				background-color: #ffffff;
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>C</b></p>
-        </td>
-        <td style="
-				background-color: #ffffff;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            Rosette Phaser / Multiplier
-        </td>
-        <td style="
-				background-color: #ffffff;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            Rotary
-        </td>
-        <td style="
-				background-color: #ffffff;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0">C is rotation around Z, the same as the Spindle
-            <hr class="style3">
-            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is CCW
-        </td>
-    </tr>
-    
-<!-- U Axis -->
-    <tr>
-        <td style=" 
-				background-color: #cc3366;
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>U</b></p>
-        </td>
-        <td style="
-				background-color: #ffe4e1;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            Retractor
-            Dynamic Rubber
-        </td>
-        <td style="
-				background-color: #ffe4e1;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            Linear
-        </td>
-        <td style="
-				background-color: #ffe4e1;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0">U is parallel to X
-            <hr class="style3">
-            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is towards the user
-        </td>
-    </tr>
-    
-<!-- V Axis -->
-    <tr>
-        <td style="
-				background-color: Purple;
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; "><b>V</b></p>
-        </td>
-        <td style="
-				background-color: #d8bfd8;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            Dynamic Amplitude Adjuster
-        </td>
-        <td style="
-				background-color: #d8bfd8;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            Linear
-        </td>
-        <td style="
-				background-color: #d8bfd8;
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0">V is parallel to Y
-            <hr class="style3">
-            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is down
-        </td>
-    </tr>
-    
-<!-- W Axis -->
-    <tr>
-        <td style="
 				background-color: #a9a9a9;
         		vertical-align: middle; text-align: center;
                 padding-left: 5px; padding-right: 5px; 
@@ -588,7 +480,7 @@ includeHTML();
                 border-left-width: thick; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: lightgray; "><b>W</b></p>
+            <p style="margin-top: 0; margin-bottom: 0; color: lightgray; "><b>C</b></p>
         </td>
         <td style="
 				background-color: #a9a9a9;
@@ -610,11 +502,149 @@ includeHTML();
                 border-left-width: medium; border-right-width: medium; 
                 border-top-width: medium; border-bottom-width: thick; 
                 ">
-            <span style="color: lightgray; ">Linear</span>
+            <span style="color: lightgray; ">Rotary</span>
         </td>
         <td style="
 				background-color: #a9a9a9;
         		vertical-align: top; text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0"><span style="color: lightgray; ">C is rotation around Z</span>
+        </td>
+    </tr>
+
+<!-- U Axis -->
+    <tr style="background-color: #add8e6; vertical-align: top; ">
+        <td style=" 
+				text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>U</b>
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Retractor
+            <br>
+            Dynamic Rubber
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">U is parallel to X
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is towards the user
+        </td>
+    </tr>
+    
+<!-- V Axis -->
+    <tr style="background-color: #ffe4e1; vertical-align: top; ">
+        <td style="
+				text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <b>V</b>
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Dynamic Amplitude Adjuster
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            Linear
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: thick; 
+                border-top-width: medium; border-bottom-width: medium; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0">V is parallel to Y
+            <hr class="style3">
+            <p style="margin-top: 0; margin-bottom: 0"><b>+</b> is down
+        </td>
+    </tr>
+    
+<!-- W Axis -->
+    <tr style="background-color: #a9a9a9; vertical-align: top; ">
+        <td style="
+				text-align: center;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: thick; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <p style="margin-top: 0; margin-bottom: 0; color: lightgray; "><b>W</b></p>
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <span style="color: lightgray; ">n/a - axis not configured</span>
+        </td>
+        <td style="
+				text-align: left;
+                padding-left: 5px; padding-right: 5px; 
+                padding-top: 5px; padding-bottom: 5px; 
+                border-style: solid; border-color: black; 
+                border-left-width: medium; border-right-width: medium; 
+                border-top-width: medium; border-bottom-width: thick; 
+                ">
+            <span style="color: lightgray; ">Linear</span>
+        </td>
+        <td style="
+				text-align: left;
                 padding-left: 5px; padding-right: 5px; 
                 padding-top: 5px; padding-bottom: 5px; 
                 border-style: solid; border-color: black; 
@@ -627,7 +657,7 @@ includeHTML();
 </table>
 
 <h2 style="margin-bottom: 0;">Axes</h2>
-<p style="margin-top: 0;">The Rosetta system supports 8 axes (Spindle + 7 other), and the ones outlined below were selected as they match to identifiable uses for a rose engine.  These axes are also depicted in the picture below.
+<p style="margin-top: 0;">The Rosetta system supports 8 axes (two spindles + 6 other), and the ones outlined below were selected as they match to identifiable uses for a rose engine.  These axes are also depicted in the picture below.
 
 <div style=" float: left; width: 350px; 
 	margin-left: 0px; margin-right: 5px;
@@ -638,12 +668,6 @@ includeHTML();
     <img src="Images/Axes.png" alt="Axes" style="width:100%; "/>
     <i><b>Lathe Axes</b></i>
 </div>
-
-<p>&nbsp;
-<hr class="style1">
-
-<h3 style="margin-bottom: 0;">Axis Colours</h3>
-<p style="margin-top: 0;">The colours used for the axes are the ones designated for that respective axis.  The use of colour coding for each axis is to help the ornamental turner ensure they are pluging the stepper motor cable into the correct receptacle for that axis.  The cabling and stepper motor enclosures should match those colours.
 
 <!-- ################################################### -->
 <!--Footer                                               -->
