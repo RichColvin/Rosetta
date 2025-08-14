@@ -15,13 +15,13 @@
 <!-- #                                                                     # -->
 <!-- ####################################################################### -->
 <!--                                                                         -->
-<!-- This is a user manual page.                            		     -->
+<!-- This is a user manual page.                            		         -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
 <!--    UM-RosettaMenu_Sync.html                                             -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    1.0 - 12 Aug 2025, R. Colvin                                         -->
+<!--    1.0 - 14 Aug 2025, R. Colvin                                         -->
 <!--                                                                         -->
 <!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
 <!--                                                                         -->
@@ -91,20 +91,20 @@ includeHTML();
 <!-- Body                                                -->
 <!-- ################################################### -->
 
-<div style=" float: right; Width: 1000px; 
+<div style=" float: right; Width: 600px; 
         margin-left: 5px; margin-right: 0px; 
         margin-top: 0px; margin-bottom: 5px; 
-        padding-left: 5px; padding-right: 0px; 
-        padding-top: 5px; padding-bottom: 0px; 
-        border: 1px solid darkgray; text-align: left;  ">
+        padding-left: 0px; padding-right: 0px; 
+        padding-top: 0px; padding-bottom: 0px; 
+        border: 0px solid darkgray; text-align: left;  ">
     <img src="Images/Rosetta-Sync.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%;"/>
 </div>
 
 <h2 style="margin-bottom: 0;">Synchronized Movement</h2>
 <p style="margin-top: 0;">This menu screen is used to synchronize movement between the spindles:
     <ul style="margin-top:0; margin-bottom: 0px;">
-        <li style="margin-top:0; margin-bottom: 0px;">Main spindle - Sp0</li>
-        <li style="margin-top:0; margin-bottom: 0px;">Rosette phaser/multiplier - Sp1</li>
+        <li style="margin-top:0; margin-bottom: 0px;">Main spindle (Sp0)</li>
+        <li style="margin-top:0; margin-bottom: 0px;">Rosette phaser/multiplier (Sp1)</li>
     </ul>
 
 <p>and one (or more) of the other axes:
@@ -124,328 +124,34 @@ includeHTML();
             </ul></li>
     </ul>
 
-<!-- Body
-<p style="color: darkred;"><b>Note</b>:This scheme is not used for the Spindle or the Rosette Phaser/Multiplier.</p>
+<hr class="style3">
+<p>As noted with the comments on the actual screen, the Rosette Phaser/Multiplier can run up 1,000% (10x) the speed of the spindle.  
 
-<table style=" width: 100% ; 
-        margin-top: 12px;
-        border-collapse: collapse; 
-        border: 1px solid grey; ">
-    <tr>
-        <th rowspan=2 style="width: 75px;
-                background-color: #536878; 
-                vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium;
-                border-top-width: thick; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">GX-16 Pin</p>
-        </th>
-        <th colspan=2 style="
-        		background-color: #536878; 
-        		vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium;
-                border-top-width: thick; border-bottom-width: thin; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Stepper Motor</p>
-        </th>
-        <th rowspan=2 style="width: 75px;
-        		background-color: #536878; 
-        		vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium;
-                border-top-width: thick; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Limit Switch</p>
-        </th>
-        <th rowspan=2 style="
-        		background-color: #536878; 
-        		vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick;
-                border-top-width: thick; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Comments</p>
-        </th>
-    </tr>
+<p>The Rosette Phaser/Multiplier can also run in the opposite direction from the spindle.  This is achieved by:
 
-    <tr>
-        <th style="width: 100px;
-        		background-color: #536878; 
-        		vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin;
-                border-top-width: thin; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Stepper Online Wire Color</p>
-        </th>
-        <th style="width: 50px;
-        		background-color: #536878; 
-        		vertical-align: bottom; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium;
-                border-top-width: thin; border-bottom-width: medium; "> 
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: white; ">Purpose</p>
-        </th>
-    </tr>
+	<ul>
+		<li>Setting the spindle speed to some positive value</li>
+		<li>Setting the rosette phaser/multiplier percentage to some negative value</li>
+	</ul>
 
-    <tr style="background-color: White; vertical-align: middle; text-align: center;">
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <b>1</b>
-        </td>
-        <td style="
-                background-color: Black; 
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <span style="color: white;">Black</span>
-        </td>
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            A+
-        </td>
-        <td rowspan=4 style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
-        </td>
-    </tr>
+<p style="text-align: center;">OR
 
-    <tr style="background-color: White; vertical-align: middle; text-align: center;">
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <b>2</b>
-        </td>
-        <td style="
-                background-color: Green; 
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <span style="color: white;">Green</span>
-        </td>
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            A-
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
-        </td>
-    </tr>
+	<ul>
+		<li>Setting the spindle speed to some negative value</li>
+		<li>Setting the rosette phaser/multiplier percentage to some positive value</li>
+	</ul>
 
-    <tr style="background-color: White; vertical-align: middle; text-align: center;">
-        <td style="
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <b>3</b>
-        </td>
-        <td style="
-                background-color: Red; 
-        		vertical-align: middle; text-align: center;
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <span style="color: white;">Red</span>
-        </td>
-        <td style="
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            B+
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
-        </td>
-    </tr>
-
-    <tr style="background-color: White; vertical-align: middle; text-align: center;">
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <b>4</b>
-        </td>
-        <td style="
-                background-color: Blue; 
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            <span style="color: white;">Blue</span>
-        </td>
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            B-
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; margin-bottom: 0">&nbsp;
-        </td>
-    </tr>
-
-    <tr style="background-color: LightGray; vertical-align: middle; text-align: center;">
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>5</b></p>
-        </td>
-        <td rowspan=2 style="
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
-        </td>
-        <td rowspan=2 style="
-                padding-left: 0px; padding-right: 0px; 
-                padding-top: 5px; padding-bottom: 0px; 
-                border-style: solid; border-color: black; 
-                border-left-width: thin; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            <p style="margin-top: 0; margin-bottom: 0"><span style="color: darkgray"><i>n/a</i></span>
-        </td>
-        <td style="
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: medium; 
-                ">
-            Signal
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: medium; ">
-            <p style="margin-top: 0; ">This is used by a limit switch for shorting to GND when the limit switch is activated (i.e., normally open).
-            
-            <p style="margin-bottom: 0">If there are more than 1 limit switches, then they need to be wired to be parallel.
-        </td>
-    </tr>
-
-    <tr style="background-color: LightGray; vertical-align: middle; text-align: center;">
-        <td style="
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 0; padding-bottom: 0;
-                border-style: solid; border-color: black; 
-                border-left-width: thick; border-right-width: medium; 
-                border-top-width: medium; border-bottom-width: thick; ">
-            <p style="margin-top: 0; margin-bottom: 0; padding-left: 3px; padding-right: 3px; color: black; "><b>6</b></p>
-        </td>
-        <td style="
-        		vertical-align: middle; text-align: center;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thin; 
-                border-top-width: medium; border-bottom-width: thick; 
-                ">
-            GND
-        </td>
-        <td style="
-        		vertical-align: top; text-align: left;
-                padding-left: 5px; padding-right: 5px; 
-                padding-top: 5px; padding-bottom: 5px; 
-                border-style: solid; border-color: black; 
-                border-left-width: medium; border-right-width: thick; 
-                border-top-width: medium; border-bottom-width: thick; ">
-            <p style="margin-top: 0; margin-bottom: 0">This is a common ground.
-        </td>
-    </tr>
-</table>
--->
+<hr class="style3">
+<p style="margin-bottom: 0;"><u>Notes</u>:
+    <ol>
+        <li style="margin-bottom: 12px;">The distance the axis is moved reflects the settings for the axis in the configuration.  For example, if it is set so that 4 revolutions of the linear slide moves it 1&deg;, then each revolution will show 0.250&deg; of movement.
+        
+        <p>If your device should have this set to 3 revolutions per 1&deg;, you will need to make a change to the SCALE and STEP_SCALE parameters in the respective axis file found in the directory.
+        
+        <p>Each axis can be set differently.
+        
+        <p><a href="UM-Updating-Axis-Configuration.html">Directions for updating the axis file</a>.</li>
+    </ol>
 
 <!-- ################################################### -->
 <!--Footer                                               -->

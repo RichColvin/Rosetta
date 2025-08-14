@@ -15,13 +15,13 @@
 <!-- #                                                                     # -->
 <!-- ####################################################################### -->
 <!--                                                                         -->
-<!-- This is a user manual page.                            		     -->
+<!-- This is a user manual page.                               		         -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
 <!--    UM-RosettaMenu_Sync.html                                             -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    1.0 - 13 Aug 2025, R. Colvin                                         -->
+<!--    1.0 - 14 Aug 2025, R. Colvin                                         -->
 <!--                                                                         -->
 <!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
 <!--                                                                         -->
@@ -69,34 +69,34 @@ function includeHTML() {
     }
   }
 }
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Standard site-wide definitions         	         -->
 <!-- ################################################### -->
-<div w3-include-html="include-SiteStandards.html"></div> 
+<div w3-include-html="include-SiteStandards.html"></div>
 <script>
 includeHTML();
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Header                                              -->
 <!-- ################################################### -->
-<div w3-include-html="include-Header.html"></div> 
+<div w3-include-html="include-Header.html"></div>
 <script>
 includeHTML();
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Body                                                -->
 <!-- ################################################### -->
 
-<div style=" float: right; Width: 300px; 
-        margin-left: 5px; margin-right: 0px; 
-        margin-top: 0px; margin-bottom: 5px; 
-        padding-left: 5px; padding-right: 0px; 
-        padding-top: 5px; padding-bottom: 0px; 
-        border: 1px solid darkgray; text-align: left;  ">
+<div style=" float: right; Width: 300px;
+        margin-left: 5px; margin-right: 0px;
+        margin-top: 0px; margin-bottom: 5px;
+        padding-left: 0px; padding-right: 0px;
+        padding-top: 0px; padding-bottom: 0px;
+        border: 0px solid darkgray; text-align: left;  ">
     <img src="Images/Rosetta-Side-Panel.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%;"/>
 </div>
 
@@ -106,19 +106,20 @@ includeHTML();
 <!-- *************************************************** -->
 <!-- Axis Speed                                          -->
 <!-- *************************************************** -->
-<hr style="style2">
+<hr class="style1">
 <h3 style="margin-bottom: 0;">Axis Speed</h3>
 <p style="margin-top: 0;">This is the current speed of each axis.  It only changes from 0 if the axis is being moved.
 
+<p>Positive values are movement in the positive direction for that axis; negative values are movement in the negative direction for that axis.
+
+<hr class="style3">
 <p style="margin-bottom: 0;"><u>Notes</u>:
     <ol>
-        <li style="margin-bottom: 12px;">Positive values are movement in the positive direction for that axis. Negative values are movement in the negative direction for that axis.</li>
+        <li style="margin-bottom: 12px;">This value does not reflect any speeds set using other menus or Gcode (i.e., the S command); it shows the actual speed when running.</li>
 
-        <li style="margin-bottom: 12px;">This value does not reflect any speeds set using other menus or Gcode (i.e., the S command); it only shows the actual speed when running.</li>
-
-        <li style="margin-bottom: 12px;">The value shown reflects the settings for the axis in the configuration.  For example, if it is set so that 4 revolutions of the linear slide moves it 1 inch, then each revolution will show 0.250&rdquo; of movement.  
+        <li style="margin-bottom: 12px;">The value shown reflects the settings for the axis in the configuration.  For example, if it is set so that 4 revolutions of the linear slide moves it 1 inch, then each revolution will show 0.250&rdquo; of movement.
         
-        <p>If your device should have this set to 3 revolutions per 1 inch, you will need to make a change to the SCALE and STEP_SCALE parameters in the respective axis file found in the directory.  
+        <p>If your device should have this set to 3 revolutions per 1 inch, you will need to make a change to the SCALE and STEP_SCALE parameters in the respective axis file found in the directory.
         
         <p><a href="UM-Updating-Axis-Configuration.html">Directions for updating the axis file</a>.</li>
     </ol>
@@ -126,46 +127,51 @@ includeHTML();
 <!-- *************************************************** -->
 <!-- Command DRO                                         -->
 <!-- *************************************************** -->
-<hr style="style2">
+<hr class="style1">
 <h3 style="margin-bottom: 0;">Command DRO</h3>
-<p style="margin-top: 0;">This is the distance commanded for the axis to move by LinuxCNC.  Do note that this may not always be correct.
+<p style="margin-top: 0;">This is the distance commanded for the axis to move by LinuxCNC.
 
+<hr class="style3">
 <p style="margin-bottom: 0;"><u>Notes</u>:
+<p>Do note that this may not always be correct or match up with your real-world experiences.
+
     <ol>
         <li style="margin-bottom: 12px;">If the axis is moved manually (when it is disabled), this does not reflect that.</li>
         
         <li style="margin-bottom: 12px;">Also, there is no feedback on the movement.  If some issue is encountered (e.g., the motor gets jammed), this will not reflect the current state.</li>
 
-        <li style="margin-bottom: 12px;">As noted in item #3 above, this is based on the SCALE and STEP_SCALE parameters in the axis&rsquo; file.</li>
+        <li style="margin-bottom: 12px;">As noted in item #3 above, this is based on the SCALE and STEP_SCALE parameters in the axis&rsquo; file.
+        
+        <p><a href="UM-Updating-Axis-Configuration.html">Directions for updating the axis file</a>.</li>
         
     </ol>
 
 <!-- *************************************************** -->
 <!-- Enable Status                                       -->
 <!-- *************************************************** -->
-<hr style="style2">
+<hr class="style1">
 <h3 style="margin-bottom: 0;">Enable Status</h3>
-<p><table style="float: left; 
+<p><table style="float: left;
         border-collapse: collapse; ">
     <tr>
-        <td style="width: 10px; 
+        <td style="width: 10px;
         		border: 0px solid grey; ">
             &nbsp;
         </td>
         <td style="width: 50px; height: 25px;
-        		vertical-align: middle; 
+        		vertical-align: middle;
         		text-align: center;
-                border-style: solid; 
-                border-color: black; 
-                border-left-width: thin; 
+                border-style: solid;
+                border-color: black;
+                border-left-width: thin;
                 border-right-width: thin;
-                border-top-width: thin; 
-                border-bottom-width: thin; 
-                border: 1px solid grey; 
+                border-top-width: thin;
+                border-bottom-width: thin;
+                border: 1px solid grey;
                 ">
             ENA
         </td>
-        <td style="width: 10px; 
+        <td style="width: 10px;
         		border: 0px solid grey; ">
             &nbsp;
         </td>
@@ -201,6 +207,7 @@ includeHTML();
     </tr>
 </table>
 
+<hr class="style3">
 <p style="margin-bottom: 0;"><u>Notes</u>:
     <ol>
         <li style="margin-bottom: 12px;">Attempting to run an axis when it is not enabled will generate and error message and move the machine to an &ldquo;off&rdquo; state (F2 can be used to toggle the machine back on).</li>
@@ -209,8 +216,8 @@ includeHTML();
 <!-- ################################################### -->
 <!--Footer                                               -->
 <!-- ################################################### -->
-<div w3-include-html="include-Footer.html"></div> 
+<div w3-include-html="include-Footer.html"></div>
 <script>
     includeHTML();
-</script> 
+</script>
 </html>

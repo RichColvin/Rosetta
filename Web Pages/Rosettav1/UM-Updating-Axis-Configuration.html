@@ -21,7 +21,7 @@
 <!--    UM-Updating-Axis-Configuration.html                                  -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    1.0 - 12 Aug 2025, R. Colvin                                         -->
+<!--    1.0 - 14 Aug 2025, R. Colvin                                         -->
 <!--                                                                         -->
 <!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
 <!--                                                                         -->
@@ -69,23 +69,23 @@ function includeHTML() {
     }
   }
 }
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Standard site-wide definitions         	         -->
 <!-- ################################################### -->
-<div w3-include-html="include-SiteStandards.html"></div> 
+<div w3-include-html="include-SiteStandards.html"></div>
 <script>
 includeHTML();
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Header                                              -->
 <!-- ################################################### -->
-<div w3-include-html="include-Header.html"></div> 
+<div w3-include-html="include-Header.html"></div>
 <script>
 includeHTML();
-</script> 
+</script>
 
 <!-- ################################################### -->
 <!-- Body                                                -->
@@ -94,13 +94,17 @@ includeHTML();
 <h2 style="margin-bottom: 0;">Updating an Axis Configuration File</h2>
 <p style="margin-top: 0;">Many values and activities used in this system are based on the respective axis&rsquo; configuration.  Those configurations are in the respective axis file found in the directory:
         
-<p style="text-align: center; font: 16px Courier;">/cnc/linuxcnc/configs/Rosetta/Rosetta_Axes</p>
+<p style="text-align: center; font: 18px Courier;">/cnc/linuxcnc/configs/Rosetta/Rosetta_Axes</p>
 
 <p>The settings you should consider changing are:
     <ul>
-        <li>SCALE, and</li>        
-        <li>STEP_SCALE </li>        
+        <li>SCALE, and</li>
+        <li>STEP_SCALE </li>
     </ul>
+
+<p>The calculations and notes for each setting used is in the comments fields in the file for the respective axis.
+
+<hr class="style3">
 
 <p style="margin-bottom: 0;"><u>Notes</u>:
     <ol>
@@ -112,13 +116,13 @@ includeHTML();
                     &nbsp;
                 </td>
                 <td>
-                    <span style="font: 16px Courier;"># SCALE				     = 17.778</span>
+                    <span style="font: 18px Courier;"># SCALE = 17.778</span>
                 </td>
                 <td style="width: 25px;">
                     &nbsp;
                 </td>
                 <td>
-                    &larr; The old value, commented out
+                    <i>&larr; The old value, commented out</i>
                 </td>
             </tr>
             <tr>
@@ -126,19 +130,44 @@ includeHTML();
                     &nbsp;
                 </td>
                 <td>
-                    <span style="font: 16px Courier;">SCALE				     = 25</span>
+                    <span style="font: 18px Courier;">SCALE = 25</span>
                 </td>
                 <td>
                     &nbsp;
                 </td>
                 <td>
-                    &larr; The new value
+                    <i>&larr; The new value</i>
                 </td>
             </tr>
         </table>
         </li>
         
+        <li style="margin-bottom: 12px;">
+        	<div style=" float: right; Width: 400px;
+                    margin-left: 5px;
+                    margin-right: 0px;
+        			margin-top: 0px;
+        			margin-bottom: 5px;
+        			padding-left: 5px;
+        			padding-right: 5px;
+        			padding-top: 5px;
+        			padding-bottom: 5px;
+        			border: 1px solid darkgray;
+        			text-align: left;
+        			">
+            <img src="Images/Debian_Workspaces.png" alt="no image" style="float: right; margin-top: 0; margin-bottom: 0; width: 100%;"/>
+            <p class="TextSMImage"><b><i>Virtual desktop pager</i></b></p>
+        </div>
+
+        Debian Linux has a virtual desktop pager which allows for task switching easily.  This is the set of 4 blocks shown at the top of the screen towards the right.  Each of these blocks is a workspace (or virtual desktop).  The selected desktop has a dark grey background; the unselected three are lighter grey.
+        
+        <p>What is relevant to know is that when you open a program, it will often revert back to the virtual desktop where it was last used.  Let's use the scenario where you used an editor like Geany recently, in the right-most desktop.  When you open it again, it will may revert to being opened in the same desktop.
+
+    	<p>So, before assumming it did not open, and trying again, check the top of your screen.</li>
+
         <li style="margin-bottom: 12px;">When making changes, the recommended editor is Geany.</li>
+
+
     </ol>
 
 <table style="width: 100%"><tr><td>&nbsp;</td></tr></table>
@@ -146,8 +175,8 @@ includeHTML();
 <!-- ################################################### -->
 <!--Footer                                               -->
 <!-- ################################################### -->
-<div w3-include-html="include-Footer.html"></div> 
+<div w3-include-html="include-Footer.html"></div>
 <script>
     includeHTML();
-</script> 
+</script>
 </html>
