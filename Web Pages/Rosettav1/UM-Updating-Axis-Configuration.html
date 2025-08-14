@@ -15,13 +15,13 @@
 <!-- #                                                                     # -->
 <!-- ####################################################################### -->
 <!--                                                                         -->
-<!-- This is a user manual page.			                         		 -->
+<!-- This is a user manual page.                                 		     -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    UM-Axes.html                                                         -->
+<!--    UM-Updating-Axis-Configuration.html                                  -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    1.0 - 02 Jul 2025, R. Colvin                                         -->
+<!--    1.0 - 12 Aug 2025, R. Colvin                                         -->
 <!--                                                                         -->
 <!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
 <!--                                                                         -->
@@ -76,7 +76,7 @@ function includeHTML() {
 <!-- ################################################### -->
 <div w3-include-html="include-SiteStandards.html"></div> 
 <script>
-    includeHTML();
+includeHTML();
 </script> 
 
 <!-- ################################################### -->
@@ -90,16 +90,58 @@ includeHTML();
 <!-- ################################################### -->
 <!-- Body                                                -->
 <!-- ################################################### -->
-<h1 style="margin-bottom: 0; color: DarkRed;">Key Warnings</h2>
-<h2 style="margin-top: 3px; margin-bottom: 0; color: DarkRed;">Connecting &amp; Disconnecting Cables</h2>
-<p style="margin-top: 0;">Cables should only be connected to, or disconnected from, this system when:
- 	<ol>
-		<li>the axis is disabled, or</li>
-		<li>the system is powered off.</li>
- 	</ol>
- </p>
 
-<p>Otherwise, there is a chance that certain parts in the system could be damaged.</p>
+<h2 style="margin-bottom: 0;">Updating an Axis Configuration File</h2>
+<p style="margin-top: 0;">Many values and activities used in this system are based on the respective axis&rsquo; configuration.  Those configurations are in the respective axis file found in the directory:
+        
+<p style="text-align: center; font: 16px Courier;">/cnc/linuxcnc/configs/Rosetta/Rosetta_Axes</p>
+
+<p>The settings you should consider changing are:
+    <ul>
+        <li>SCALE, and</li>        
+        <li>STEP_SCALE </li>        
+    </ul>
+
+<p style="margin-bottom: 0;"><u>Notes</u>:
+    <ol>
+        <li style="margin-bottom: 12px;">It is recommended that you make a copy the current line, and comment it out (add a &ldquo;#&rdquo; as the first character in the line).  For example:
+
+        <table>
+            <tr>
+                <td style="width: 25px;">
+                    &nbsp;
+                </td>
+                <td>
+                    <span style="font: 16px Courier;"># SCALE				     = 17.778</span>
+                </td>
+                <td style="width: 25px;">
+                    &nbsp;
+                </td>
+                <td>
+                    &larr; The old value, commented out
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <span style="font: 16px Courier;">SCALE				     = 25</span>
+                </td>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    &larr; The new value
+                </td>
+            </tr>
+        </table>
+        </li>
+        
+        <li style="margin-bottom: 12px;">When making changes, the recommended editor is Geany.</li>
+    </ol>
+
+<table style="width: 100%"><tr><td>&nbsp;</td></tr></table>
 
 <!-- ################################################### -->
 <!--Footer                                               -->
