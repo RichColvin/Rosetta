@@ -21,13 +21,13 @@
 <!--    Index.html                                                           -->
 <!--                                                                         -->
 <!-- File:                                                                   -->
-<!--    1.0 - 14 Aug 2025, R. Colvin                                         -->
+<!--    1.0 - 15 Aug 2025, R. Colvin                                         -->
 <!--                                                                         -->
 <!-- Copyright (c) 2025 Colvin Tools and Brainwave Embedded.                 -->
 <!--                                                                         -->
 <!-- ####################################################################### -->
 
-<head bgcolor=#E6E6E6>
+<head style="background-color: #E6E6E6;">
     <title>Rosetta</title>
     <link rel="shortcut icon" type="image/ico" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon.png">
@@ -97,10 +97,64 @@ includeHTML();
 <p style="margin-top: 0;">The Rosetta system is designed to 
 
     <ol style="margin-top: 0; margin-bottom: 0; ">
-        <li>provide the ornamental turner a way for linking activities using synchronisation of stepper motors, and</li>
-        <li>assist the ornamantal turner with automating onerous tasks.</li>
+        <li>Provide the ornamental turner a way for linking activities using synchronisation of stepper motors, and</li>
+        <li>Assist the ornamantal turner with automating onerous tasks.</li>
     </ol>
 
+
+<hr class="style1">
+<p>The main screen displayed when Rosetta is started is shown below.  The key elements users will need are noted.
+
+<img src="Images/Rosetta-Main-Screen.png" alt="no image" style="margin-top: 0; margin-bottom: 0; width: 100%;"/>
+
+<!-- *************************************************** -->
+<!-- E-STOP 							                 -->
+<!-- *************************************************** -->
+<hr class="style3">
+<p><span style="color: darkblue; font: 18px Arial; "><b>E-STOP</b></span> is always engaged when the system is started.  You must disengage the E-STOP before any other operations can be performed.  This can be done by either clicking on the indicated icon, or by using the F1 key.  Either will toggle this state.
+
+<!-- *************************************************** -->
+<!-- Power on 							                 -->
+<!-- *************************************************** -->
+<hr class="style3">
+<p><span style="color: darkblue; font: 18px Arial; "><b>Power on</b></span> is used to &ldquo;power the machine on&rdquo;.  This is always off when the system is started, and toggling the E-STOP does not affect this. You can either click on the indicated icon, or use the F2 key to toggle this.
+
+<p>Whenever an error is encoutered, the system moves to a powered off state also.  It is a good practice to clear the error first (by clicking on the X for the error).
+
+<!-- *************************************************** -->
+<!-- Rosetta User Menus 				                 -->
+<!-- *************************************************** -->
+<hr class="style3">
+<p><span style="color: darkblue; font: 18px Arial; "><b>Rosetta User Menus</b></span> are:
+	<ul style="margin-top:0; margin-bottom: 0px;">
+        <li style="margin-top:0; margin-bottom: 6px;"><a href="UM-RosettaMenu_Rotary.html">&#x211B; Rotary</a> - used to run the system's spindles and to index movement on any rotary axis.</li>
+    	<li style="margin-top:0; margin-bottom: 6px;"><a href="UM-RosettaMenu_Linear.html">&#x211B; Linear</a> - used to index movement on any linear axis.</li>
+        <li style="margin-top:0; margin-bottom: 6px;"><a href="UM-RosettaMenu_Sync.html">&#x211B; Sync</a> - used for simple synchronized movement (more complex movement would use Gcode).</li>
+        <li style="margin-top:0; margin-bottom: 12px;">&#x211B; Help - used to let the user know where to get more help.  This also displays the Rosetta user license (<a href="https://en.wikipedia.org/wiki/MIT_License#X11_License" target="new">MIT/X Consortium License</a>).</li>
+	</ul>
+	
+<p>Rather than lengthening the tab names by calling them &ldquo;Rosetta ...&rdquo;, the &#x211B; character is used.
+
+<!-- *************************************************** -->
+<!-- Rosetta System Status Panel		                 -->
+<!-- *************************************************** -->
+<hr class="style3">
+<p><span style="color: darkblue; font: 18px Arial; "><a href="UM-RosettaMenu_SidePanel.html">Rosetta System Status Panel</a></span> shows the status of all axes, and enables the user to enable/disable any axis&rsquo; stepper motor.
+
+<!-- *************************************************** -->
+<!-- MDI     							                 -->
+<!-- *************************************************** -->
+<hr class="style3">
+<p><span style="color: darkblue; font: 18px Arial; "><b>MDI</b></span> tab is where G-code program commands can be entered manually, one line at a time. This also shows the Active G-codes which shows which modal G-codes are in effect.
+
+<p>You can either click on the tab, or use the F5 key to access this.
+
+<p>To load a Gcode program file which you wish to execute, click on <b><u>F</u>ile</b> at the top of the screen.
+
+
+<!-- *************************************************** -->
+<!-- Index of Topics					                 -->
+<!-- *************************************************** -->
 <hr class="style1">
 <h2 style="margin-bottom: 0;">Index of Topics</h2>
 
@@ -109,7 +163,7 @@ includeHTML();
 
 <!-- ################################################### -->
 <!-- Left Side -->
-        <td style="width: 48%;
+        <td rowspan=2 style="width: 48%;
         		vertical-align: top; text-align: left;
         		">
 
@@ -121,6 +175,9 @@ includeHTML();
                 <li style="margin-top:0; margin-bottom: 9px;"><a href="UM-Axes.html">Axes</a></li>
                 
                 <li style="margin-top:0; margin-bottom: 9px;"><a href="UM-Updating-Axis-Configuration.html">Axis Configuration File: Directions for updating</a></li>
+
+
+    	<li style="margin-top:0; margin-bottom: 9px;"><a href="https://linuxcnc.org/docs/html/gui/axis.html" target="new">Axis GUI</a></a> <i>(link to the library)</i></li>
             </ul>
 
 <!-- ***************************** -->
@@ -147,11 +204,25 @@ includeHTML();
             
                 <li style="margin-top:0; margin-bottom: 9px;"><a href="https://linuxcnc.org/docs/html/gcode.html">gCode Quick Reference (for LinuxCNC)</a> <i>(link to the library)</i></li>
 			</ul>
+
+<!-- ***************************** -->
+            <!-- I -->
+            <p style="font: 36px Arial; text-align: center; margin-bottom: 0;"><b>I</b></p>
+
+	<ul style="margin-top:0; margin-bottom: 0px;">
+		<li>Indexing
+			<ul style="margin-top:0; margin-bottom: 0px;">
+    			<li style="margin-top:0; margin-bottom: 9px;">Linear Indexing - <i>see <a href="UM-RosettaMenu_Linear.html">&#x211B; Linear</a></i></li>
+    			
+                <li style="margin-top:0; margin-bottom: 9px;">Rotary Indexing - <i>see <a href="UM-RosettaMenu_Rotary.html">&#x211B; Rotary</a></i></li>
+			</ul></li>
+	</ul>
+
         </td>
         
 <!-- ################################################### -->
-<!-- Center Side -->
-        <td style="width: 2%;
+<!-- Center -->
+        <td rowspan=2 style="width: 2%;
         		vertical-align: top; text-align: left;
                 border-style: solid; 
                 border-color: black; 
@@ -162,35 +233,56 @@ includeHTML();
         		">
         	&nbsp;
         </td>
-        <td style="width: 2%;
-        		vertical-align: top; text-align: left;
-        		">
-        	&nbsp;
-        </td>
         		
 <!-- ################################################### -->
-<!-- Right Side -->
+<!-- Right Side (top)-->
         <td style="width: 48%;
         		vertical-align: top; text-align: left;
         		">
 <!-- ***************************** -->
-            <!-- M -->
-            <p style="font: 36px Arial; text-align: center; margin-bottom: 0;"><b>M</b></p>
+            <!-- L -->
+            <p style="font: 36px Arial; text-align: center; margin-bottom: 0;"><b>L</b></p>
 
 			<ul style="margin-top:0; margin-bottom: 0px;">
-                <li style="margin-top:0; margin-bottom: 0px;"><b>Menus on LinuxCNC</b>
+    	<li style="margin-top:0; margin-bottom: 9px;">Linear Indexing - <i>see <a href="UM-RosettaMenu_Linear.html">&#x211B; Linear</a></i></li>
+
+    	<li style="margin-top:0; margin-bottom: 9px;">LinuxCNC Manual - <i>see <a href="https://linuxcnc.org/docs/html/gui/axis.html" target="new">Axis GUI</a></a> (link to the library)</i></li>
+			</ul>
+
+<!-- ***************************** -->
+            <!-- R -->
+            <p style="font: 36px Arial; text-align: center; margin-bottom: 0;"><b>R</b></p>
+
+			<ul style="margin-top:0; margin-bottom: 0px;">
+                <li style="margin-top:0; margin-bottom: 0px;"><b>Rosetta User Menus</b>
                     <ul style="margin-top:0; margin-bottom: 0px;">
                         <li style="margin-top:0; margin-bottom: 0px;"><a href="UM-RosettaMenu_Linear.html">&#x211B; Linear</a></li>
                         <li style="margin-top:0; margin-bottom: 0px;"><a href="UM-RosettaMenu_Rotary.html">&#x211B; Rotary</a></li>
                         <li style="margin-top:0; margin-bottom: 12px;"><a href="UM-RosettaMenu_Sync.html">&#x211B; Sync</a></li>
-
-                        <li style="margin-top:0; margin-bottom: 0px;"><a href="UM-RosettaMenu_SidePanel.html">Side Panel</a></li>
                     </ul></li>
+
+                <li style="margin-top:0; margin-bottom: 9px;"><a href="UM-RosettaMenu_SidePanel.html">Rosetta System Status Panel</a></li>
+
+                <li style="margin-top:0; margin-bottom: 9px;">Rotary Indexing - <i>see <a href="UM-RosettaMenu_Rotary.html">&#x211B; Rotary</a></i></li>
 			</ul>
 
 <!-- ***************************** -->
-			<p style="margin-top: 50px;">&nbsp;
-            <!-- Key Warnings -->
+            <!-- S -->
+            <p style="font: 36px Arial; text-align: center; margin-bottom: 0;"><b>S</b></p>
+
+			<ul style="margin-top:0; margin-bottom: 0px;">
+                <li style="margin-top:0; margin-bottom: 0px;">Synchronized Movemment - <i>see <a href="UM-RosettaMenu_Sync.html">&#x211B; Sync</a></i></li>
+			</ul>
+		</td>
+	</tr>
+
+    <tr>
+<!-- ################################################### -->
+<!-- Right Side (top)-->
+        <td style="vertical-align: bottom; text-align: left;
+        		">
+<!-- ***************************** -->
+            <!-- Cautions -->
             <table style=" 
 					margin-left: auto;
 					margin-right: auto;
@@ -213,9 +305,6 @@ includeHTML();
         					">
         				<p style="font: 24px Arial; margin-top: 3px; margin-bottom: 3px; color: white;"><b>Cautions</b></p>
                     </td>
-                    <td style="width=calc(100% - 190px);">
-                    	&nbsp;
-                    <td>
                 </tr>
             </table>
 
