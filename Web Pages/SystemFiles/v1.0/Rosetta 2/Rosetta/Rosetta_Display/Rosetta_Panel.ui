@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<!-- 
+#######################################################################
+#                                                                     #
+#   RRRRRR     OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT   AAAA     #
+#   RR   RR   OO    OO SS    SS EE          TT       TT     AA  AA    #
+#   RR    RR  OO    OO SS       EE          TT       TT    AA    AA   #
+#   RR   RR   OO    OO  SS      EE          TT       TT    AA    AA   #
+#   RRRRRR    OO    OO   SSSS   EEEEEE      TT       TT    AA    AA   #
+#   RR   RR   OO    OO      SS  EE          TT       TT    AAAAAAAA   #
+#   RR    RR  OO    OO       SS EE          TT       TT    AA    AA   #
+#   RR    RR  OO    OO SS    SS EE          TT       TT    AA    AA   #
+#   RR    RR   OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA   #
+#                                                                     #
+#######################################################################
+
+ LinuxCNC configuration for use with a Rose Engine
+
+ File:
+   Rosetta_Tab.ui
+
+ Purpose:
+   This shows up on the right side of the AXIS display.
+
+ End User Customisation:
+   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.
+
+   Changes to this file are not supported by Colvin Tools nor
+   Brainwave Embedded.
+
+ Version
+   1.0 - dd mmm 2025, R. Colvin
+
+
+ Copyright (c) 2025 Colvin Tools and Brainwave Embedded. 
+
+ The following MIT/X Consortium License applies to the Rosetta system.
+ Use of this system constitutes consent to the terms outlined below.
+
+ Permission is hereby granted, free of charge, to any person obtaining 
+ a copy of this software and associated documentation files (the 
+ "Software"), to deal in the Software without restriction, including 
+ without limitation the rights to use, copy, modify, merge, publish, 
+ distribute, sublicense, and/or sell copies of the Software, and to 
+ permit persons to whom the Software is furnished to do so, subject to 
+ the following conditions:
+
+ The above copyright notice and this permission notice shall be 
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ Except as contained in this notice, the name of COPYRIGHT HOLDERS
+ shall not be used in advertising or otherwise to promote the sale, 
+ use or other dealings in this Software without prior written 
+ authorization from COPYRIGHT HOLDERS.
+
+ ********************************************************************
+ -->
+
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <requires lib="gladevcp" version="0.0"/>
+  <object class="GtkWindow" id="window1">
+    <property name="can-focus">False</property>
+    <signal name="activate-default" handler="window1_activate_default_cb" swapped="no"/>
+    <signal name="activate-focus" handler="window1_activate_focus_cb" swapped="no"/>
+    <child>
+      <!-- n-columns=2 n-rows=2 -->
+      <object class="HAL_Table">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="HAL_LED">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="led-blink-rate">0</property>
+            <signal name="hal-pin-changed" handler="on___glade_unnamed_2_hal_pin_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_Button">
+            <property name="label" translatable="yes">Enable</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="Status_Label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Speed</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_HBar">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="bg-color">#808080808080</property>
+            <property name="force-height">31</property>
+            <property name="force-width">100</property>
+            <property name="max">10</property>
+            <property name="min">-10</property>
+            <property name="target-color">#808000008080</property>
+            <property name="z0-color">#000080800000</property>
+            <property name="z1-color">#ffffffff0000</property>
+            <property name="z2-color">#ffff00000000</property>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
