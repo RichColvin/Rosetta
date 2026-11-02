@@ -83,36 +83,47 @@ In the repo on 02 November 2026: "Rose Engine Butler" in 36 files,
 "RoseEngineButler" (folder/repo name) in 23, "REB" as a word in 31, 107
 files with REB in their name, and 13 web links to roseenginebutler.com.
 
-**To decide first:**
+**Decided by Rich, 02 November 2026:**
 
-1. **File and program names.** Three ways: (a) rename everything
-   `REB*` to `Rosetta*` (e.g. `Rosetta_Launch.sh`, `Rosetta_main.py`,
-   `rosetta_thread.ngc`); (b) rename only what operators see (launchers,
-   `~/Documents` settings file, backup folder, menu entries) and keep REB
-   as the internal name; (c) leave file names alone. Claude's
-   recommendation: (a), once, on its own branch, before the April 2027
-   release - only about five machines have to be moved now, "REB" would
-   otherwise live on in every support call, and (b) leaves two names to
-   explain forever. Some names need a new form, not a straight swap:
+1. **File and program names: rename everything** `REB*` to `Rosetta*`
+   (e.g. `Rosetta_Launch.sh`, `Rosetta_main.py`, `rosetta_thread.ngc`),
+   on its own branch, before the April 2027 release. Some names need a
+   new form, not a straight swap - to settle as the work starts:
    `REBset_v1.ini`, `reb_settings_io.py`, the `.REBset_v1.ini` export
    suffix, `REB.ini`/`REB.hal`, the `REB O/S` labels.
-2. **Repo folder and GitHub.** Rename `~/linuxcnc/configs/RoseEngineButler`
-   (and the GitHub organization/repo `RoseEngineButler/RoseEngineButler`)
-   to `Rosetta`? The folder path is written into every installed
-   machine's desktop/menu launchers, Thunar bookmark, `~/REB_Update.sh`
-   copy and many scripts. Check how GitHub redirects a renamed
-   organization (as opposed to a renamed repo) before relying on it.
-3. **Reuben.** Does the butler mascot stay (images, launcher icons, the
-   `reuben` login on every Pi)? Claude's suggestion: keep the `reuben`
-   login whatever happens - changing it on built machines isn't worth it.
-4. **Serial numbers.** Keep "REB003" style or change the prefix?
-   Machines already have labels on them.
-5. **Domain.** Point the program at colvintools.com/Rosetta/... now, or
-   wait for the new domain? Either way the old roseenginebutler.com links
-   must keep working (redirects) for machines not yet updated.
-6. **`PIN_RosettaD_34`.** The Mesa pin file's package has been called
-   that since the first commit - coincidence, or the name came first?
-   Nothing to change; noted so it isn't "fixed" by mistake.
+2. **GitHub: `RichColvin/Rosetta`** (from `RoseEngineButler/RoseEngineButler`
+   - a transfer to Rich's account plus a rename). The machine folder
+   becomes `~/linuxcnc/configs/Rosetta` to match. GitHub redirects a
+   transferred/renamed repo's old address (including `git pull`) as long
+   as nothing new is created at the old address - so don't reuse the
+   `RoseEngineButler` organization's repo name - but each machine's
+   remote should still be re-pointed by a one-time step rather than
+   relying on the redirect. Check before the transfer: who has access
+   (Chuck, any deploy keys the machines pull with) carries over.
+3. **Reuben is retired** - images, launcher icons, the "Reuben head"
+   shortcuts. **The Pi login becomes `rosetta`** (was `reuben`). That
+   path is in 52 lines across 18 tracked files (`/home/reuben/...`) -
+   replace with `$HOME`/`~` or paths found from the script's own folder,
+   so the code doesn't care what the login is. New installs create
+   `rosetta`. Built machines: renaming a login (`usermod -l`/`-d -m`, the
+   group, desktop auto-login, file ownership) has to be done while that
+   user isn't logged in, so it can't run from the normal update - plan a
+   separate, tested procedure (or a reinstall) per machine.
+4. **Serial numbers use the prefix "Rosetta"** (e.g. Rosetta003; was
+   REB003). The S/N is free text in `~/.config/REB/serial`, so built
+   machines need it re-entered (or the one-time step rewrites a leading
+   "REB"), plus new physical labels. The tracker's history keeps the old
+   numbers.
+5. **Web links go to colvintools.com/Rosetta/** (UserManual/ and
+   Support/) for now. A Rosetta domain of its own may come later
+   (rosetta.com isn't available) - keep every URL in one place per
+   program so a later move is a one-line change. The old
+   roseenginebutler.com links must keep working (redirects) for machines
+   not yet updated.
+
+Also noted: the Mesa pin file's package has been called `PIN_RosettaD_34`
+since the first commit, and `.axisrc` already says "Rosetta" - nothing to
+change, noted so it isn't "fixed" by mistake.
 
 **Tasks - what the operator sees (low risk, can go to `main` early):**
 
@@ -148,7 +159,7 @@ files with REB in their name, and 13 web links to roseenginebutler.com.
       changes if the subroutines are renamed.
 - [ ] Release Notes entry for the rename.
 
-**Tasks - file and program names (if (a) or (b) above; own branch):**
+**Tasks - file and program names (own branch):**
 
 - [ ] Rename the files and every reference (scripts, `.ini`/`.hal`
       paths, `-u REB_Display/REB_main.py`, `EMBED_TAB_COMMAND`,
@@ -182,7 +193,7 @@ files with REB in their name, and 13 web links to roseenginebutler.com.
       Checkout.
 
 **Leave alone:** git history, dated entries in this tracker's Done table,
-the `reuben` login (unless decided otherwise above).
+and the old serial numbers in past entries.
 
 ### Two-box hardware: base box + expansion box (since 11 October 2026)
 
