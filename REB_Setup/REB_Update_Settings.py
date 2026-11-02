@@ -300,7 +300,7 @@ def update_settings():
         for where in added:
             print("    " + where)
     if raised:
-        print("Set up %d speed limit value(s) (now in REB Settings):" % len(raised))
+        print("Set up %d speed limit value(s) (now in Rosetta Settings):" % len(raised))
         for what in raised:
             print("    " + what)
     if needs_notes:

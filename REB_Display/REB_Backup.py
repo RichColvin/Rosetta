@@ -262,7 +262,7 @@ def run_backup(mount_point, progress=None):
 
     backup_dir = make_backup_dir(mount_point)
     log_lines = [
-        "Rose Engine Butler backup",
+        "Rosetta backup",
         "Date:    %s" % time.strftime("%d %B %Y %H:%M"),
         "Machine: %s" % socket.gethostname(),
         "",
@@ -323,7 +323,7 @@ def _format_size(n):
 class BackupWindow(Gtk.Window):
 
     def __init__(self):
-        Gtk.Window.__init__(self, title="REB - Back Up to USB")
+        Gtk.Window.__init__(self, title="Rosetta - Back Up to USB")
         self.set_border_width(16)
         self.set_default_size(520, -1)
         self.set_position(Gtk.WindowPosition.CENTER)

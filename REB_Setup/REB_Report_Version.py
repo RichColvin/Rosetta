@@ -50,6 +50,8 @@
 #   1.0 - 23 October 2026
 #   1.1 - 23 October 2026 - REPORT_URL is live
 #         (support.roseenginebutler.com/reb_report.php)
+#   1.2 - 02 November 2026 - Rosetta: new REPORT_URL; reads the
+#         "O/S ..." label with or without the old "REB " in front
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -76,10 +78,12 @@ HARDWARE_ID_PATHS = (
     "/sys/firmware/devicetree/base/serial-number",
 )
 
-REPORT_URL = "https://support.roseenginebutler.com/reb_report.php"
+REPORT_URL = "https://colvintools.com/Rosetta/Support/reb_report.php"
 REPORT_TIMEOUT_SECONDS = 10
 
-VERSION_LABEL_PATTERN = re.compile(r"REB O/S ([^<]+?) - ([^<]+?)</property>")
+# The label said "REB O/S ..." until the Rosetta rebranding (02 November
+# 2026); either form is read.
+VERSION_LABEL_PATTERN = re.compile(r">(?:REB )?O/S ([^<]+?) - ([^<]+?)</property>")
 
 
 def read_hardware_id():
@@ -110,7 +114,7 @@ def read_friendly_serial():
 def read_version():
     '''
     Pulls "1.0 beta 1" and "20 October 2026" out of the main panel's
-    "REB O/S 1.0 beta 1.1 - 23 October 2026" label (REB_Panel_v1.ui) - the
+    "O/S 1.0 Beta 1.2 - 26 October 2026" label (REB_Panel_v1.ui) - the
     one CLAUDE.md's update procedure keeps current, so it's read here
     rather than kept as a separate copy that could drift.
     '''

@@ -1,4 +1,4 @@
-(REB startup splash for AXIS - no axis words, so it loads regardless)
+(Rosetta startup splash for AXIS - no axis words, so it loads regardless)
 (of which letters are currently assigned via the Axis Selection tab.)
 (Replaces AXIS's built-in axis-lathe.ngc demo, which hardcodes X/Z)
 (moves and fails whenever X isn't a currently-assigned letter.)

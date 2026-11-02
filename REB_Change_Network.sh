@@ -188,7 +188,7 @@ set_up_card() {   # $1 = new address, $2 = "base" or "expansion"
     fi
     say "Card found."
 
-    if confirm "Write the Rose Engine Butler firmware to it (needed on a new card)?"; then
+    if confirm "Write the Rosetta firmware to it (needed on a new card)?"; then
         run mesaflash --device 7i92t --addr "$FACTORY_CARD_IP" --write "$FIRMWARE" --reload
         if [ $? != 0 ]; then
             warn "Writing the firmware failed - the card's address was not changed."
@@ -362,7 +362,7 @@ move_pi_back() {
 # --- main -------------------------------------------------------------
 $DRY_RUN && warn "DRY RUN - commands are shown, not run.                              "
 if [ -z "$CHOICE" ]; then
-    title "Rose Engine Butler - network setup"
+    title "Rosetta - network setup"
     echo "  1) Set up a card as the base card       ($BASE_CARD_IP)"
     echo "  2) Set up a card as the expansion card  ($EXPANSION_CARD_IP)"
     echo "  3) Move the Pi's wired connection to    ${PI_IP%/*}"

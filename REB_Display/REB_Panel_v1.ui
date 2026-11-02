@@ -72,28 +72,6 @@
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <requires lib="gladevcp" version="0.0"/>
-  <object class="GtkAdjustment" id="B_Feed_Rate">
-    <property name="lower">-6000</property>
-    <property name="upper">6000</property>
-    <property name="value">360</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkAdjustment" id="B_Idx_Dis">
-    <property name="upper">720</property>
-    <property name="step-increment">0.10</property>
-    <property name="page-increment">1</property>
-  </object>
-  <object class="GtkImage" id="Image_B_Idx_Plus">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Bneg.png</property>
-  </object>
-  <object class="GtkImage" id="Image_B_Idx_Minus">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Bpos.png</property>
-  </object>
   <object class="GtkAdjustment" id="A_Feed_Rate">
     <property name="lower">-6000</property>
     <property name="upper">6000</property>
@@ -106,15 +84,27 @@
     <property name="step-increment">0.10</property>
     <property name="page-increment">1</property>
   </object>
-  <object class="GtkImage" id="Image_A_Idx_Plus">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Apos.png</property>
+  <object class="GtkAdjustment" id="A_Sync_Dist_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
   </object>
-  <object class="GtkImage" id="Image_A_Idx_Minus">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Aneg.png</property>
+  <object class="GtkAdjustment" id="B_Feed_Rate">
+    <property name="lower">-6000</property>
+    <property name="upper">6000</property>
+    <property name="value">360</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkAdjustment" id="B_Idx_Dis">
+    <property name="upper">720</property>
+    <property name="step-increment">0.10</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="B_Sync_Dist_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
   </object>
   <object class="GtkAdjustment" id="C_Feed_Rate">
     <property name="lower">-6000</property>
@@ -128,15 +118,70 @@
     <property name="step-increment">0.10</property>
     <property name="page-increment">1</property>
   </object>
-  <object class="GtkImage" id="Image_C_Idx_Plus">
+  <object class="GtkAdjustment" id="C_Sync_Dist_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkImage" id="Image_A_Idx_Minus">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Cpos.png</property>
+    <property name="pixbuf">Images/Axis-Aneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_A_Idx_Plus">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Apos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_A_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Aneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_A_Sync_Rev">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Apos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_B_Idx_Minus">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Bpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_B_Idx_Plus">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Bneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_B_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Bpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_B_Sync_Rev">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Bneg.png</property>
   </object>
   <object class="GtkImage" id="Image_C_Idx_Minus">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Cneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_C_Idx_Plus">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Cpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_C_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Cneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_C_Sync_Rev">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Cpos.png</property>
   </object>
   <object class="GtkImage" id="Image_Rev">
     <property name="visible">True</property>
@@ -173,7 +218,27 @@
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Xneg.png</property>
   </object>
+  <object class="GtkImage" id="Image_U_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Xpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_U_Sync_Rev">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Xneg.png</property>
+  </object>
   <object class="GtkImage" id="Image_V_Down">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Yneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_V_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Ypos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_V_Sync_Rev">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Yneg.png</property>
@@ -184,6 +249,16 @@
     <property name="pixbuf">Images/Axis-Ypos.png</property>
   </object>
   <object class="GtkImage" id="Image_W_Down">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Zpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_W_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Zneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_W_Sync_Rev">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Zpos.png</property>
@@ -203,12 +278,32 @@
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Xneg.png</property>
   </object>
+  <object class="GtkImage" id="Image_X_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Xpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_X_Sync_Rev">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Xneg.png</property>
+  </object>
   <object class="GtkImage" id="Image_Z_Left">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Zneg.png</property>
   </object>
   <object class="GtkImage" id="Image_Z_Right">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Zpos.png</property>
+  </object>
+  <object class="GtkImage" id="Image_Z_Sync_Fwd">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="pixbuf">Images/Axis-Zneg.png</property>
+  </object>
+  <object class="GtkImage" id="Image_Z_Sync_Rev">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="pixbuf">Images/Axis-Zpos.png</property>
@@ -232,6 +327,49 @@
     <property name="step-increment">0.10</property>
     <property name="page-increment">1</property>
   </object>
+  <object class="GtkAdjustment" id="Thread_Angle_Adj">
+    <property name="lower">1</property>
+    <property name="upper">179</property>
+    <property name="step-increment">0.5</property>
+    <property name="page-increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_Clearance_Adj">
+    <property name="upper">999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_Final_Depth_Adj">
+    <property name="upper">999</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">0.01</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_First_Depth_Adj">
+    <property name="upper">999</property>
+    <property name="step-increment">0.001</property>
+    <property name="page-increment">0.01</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_Length_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_Spring_Adj">
+    <property name="upper">20</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_Starts_Adj">
+    <property name="lower">1</property>
+    <property name="upper">24</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="Thread_TPI_Adj">
+    <property name="lower">0.10</property>
+    <property name="upper">500</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="U_Feed_Rate">
     <property name="lower">-10</property>
     <property name="upper">10</property>
@@ -241,6 +379,11 @@
   </object>
   <object class="GtkAdjustment" id="U_Idx_Dis">
     <property name="upper">25</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkAdjustment" id="U_Sync_Dist_Adj">
+    <property name="upper">9999</property>
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
   </object>
@@ -256,6 +399,11 @@
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
   </object>
+  <object class="GtkAdjustment" id="V_Sync_Dist_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
   <object class="GtkAdjustment" id="W_Feed_Rate">
     <property name="lower">-10</property>
     <property name="upper">10</property>
@@ -265,6 +413,11 @@
   </object>
   <object class="GtkAdjustment" id="W_Idx_Dis">
     <property name="upper">25</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
+  <object class="GtkAdjustment" id="W_Sync_Dist_Adj">
+    <property name="upper">9999</property>
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
   </object>
@@ -280,6 +433,11 @@
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
   </object>
+  <object class="GtkAdjustment" id="X_Sync_Dist_Adj">
+    <property name="upper">9999</property>
+    <property name="step-increment">0.01</property>
+    <property name="page-increment">0.10</property>
+  </object>
   <object class="GtkAdjustment" id="Z_Feed_Rate">
     <property name="lower">-10</property>
     <property name="upper">10</property>
@@ -292,173 +450,10 @@
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
   </object>
-  <object class="GtkAdjustment" id="X_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_X_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Xneg.png</property>
-  </object>
-  <object class="GtkImage" id="Image_X_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Xpos.png</property>
-  </object>
   <object class="GtkAdjustment" id="Z_Sync_Dist_Adj">
     <property name="upper">9999</property>
     <property name="step-increment">0.01</property>
     <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_Z_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Zpos.png</property>
-  </object>
-  <object class="GtkImage" id="Image_Z_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Zneg.png</property>
-  </object>
-  <object class="GtkAdjustment" id="U_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_U_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Xneg.png</property>
-  </object>
-  <object class="GtkImage" id="Image_U_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Xpos.png</property>
-  </object>
-  <object class="GtkAdjustment" id="V_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_V_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Yneg.png</property>
-  </object>
-  <object class="GtkImage" id="Image_V_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Ypos.png</property>
-  </object>
-  <object class="GtkAdjustment" id="W_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_W_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Zpos.png</property>
-  </object>
-  <object class="GtkImage" id="Image_W_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Zneg.png</property>
-  </object>
-  <object class="GtkAdjustment" id="A_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_A_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Apos.png</property>
-  </object>
-  <object class="GtkImage" id="Image_A_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Aneg.png</property>
-  </object>
-  <object class="GtkAdjustment" id="B_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_B_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Bneg.png</property>
-  </object>
-  <object class="GtkImage" id="Image_B_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Bpos.png</property>
-  </object>
-  <object class="GtkAdjustment" id="C_Sync_Dist_Adj">
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.10</property>
-  </object>
-  <object class="GtkImage" id="Image_C_Sync_Rev">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Cpos.png</property>
-  </object>
-  <object class="GtkImage" id="Image_C_Sync_Fwd">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="pixbuf">Images/Axis-Cneg.png</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Starts_Adj">
-    <property name="lower">1</property>
-    <property name="upper">24</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">1</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_TPI_Adj">
-    <property name="lower">0.1</property>
-    <property name="upper">500</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Length_Adj">
-    <property name="lower">0</property>
-    <property name="upper">9999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.1</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Angle_Adj">
-    <property name="lower">1</property>
-    <property name="upper">179</property>
-    <property name="step-increment">0.5</property>
-    <property name="page-increment">5</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Clearance_Adj">
-    <property name="lower">0</property>
-    <property name="upper">999</property>
-    <property name="step-increment">0.01</property>
-    <property name="page-increment">0.1</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_First_Depth_Adj">
-    <property name="lower">0</property>
-    <property name="upper">999</property>
-    <property name="step-increment">0.001</property>
-    <property name="page-increment">0.01</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Final_Depth_Adj">
-    <property name="lower">0</property>
-    <property name="upper">999</property>
-    <property name="step-increment">0.001</property>
-    <property name="page-increment">0.01</property>
-  </object>
-  <object class="GtkAdjustment" id="Thread_Spring_Adj">
-    <property name="lower">0</property>
-    <property name="upper">20</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">1</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can-focus">False</property>
@@ -475,7 +470,7 @@
         <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <!-- n-columns=14 n-rows=23 -->
+          <!-- n-columns=14 n-rows=25 -->
           <object class="GtkGrid" id="MainGrid">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
@@ -599,9 +594,6 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                   </object>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child type="tab">
                   <object class="GtkLabel" id="Panel_Mode_Tab_Idx">
@@ -614,7 +606,6 @@
                     </attributes>
                   </object>
                   <packing>
-                    <property name="position">0</property>
                     <property name="tab-fill">False</property>
                   </packing>
                 </child>
@@ -827,7 +818,7 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Rose Engine Butler</property>
+                <property name="label" translatable="yes">Rosetta</property>
                 <property name="justify">center</property>
                 <attributes>
                   <attribute name="font-desc" value="DejaVu Serif 20"/>
@@ -847,7 +838,7 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">REB O/S 1.0 Beta 1.2 - 26 October 2026</property>
+                <property name="label" translatable="yes">O/S 1.0 Beta 1.2 - 26 October 2026</property>
                 <property name="justify">right</property>
                 <property name="width-chars">9</property>
                 <attributes>
@@ -1862,7 +1853,7 @@ feed rate</property>
             </child>
             <child>
               <object class="HAL_Button" id="Open Library">
-                <property name="label" translatable="yes">www.RoseEngineButler.com</property>
+                <property name="label" translatable="yes">colvintools.com/Rosetta</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
@@ -1933,7 +1924,7 @@ W is parallel to Z</property>
                   </packing>
                 </child>
                 <child>
-                  <!-- n-columns=4 n-rows=2 -->
+                  <!-- n-columns=5 n-rows=2 -->
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
@@ -2341,9 +2332,9 @@ W is parallel to Z</property>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">12</property>
                         <property name="label-xalign">0</property>
                         <property name="shadow-type">in</property>
-                        <property name="margin-start">12</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
@@ -2408,9 +2399,9 @@ W is parallel to Z</property>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="margin-start">12</property>
                         <property name="label-xalign">0</property>
                         <property name="shadow-type">in</property>
-                        <property name="margin-start">12</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
@@ -2674,237 +2665,6 @@ direction</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
               <object class="GtkStack" id="Mode_Stack_10_4">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -2953,7 +2713,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3045,7 +2804,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3111,7 +2869,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3147,7 +2904,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3185,7 +2941,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3249,7 +3004,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3331,7 +3085,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3353,6 +3106,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -3371,6 +3125,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -3394,69 +3149,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="X_IdxDist_UOM">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="X_IdxDist_UOM">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="X_Idx_DegDiv_Box">
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="X_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">X_Idx_Div</property>
-                              <signal name="toggled" handler="X_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="X_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">X_Idx_Deg</property>
-                              <signal name="toggled" handler="X_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="X_Idx_DegDiv_Box">
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="X_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">X_Idx_Div</property>
+                            <signal name="toggled" handler="X_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="X_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">X_Idx_Deg</property>
+                            <signal name="toggled" handler="X_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3498,7 +3254,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3541,7 +3296,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3629,7 +3383,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3651,6 +3404,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -3669,6 +3423,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -3692,69 +3447,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="Z_IdxDist_UOM">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="Z_IdxDist_UOM">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="Z_Idx_DegDiv_Box">
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="Z_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">Z_Idx_Div</property>
-                              <signal name="toggled" handler="Z_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="Z_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">Z_Idx_Deg</property>
-                              <signal name="toggled" handler="Z_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="Z_Idx_DegDiv_Box">
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="Z_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">Z_Idx_Div</property>
+                            <signal name="toggled" handler="Z_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="Z_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">Z_Idx_Deg</property>
+                            <signal name="toggled" handler="Z_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3798,7 +3554,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3841,7 +3596,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3929,7 +3683,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -3951,6 +3704,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -3969,6 +3723,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -3992,69 +3747,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="U_IdxDist_UOM">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="U_IdxDist_UOM">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="U_Idx_DegDiv_Box">
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="U_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">U_Idx_Div</property>
-                              <signal name="toggled" handler="U_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="U_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">U_Idx_Deg</property>
-                              <signal name="toggled" handler="U_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="U_Idx_DegDiv_Box">
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="U_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">U_Idx_Div</property>
+                            <signal name="toggled" handler="U_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="U_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">U_Idx_Deg</property>
+                            <signal name="toggled" handler="U_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4098,7 +3854,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4141,7 +3896,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4229,7 +3983,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4251,6 +4004,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -4269,6 +4023,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -4292,69 +4047,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="V_IdxDist_UOM">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="V_IdxDist_UOM">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="V_Idx_DegDiv_Box">
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="V_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">V_Idx_Div</property>
-                              <signal name="toggled" handler="V_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="V_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">V_Idx_Deg</property>
-                              <signal name="toggled" handler="V_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="V_Idx_DegDiv_Box">
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="V_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">V_Idx_Div</property>
+                            <signal name="toggled" handler="V_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="V_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">V_Idx_Deg</property>
+                            <signal name="toggled" handler="V_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4398,7 +4154,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4441,7 +4196,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4529,7 +4283,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4551,6 +4304,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -4569,6 +4323,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -4592,69 +4347,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="W_IdxDist_UOM">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="W_IdxDist_UOM">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="W_Idx_DegDiv_Box">
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="W_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">W_Idx_Div</property>
-                              <signal name="toggled" handler="W_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="W_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">W_Idx_Deg</property>
-                              <signal name="toggled" handler="W_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="W_Idx_DegDiv_Box">
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="W_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">W_Idx_Div</property>
+                            <signal name="toggled" handler="W_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="W_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">W_Idx_Deg</property>
+                            <signal name="toggled" handler="W_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4698,7 +4454,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4741,7 +4496,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4828,7 +4582,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4850,6 +4603,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -4868,6 +4622,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -4891,69 +4646,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="A_IdxDist_UOM">
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="A_IdxDist_UOM">
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="A_Idx_DegDiv_Box">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="A_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">A_Idx_Div</property>
-                              <signal name="toggled" handler="A_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="A_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">A_Idx_Deg</property>
-                              <signal name="toggled" handler="A_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="A_Idx_DegDiv_Box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="A_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">A_Idx_Div</property>
+                            <signal name="toggled" handler="A_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="A_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">A_Idx_Deg</property>
+                            <signal name="toggled" handler="A_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -4994,7 +4750,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5037,7 +4792,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5124,7 +4878,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5146,6 +4899,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -5164,6 +4918,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -5187,69 +4942,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkBox" id="B_Idx_DegDiv_Box">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="B_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">B_Idx_Div</property>
-                              <signal name="toggled" handler="B_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="B_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">B_Idx_Deg</property>
-                              <signal name="toggled" handler="B_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="B_Idx_DegDiv_Box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="B_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">B_Idx_Div</property>
+                            <signal name="toggled" handler="B_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="B_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">B_Idx_Deg</property>
+                            <signal name="toggled" handler="B_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkLabel" id="B_IdxDist_UOM">
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="B_IdxDist_UOM">
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5292,7 +5048,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5335,7 +5090,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5422,7 +5176,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5444,6 +5197,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -5462,6 +5216,7 @@ direction</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -5485,69 +5240,70 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                        <object class="GtkLabel" id="C_IdxDist_UOM">
-                          <property name="can-focus">False</property>
-                          <property name="halign">start</property>
-                          <property name="valign">center</property>
-                          <property name="label" translatable="yes">in</property>
-                          <property name="width-chars">2</property>
-                          <property name="xalign">0.5</property>
-                        </object>
+                      <object class="GtkLabel" id="C_IdxDist_UOM">
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">in</property>
+                        <property name="width-chars">2</property>
+                        <property name="xalign">0.5</property>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                        <object class="GtkBox" id="C_Idx_DegDiv_Box">
-                          <property name="visible">True</property>
-                          <property name="can-focus">False</property>
-                          <property name="valign">center</property>
-                          <property name="margin-left">4</property>
-                          <property name="margin-start">4</property>
-                          <property name="orientation">vertical</property>
-                          <child>
-                            <object class="HAL_RadioButton" id="C_Idx_Deg">
-                              <property name="label" translatable="yes">deg</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">C_Idx_Div</property>
-                              <signal name="toggled" handler="C_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">0</property>
-                            </packing>
-                          </child>
-                          <child>
-                            <object class="HAL_RadioButton" id="C_Idx_Div">
-                              <property name="label" translatable="yes">div</property>
-                              <property name="visible">True</property>
-                              <property name="can-focus">True</property>
-                              <property name="receives-default">False</property>
-                              <property name="draw-indicator">True</property>
-                              <property name="group">C_Idx_Deg</property>
-                              <signal name="toggled" handler="C_Set_Idx_DegDiv" swapped="no"/>
-                            </object>
-                            <packing>
-                              <property name="expand">False</property>
-                              <property name="fill">True</property>
-                              <property name="position">1</property>
-                            </packing>
-                          </child>
-                        </object>
+                      <object class="GtkBox" id="C_Idx_DegDiv_Box">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="margin-left">4</property>
+                        <property name="margin-start">4</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="HAL_RadioButton" id="C_Idx_Deg">
+                            <property name="label" translatable="yes">deg</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">C_Idx_Div</property>
+                            <signal name="toggled" handler="C_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="HAL_RadioButton" id="C_Idx_Div">
+                            <property name="label" translatable="yes">div</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="draw-indicator">True</property>
+                            <property name="group">C_Idx_Deg</property>
+                            <signal name="toggled" handler="C_Set_Idx_DegDiv" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5590,7 +5346,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5633,7 +5388,6 @@ direction</property>
                   </object>
                   <packing>
                     <property name="name">idx</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5720,6 +5474,7 @@ direction</property>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -5733,6 +5488,7 @@ direction</property>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -5747,6 +5503,7 @@ direction</property>
                    Overlaps columns 10-13's Mode_Stack cells, which
                    switch to an empty "thread" page (added at startup by
                    _load_threading_tab) while this tab is showing. -->
+              <!-- n-columns=3 n-rows=16 -->
               <object class="GtkGrid" id="Thread_Form">
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
@@ -5775,7 +5532,6 @@ direction</property>
                     <property name="width-chars">7</property>
                     <property name="input-purpose">number</property>
                     <property name="adjustment">Thread_Starts_Adj</property>
-                    <property name="digits">0</property>
                     <property name="numeric">True</property>
                     <property name="update-policy">if-valid</property>
                     <signal name="value-changed" handler="Thread_Pitch_Changed" swapped="no"/>
@@ -5789,7 +5545,6 @@ direction</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">0</property>
                   </object>
                   <packing>
@@ -5860,7 +5615,6 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">How far the thread advances in one turn of the work: pitch x starts.</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">1</property>
                     <attributes>
                       <attribute name="style" value="italic"/>
@@ -6209,7 +5963,6 @@ direction</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Depth of a sharp V thread for this pitch and angle.</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">1</property>
                     <attributes>
                       <attribute name="style" value="italic"/>
@@ -6257,7 +6010,6 @@ direction</property>
                     <property name="width-chars">7</property>
                     <property name="input-purpose">number</property>
                     <property name="adjustment">Thread_Spring_Adj</property>
-                    <property name="digits">0</property>
                     <property name="numeric">True</property>
                     <property name="update-policy">if-valid</property>
                     <signal name="value-changed" handler="Thread_Recalc" swapped="no"/>
@@ -6271,7 +6023,6 @@ direction</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">0</property>
                   </object>
                   <packing>
@@ -6298,7 +6049,6 @@ direction</property>
                   <object class="GtkLabel" id="Thread_Passes">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">1</property>
                     <attributes>
                       <attribute name="style" value="italic"/>
@@ -6313,7 +6063,6 @@ direction</property>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes"></property>
                     <property name="xalign">0</property>
                     <attributes>
                       <attribute name="style" value="italic"/>
@@ -6341,6 +6090,7 @@ direction</property>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -6354,6 +6104,7 @@ direction</property>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -6390,6 +6141,189 @@ direction</property>
                 <property name="height">17</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -6399,12 +6333,6 @@ direction</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkSizeGroup" id="Sync_Dist_Width_Group">
-    <widgets>
-      <widget name="Sync_Hdr_Distance"/>
-      <widget name="X_Sync_Dist"/>
-    </widgets>
   </object>
   <object class="GtkSizeGroup" id="Idx_Count_Width_Group">
     <widgets>
@@ -6424,6 +6352,12 @@ direction</property>
     <widgets>
       <widget name="Idx_Hdr_Distance"/>
       <widget name="X_Idx_Dist"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="Sync_Dist_Width_Group">
+    <widgets>
+      <widget name="Sync_Hdr_Distance"/>
+      <widget name="X_Sync_Dist"/>
     </widgets>
   </object>
 </interface>

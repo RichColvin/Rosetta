@@ -87,17 +87,17 @@ sSpaces='   '
 #
 # ********************************************************************
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}#                    RRRRRR    EEEEEEEE  BBBBBBB                      #${NOCOLOR}"
-echo -e "${TITLE}#                    RR   RR   EE        BB    BB                     #${NOCOLOR}"
-echo -e "${TITLE}#                    RR   RR   EE        BB    BB                     #${NOCOLOR}"
-echo -e "${TITLE}#                    RRRRRR    EEEEEE    BBBBBBB                      #${NOCOLOR}"
-echo -e "${TITLE}#                    RR   RR   EE        BB    BB                     #${NOCOLOR}"
-echo -e "${TITLE}#                    RR   RR   EE        BB    BB                     #${NOCOLOR}"
-echo -e "${TITLE}#                    RR    RR  EEEEEEEE  BBBBBBB                      #${NOCOLOR}"
+echo -e "${TITLE}#   RRRRRR    OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT    AA       #${NOCOLOR}"
+echo -e "${TITLE}#   RR   RR  OO    OO SS       EE          TT       TT      AAAA      #${NOCOLOR}"
+echo -e "${TITLE}#   RR   RR  OO    OO SS       EE          TT       TT     AA  AA     #${NOCOLOR}"
+echo -e "${TITLE}#   RRRRRR   OO    OO  SSSSSS  EEEEEE      TT       TT    AA    AA    #${NOCOLOR}"
+echo -e "${TITLE}#   RR   RR  OO    OO       SS EE          TT       TT    AAAAAAAA    #${NOCOLOR}"
+echo -e "${TITLE}#   RR   RR  OO    OO       SS EE          TT       TT    AA    AA    #${NOCOLOR}"
+echo -e "${TITLE}#   RR    RR  OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA    #${NOCOLOR}"
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 echo -e "${TITLE}Use of this system constitutes consent to the MIT/X Consortium License ${NOCOLOR}"
-echo -e "${TITLE}as it applies to the Rose Engine Butler system.                        ${NOCOLOR}"
+echo -e "${TITLE}as it applies to the Rosetta system.                                   ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 echo -e "${TITLE}Update the system                                                     ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
@@ -180,7 +180,7 @@ if [ -f "$ETHERLAB_SOURCES" ]; then
         fi
     else
         echo -e "${KEYNOTE}WARNING: could not fetch the EtherLab signing key - apt update may   ${NOCOLOR}"
-        echo -e "${KEYNOTE}warn about it, but the REB update carries on.                        ${NOCOLOR}"
+        echo -e "${KEYNOTE}warn about it, but the Rosetta update carries on.                    ${NOCOLOR}"
     fi
     rm -f "$etherlab_tmp"
 else

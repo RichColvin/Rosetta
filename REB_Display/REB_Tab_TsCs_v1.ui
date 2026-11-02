@@ -109,7 +109,7 @@
                         <property name="halign">center</property>
                         <property name="valign">end</property>
                         <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">Rose Engine Butler
+                        <property name="label" translatable="yes">Rosetta
 Usage License</property>
                         <property name="justify">center</property>
                         <attributes>
@@ -130,7 +130,7 @@ Usage License</property>
                         <property name="halign">end</property>
                         <property name="valign">start</property>
                         <property name="xpad">0</property>
-                        <property name="pixbuf">Images/REBLogo-Sm.png</property>
+                        <property name="pixbuf">Images/REBLogo-Sm-rev.png</property>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -152,9 +152,9 @@ Usage License</property>
                     <property name="valign">start</property>
                     <property name="margin-top">12</property>
                     <property name="vexpand">True</property>
-                    <property name="label" translatable="yes">The Rose Engine Butler system is copyright (c) 2026 Colvin Tools and Brainwave Embedded.
+                    <property name="label" translatable="yes">The Rosetta system is copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 
-The following MIT/X Consortium License applies to the Rose Engine Butler system. Use of this system constitutes consent to the terms outlined below.
+The following MIT/X Consortium License applies to the Rosetta system. Use of this system constitutes consent to the terms outlined below.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

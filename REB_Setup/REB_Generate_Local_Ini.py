@@ -146,6 +146,7 @@
 # authorization from COPYRIGHT HOLDERS.
 #######################################################################
 
+import math
 import os
 import re
 import shutil
@@ -243,8 +244,8 @@ def check_reserved_gcode_names(settings):
     detail = (
         "The gcode directory must never hold a file starting with \"reb\"/"
         "\"REB\" (any case) or named M100-M199 - LinuxCNC searches that folder before "
-        "Rose Engine Butler's own subroutines and M-codes, so a matching "
-        "file would quietly run instead of Rose Engine Butler's. Rename "
+        "Rosetta's own subroutines and M-codes, so a matching "
+        "file would quietly run instead of Rosetta's. Rename "
         "the file (the Gcode icon on the panel opens that folder), then "
         "try again.\n\nFile(s) found:\n" + file_list
     )
@@ -1547,8 +1548,10 @@ def _overlay_hal_files(text):
 # REB_Splash.ngc (tracked) is an empty program - no axis words, since a
 # move naming an unassigned axis makes AXIS report an error. When X and
 # Z (the axes AXIS's lathe view draws in) are both assigned, this writes
-# REB_Splash.local.ngc instead, which draws "REB" with "ROSE ENGINE
-# BUTLER" beneath it in the preview, and points REB.local.ini's
+# REB_Splash.local.ngc instead, which draws the Rosetta rosette (the
+# logo's eight circles) with "ROSETTA" beneath it in the preview (until
+# 02 November 2026, "REB" over "ROSE ENGINE BUTLER"), and points
+# REB.local.ini's
 # OPEN_FILE at it. Every move is inside "if [#<_task> EQ 0]": 0 only in
 # the GUI's preview interpreter, 1 when the program really runs - so
 # pressing Run with the splash loaded never moves the machine. In the
@@ -1578,15 +1581,25 @@ SPLASH_GLYPHS = {
     "U": [(1, 0), (0, 1), (0, 6), (0, 1), (1, 0), (3, 0), (4, 1), (4, 6), (4, 1), (3, 0)],
     "T": [(2, 0), (2, 6), (0, 6), (4, 6), (2, 6), (2, 0)],
     "L": [(4, 0), (0, 0), (0, 6), (0, 0), (4, 0)],
+    "A": [(0, 0), (2 / 3.0, 2), (10 / 3.0, 2), (2 / 3.0, 2), (2, 6), (4, 0)],
 }
 SPLASH_ADVANCE = 5      # grid units from one letter to the next
 SPLASH_SPACE = 3        # grid units for a space
 
 # (text, inches per grid unit, baseline height in inches above the
-# origin on screen), drawn in this order: the name 0.3" tall on the
-# origin's baseline, then "REB" 1.8" tall above it; both centred on
-# Z = 0.
-SPLASH_LINES = (("ROSE ENGINE BUTLER", 0.05, 0.0), ("REB", 0.3, 0.6))
+# origin on screen): the name 0.75" tall on the origin's baseline,
+# centred on Z = 0.
+SPLASH_LINES = (("ROSETTA", 0.125, 0.0),)
+
+# The rosette above the name, like the Rosetta logo: SPLASH_ROSETTE_CIRCLES
+# circles of radius SPLASH_ROSETTE_RADIUS whose centres sit that same
+# distance from the rosette's centre, so every circle passes through it -
+# each is one full G2 starting and ending there, with no rapids between.
+# The rosette's centre is SPLASH_ROSETTE_CENTRE inches above the
+# baseline, centred on Z = 0 (its bottom 0.3" above the name's top).
+SPLASH_ROSETTE_CIRCLES = 8
+SPLASH_ROSETTE_RADIUS = 0.6
+SPLASH_ROSETTE_CENTRE = 0.75 + 0.3 + 2 * SPLASH_ROSETTE_RADIUS
 
 
 def _splash_text_width(text):
@@ -1596,9 +1609,10 @@ def _splash_text_width(text):
 
 def _splash_moves():
     '''
-    G-code lines drawing SPLASH_LINES (inches, absolute). Between the two
-    lines the tool rapids straight up at the end of the first, then along
-    the second's baseline, so no rapid crosses a letter.
+    G-code lines drawing SPLASH_LINES, then the rosette above them
+    (inches, absolute). Between lines - and from the last letter to the
+    rosette - the tool rapids straight up at the end of one, then across,
+    so no rapid crosses a letter.
     '''
     out = []
     end_z = None
@@ -1615,6 +1629,15 @@ def _splash_moves():
                                                z + across * unit, 0.0 - (base_x + up * unit)))
             end_z = z + SPLASH_GLYPHS[ch][-1][0] * unit
             z += SPLASH_ADVANCE * unit
+    centre_x = 0.0 - SPLASH_ROSETTE_CENTRE
+    out.append("G0 Z%.4f X%.4f" % (end_z, centre_x))
+    out.append("G0 Z0.0000 X%.4f" % centre_x)
+    for n in range(SPLASH_ROSETTE_CIRCLES):
+        angle = 2.0 * math.pi * n / SPLASH_ROSETTE_CIRCLES
+        # I/K: the circle's centre relative to the rosette's centre (X, Z)
+        out.append("G2 Z0.0000 X%.4f I%.4f K%.4f" % (
+            centre_x, SPLASH_ROSETTE_RADIUS * math.sin(angle),
+            SPLASH_ROSETTE_RADIUS * math.cos(angle)))
     return out
 
 
@@ -1633,7 +1656,7 @@ def generate_splash(role_layout):
         return False
     if "X" in role_layout.channel_of and "Z" in role_layout.channel_of:
         text = "\n".join([
-            "(Rose Engine Butler startup splash - generated at each launch by)",
+            "(Rosetta startup splash - generated at each launch by)",
             "(REB_Generate_Local_Ini.py. The drawing below only shows in the)",
             "(preview: #<_task> is 0 there and 1 in a real run, so pressing)",
             "(Run with this loaded does nothing.)",
@@ -1644,7 +1667,7 @@ def generate_splash(role_layout):
             "M2",
             "",
         ])
-        what = "REB drawing"
+        what = "Rosetta drawing"
     else:
         text = empty
         what = "empty (X or Z not assigned)"
@@ -1687,9 +1710,9 @@ def main():
         # dropping the expansion box: REB_main.py and the other programs
         # count its channels from the same setting, so joint numbers
         # would no longer match this HAL.
-        print("Expansion Box is ticked in REB Settings, but the Pi's wired connection")
+        print("Expansion Box is ticked in Rosetta Settings, but the Pi's wired connection")
         print("is still on 192.168.1.x. Run REB_Change_Network.sh to move it to the")
-        print("10.10.10.x network, or untick Expansion Box in REB Settings.")
+        print("10.10.10.x network, or untick Expansion Box in Rosetta Settings.")
         sys.exit(1)
 
     # Regenerate REB.local.hal/REB_PostGUI_v1.local.hal FIRST and abort

@@ -84,10 +84,18 @@ SETTINGS_PATH = "/home/reuben/Documents/REBset_v1.ini"
 # The friendly serial number an owner can set (REB_Set_Serial_Number.sh) -
 # same path as REB_Report_Version.py's own SERIAL_PATH (duplicated, not
 # imported - that script runs standalone from REB_Update_Settings.py).
-# Appended to the main panel's "REB O/S ..." label by _load_version_label
+# Appended to the main panel's "O/S ..." label by _load_version_label
 # below; absent/empty means no S/N has been set yet, so nothing is
 # appended.
 SERIAL_PATH = os.path.expanduser("~/.config/REB/serial")
+
+# Web pages opened by the panel's link buttons - kept together so a move
+# to a domain of Rosetta's own is a change here only. The G-code library
+# has no Rosetta address yet (02 November 2026), so it keeps its old one.
+WEBSITE_URL = "https://colvintools.com/Rosetta/"
+USER_MANUAL_URL = "https://colvintools.com/Rosetta/UserManual/"
+USER_FORUM_URL = "https://colvintools.com/Rosetta/Forum/"
+GCODE_LIBRARY_URL = "https://gcode.RoseEngineButler.com"
 
 # Channel id ("00".."07") -> the role (one of the 8 axis letters or 2
 # spindles) REB.ini/REB.hal ship with by default. Seed value for a
@@ -1207,7 +1215,7 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenRoseEngineButlerWebsite")
 
-        url = "https://roseenginebutler.com/"
+        url = WEBSITE_URL
         webbrowser.open(url)
 
         Prt1 = "Opening website " + url
@@ -1238,7 +1246,7 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenGcodeLibrary")
 
-        url = "https://gcode.RoseEngineButler.com"
+        url = GCODE_LIBRARY_URL
         webbrowser.open(url)
 
         Prt1 = "Opening website " + url
@@ -1301,7 +1309,7 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenLibrary")
 
-        url = "https://www.RoseEngineButler.com"
+        url = WEBSITE_URL
         webbrowser.open(url)
 
         Prt1 = "Opening website " + url
@@ -1363,7 +1371,7 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenUserForum")
 
-        url = "https://RoseEngineButler.com/Forum"
+        url = USER_FORUM_URL
         webbrowser.open(url)
 
         Prt1 = "Opening website " + url
@@ -1394,7 +1402,7 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenUserManual")
 
-        url = "https://manual.RoseEngineButler.com"
+        url = USER_MANUAL_URL
         webbrowser.open(url)
 
         Prt1 = "Opening website " + url
@@ -3438,7 +3446,7 @@ class HandlerClass:
 #######################################################################
 # Version label (machine S/N)
 # Purpose:              Appends ", Machine S/N <n>" to the main panel's
-#                       "REB O/S ..." label once an owner has set a
+#                       "O/S ..." label once an owner has set a
 #                       friendly serial number (REB_Set_Serial_Number.sh,
 #                       ~/.config/REB/serial - SERIAL_PATH above), so the
 #                       panel shows which machine this is at a glance
@@ -3677,7 +3685,7 @@ class HandlerClass:
         # component).
         self._load_panel_axis_controls()
 
-        # Append ", Machine S/N <n>" to the "REB O/S ..." label if this
+        # Append ", Machine S/N <n>" to the "O/S ..." label if this
         # owner has set a friendly serial number (if owned by this
         # component) - see _load_version_label.
         self._load_version_label()

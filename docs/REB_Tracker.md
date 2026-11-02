@@ -134,29 +134,64 @@ mistake.
 
 **Tasks - what the operator sees (low risk, can go to `main` early):**
 
-- [ ] Window titles, panel labels and "About"/licence text in the four
-      `.ui` files (`REB_Panel_v1.ui`, `REB_Settings_v1.ui`,
-      `REB_Tab_Help_v1.ui`, `REB_Tab_TsCs_v1.ui`) and in the Back Up to
-      USB and Checkout windows.
-- [ ] Logos: `REBLogo-*.png`, `REB-*.png` link buttons, `REB_SettingsGear`,
-      `REB_Update.png`, `REB_Backup.png`, `REBStartupImage.gif` (boot
-      splash), `REBWallpaper.png`. `RosettaLogo-Black-Sm.png` is in.
-- [ ] Startup splash lettering: `SPLASH_GLYPHS` in
-      `REB_Generate_Local_Ini.py` draws "REB / ROSE ENGINE BUTLER" -
-      needs new letters for "ROSETTA" (S, T, A at least).
-- [ ] Web links: manual buttons (`MANUAL_URL` in `REB_Settings.py`,
-      `REB_main.py`'s Manual/Forum/G-code/Home buttons), the Help tab's
-      image link, `REB_Report_Version.REPORT_URL`.
-- [ ] Version report server: `reb_report.php`/`reb_report_view.php` on
-      the new site; the old URL must keep accepting reports (a POST
-      through a 301/302 turns into a GET - use 307/308 or keep the old
-      script running).
+- [x] Window titles, panel labels and licence text (02 November 2026,
+      not yet run on a machine): Rich's Pi edits (REB Settings page
+      titles "Rosetta", "O/S ..." labels without "REB") plus the panel's
+      and Help tab's website label (colvintools.com/Rosetta), the Help
+      tab's description, the Usage License tab (title, text, and its logo
+      now the rosette `REBLogo-Sm-rev.png`), the Rosetta Settings window
+      title and its "LinuxCNC is running" message, file-chooser names and
+      errors, Back Up to USB's title and log, Checkout's messages.
+      `REB_Report_Version.py` 1.2 reads the "O/S ..." label with or
+      without "REB " (it found nothing once "REB " was taken off).
+      Still "REB" on purpose until the file renames: the reserved-name
+      rule ("never start a G-code file name with REB") in Rosetta Settings
+      and the generator's message.
+- [ ] **Logos - need new artwork from Rich** (02 November 2026). Still
+      showing Reuben or "Rose Engine Butler": `REBStartupImage.gif` (the
+      AXIS splash, `[DISPLAY]INTRO_GRAPHIC` in REB.ini - the name in
+      text plus Reuben), the Help tab's three book-spine buttons
+      `REB-UserManualsm.png`, `REB-Forumsm.png`, `REB-Gcodesm.png` (the
+      name plus Reuben at the foot). Unused by anything in the repo and
+      can probably be deleted: `REBLogo-Sm.png`, `REBLogo-Sm-Panel*.png`,
+      `REB-Forum.png`, `REB-Gcode.png`, `REB-UserForum.png`,
+      `REB-UserManual.png`, `ReubenHeadSmall.png`, `Reuben.png`,
+      `Reuben-rev.png`, `RosettaLogo-Black-Sm.png` (in `REB_Display/Images/`),
+      `REB_Setup/Images/Reuben.gif` and `Reuben.png`. Already new:
+      `REBLogo-Sm-rev.png` (panel/Settings/licence), the
+      `ReubenHead*.png` launcher icons and `REBWallpaper.png` (d733f26).
+- [x] Startup splash (02 November 2026, not yet seen in AXIS): the
+      preview now draws the rosette (eight circles through one centre,
+      like the logo - each one full `G2`) over "ROSETTA" (`SPLASH_GLYPHS`
+      gained an "A"). Checked through LinuxCNC's own interpreter
+      (`rs274`, no errors) and drawn as the lathe view shows it.
+- [x] Web links (02 November 2026, not yet clicked on a machine): the
+      panel's buttons now open colvintools.com/Rosetta/,
+      .../UserManual/ and .../Forum/ (`WEBSITE_URL`, `USER_MANUAL_URL`,
+      `USER_FORUM_URL`, `GCODE_LIBRARY_URL` at the top of `REB_main.py`),
+      Rosetta Settings' manual buttons go to the new manual (every page
+      they name exists there), the version report posts to
+      colvintools.com/Rosetta/Support/reb_report.php. **Still on the old
+      address:** the G-code library (gcode.RoseEngineButler.com - no
+      Rosetta home yet), and `README.md`'s image.
+- [ ] Version report server: the script is on the new site (answers
+      405 to a plain GET, as the old one does). Machines not yet updated
+      keep posting to support.roseenginebutler.com, so for a while
+      reports land in two logs - either merge them in the view page or
+      have the old address forward with a 307/308 (a 301/302 turns the
+      POST into a GET and the report is lost).
 - [ ] Desktop and menu entries on each machine (names, icons) and the
       Thunar bookmark/panel launcher names from `REB_Add_Shortcuts.sh` -
       the installer for new machines, a `ONE_TIME_STEPS` entry for built
       ones.
-- [ ] Messages printed by the installer, `REB_Update.sh`,
-      `REB_Change_Network.sh`, `REB_Checkout.sh`.
+- [x] Messages printed by the installer, `REB_Update.sh`,
+      `REB_Change_Network.sh`, `REB_Checkout.sh`, Rosetta Settings'
+      name in the generator's and `REB_Update_Settings.py`'s messages,
+      and the "REB" block letters at the top of `REB_Update.sh` and the
+      Trixie installer, now "ROSETTA" (02 November 2026). Left for the
+      file-rename work: `REB_Update.sh`'s pointer to the Support Manual
+      page "Updating Rose Engine Butler" (rename that page first) and the
+      "RoseEngineButler" folder shortcut name.
 - [ ] Comment headers and the copyright/licence text in every file
       (including `SETTINGS_HEADER`/`SETTINGS_FOOTER`/`EXPORT_HEADER`, so
       every machine's settings file is re-noted on its next update),

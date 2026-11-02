@@ -139,11 +139,11 @@ SETTINGS_PATH = "/home/reuben/Documents/REBset_v1.ini"
 # The friendly serial number an owner can set (REB_Set_Serial_Number.sh) -
 # same path as REB_Report_Version.py's own SERIAL_PATH and REB_main.py's
 # copy (duplicated, not imported - each runs standalone). Appended to
-# each page's "REB O/S ..." label by _load_version_label below;
+# each page's "O/S ..." label by _load_version_label below;
 # absent/empty means no S/N has been set yet, so nothing is appended.
 SERIAL_PATH = os.path.expanduser("~/.config/REB/serial")
 
-# The one "REB O/S ..." label's widget id on each of the 4 Settings
+# The one "O/S ..." label's widget id on each of the 4 Settings
 # pages (Axis Selection, Inputs/Outputs/and Sounds, Axis and Stepper
 # Motor Tuning, Other) - REB_Settings_v1.ui repeats the same static
 # text on every page, each with its own widget id.
@@ -399,7 +399,7 @@ LIMIT_SWITCH_TYPES = ("NC", "NO")
 # page's Limit Switches, E-Stop Button and Signal Tower and Sounds notes
 # and the tuning page's three Scale notes (Open_Manual_Link), keyed by
 # button id.
-MANUAL_URL = "https://roseenginebutler.com/UserManual/index.php?n=Main."
+MANUAL_URL = "https://colvintools.com/Rosetta/UserManual/index.php?n=Main."
 MANUAL_LINKS = {
     "Limit_Switch_Cabling_Link": MANUAL_URL + "LimitSwitchCabling",
     "Limit_Switch_How_Link":     MANUAL_URL + "InputsOutputsSound#LimitSwitches",
@@ -1844,7 +1844,7 @@ class HandlerClass:
 
     def _load_version_label(self):
         '''
-        Appends ", Machine S/N <n>" to each page's "REB O/S ..." label
+        Appends ", Machine S/N <n>" to each page's "O/S ..." label
         once an owner has set a friendly serial number (SERIAL_PATH) -
         same idea as REB_main.py's main-panel version label. Left as
         shipped (no suffix) until a serial has been set.
@@ -2199,7 +2199,7 @@ class HandlerClass:
         dialog.set_current_name(time.strftime("%Y-%m-%d") + ".REBset_v1.ini")
 
         file_filter = Gtk.FileFilter()
-        file_filter.set_name("Rose Engine Butler Settings (*.ini)")
+        file_filter.set_name("Rosetta Settings (*.ini)")
         file_filter.add_pattern("*.ini")
         dialog.add_filter(file_filter)
 
@@ -2243,7 +2243,7 @@ class HandlerClass:
         dialog.set_current_folder(REBSET_DEFAULT_DIR)
 
         file_filter = Gtk.FileFilter()
-        file_filter.set_name("Rose Engine Butler Settings (*.ini)")
+        file_filter.set_name("Rosetta Settings (*.ini)")
         file_filter.add_pattern("*.ini")
         dialog.add_filter(file_filter)
 
@@ -2263,7 +2263,7 @@ class HandlerClass:
             return
 
         if not isinstance(data, dict) or "axes" not in data:
-            _show_settings_error(widget, path + " is not a Rose Engine Butler settings file.")
+            _show_settings_error(widget, path + " is not a Rosetta settings file.")
             return
 
         self._apply_settings_root(widget, data, path, "usercomment")
@@ -2312,7 +2312,7 @@ class HandlerClass:
         dialog.set_current_name(file_name)
 
         file_filter = Gtk.FileFilter()
-        file_filter.set_name("Rose Engine Butler Export (*" + EXPORT_EXTENSION + ")")
+        file_filter.set_name("Rosetta Export (*" + EXPORT_EXTENSION + ")")
         file_filter.add_pattern("*" + EXPORT_EXTENSION)
         dialog.add_filter(file_filter)
 
@@ -2585,7 +2585,7 @@ class HandlerClass:
         dialog.set_current_folder(REBSET_DEFAULT_DIR)
 
         file_filter = Gtk.FileFilter()
-        file_filter.set_name("Rose Engine Butler Export (*" + EXPORT_EXTENSION + ")")
+        file_filter.set_name("Rosetta Export (*" + EXPORT_EXTENSION + ")")
         file_filter.add_pattern("*" + EXPORT_EXTENSION)
         dialog.add_filter(file_filter)
 
@@ -2605,7 +2605,7 @@ class HandlerClass:
             return
 
         if not isinstance(data, dict) or "axes" not in data:
-            _show_settings_error(widget, path + " is not a Rose Engine Butler export file.")
+            _show_settings_error(widget, path + " is not a Rosetta export file.")
             return
 
         self._apply_settings_root(widget, data, path, "comment")
@@ -3111,7 +3111,7 @@ class HandlerClass:
         self._load_done_sound()
         self._load_fault_sound()
 
-        # Append ", Machine S/N <n>" to each page's "REB O/S ..." label
+        # Append ", Machine S/N <n>" to each page's "O/S ..." label
         # if this owner has set a friendly serial number.
         self._load_version_label()
 
@@ -3634,9 +3634,9 @@ def main():
             text="LinuxCNC is currently running",
         )
         dialog.format_secondary_text(
-            "REB Settings must be run before starting LinuxCNC, not while "
-            "it's running. Please exit LinuxCNC first, then run REB "
-            "Settings again."
+            "Rosetta Settings must be run before starting LinuxCNC, not "
+            "while it's running. Please exit LinuxCNC first, then run "
+            "Rosetta Settings again."
         )
         dialog.run()
         dialog.destroy()
@@ -3649,7 +3649,7 @@ def main():
     window = builder.get_object("window1")
     window.connect("delete-event", handler.confirm_close)
     window.connect("destroy", Gtk.main_quit)
-    window.set_title("REB Settings")
+    window.set_title("Rosetta Settings")
     _add_file_menu(builder, handler, window)
     # window1/scrolledwindow1 no longer propagate their content's
     # natural size upward (see scrolledwindow1's propagate-natural-

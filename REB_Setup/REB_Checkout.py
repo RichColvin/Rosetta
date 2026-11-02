@@ -227,7 +227,7 @@ def axis_feed(role):
 def test_program(serial, pass_name, layout, channels):
     spindle_no = spindle_numbers(layout, channels)
     lines = [
-        "(REB checkout - S/N %s - pass %s)" % (serial, pass_name),
+        "(Rosetta checkout - S/N %s - pass %s)" % (serial, pass_name),
         "(Written by REB_Checkout.py - one motor turn = 1 unit / 360 degrees)",
         # G8: X in radius, so X1 is one turn (lathe diameter mode, G7,
         # would halve it).
@@ -415,7 +415,7 @@ def _exit_on_signal(signum, frame):
 # ----------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="Rose Engine Butler bench checkout")
+    parser = argparse.ArgumentParser(description="Rosetta bench checkout")
     parser.add_argument("--steps-per-rev", type=int, default=DEFAULT_STEPS_PER_REV)
     parser.add_argument("--pass", dest="only_pass", choices=("A", "B"))
     parser.add_argument("--dry-run", action="store_true")
@@ -423,7 +423,7 @@ def main():
     parser.add_argument("--out", default=DEFAULT_OUT_DIR)
     args = parser.parse_args()
 
-    say("Rose Engine Butler - bench checkout")
+    say("Rosetta - bench checkout")
     say("")
     if not args.dry_run:
         if linuxcnc_running():
@@ -445,7 +445,7 @@ def main():
 
     log_path = os.path.join(run_dir, "checkout_log.txt")
     log = open(log_path, "a")
-    log.write("Rose Engine Butler bench checkout\n")
+    log.write("Rosetta bench checkout\n")
     log.write("Serial number: %s\n" % serial)
     log.write("Date: %s\n" % time.strftime("%d %B %Y %H:%M"))
     log.write("Software: %s\n" % software_version())

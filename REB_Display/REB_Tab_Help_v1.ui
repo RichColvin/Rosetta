@@ -125,7 +125,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="HAL_Button" id="Library">
-                    <property name="label" translatable="yes">www.RoseEngineButler.com</property>
+                    <property name="label" translatable="yes">colvintools.com/Rosetta</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="has-focus">True</property>
@@ -272,7 +272,7 @@
                     <property name="valign">start</property>
                     <property name="margin-top">12</property>
                     <property name="margin-bottom">12</property>
-                    <property name="label" translatable="yes">Rose Engine Butler is implemented as a set of configurations for use on LinuxCNC, and is designed for use with stepper motors on a rose engine.</property>
+                    <property name="label" translatable="yes">Rosetta is implemented as a set of configurations for use on LinuxCNC, and is designed for use with stepper motors on a rose engine.</property>
                     <property name="wrap">True</property>
                     <property name="max-width-chars">55</property>
                   </object>
