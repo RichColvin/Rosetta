@@ -98,8 +98,14 @@ files with REB in their name, and 13 web links to roseenginebutler.com.
    as nothing new is created at the old address - so don't reuse the
    `RoseEngineButler` organization's repo name - but each machine's
    remote should still be re-pointed by a one-time step rather than
-   relying on the redirect. Check before the transfer: who has access
-   (Chuck, any deploy keys the machines pull with) carries over.
+   relying on the redirect. The name was taken by Rich's 2025 Rosetta
+   project (CAD drawings, forum images - where `PIN_RosettaD_34` came
+   from); Rich renamed it `RichColvin/Rosetta-2025` on 02 November 2026
+   and is archiving it. Until this repo takes the name,
+   github.com/RichColvin/Rosetta forwards to Rosetta-2025; once it does,
+   old links to that address open this repo instead. Check before the
+   transfer: who has access (Chuck, any deploy keys the machines pull
+   with) carries over.
 3. **Reuben is retired** - images, launcher icons, the "Reuben head"
    shortcuts. **The Pi login becomes `rosetta`** (was `reuben`). That
    path is in 52 lines across 18 tracked files (`/home/reuben/...`) -
@@ -122,8 +128,9 @@ files with REB in their name, and 13 web links to roseenginebutler.com.
    not yet updated.
 
 Also noted: the Mesa pin file's package has been called `PIN_RosettaD_34`
-since the first commit, and `.axisrc` already says "Rosetta" - nothing to
-change, noted so it isn't "fixed" by mistake.
+since the first commit (from the 2025 Rosetta project), and `.axisrc`
+already says "Rosetta" - nothing to change, noted so it isn't "fixed" by
+mistake.
 
 **Tasks - what the operator sees (low risk, can go to `main` early):**
 
