@@ -70,6 +70,120 @@ Built and committed, but not yet seen working on real hardware.
 
 Ideas and designs not yet being built. Nothing here has code yet.
 
+### Rebranding: Rose Engine Butler -> Rosetta (since 02 November 2026)
+
+Rose Engine Butler is being renamed **Rosetta**. Done so far: new images
+(d733f26 - wallpaper, Reuben, Reuben-head launchers; the old ones kept in
+`REB_Setup/Images/Saved Images/`), and on Rich's Pi, not yet committed,
+REB Settings' page titles say "Rosetta". The website has started at
+https://colvintools.com/Rosetta/UserManual/ and
+https://colvintools.com/Rosetta/Support/ - a domain of its own may follow.
+
+In the repo on 02 November 2026: "Rose Engine Butler" in 36 files,
+"RoseEngineButler" (folder/repo name) in 23, "REB" as a word in 31, 107
+files with REB in their name, and 13 web links to roseenginebutler.com.
+
+**To decide first:**
+
+1. **File and program names.** Three ways: (a) rename everything
+   `REB*` to `Rosetta*` (e.g. `Rosetta_Launch.sh`, `Rosetta_main.py`,
+   `rosetta_thread.ngc`); (b) rename only what operators see (launchers,
+   `~/Documents` settings file, backup folder, menu entries) and keep REB
+   as the internal name; (c) leave file names alone. Claude's
+   recommendation: (a), once, on its own branch, before the April 2027
+   release - only about five machines have to be moved now, "REB" would
+   otherwise live on in every support call, and (b) leaves two names to
+   explain forever. Some names need a new form, not a straight swap:
+   `REBset_v1.ini`, `reb_settings_io.py`, the `.REBset_v1.ini` export
+   suffix, `REB.ini`/`REB.hal`, the `REB O/S` labels.
+2. **Repo folder and GitHub.** Rename `~/linuxcnc/configs/RoseEngineButler`
+   (and the GitHub organization/repo `RoseEngineButler/RoseEngineButler`)
+   to `Rosetta`? The folder path is written into every installed
+   machine's desktop/menu launchers, Thunar bookmark, `~/REB_Update.sh`
+   copy and many scripts. Check how GitHub redirects a renamed
+   organization (as opposed to a renamed repo) before relying on it.
+3. **Reuben.** Does the butler mascot stay (images, launcher icons, the
+   `reuben` login on every Pi)? Claude's suggestion: keep the `reuben`
+   login whatever happens - changing it on built machines isn't worth it.
+4. **Serial numbers.** Keep "REB003" style or change the prefix?
+   Machines already have labels on them.
+5. **Domain.** Point the program at colvintools.com/Rosetta/... now, or
+   wait for the new domain? Either way the old roseenginebutler.com links
+   must keep working (redirects) for machines not yet updated.
+6. **`PIN_RosettaD_34`.** The Mesa pin file's package has been called
+   that since the first commit - coincidence, or the name came first?
+   Nothing to change; noted so it isn't "fixed" by mistake.
+
+**Tasks - what the operator sees (low risk, can go to `main` early):**
+
+- [ ] Window titles, panel labels and "About"/licence text in the four
+      `.ui` files (`REB_Panel_v1.ui`, `REB_Settings_v1.ui`,
+      `REB_Tab_Help_v1.ui`, `REB_Tab_TsCs_v1.ui`) and in the Back Up to
+      USB and Checkout windows.
+- [ ] Logos: `REBLogo-*.png`, `REB-*.png` link buttons, `REB_SettingsGear`,
+      `REB_Update.png`, `REB_Backup.png`, `REBStartupImage.gif` (boot
+      splash), `REBWallpaper.png`. `RosettaLogo-Black-Sm.png` is in.
+- [ ] Startup splash lettering: `SPLASH_GLYPHS` in
+      `REB_Generate_Local_Ini.py` draws "REB / ROSE ENGINE BUTLER" -
+      needs new letters for "ROSETTA" (S, T, A at least).
+- [ ] Web links: manual buttons (`MANUAL_URL` in `REB_Settings.py`,
+      `REB_main.py`'s Manual/Forum/G-code/Home buttons), the Help tab's
+      image link, `REB_Report_Version.REPORT_URL`.
+- [ ] Version report server: `reb_report.php`/`reb_report_view.php` on
+      the new site; the old URL must keep accepting reports (a POST
+      through a 301/302 turns into a GET - use 307/308 or keep the old
+      script running).
+- [ ] Desktop and menu entries on each machine (names, icons) and the
+      Thunar bookmark/panel launcher names from `REB_Add_Shortcuts.sh` -
+      the installer for new machines, a `ONE_TIME_STEPS` entry for built
+      ones.
+- [ ] Messages printed by the installer, `REB_Update.sh`,
+      `REB_Change_Network.sh`, `REB_Checkout.sh`.
+- [ ] Comment headers and the copyright/licence text in every file
+      (including `SETTINGS_HEADER`/`SETTINGS_FOOTER`/`EXPORT_HEADER`, so
+      every machine's settings file is re-noted on its next update),
+      `LICENSE`, `README.md`.
+- [ ] User manual and Support manual text (PmWiki), including the
+      reserved-name rule ("never start a G-code file name with REB") -
+      changes if the subroutines are renamed.
+- [ ] Release Notes entry for the rename.
+
+**Tasks - file and program names (if (a) or (b) above; own branch):**
+
+- [ ] Rename the files and every reference (scripts, `.ini`/`.hal`
+      paths, `-u REB_Display/REB_main.py`, `EMBED_TAB_COMMAND`,
+      `SUBROUTINE_PATH`, `.gitignore`'d `*.local.*` names).
+- [ ] Subroutines `reb_thread.ngc` / `reb_thread_return.ngc` -> new
+      prefix, and the `o<...> call`s in `REB_main.py`.
+- [ ] Settings file: new name in `~/Documents`, the generator, every
+      program and the seed; existing machines' file moved by a one-time
+      step (keep a backup); Load Settings still reads old
+      `.REBset_v1.ini` exports.
+- [ ] `~/.config/REB/` (serial, shortcuts marker, report log) -> new
+      folder, moved by a one-time step.
+- [ ] **Updating built machines safely.** The `~/REB_Update.sh` copy
+      that runs the update was written before the rename and calls
+      `.../RoseEngineButler/REB_Setup/REB_Update_Settings.py` by full
+      path after its `git pull`. Leave a small stand-in at that old path
+      (and at the old launch/settings script paths the launchers use)
+      for a release or two, and have the one-time step re-point the
+      launchers. If the folder itself is renamed, the stand-in has to be
+      the old folder name (a symlink) - test this on a spare card first.
+- [ ] Backup folder name on USB sticks (`REB_Backup/`) and Checkout run
+      folder.
+- [ ] Mesa firmware `7i92t_REB.bin`/`.pin` and `PIN_REB_34.vhd`: probably
+      leave as they are (cards already flashed don't care; it's Mesa's
+      file) - or rename the copies only.
+- [ ] `CLAUDE.md`, this tracker's name (`docs/REB_Tracker.md`) and the
+      docs folder.
+- [ ] Test: fresh install from the Trixie installer, an update on a
+      machine built before the rename (S/N 1/2-style), Load of an old
+      export, the version report reaching the server, Back Up to USB,
+      Checkout.
+
+**Leave alone:** git history, dated entries in this tracker's Done table,
+the `reuben` login (unless decided otherwise above).
+
 ### Two-box hardware: base box + expansion box (since 11 October 2026)
 
 Rich and Chuck's plan to split the hardware into two chassis: a **base
