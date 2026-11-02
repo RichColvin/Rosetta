@@ -152,12 +152,16 @@ mistake.
       AXIS splash, `[DISPLAY]INTRO_GRAPHIC` in REB.ini - the name in
       text plus Reuben), the Help tab's three book-spine buttons
       `REB-UserManualsm.png`, `REB-Forumsm.png`, `REB-Gcodesm.png` (the
-      name plus Reuben at the foot). Unused by anything in the repo and
-      can probably be deleted: `REBLogo-Sm.png`, `REBLogo-Sm-Panel*.png`,
-      `REB-Forum.png`, `REB-Gcode.png`, `REB-UserForum.png`,
-      `REB-UserManual.png`, `ReubenHeadSmall.png`, `Reuben.png`,
-      `Reuben-rev.png`, `RosettaLogo-Black-Sm.png` (in `REB_Display/Images/`),
-      `REB_Setup/Images/Reuben.gif` and `Reuben.png`. Already new:
+      name plus Reuben at the foot). Deleted 02 November 2026 at Rich's
+      request, as nothing used them: `REBLogo-Sm.png`,
+      `REBLogo-Sm-Panel*.png`, `REB-Forum.png`, `REB-Gcode.png`,
+      `REB-UserForum.png`, `REB-UserManual.png`, `ReubenHeadSmall.png`,
+      `Reuben.png`, `Reuben-rev.png` (in `REB_Display/Images/`),
+      and `REB_Setup/Images/Reuben.gif` (Rich's copies of the old artwork
+      stay in `REB_Setup/Images/Saved Images/`). Kept though unused:
+      `RosettaLogo-Black-Sm.png`, and `REB_Setup/Images/Reuben.png` - the
+      full-size rosette artwork despite its name (d733f26); rename it with
+      the file renames. Already new:
       `REBLogo-Sm-rev.png` (panel/Settings/licence), the
       `ReubenHead*.png` launcher icons and `REBWallpaper.png` (d733f26).
 - [x] Startup splash (02 November 2026, not yet seen in AXIS): the
