@@ -101,11 +101,19 @@ files with REB in their name, and 13 web links to roseenginebutler.com.
    relying on the redirect. The name was taken by Rich's 2025 Rosetta
    project (CAD drawings, forum images - where `PIN_RosettaD_34` came
    from); Rich renamed it `RichColvin/Rosetta-2025` on 02 November 2026
-   and is archiving it. Until this repo takes the name,
-   github.com/RichColvin/Rosetta forwards to Rosetta-2025; once it does,
-   old links to that address open this repo instead. Check before the
-   transfer: who has access (Chuck, any deploy keys the machines pull
-   with) carries over.
+   and archived it. **Done 02 November 2026:** Rich transferred this
+   repo to his account and renamed it - it is now
+   https://github.com/RichColvin/Rosetta (same repo, history and
+   branches). The old address `RoseEngineButler/RoseEngineButler` still
+   forwards: checked over both SSH and HTTPS (`git ls-remote` returns
+   `dev-rich`), so built machines keep updating. Rich's Pi's remote now
+   points at `git@github.com:RichColvin/Rosetta.git` (the remote is still
+   named `RoseEngineButler`). The repo has left the organization, so
+   anyone who had access through it (Chuck?) has to be added as a
+   collaborator. Still to do: re-point the other machines and the Mac
+   (`git remote set-url <remote> git@github.com:RichColvin/Rosetta.git`,
+   or the one-time step in the file-rename work), and change any
+   `git clone` address in the Support Manual's installation pages.
 3. **Reuben is retired** - images, launcher icons, the "Reuben head"
    shortcuts. **The Pi login becomes `rosetta`** (was `reuben`). That
    path is in 52 lines across 18 tracked files (`/home/reuben/...`) -
