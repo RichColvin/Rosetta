@@ -214,38 +214,85 @@ mistake.
       changes if the subroutines are renamed.
 - [ ] Release Notes entry for the rename.
 
-**Tasks - file and program names (own branch):**
+**Tasks - file and program names** - built 02 November 2026 on branch
+`rosetta-rename` (local on Rich's Pi, not pushed, not merged; this
+`dev-rich` copy of the tracker is the one kept up to date):
 
-- [ ] Rename the files and every reference (scripts, `.ini`/`.hal`
-      paths, `-u REB_Display/REB_main.py`, `EMBED_TAB_COMMAND`,
-      `SUBROUTINE_PATH`, `.gitignore`'d `*.local.*` names).
-- [ ] Subroutines `reb_thread.ngc` / `reb_thread_return.ngc` -> new
-      prefix, and the `o<...> call`s in `REB_main.py`.
-- [ ] Settings file: new name in `~/Documents`, the generator, every
-      program and the seed; existing machines' file moved by a one-time
-      step (keep a backup); Load Settings still reads old
-      `.REBset_v1.ini` exports.
-- [ ] `~/.config/REB/` (serial, shortcuts marker, report log) -> new
-      folder, moved by a one-time step.
-- [ ] **Updating built machines safely.** The `~/REB_Update.sh` copy
-      that runs the update was written before the rename and calls
-      `.../RoseEngineButler/REB_Setup/REB_Update_Settings.py` by full
-      path after its `git pull`. Leave a small stand-in at that old path
-      (and at the old launch/settings script paths the launchers use)
-      for a release or two, and have the one-time step re-point the
-      launchers. If the folder itself is renamed, the stand-in has to be
-      the old folder name (a symlink) - test this on a spare card first.
-- [ ] Backup folder name on USB sticks (`REB_Backup/`) and Checkout run
-      folder.
-- [ ] Mesa firmware `7i92t_REB.bin`/`.pin` and `PIN_REB_34.vhd`: probably
-      leave as they are (cards already flashed don't care; it's Mesa's
-      file) - or rename the copies only.
-- [ ] `CLAUDE.md`, this tracker's name (`docs/REB_Tracker.md`) and the
-      docs folder.
-- [ ] Test: fresh install from the Trixie installer, an update on a
-      machine built before the rename (S/N 1/2-style), Load of an old
-      export, the version report reaching the server, Back Up to USB,
-      Checkout.
+- [x] Every `REB*` file, folder and reference renamed `Rosetta*`
+      (96 files): `Rosetta.ini`, `Rosetta.hal`, `Rosetta_Launch.sh`,
+      `Rosetta_Display/Rosetta_main.py`, `rosetta_settings_io.py`,
+      `Rosetta_Subroutines/rosetta_thread.ngc`, the sounds, images, Mesa
+      files (`7i92t_Rosetta.bin`/`.pin`, `PIN_Rosetta_34.vhd` - contents
+      unchanged), `docs/Rosetta_Tracker.md`. Comment headers' block
+      letters now spell ROSETTA. AXIS's title (`MACHINE`) is "Rosetta
+      Mark 1". Comments naming files that no longer exist (e.g.
+      `REB_Axes/*.inc`) were left as they were. The deprecated Bookworm
+      installer kept its name and contents (it now sits in
+      `Rosetta_Setup/`).
+- [x] **Names Claude chose - Rich to confirm or change** (a script
+      redoes them quickly): settings file `RosettaSet_v1.ini` (exports
+      `*.RosettaSet_v1.ini`; Import still offers old `*.REBset_v1.ini`
+      ones), `~/.config/Rosetta/`, shortcut icons `Rosetta_Folder.png` /
+      `Rosetta_Folder-Gcode.png` (were ReubenHead*), the full-size rosette
+      `Rosetta_Setup/Images/RosettaLogo.png` (was Reuben.png), USB backup
+      folder `Rosetta_Backup/`, Thunar shortcut "Rosetta", reserved G-code
+      prefix "rosetta" (files starting "reb" are no longer refused).
+- [x] No fixed `/home/reuben` paths left (for the `rosetta` login):
+      scripts find the repo from their own folder, Python from `~`;
+      `Rosetta.ini`'s `PROGRAM_PREFIX` and `SHUTDOWN` are relative and
+      the generator writes the full paths into `Rosetta.local.ini`.
+- [x] **Moving built machines over** (`Rosetta_Setup/Rosetta_Renaming.py`,
+      run at the end of every update, and `rosetta_settings_io.adopt_old_paths`,
+      run whenever a Rosetta program starts): settings file (backup
+      `REBset_v1.ini.pre-rosetta`), `~/.config/REB`, serial prefix
+      (REB003 -> Rosetta003, before the version report), git remote ->
+      `RichColvin/Rosetta`, old generated files removed, `~/REB_Update.sh`
+      becomes a stand-in for a fresh `~/Rosetta_Update.sh`, desktop/menu/
+      bottom-bar launchers, Thunar Places and the wallpaper repointed
+      (a trusted desktop launcher stays trusted), and last the folder
+      renamed `Rosetta` with a `RoseEngineButler` link. Stand-ins at the
+      old paths: `REB_Setup/REB_Update_Settings.py` (what every machine's
+      current update script runs after its pull), `REB_Launch.sh`,
+      `REB_Settings.sh`, `REB_Update.sh`, `REB_Backup.sh`.
+- [x] Tested 02 November 2026 on Rich's Pi **in a pretend home folder
+      only** (cut off from the desktop session, panel and network): a
+      clone of `dev-rich` set up like a built machine (copies of this
+      Pi's launchers, Places, wallpaper setting, settings file, serial
+      REB003, a trusted desktop launcher, a tool-table edit, a gcode
+      program, `~/REB_Update.sh`), then the update's own steps (stash,
+      pull, stash pop, the old script's call of
+      `REB_Setup/REB_Update_Settings.py`). Everything moved as above; the
+      tool-table edit and gcode program came through; every launcher's
+      program and icon exists; launching through an old desktop launcher
+      runs `Rosetta.local.ini` from the new folder; a second update
+      changed nothing. Generated `.local.ini`/`.local.hal`/PostGUI/splash
+      files match the old code's line for line apart from the names. All
+      four windows' `.ui` files load with every image found. Not run:
+      LinuxCNC itself on the branch.
+- [ ] **Rich to decide:** confirm the names above; push the branch; then
+      test on a spare card / S/N REB003 (checklist below) before merging
+      into `dev-rich`.
+- [ ] **Test on a machine:** (1) on Rich's Pi, switch this folder to the
+      branch (LinuxCNC closed) - the first Rosetta program to start
+      moves the settings file; launch, jog, run a program, Rosetta
+      Settings, Back Up to USB, shutdown saves scale; (2) run the Update
+      icon once - launchers, Places, wallpaper, folder rename and link;
+      check the desktop icons still open without an "untrusted" question;
+      (3) Import an old `.REBset_v1.ini` export; (4) a fresh install from
+      `Rosetta_Install_Debian_13_Trixie.sh`; (5) Checkout dry run.
+- [ ] **Claude's memory on each machine** is kept per folder
+      (`~/.claude/projects/-home-reuben-linuxcnc-configs-RoseEngineButler/`);
+      once the folder is `Rosetta`, copy that folder to
+      `...-configs-Rosetta/` (and again for the `rosetta` login).
+- [ ] **Outside the repo, for Rich:** the User Manual's reserved-name rule
+      (now "never start a G-code file name with Rosetta"); Support Manual
+      pages that name files, the install instructions (`git clone` into
+      `~/linuxcnc/configs/Rosetta`, MenuLibre launcher paths, the new
+      login `rosetta`), the "Updating Rose Engine Butler" page (named in
+      `Rosetta_Update.sh`'s stash warning).
+- [ ] **Later:** remove the old-path stand-ins and the `RoseEngineButler`
+      folder link once every machine has updated; the `rosetta` login
+      itself (a separate, tested procedure per machine, or a reinstall).
 
 **Leave alone:** git history, dated entries in this tracker's Done table,
 and the old serial numbers in past entries.
