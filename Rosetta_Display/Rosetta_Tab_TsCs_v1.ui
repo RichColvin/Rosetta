@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<!-- 
+#######################################################################
+#   RRRRRR    OOOOOO   SSSSSS  EEEEEEEE TTTTTTTT TTTTTTTT    AA       #
+#   RR   RR  OO    OO SS       EE          TT       TT      AAAA      #
+#   RR   RR  OO    OO SS       EE          TT       TT     AA  AA     #
+#   RRRRRR   OO    OO  SSSSSS  EEEEEE      TT       TT    AA    AA    #
+#   RR   RR  OO    OO       SS EE          TT       TT    AAAAAAAA    #
+#   RR   RR  OO    OO       SS EE          TT       TT    AA    AA    #
+#   RR    RR  OOOOOO   SSSSSS  EEEEEEEE    TT       TT    AA    AA    #
+#                                                                     #
+# Rosetta                                                             #
+#######################################################################
+#                                                                     #
+# LinuxCNC configuration for use with a Rose Engine                   #
+#                                                                     #
+# File:                                                               #
+#   Rosetta_Tab_TsCs_v1.ui                                            #
+#                                                                     #
+# Purpose:                                                            #
+#   This is a Glade VCP panel used to provide the user with all the   #
+#   terms and conditions for use of the Rosetta                       #
+#   configurations used with LinuxCNC.                                #
+#                                                                     #
+# End User Customisation:                                             #
+#   The end user of the Rosetta system should not modify              #
+#   this file.  Changes to this file are not supported by Colvin      #
+#   Tools nor Brainwave Embedded.                                     #
+#                                                                     #
+# Version                                                             #
+#   1.0 - 21 July 2026                                                #
+#                                                                     #
+# Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
+#                                                                     #
+# The following MIT/X Consortium License applies to the               #
+# Rosetta system. Use of this system constitutes consent              #
+# to the terms outlined below.                                        #
+#                                                                     #
+# Permission is hereby granted, free of charge, to any person         #
+# obtaining a copy of this software and associated documentation      #
+# files (the "Software"), to deal in the Software without             #
+# restriction, including without limitation the rights to use, copy,  #
+# modify, merge, publish, distribute, sublicense, and/or sell copies  #
+# of the Software, and to permit persons to whom the Software is      #
+# furnished to do so, subject to the following conditions:            #
+#                                                                     #
+#       The above copyright notice and this permission notice shall   #
+#       be included in all copies or substantial portions of the      #
+#       Software.                                                     #
+#                                                                     #
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,     #
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF  #
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND               #
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS #
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN  #
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN   #
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE    #
+# SOFTWARE.                                                           #
+#                                                                     #
+# Except as contained in this notice, the name of COPYRIGHT HOLDERS   #
+# shall not be used in advertising or otherwise to promote the sale,  #
+# use or other dealings in this Software without prior written        #
+# authorization from COPYRIGHT HOLDERS.                               #
+#######################################################################
+--><interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="viewport1_adj">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <property name="can-focus">False</property>
+    <property name="hexpand">False</property>
+    <property name="vexpand">False</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="vscrollbar-policy">always</property>
+        <property name="window-placement-set">False</property>
+        <property name="shadow-type">in</property>
+        <property name="propagate-natural-width">True</property>
+        <property name="propagate-natural-height">True</property>
+        <child>
+          <object class="GtkViewport" id="viewport1">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="vscroll-policy">natural</property>
+            <signal name="scroll-event" handler="scroll_entries" swapped="no"/>
+            <child>
+              <object class="GtkBox" id="vbox1">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <!-- n-columns=2 n-rows=1 -->
+                  <object class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="hexpand">True</property>
+                    <child>
+                      <object class="GtkLabel" id="Title_Rosetta_Help">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Rosetta
+Usage License</property>
+                        <property name="justify">center</property>
+                        <attributes>
+                          <attribute name="font-desc" value="DejaVu Serif 20"/>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="foreground" value="#1a1a5f5fb4b4"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkImage" id="Rosetta_Logo">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="valign">start</property>
+                        <property name="xpad">0</property>
+                        <property name="pixbuf">Images/RosettaLogo-Sm-rev.png</property>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="Comment_Copyright">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="valign">start</property>
+                    <property name="margin-top">12</property>
+                    <property name="vexpand">True</property>
+                    <property name="label" translatable="yes">The Rosetta system is copyright (c) 2026 Colvin Tools and Brainwave Embedded.
+
+The following MIT/X Consortium License applies to the Rosetta system. Use of this system constitutes consent to the terms outlined below.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of COPYRIGHT HOLDERS shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization from COPYRIGHT HOLDERS.</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

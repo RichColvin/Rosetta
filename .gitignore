@@ -9,14 +9,14 @@ __pycache__/
 /gcode/
 
 # Generated/runtime files
-/REB.ini.expanded
-/REB.local.ini
-/REB.local.hal
-/REB_Display/REB_PostGUI_v1.local.hal
-/REB_Display/REB_Splash.local.ngc
+/Rosetta.ini.expanded
+/Rosetta.local.ini
+/Rosetta.local.hal
+/Rosetta_Display/Rosetta_PostGUI_v1.local.hal
+/Rosetta_Display/Rosetta_Splash.local.ngc
 /sim.var
 /sim.var.bak
 /halshow.preferences
-REB_Display/idx_debug.log
+Rosetta_Display/idx_debug.log
 /memory.md
 /scripts/
