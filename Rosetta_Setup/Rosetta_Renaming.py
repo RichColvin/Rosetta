@@ -39,9 +39,12 @@
 #       the wallpaper setting are pointed at the new names; a desktop #
 #       launcher Xfce trusts is trusted again afterwards (Xfce keeps  #
 #       a checksum of the file)                                       #
-#     - last, the repo folder ~/linuxcnc/configs/RoseEngineButler is  #
+#     - the repo folder ~/linuxcnc/configs/RoseEngineButler is        #
 #       renamed Rosetta, with a link at the old name so anything      #
 #       still naming it keeps working                                 #
+#     - last, the desktop and bottom bar are told to reload, so they  #
+#       show the launchers' new icons (only once the folder holding   #
+#       them has its new name)                                        #
 #                                                                     #
 # End User Customisation:                                             #
 #   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY THIS FILE.   #
@@ -53,6 +56,8 @@
 #   1.0 - 02 November 2026                                            #
 #   1.1 - 04 November 2026 - an old idx_debug.log is joined onto a    #
 #         new one Rosetta had already started, not left behind        #
+#   1.2 - 04 November 2026 - the desktop is reloaded too (it kept the #
+#         old icons), and both reloads wait for the folder rename     #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -257,7 +262,8 @@ def _trusted_checksum(path):
 
 
 def launchers():
-    changed_panel = False
+    '''Returns which of "desktop" and "panel" had a launcher changed.'''
+    changed = set()
     for pattern in LAUNCHER_GLOBS:
         for path in glob.glob(pattern):
             try:
@@ -275,12 +281,28 @@ def launchers():
                 digest = hashlib.sha256(new.encode()).hexdigest()
                 _run(["gio", "set", path, TRUST_ATTRIBUTE, digest])
             if "/xfce4/panel/" in path:
-                changed_panel = True
+                changed.add("panel")
+            elif path.startswith(os.path.join(HOME, "Desktop") + os.sep):
+                changed.add("desktop")
             print("Rosetta renaming: launcher " + path.replace(HOME, "~"))
-    if changed_panel:
+    return changed
+
+
+def show_new_icons(changed):
+    '''
+    Reloads whatever shows a changed launcher, so its new icon appears
+    now - the desktop otherwise keeps the old one until the next login
+    (found on Rich's Pi 04 November 2026). Run after the folder rename:
+    before it, the new icon paths don't exist yet.
+    '''
+    if "panel" in changed:
         running = _run(["pgrep", "-x", "xfce4-panel"])
         if running is not None and running.returncode == 0:
-            _run(["xfce4-panel", "-r"])      # show the new icons now
+            _run(["xfce4-panel", "-r"])
+    if "desktop" in changed:
+        running = _run(["pgrep", "-x", "xfdesktop"])
+        if running is not None and running.returncode == 0:
+            _run(["xfdesktop", "--reload"])
 
 
 def bookmarks():
@@ -335,12 +357,13 @@ def repo_folder(repo_dir):
 
 def finish(repo_dir):
     '''Runs every step above; returns the repo folder's (new) path.'''
+    changed_launchers = set()
     steps = (
         ("serial number", serial_prefix, ()),
         ("GitHub address", github_address, (repo_dir,)),
         ("old generated files", old_generated_files, (repo_dir,)),
         ("~/REB_Update.sh", home_update_copy, (repo_dir,)),
-        ("launchers", launchers, ()),
+        ("launchers", lambda: changed_launchers.update(launchers()), ()),
         ("Places shortcuts", bookmarks, ()),
         ("wallpaper", wallpaper, ()),
     )
@@ -350,7 +373,9 @@ def finish(repo_dir):
         except OSError as e:
             print("WARNING: Rosetta renaming (" + what + ") failed: " + str(e))
     try:
-        return repo_folder(repo_dir)
+        new_dir = repo_folder(repo_dir)
     except OSError as e:
         print("WARNING: Rosetta renaming (repo folder) failed: " + str(e))
-        return repo_dir
+        new_dir = repo_dir
+    show_new_icons(changed_launchers)
+    return new_dir

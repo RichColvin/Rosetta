@@ -290,6 +290,18 @@ deleted); not on `main` yet, so Roy's and Chuck's machines don't have it:
       launch; (4) a fresh install from
       `Rosetta_Install_Debian_13_Trixie.sh`; (5) Checkout dry run.
       Rich still to confirm the names chosen above.
+      **(3) run 04 November 2026:** S/N REB003 pulled `dev-rich` and ran
+      its Update icon - serial now Rosetta003 (the version report went
+      out under it), `~/REB_Update.sh` a stand-in for
+      `~/Rosetta_Update.sh`, `REBset_v1.ini` moved to
+      `RosettaSet_v1.ini` (backup `.pre-rosetta`), remote
+      `RichColvin/Rosetta`, folder renamed with the link, desktop
+      launchers' names, programs and icon paths rewritten. Found: the
+      desktop kept showing the old icons until `xfdesktop --reload`.
+      Fixed in `Rosetta_Renaming.py` 1.2 (not yet run on a machine): the
+      desktop is reloaded too, and both reloads (desktop and bottom bar)
+      now come after the folder rename - before it, the new icon paths
+      don't exist yet. Still to do on REB003: launch Rosetta.
 - [ ] **Claude's memory on each machine** is kept per folder
       (`~/.claude/projects/-home-reuben-linuxcnc-configs-RoseEngineButler/`);
       once the folder is `Rosetta`, copy that folder to
