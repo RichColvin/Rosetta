@@ -90,12 +90,14 @@ SETTINGS_PATH = os.path.expanduser("~/Documents/RosettaSet_v1.ini")
 SERIAL_PATH = os.path.expanduser("~/.config/Rosetta/serial")
 
 # Web pages opened by the panel's link buttons - kept together so a move
-# to a domain of Rosetta's own is a change here only. The G-code library
-# has no Rosetta address yet (02 November 2026), so it keeps its old one.
-WEBSITE_URL = "https://colvintools.com/Rosetta/"
-USER_MANUAL_URL = "https://colvintools.com/Rosetta/UserManual/"
+# to another address is a change here only. Since 04 November 2026 they're
+# on rosetta.colvintools.com - except the forum, which must stay at
+# colvintools.com/Rosetta/Forum: under rosetta.colvintools.com its users
+# can't log in.
+WEBSITE_URL = "https://rosetta.colvintools.com/"
+USER_MANUAL_URL = "https://rosetta.colvintools.com/UserManual/"
 USER_FORUM_URL = "https://colvintools.com/Rosetta/Forum/"
-GCODE_LIBRARY_URL = "https://gcode.RoseEngineButler.com"
+GCODE_LIBRARY_URL = "https://rosetta.colvintools.com/Gcode/"
 
 # Channel id ("00".."07") -> the role (one of the 8 axis letters or 2
 # spindles) Rosetta.ini/Rosetta.hal ship with by default. Seed value for a

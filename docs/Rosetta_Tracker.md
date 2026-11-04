@@ -161,11 +161,16 @@ mistake.
       `Rosetta_Setup/Images/`) redrawn by Claude: the rosette and
       "Rosetta" in Liberation Serif, the old image's grey on its dark
       background, same 640x180 size. Rich approved it.
-- [ ] **Logos - need new artwork from Rich** (02 November 2026). Still
-      showing Reuben or "Rose Engine Butler": the Help tab's three
-      book-spine buttons (`REB-UserManualsm.png`, `REB-Forumsm.png`,
-      `REB-Gcodesm.png` before the file renames; now `Rosetta-*sm.png`) (the
-      name plus Reuben at the foot). Deleted 02 November 2026 at Rich's
+- [x] **Help tab images** (04 November 2026, not yet seen in LinuxCNC):
+      the User Manual, Gcode Library, Gcode Quick Reference and User
+      Forum spines (`Rosetta-UserManualsm.png`, `Rosetta-Gcodesm.png`,
+      `GCodeQuickRefsm.png`, `Rosetta-Forumsm.png`) and the header banner
+      `Librarysm.png` (Reuben and "Rose Engine Butler" until then) cut
+      from the bookshelf picture on https://rosetta.colvintools.com/
+      (`Bookshelf/Rosetta-01.png`), at the old images' height (284 px;
+      banner 420x75). `OTHandyBooksm.png` unchanged.
+- [x] **Logos** (02 November 2026; artwork all replaced 04 November
+      2026). Deleted 02 November 2026 at Rich's
       request, as nothing used them: `REBLogo-Sm.png`,
       `REBLogo-Sm-Panel*.png`, `REB-Forum.png`, `REB-Gcode.png`,
       `REB-UserForum.png`, `REB-UserManual.png`, `ReubenHeadSmall.png`,
@@ -188,11 +193,25 @@ mistake.
       `USER_FORUM_URL`, `GCODE_LIBRARY_URL` at the top of `REB_main.py`),
       Rosetta Settings' manual buttons go to the new manual (every page
       they name exists there), the version report posts to
-      colvintools.com/Rosetta/Support/reb_report.php. **Still on the old
-      address:** the G-code library (gcode.RoseEngineButler.com - no
-      Rosetta home yet), and `README.md`'s image.
-- [ ] Version report server: the script is on the new site (answers
-      405 to a plain GET, as the old one does). Machines not yet updated
+      colvintools.com/Rosetta/Support/reb_report.php. **Moved 04 November
+      2026** (Rich) to rosetta.colvintools.com: website, User Manual
+      (panel and Rosetta Settings' manual buttons), G-code library
+      (`/Gcode/`, was gcode.RoseEngineButler.com), the version report and
+      `README.md` - every page answers (the report script doesn't yet -
+      see the next item). The forum stays at
+      colvintools.com/Rosetta/Forum/: under rosetta.colvintools.com its
+      users can't log in.
+- [ ] **Version report server - reports since the rebrand are lost**
+      (found 04 November 2026): `reb_report.php` answers 404 at both
+      colvintools.com/Rosetta/Support/ and rosetta.colvintools.com/Support/
+      (it answered 405 on 02 November - gone in the site's move to
+      rosetta.colvintools.com?), so the reports from Rich's Pi and S/N
+      003's Rosetta updates went nowhere (each machine's own
+      `~/.config/Rosetta/report_log.jsonl` still has them). `REPORT_URL`
+      now points at rosetta.colvintools.com/Support/reb_report.php -
+      **Rich to put `reb_report.php`, `reb_report_view.php`, `.htaccess`
+      and `.htpasswd` there** (the old address,
+      support.roseenginebutler.com, still answers 405, so it works). Machines not yet updated
       keep posting to support.roseenginebutler.com, so for a while
       reports land in two logs - either merge them in the view page or
       have the old address forward with a 307/308 (a 301/302 turns the

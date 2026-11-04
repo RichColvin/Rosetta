@@ -29,7 +29,7 @@
 #   since the hardware ID is what actually identifies the machine.
 #
 #   POSTs the report as JSON to REPORT_URL
-#   (https://support.roseenginebutler.com/reb_report.php, a small PHP
+#   (https://rosetta.colvintools.com/Support/reb_report.php, a small PHP
 #   script that appends each report to a log file server-side). Every
 #   report is also always logged locally first
 #   (~/.config/Rosetta/report_log.jsonl), regardless of whether the POST
@@ -52,6 +52,7 @@
 #         (support.roseenginebutler.com/reb_report.php)
 #   1.2 - 02 November 2026 - Rosetta: new REPORT_URL; reads the
 #         "O/S ..." label with or without the old "REB " in front
+#   1.3 - 04 November 2026 - REPORT_URL moved to rosetta.colvintools.com
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -78,7 +79,7 @@ HARDWARE_ID_PATHS = (
     "/sys/firmware/devicetree/base/serial-number",
 )
 
-REPORT_URL = "https://colvintools.com/Rosetta/Support/reb_report.php"
+REPORT_URL = "https://rosetta.colvintools.com/Support/reb_report.php"
 REPORT_TIMEOUT_SECONDS = 10
 
 # The label said "REB O/S ..." until the Rosetta rebranding (02 November

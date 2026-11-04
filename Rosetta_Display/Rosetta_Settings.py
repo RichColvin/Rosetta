@@ -399,7 +399,7 @@ LIMIT_SWITCH_TYPES = ("NC", "NO")
 # page's Limit Switches, E-Stop Button and Signal Tower and Sounds notes
 # and the tuning page's three Scale notes (Open_Manual_Link), keyed by
 # button id.
-MANUAL_URL = "https://colvintools.com/Rosetta/UserManual/index.php?n=Main."
+MANUAL_URL = "https://rosetta.colvintools.com/UserManual/index.php?n=Main."
 MANUAL_LINKS = {
     "Limit_Switch_Cabling_Link": MANUAL_URL + "LimitSwitchCabling",
     "Limit_Switch_How_Link":     MANUAL_URL + "InputsOutputsSound#LimitSwitches",
