@@ -317,7 +317,7 @@ MODE_HEADER_WIDGETS = ("Mode_Hdr_Rev", "Mode_Hdr_Fwd", "Title_Minus_Sign1", "Tit
 # disabled while any one of them is running (see _start_polled_mdi).
 MOTION_BUTTONS = ("Sync_Run", "Sync_Return", "Thread_Run", "Thread_Return")
 
-# The startup splash (the rosette over "ROSETTA", written each launch
+# The startup splash (the Turk's head over "ROSETTA", written each launch
 # by Rosetta_Generate_Local_Ini.py) and the empty file swapped in for it
 # before a Sync Move or Cut Thread, whose tool path AXIS would otherwise
 # draw over the lettering - see _clear_splash.

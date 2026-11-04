@@ -311,7 +311,7 @@ fi
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Step 10 - Add folder shortcuts                                         ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
-# Thunar Places shortcuts and bottom-bar launchers (rosette icons)
+# Thunar Places shortcuts and bottom-bar launchers (Turk's head icons)
 # for the Rosetta and gcode folders. Machines installed before
 # this step get them from Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Shortcuts.sh

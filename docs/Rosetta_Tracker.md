@@ -148,7 +148,7 @@ mistake.
       titles "Rosetta", "O/S ..." labels without "REB") plus the panel's
       and Help tab's website label (colvintools.com/Rosetta), the Help
       tab's description, the Usage License tab (title, text, and its logo
-      now the rosette `REBLogo-Sm-rev.png`), the Rosetta Settings window
+      now the Turk's head `REBLogo-Sm-rev.png`), the Rosetta Settings window
       title and its "LinuxCNC is running" message, file-chooser names and
       errors, Back Up to USB's title and log, Checkout's messages.
       `REB_Report_Version.py` 1.2 reads the "O/S ..." label with or
@@ -156,9 +156,16 @@ mistake.
       Still "REB" on purpose until the file renames: the reserved-name
       rule ("never start a G-code file name with REB") in Rosetta Settings
       and the generator's message.
+- [x] **The emblem is a Turk's head** (Rich, 04 November 2026): the
+      eight-circle design is a Turk's head - an eccentric cutting frame
+      pattern (https://otbok.info/index.php?n=Main.ECFOnFlatSurfaces).
+      Call it that in the manual, notes and code, not "rosette" (a
+      rose engine's cam). Code, CLAUDE.md and this tracker changed the
+      same day (`SPLASH_TURKS_HEAD_*`); file names such as
+      `RosettaLogo.png` unchanged.
 - [x] **Startup image** (04 November 2026): `RosettaStartupImage.gif`
       (AXIS's `[DISPLAY]INTRO_GRAPHIC`, and its copy in
-      `Rosetta_Setup/Images/`) redrawn by Claude: the rosette and
+      `Rosetta_Setup/Images/`) redrawn by Claude: the Turk's head and
       "Rosetta" in Liberation Serif, the old image's grey on its dark
       background, same 640x180 size. Rich approved it.
 - [x] **Help tab images** (04 November 2026, not yet seen in LinuxCNC):
@@ -178,12 +185,12 @@ mistake.
       and `REB_Setup/Images/Reuben.gif` (Rich's copies of the old artwork
       stay in `REB_Setup/Images/Saved Images/`). Kept though unused:
       `RosettaLogo-Black-Sm.png`, and `REB_Setup/Images/Reuben.png` - the
-      full-size rosette artwork despite its name (d733f26); rename it with
+      full-size Turk's head artwork despite its name (d733f26); rename it with
       the file renames. Already new:
       `REBLogo-Sm-rev.png` (panel/Settings/licence), the
       `ReubenHead*.png` launcher icons and `REBWallpaper.png` (d733f26).
 - [x] Startup splash (02 November 2026, not yet seen in AXIS): the
-      preview now draws the rosette (eight circles through one centre,
+      preview now draws the Turk's head (eight circles through one centre,
       like the logo - each one full `G2`) over "ROSETTA" (`SPLASH_GLYPHS`
       gained an "A"). Checked through LinuxCNC's own interpreter
       (`rs274`, no errors) and drawn as the lathe view shows it.
@@ -261,7 +268,7 @@ deleted); on `main` since 04 November 2026:
       redoes them quickly): settings file `RosettaSet_v1.ini` (exports
       `*.RosettaSet_v1.ini`; Import still offers old `*.REBset_v1.ini`
       ones), `~/.config/Rosetta/`, shortcut icons `Rosetta_Folder.png` /
-      `Rosetta_Folder-Gcode.png` (were ReubenHead*), the full-size rosette
+      `Rosetta_Folder-Gcode.png` (were ReubenHead*), the full-size Turk's head
       `Rosetta_Setup/Images/RosettaLogo.png` (was Reuben.png), USB backup
       folder `Rosetta_Backup/`, Thunar shortcut "Rosetta", reserved G-code
       prefix "rosetta" (files starting "reb" are no longer refused).

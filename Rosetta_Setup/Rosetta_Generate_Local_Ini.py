@@ -115,6 +115,8 @@
 #   1.1 - 02 November 2026 - Renamed from REB_Generate_Local_Ini.py
 #         (Rosetta); writes this machine's PROGRAM_PREFIX/SHUTDOWN
 #         paths; the splash draws the rosette and ROSETTA
+#   1.2 - 04 November 2026 - the splash's emblem is a Turk's head
+#         (its OT name, Rich): SPLASH_ROSETTE_* -> SPLASH_TURKS_HEAD_*
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1552,7 +1554,7 @@ def _overlay_hal_files(text):
 # Rosetta_Splash.ngc (tracked) is an empty program - no axis words, since a
 # move naming an unassigned axis makes AXIS report an error. When X and
 # Z (the axes AXIS's lathe view draws in) are both assigned, this writes
-# Rosetta_Splash.local.ngc instead, which draws the Rosetta rosette (the
+# Rosetta_Splash.local.ngc instead, which draws the Rosetta Turk's head (the
 # logo's eight circles) with "ROSETTA" beneath it in the preview (until
 # 02 November 2026, "REB" over "ROSE ENGINE BUTLER"), and points
 # Rosetta.local.ini's OPEN_FILE at it. Every move is inside "if [#<_task> EQ 0]": 0 only in
@@ -1594,15 +1596,15 @@ SPLASH_SPACE = 3        # grid units for a space
 # centred on Z = 0.
 SPLASH_LINES = (("ROSETTA", 0.125, 0.0),)
 
-# The rosette above the name, like the Rosetta logo: SPLASH_ROSETTE_CIRCLES
-# circles of radius SPLASH_ROSETTE_RADIUS whose centres sit that same
-# distance from the rosette's centre, so every circle passes through it -
+# The Turk's head above the name, like the Rosetta logo: SPLASH_TURKS_HEAD_CIRCLES
+# circles of radius SPLASH_TURKS_HEAD_RADIUS whose centres sit that same
+# distance from the Turk's head's centre, so every circle passes through it -
 # each is one full G2 starting and ending there, with no rapids between.
-# The rosette's centre is SPLASH_ROSETTE_CENTRE inches above the
+# The Turk's head's centre is SPLASH_TURKS_HEAD_CENTRE inches above the
 # baseline, centred on Z = 0 (its bottom 0.3" above the name's top).
-SPLASH_ROSETTE_CIRCLES = 8
-SPLASH_ROSETTE_RADIUS = 0.6
-SPLASH_ROSETTE_CENTRE = 0.75 + 0.3 + 2 * SPLASH_ROSETTE_RADIUS
+SPLASH_TURKS_HEAD_CIRCLES = 8
+SPLASH_TURKS_HEAD_RADIUS = 0.6
+SPLASH_TURKS_HEAD_CENTRE = 0.75 + 0.3 + 2 * SPLASH_TURKS_HEAD_RADIUS
 
 
 def _splash_text_width(text):
@@ -1612,9 +1614,9 @@ def _splash_text_width(text):
 
 def _splash_moves():
     '''
-    G-code lines drawing SPLASH_LINES, then the rosette above them
+    G-code lines drawing SPLASH_LINES, then the Turk's head above them
     (inches, absolute). Between lines - and from the last letter to the
-    rosette - the tool rapids straight up at the end of one, then across,
+    Turk's head - the tool rapids straight up at the end of one, then across,
     so no rapid crosses a letter.
     '''
     out = []
@@ -1632,15 +1634,15 @@ def _splash_moves():
                                                z + across * unit, 0.0 - (base_x + up * unit)))
             end_z = z + SPLASH_GLYPHS[ch][-1][0] * unit
             z += SPLASH_ADVANCE * unit
-    centre_x = 0.0 - SPLASH_ROSETTE_CENTRE
+    centre_x = 0.0 - SPLASH_TURKS_HEAD_CENTRE
     out.append("G0 Z%.4f X%.4f" % (end_z, centre_x))
     out.append("G0 Z0.0000 X%.4f" % centre_x)
-    for n in range(SPLASH_ROSETTE_CIRCLES):
-        angle = 2.0 * math.pi * n / SPLASH_ROSETTE_CIRCLES
-        # I/K: the circle's centre relative to the rosette's centre (X, Z)
+    for n in range(SPLASH_TURKS_HEAD_CIRCLES):
+        angle = 2.0 * math.pi * n / SPLASH_TURKS_HEAD_CIRCLES
+        # I/K: the circle's centre relative to the Turk's head's centre (X, Z)
         out.append("G2 Z0.0000 X%.4f I%.4f K%.4f" % (
-            centre_x, SPLASH_ROSETTE_RADIUS * math.sin(angle),
-            SPLASH_ROSETTE_RADIUS * math.cos(angle)))
+            centre_x, SPLASH_TURKS_HEAD_RADIUS * math.sin(angle),
+            SPLASH_TURKS_HEAD_RADIUS * math.cos(angle)))
     return out
 
 
