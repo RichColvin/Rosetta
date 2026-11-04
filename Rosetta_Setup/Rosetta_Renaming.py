@@ -58,6 +58,8 @@
 #         new one Rosetta had already started, not left behind        #
 #   1.2 - 04 November 2026 - the desktop is reloaded too (it kept the #
 #         old icons), and both reloads wait for the folder rename     #
+#   1.3 - 04 November 2026 - the Applications menu's submenu (its     #
+#         .directory file) is renamed too                             #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -133,6 +135,9 @@ LAUNCHER_GLOBS = (
     os.path.join(HOME, "Desktop", "*.desktop"),
     os.path.join(HOME, ".local", "share", "applications", "*.desktop"),
     os.path.join(HOME, ".config", "xfce4", "panel", "launcher-*", "*.desktop"),
+    # The Applications menu's submenu (MenuLibre writes its name and icon
+    # here) - missed until 1.3, so it still said Rose Engine Butler.
+    os.path.join(HOME, ".local", "share", "desktop-directories", "*.directory"),
 )
 BOOKMARKS_PATH = os.path.join(HOME, ".config", "gtk-3.0", "bookmarks")
 DESKTOP_XML = os.path.join(HOME, ".config", "xfce4", "xfconf", "xfce-perchannel-xml",
