@@ -201,17 +201,22 @@ mistake.
       see the next item). The forum stays at
       colvintools.com/Rosetta/Forum/: under rosetta.colvintools.com its
       users can't log in.
-- [ ] **Version report server - reports since the rebrand are lost**
+- [x] **Version report server - reports since the rebrand were lost**
       (found 04 November 2026): `reb_report.php` answers 404 at both
       colvintools.com/Rosetta/Support/ and rosetta.colvintools.com/Support/
       (it answered 405 on 02 November - gone in the site's move to
       rosetta.colvintools.com?), so the reports from Rich's Pi and S/N
       003's Rosetta updates went nowhere (each machine's own
       `~/.config/Rosetta/report_log.jsonl` still has them). `REPORT_URL`
-      now points at rosetta.colvintools.com/Support/reb_report.php -
-      **Rich to put `reb_report.php`, `reb_report_view.php`, `.htaccess`
-      and `.htpasswd` there** (the old address,
-      support.roseenginebutler.com, still answers 405, so it works). Machines not yet updated
+      now points at rosetta.colvintools.com/Support/reb_report.php.
+      Rich put `reb_report.php`, `reb_report_view.php`, `.htaccess` and
+      `.htpasswd` there the same day: the script answers 405 to a GET,
+      the view page asks for a login (401), `reb_reports.jsonl` and
+      `.htpasswd` are blocked (403), and a real report from Rich's Pi
+      was accepted (200, 12:43). Still to do: check it shows in the view
+      page; S/N 003's lost report comes again at its next Update. The
+      old address, support.roseenginebutler.com, still works for
+      machines not yet on Rosetta. Machines not yet updated
       keep posting to support.roseenginebutler.com, so for a while
       reports land in two logs - either merge them in the view page or
       have the old address forward with a 307/308 (a 301/302 turns the
