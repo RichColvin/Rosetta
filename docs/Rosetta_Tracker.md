@@ -215,8 +215,8 @@ mistake.
 - [ ] Release Notes entry for the rename.
 
 **Tasks - file and program names** - built 02 November 2026 on branch
-`rosetta-rename` (local on Rich's Pi, not pushed, not merged; this
-`dev-rich` copy of the tracker is the one kept up to date):
+`rosetta-rename`, merged into `dev-rich` 04 November 2026 (branch
+deleted); not on `main` yet, so Roy's and Chuck's machines don't have it:
 
 - [x] Every `REB*` file, folder and reference renamed `Rosetta*`
       (96 files): `Rosetta.ini`, `Rosetta.hal`, `Rosetta_Launch.sh`,
@@ -269,21 +269,32 @@ mistake.
       files match the old code's line for line apart from the names. All
       four windows' `.ui` files load with every image found. Not run:
       LinuxCNC itself on the branch.
-- [ ] **Rich to decide:** confirm the names above; push the branch; then
-      test on a spare card / S/N REB003 (checklist below) before merging
-      into `dev-rich`.
-- [ ] **Test on a machine:** (1) on Rich's Pi, switch this folder to the
-      branch (LinuxCNC closed) - the first Rosetta program to start
-      moves the settings file; launch, jog, run a program, Rosetta
-      Settings, Back Up to USB, shutdown saves scale; (2) run the Update
-      icon once - launchers, Places, wallpaper, folder rename and link;
-      check the desktop icons still open without an "untrusted" question;
-      (3) Import an old `.REBset_v1.ini` export; (4) a fresh install from
+- [x] **Run on Rich's Pi** 04 November 2026: switched to the branch;
+      the settings file and `~/.config/REB` moved; ran the Update icon -
+      folder renamed `Rosetta` with the `RoseEngineButler` link, desktop
+      launchers rewritten with their trust marks renewed, menu and
+      bottom-bar launchers, Places and wallpaper repointed, version report
+      sent (serial "RichDev" has no REB prefix, so unchanged); LinuxCNC
+      launched from the new folder and shut down cleanly, saving to
+      `RosettaSet_v1.ini`. Found: an old `REB_Display/idx_debug.log` was
+      left behind when Rosetta had run before the Update - fixed (joined
+      onto the new log, 1b19b58). Claude's memory copied to
+      `...-configs-Rosetta/`.
+- [ ] **Before fast-forwarding `main`:** (1) on Rich's Pi, check the
+      desktop icons open without an "untrusted" question, Rosetta
+      Settings' Save Subset suggests `*.RosettaSet_v1.ini`, Back Up to
+      USB, jog and run a program; (2) Import an old `.REBset_v1.ini`
+      export; (3) S/N REB003 (serial with an REB prefix and a
+      `~/REB_Update.sh`): switch to `dev-rich`, run its Update icon -
+      serial becomes Rosetta003, `~/REB_Update.sh` a stand-in, then
+      launch; (4) a fresh install from
       `Rosetta_Install_Debian_13_Trixie.sh`; (5) Checkout dry run.
+      Rich still to confirm the names chosen above.
 - [ ] **Claude's memory on each machine** is kept per folder
       (`~/.claude/projects/-home-reuben-linuxcnc-configs-RoseEngineButler/`);
       once the folder is `Rosetta`, copy that folder to
-      `...-configs-Rosetta/` (and again for the `rosetta` login).
+      `...-configs-Rosetta/` (done on Rich's Pi 04 November 2026; again
+      for the `rosetta` login).
 - [ ] **Outside the repo, for Rich:** the User Manual's reserved-name rule
       (now "never start a G-code file name with Rosetta"); Support Manual
       pages that name files, the install instructions (`git clone` into
