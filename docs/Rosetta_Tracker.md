@@ -349,12 +349,26 @@ deleted); on `main` since 04 November 2026:
       once the folder is `Rosetta`, copy that folder to
       `...-configs-Rosetta/` (done on Rich's Pi 04 November 2026; again
       for the `rosetta` login).
-- [ ] **Outside the repo, for Rich:** the User Manual's reserved-name rule
-      (now "never start a G-code file name with Rosetta"); Support Manual
-      pages that name files, the install instructions (`git clone` into
-      `~/linuxcnc/configs/Rosetta`, MenuLibre launcher paths, the new
-      login `rosetta`), the "Updating Rose Engine Butler" page (named in
-      `Rosetta_Update.sh`'s stash warning).
+- [x] **User Manual and Support Manual** (04 November 2026): every page
+      redone for Rosetta by Claude and pasted in by Rich (names, files,
+      folders, the reserved-name rule, launcher/menu names, addresses on
+      rosetta.colvintools.com - forum stays at colvintools.com/Rosetta/Forum,
+      its logins fail on the new address). User Manual page names kept;
+      the Support Manual's REB* pages became Rosetta* (RosettaBackup,
+      RosettaChangeNetwork, RosettaInstall, RosettaKeyPrograms,
+      RosettaLaunch, RosettaSettings, RosettaUpdate,
+      HardwareBuildWithRosettaPCB, LaunchingRosetta, UpdatingRosetta), the
+      old ones redirecting. Install page: `git clone
+      https://github.com/RichColvin/Rosetta`, hostname `rosetta`. Rich
+      replaced the Support Manual's images and added MathJax to the new
+      User Manual's config.php (formulas showed as raw code). Unused
+      AxisScaling.Speed deleted.
+- [ ] **Manuals, still to do:** (the twelve User Manual screenshots that
+      showed the old name were retaken by Rich 04 November 2026) a
+      Release Notes entry for the rename if wanted; the install page's "username MUST be reuben" once a
+      `rosetta` login has been tried. How older machines move over is
+      deliberately not documented (Rich, 04 November 2026: only the two
+      test machines, nothing in production).
 - [ ] **Later:** remove the old-path stand-ins and the `RoseEngineButler`
       folder link once every machine has updated; the `rosetta` login
       itself (a separate, tested procedure per machine, or a reinstall).
