@@ -244,7 +244,7 @@ mistake.
 
 **Tasks - file and program names** - built 02 November 2026 on branch
 `rosetta-rename`, merged into `dev-rich` 04 November 2026 (branch
-deleted); not on `main` yet, so Roy's and Chuck's machines don't have it:
+deleted); on `main` since 04 November 2026:
 
 - [x] Every `REB*` file, folder and reference renamed `Rosetta*`
       (96 files): `Rosetta.ini`, `Rosetta.hal`, `Rosetta_Launch.sh`,
@@ -308,7 +308,14 @@ deleted); not on `main` yet, so Roy's and Chuck's machines don't have it:
       left behind when Rosetta had run before the Update - fixed (joined
       onto the new log, 1b19b58). Claude's memory copied to
       `...-configs-Rosetta/`.
-- [ ] **Before fast-forwarding `main`:** (1) on Rich's Pi, check the
+- [ ] **`main` fast-forwarded to `dev-rich` 04 November 2026** (91ea961,
+      Rich's call) - the rename, Beta 1.3 labels and new artwork now
+      reach every machine at its next Update, and new installs. Watch
+      the report viewer: each machine should reappear with a
+      "Rosetta..." serial (where it had "REB...") and 1.0 Beta 1.3; ask
+      for the Update output of any that doesn't. Not yet run when it
+      moved: (2), (4), (5) below and launching Rosetta on REB003.
+- [ ] **Checklist (written for before fast-forwarding `main`):** (1) on Rich's Pi, check the
       desktop icons open without an "untrusted" question, Rosetta
       Settings' Save Subset suggests `*.RosettaSet_v1.ini`, Back Up to
       USB, jog and run a program; (2) Import an old `.REBset_v1.ini`
