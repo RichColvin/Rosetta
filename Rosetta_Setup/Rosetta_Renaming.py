@@ -51,6 +51,8 @@
 #                                                                     #
 # Version                                                             #
 #   1.0 - 02 November 2026                                            #
+#   1.1 - 04 November 2026 - an old idx_debug.log is joined onto a    #
+#         new one Rosetta had already started, not left behind        #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -212,8 +214,20 @@ def old_generated_files(repo_dir):
         shutil.rmtree(os.path.join(repo_dir, rel), ignore_errors=True)
     for old, new in OLD_KEPT.items():
         src, dst = os.path.join(repo_dir, old), os.path.join(repo_dir, new)
-        if os.path.isfile(src) and not os.path.exists(dst) and os.path.isdir(os.path.dirname(dst)):
+        if not os.path.isfile(src) or not os.path.isdir(os.path.dirname(dst)):
+            continue
+        if not os.path.exists(dst):
             os.rename(src, dst)
+        elif os.path.isfile(dst):
+            # Rosetta started before this update and began a new log:
+            # put the old entries in front of it, so it reads in order.
+            tmp = dst + ".joining"
+            with open(tmp, "wb") as out:
+                for part in (src, dst):
+                    with open(part, "rb") as f:
+                        shutil.copyfileobj(f, out)
+            os.replace(tmp, dst)
+            os.remove(src)
     # An old folder left with nothing in it (REB_Setup keeps the
     # stand-in REB_Update_Settings.py, so it stays).
     for old in FOLDERS:
