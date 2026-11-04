@@ -51,7 +51,7 @@
 #   1.1 - 23 October 2026 - REPORT_URL is live
 #         (support.roseenginebutler.com/reb_report.php)
 #   1.2 - 02 November 2026 - Rosetta: new REPORT_URL; reads the
-#         "O/S ..." label with or without the old "Rosetta " in front
+#         "O/S ..." label with or without the old "REB " in front
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -81,7 +81,7 @@ HARDWARE_ID_PATHS = (
 REPORT_URL = "https://colvintools.com/Rosetta/Support/reb_report.php"
 REPORT_TIMEOUT_SECONDS = 10
 
-# The label said "Rosetta O/S ..." until the Rosetta rebranding (02 November
+# The label said "REB O/S ..." until the Rosetta rebranding (02 November
 # 2026); either form is read.
 VERSION_LABEL_PATTERN = re.compile(r">(?:REB )?O/S ([^<]+?) - ([^<]+?)</property>")
 

@@ -156,11 +156,15 @@ mistake.
       Still "REB" on purpose until the file renames: the reserved-name
       rule ("never start a G-code file name with REB") in Rosetta Settings
       and the generator's message.
+- [x] **Startup image** (04 November 2026): `RosettaStartupImage.gif`
+      (AXIS's `[DISPLAY]INTRO_GRAPHIC`, and its copy in
+      `Rosetta_Setup/Images/`) redrawn by Claude: the rosette and
+      "Rosetta" in Liberation Serif, the old image's grey on its dark
+      background, same 640x180 size. Rich approved it.
 - [ ] **Logos - need new artwork from Rich** (02 November 2026). Still
-      showing Reuben or "Rose Engine Butler": `REBStartupImage.gif` (the
-      AXIS splash, `[DISPLAY]INTRO_GRAPHIC` in REB.ini - the name in
-      text plus Reuben), the Help tab's three book-spine buttons
-      `REB-UserManualsm.png`, `REB-Forumsm.png`, `REB-Gcodesm.png` (the
+      showing Reuben or "Rose Engine Butler": the Help tab's three
+      book-spine buttons (`REB-UserManualsm.png`, `REB-Forumsm.png`,
+      `REB-Gcodesm.png` before the file renames; now `Rosetta-*sm.png`) (the
       name plus Reuben at the foot). Deleted 02 November 2026 at Rich's
       request, as nothing used them: `REBLogo-Sm.png`,
       `REBLogo-Sm-Panel*.png`, `REB-Forum.png`, `REB-Gcode.png`,
