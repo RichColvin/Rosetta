@@ -695,9 +695,10 @@ net machine-is-on                        => hm2_7i92.0.stepgen.06.enable
 # single-spindle path, mux2.2.in0, sel=FALSE) or by Rosetta_main.py's
 # simultaneous Sp0+Sp1 index path (mux2.2.in1, sel=TRUE) - see
 # Sp0_Idx_Active/Sp1_Idx_Active in Rosetta_main.py and the matching Sp1 block
-# below. orient.0.mode is hardwired below instead of following
-# spindle.0.orient-mode - both paths only ever use shortest-path (mode 0,
-# same as M19's existing "P0").
+# below. orient.0.mode doesn't follow spindle.0.orient-mode (M19's P
+# word): Rosetta_main.py sets it before each index (since 08 November
+# 2026, SPINDLE_INDEX_MODE) so an index always turns the way of the
+# button pressed - see below.
 net spindle.0-orient-angle-m19          <=  spindle.0.orient-angle
 net spindle.0-orient-angle-m19           => mux2.2.in0
 
@@ -780,10 +781,10 @@ setp hm2_7i92.0.stepgen.06.maxvel           [SPINDLE_0]STEPGEN_MAXVEL
 
 setp pid.p0.bias                            [SPINDLE_0]BIAS_POS
 setp orient.0.tolerance                     [SPINDLE_0]ORIENT_TOLERANCE
-# Hardwired shortest-path (see man orient) - both the M19 path (which has
-# always sent P0/shortest-path) and Rosetta_main.py's simultaneous index path
-# only ever want this, so orient.0.mode no longer follows
-# spindle.0.orient-mode - it's simply always 0.
+# Starts as shortest path (see man orient); Rosetta_main.py sets 1 or 2
+# before each index from the panel, so the drive's backlash is always
+# taken up the same way (until 08 November 2026 it stayed 0, and an index
+# of 180 degrees or more could turn against the button pressed).
 setp orient.0.mode                          0
 setp pid.p0.maxoutput                       [SPINDLE_0]MAX_OUTPUT_POS
 setp pid.p0.maxerrorI                       [SPINDLE_0]MAX_ERROR_I_POS
@@ -826,8 +827,7 @@ net machine-is-on                        => hm2_7i92.0.stepgen.07.enable
 
 # See the matching Sp0 block above for why orient.1.angle now comes
 # through mux2.3 (M19 vs Rosetta_main.py's simultaneous Sp0+Sp1 index path)
-# and orient.1.mode is hardwired below instead of following
-# spindle.1.orient-mode.
+# and orient.1.mode doesn't follow spindle.1.orient-mode.
 net spindle.1-orient-angle-m19          <=  spindle.1.orient-angle
 net spindle.1-orient-angle-m19           => mux2.3.in0
 

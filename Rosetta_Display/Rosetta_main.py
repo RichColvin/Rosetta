@@ -423,6 +423,24 @@ SYNC_POSITION_TOLERANCE = 0.0001
 # already used for the single-spindle M19 path elsewhere in this file.
 SIMULTANEOUS_INDEX_TIMEOUT = 20.0
 
+# Spindle index direction (08 November 2026): orient.N.mode for each
+# index. Shortest path (mode 0) let an index of 180 degrees or more turn
+# against the button pressed, losing the drive's backlash on every
+# change of direction, and at exactly 180 (Div 2) the direction could
+# flip from press to press. Found on Rich's Pi: mode 1 turns the way of
+# the on-screen Fwd button (spindle position increasing, sign +1 - the
+# Sp0_Move_Idx_Rev handler, since the ids don't match their columns),
+# mode 2 the way of Rev.
+SPINDLE_INDEX_MODE = {+1: 1, -1: 2}
+# An index is worked out from the previous index's target, not from
+# where the spindle stopped - it stops just inside ORIENT_TOLERANCE,
+# always short on the side it came from (about 0.08 degrees), so working
+# from the stopped position added that up (Div 24 all the way round
+# ended nearly 2 degrees short). The stopped position is used instead
+# when it's further than this from the last target (first index, or the
+# spindle has been run since).
+SPINDLE_INDEX_TRACK_DEGREES = 1.0
+
 # Default directory Export/Import's file choosers start in.
 ROSETTASET_DEFAULT_DIR = os.path.expanduser("~/Documents")
 
@@ -1502,6 +1520,40 @@ class HandlerClass:
         c.mdi(Gcode1)
         c.wait_complete()
 
+    def _spindle_index_target(self, n, sign):
+        '''
+        Target angle (0-360) for spindle n's next index, sign +1 or -1
+        times Sp0_Idx_Deg from the previous index's target - see
+        SPINDLE_INDEX_TRACK_DEGREES - and remembered for the next one.
+        '''
+        current = (hal.get_value('spindle.%d-position-fb' % n) % 1.0) * 360.0
+        if not hasattr(self, "_spindle_last_target"):
+            self._spindle_last_target = {}
+        start = current
+        last = self._spindle_last_target.get(n)
+        if last is not None:
+            off = (current - last + 180.0) % 360.0 - 180.0
+            if abs(off) <= SPINDLE_INDEX_TRACK_DEGREES:
+                start = last
+        target = (start + sign * self.Sp0_Idx_Deg) % 360.0
+        self._spindle_last_target[n] = target
+        idx_log("Sp%d index: at %.4f, from %.4f, target %.4f" % (n, current, start, target))
+        return target
+
+    @staticmethod
+    def _set_spindle_index_direction(sign):
+        '''
+        Makes the next index turn one way only (SPINDLE_INDEX_MODE) on
+        both spindles - orient.N.mode isn't connected to anything, so
+        it's set directly.
+        '''
+        for n in (0, 1):
+            try:
+                subprocess.run(["halcmd", "setp", "orient.%d.mode" % n,
+                                str(SPINDLE_INDEX_MODE[sign])], check=True, timeout=5)
+            except (OSError, subprocess.SubprocessError) as e:
+                idx_log("could not set orient.%d.mode: %s" % (n, e))
+
     def _index_both_spindles_simultaneously(self, sign):
         '''
         Indexes Sp0 and Sp1 together, in the same servo-thread cycle,
@@ -1530,11 +1582,9 @@ class HandlerClass:
         Only called when both Sp0_Idx_Bool and Sp1_Idx_Bool are true
         (see callers).
         '''
-        current_angle_0 = (hal.get_value('spindle.0-position-fb') % 1.0) * 360.0
-        target_angle_0 = (current_angle_0 + sign * self.Sp0_Idx_Deg) % 360.0
-
-        current_angle_1 = (hal.get_value('spindle.1-position-fb') % 1.0) * 360.0
-        target_angle_1 = (current_angle_1 + sign * self.Sp0_Idx_Deg) % 360.0
+        self._set_spindle_index_direction(sign)
+        target_angle_0 = self._spindle_index_target(0, sign)
+        target_angle_1 = self._spindle_index_target(1, sign)
 
         idx_log("Simultaneous index: Sp0 target=" + str(target_angle_0)
                 + "  Sp1 target=" + str(target_angle_1))
@@ -1653,14 +1703,14 @@ class HandlerClass:
             # below runs - a spindle the operator hasn't enabled is simply
             # skipped rather than sent a command that can only time out.
             if self.Sp0_Idx_Bool:
-                current_angle = (hal.get_value('spindle.0-position-fb') % 1.0) * 360.0
-                target_angle = (current_angle - self.Sp0_Idx_Deg) % 360.0
-
-                # NOTE: P0 = shortest path. Forcing a specific CW/CCW direction
-                # (P1/P2) was tried and empirically always took the long ~270
-                # deg way around to reach the same (correct) target angle -
-                # see the live HAL trace analysis in conversation. P0 takes
-                # the direct ~90 deg route to the same destination.
+                # One direction only (SPINDLE_INDEX_MODE, set directly on
+                # orient.N.mode - M19's P word isn't connected to it).
+                # Forcing a direction with M19 P1/P2 was tried before and
+                # took the long ~270 degree way: the modes were the other
+                # way round from the buttons, whose ids don't match their
+                # columns.
+                self._set_spindle_index_direction(-1)
+                target_angle = self._spindle_index_target(0, -1)
                 GcodeStr3 = "M19 R" + str(target_angle) + " Q20 P0 $0"
                 idx_log(GcodeStr3)
                 c.mdi(GcodeStr3)
@@ -1669,8 +1719,8 @@ class HandlerClass:
                 idx_log("Sp0 M19 skipped (Sp0_Idx_Bool is False)")
 
             if self.Sp1_Idx_Bool:
-                current_angle_1 = (hal.get_value('spindle.1-position-fb') % 1.0) * 360.0
-                target_angle_1 = (current_angle_1 - self.Sp0_Idx_Deg) % 360.0
+                self._set_spindle_index_direction(-1)
+                target_angle_1 = self._spindle_index_target(1, -1)
 
                 GcodeStr4 = "M19 R" + str(target_angle_1) + " Q20 P0 $1"
                 idx_log(GcodeStr4)
@@ -1746,14 +1796,13 @@ class HandlerClass:
                 self._bump_idx_count("Sp0", +1)
                 return
 
-            # See Sp0_Move_Idx_Fwd for why the target is computed per-spindle
-            # from live position, and why the checkboxes gate each M19 (only
+            # See Sp0_Move_Idx_Fwd for how the target is computed per-spindle
+            # (_spindle_index_target), and why the checkboxes gate each M19 (only
             # one of Sp0_Idx_Bool/Sp1_Idx_Bool can be true past this point).
             if self.Sp0_Idx_Bool:
-                current_angle = (hal.get_value('spindle.0-position-fb') % 1.0) * 360.0
-                target_angle = (current_angle + self.Sp0_Idx_Deg) % 360.0
-
-                # NOTE: P0 = shortest path - see matching note in Sp0_Move_Idx_Fwd.
+                # One direction only - see Sp0_Move_Idx_Fwd.
+                self._set_spindle_index_direction(+1)
+                target_angle = self._spindle_index_target(0, +1)
                 GcodeStr3 = "M19 R" + str(target_angle) + " Q20 P0 $0"
                 idx_log(GcodeStr3)
                 c.mdi(GcodeStr3)
@@ -1762,8 +1811,8 @@ class HandlerClass:
                 idx_log("Sp0 M19 skipped (Sp0_Idx_Bool is False)")
 
             if self.Sp1_Idx_Bool:
-                current_angle_1 = (hal.get_value('spindle.1-position-fb') % 1.0) * 360.0
-                target_angle_1 = (current_angle_1 + self.Sp0_Idx_Deg) % 360.0
+                self._set_spindle_index_direction(+1)
+                target_angle_1 = self._spindle_index_target(1, +1)
 
                 GcodeStr4 = "M19 R" + str(target_angle_1) + " Q20 P0 $1"
                 idx_log(GcodeStr4)
