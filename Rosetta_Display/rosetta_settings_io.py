@@ -52,6 +52,8 @@
 #   1.1 - 02 November 2026 - renamed from reb_settings_io.py;
 #         adopt_old_paths moves the pre-Rosetta settings file and
 #         config folder to their new names
+#   1.2 - 08 November 2026 - spindle indexing PID starts with I 0 and
+#         D 0 (was 1 and 1.2)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -253,7 +255,15 @@ PID_PARAMS = ("P", "I", "D", "FF0", "FF1", "FF2")
 # [JOINT_n]/[SPINDLE_n] comments) - what a brand-new axis entry should
 # start from.
 _DEFAULT_PID = {"P": 5, "I": 1, "D": 1.2, "FF0": 0, "FF1": 1, "FF2": 0}
-_DEFAULT_SPINDLE_PID_POS = {"P": 2, "I": 1, "D": 1.2, "FF0": 0, "FF1": 0, "FF2": 0}
+# Spindle indexing: I and D are 0 since 08 November 2026 (Rich
+# found the screen finishing well after the spindle stopped). With I 1 /
+# D 1.2 a 90 degree index overshot 5.7 degrees and crept back, taking
+# about 9 s to get within ORIENT_TOLERANCE; with I 0 / D 0 it took 3.7 s
+# with no overshoot (traced on Rich's Pi). A stepgen goes where it is
+# told, so nothing needs I to remove. OLD_SPINDLE_PID_POS is what
+# Rosetta_Update_Settings.py looks for to move a machine over.
+_DEFAULT_SPINDLE_PID_POS = {"P": 2, "I": 0, "D": 0, "FF0": 0, "FF1": 0, "FF2": 0}
+OLD_SPINDLE_PID_POS = {"P": 2, "I": 1, "D": 1.2}
 # (Spindles' old velocity-loop "pid_vel" gains were dropped 08 October
 # 2026 - that loop's output never reached the stepgen. A machine's file
 # may still carry the key; nothing reads it.)

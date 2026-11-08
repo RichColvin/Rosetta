@@ -57,6 +57,8 @@
 #   1.5 - 02 November 2026 - renamed from REB_Update_Settings.py;     #
 #         ends with Rosetta_Renaming.finish (moves an older machine   #
 #         over to the Rosetta names)                                  #
+#   1.6 - 08 November 2026 - spindles still on the old indexing PID   #
+#         (I 1, D 1.2) get I 0 and D 0                                #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -171,6 +173,31 @@ def fill_speed_limits(user, planner):
         else:
             continue
         changed += [axis_id + " " + note for note in notes]
+    return changed
+
+
+def fix_spindle_index_pid(user):
+    '''
+    Gives each spindle whose indexing PID still has the old starting
+    gains (P 2, I 1, D 1.2 - rosetta_settings_io.OLD_SPINDLE_PID_POS) the
+    new ones, I 0 and D 0 (08 November 2026: the old ones overshot and
+    crept back, so an index finished on screen seconds after the spindle
+    stopped). A machine whose owner has tuned them is left alone. Returns
+    a list of what was changed.
+    '''
+    changed = []
+    old = rosetta_settings_io.OLD_SPINDLE_PID_POS
+    for axis_id in rosetta_settings_io.SPINDLE_IDS:
+        pid = user.get("axes", {}).get(axis_id, {}).get("pid_pos")
+        if not isinstance(pid, dict):
+            continue
+        try:
+            if all(float(pid.get(k)) == v for k, v in old.items()):
+                pid["I"] = 0.0
+                pid["D"] = 0.0
+                changed.append(axis_id + " indexing PID: I 1 -> 0, D 1.2 -> 0")
+        except (TypeError, ValueError):
+            continue
     return changed
 
 
@@ -296,6 +323,7 @@ def update_settings():
     except OSError as e:
         print("WARNING: could not read " + ROSETTA_INI_PATH + " (" + str(e) + ") - speed limits not filled in.")
         raised = []
+    raised += fix_spindle_index_pid(user)
     added = add_missing(user, seed)
     # A file from before the explanatory notes (08 October 2026 and
     # earlier) gets them now, rather than at the next program save.
@@ -313,7 +341,7 @@ def update_settings():
         for where in added:
             print("    " + where)
     if raised:
-        print("Set up %d speed limit value(s) (now in Rosetta Settings):" % len(raised))
+        print("Set up or changed %d tuning value(s) (see Rosetta Settings):" % len(raised))
         for what in raised:
             print("    " + what)
     if needs_notes:
