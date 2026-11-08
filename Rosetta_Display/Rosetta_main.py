@@ -2388,13 +2388,16 @@ class HandlerClass:
         |distance| / feed; the move is timed to the slowest of those via
         inverse-time feed (G93, F = 1/minutes), so every axis starts and
         stops together and none goes faster than the feed rate it was
-        given. Units (G20/G21), distance mode and feed mode are forced
+        given. Units (G20/G21), distance mode, feed mode and radius mode are forced
         for this one move and the operator's previous modal state is put
         back afterwards, along with its modal F (see _sync_poll_move).
         '''
         minutes = max(abs(d) / feeds[axis] for axis, d in deltas.items())
         words = " ".join("%s%.4f" % (axis, d) for axis, d in deltas.items())
-        gcode = ("G21" if self._sync_metric else "G20") + " G91 G93 G1 " + words + " F%.8f" % (1.0 / minutes)
+        # G8 too (08 November 2026, found with GitHub issue #24): a
+        # program that leaves diameter mode (G7) on would otherwise halve
+        # every X move, and Return's deltas come from radius positions.
+        gcode = ("G21" if self._sync_metric else "G20") + " G91 G93 G8 G1 " + words + " F%.8f" % (1.0 / minutes)
         # Where each axis should end up - see _sync_run_finished.
         self._sync_target = {axis: s.position[STAT_POSITION_INDEX[axis]] + d
                              for axis, d in deltas.items()}
@@ -3882,10 +3885,29 @@ def _axis_idx_move(axis, handler_name, gcode_sign):
             # gates whether this handler is even reachable - see
             # _load_panel_axis_controls).
             gcode_axis = axis
-            Gcode = "G1 " + gcode_axis + gcode_sign + str(amount) + " F" + str(feed)
+            # The move states its own modes rather than relying on
+            # Rosetta.ini's startup code (G20/G21 per the Measurement
+            # System, G91, G94, G8). Added 08 November 2026 - GitHub
+            # issue #24: after a G-code program (which leaves G90 in
+            # effect) the buttons made absolute moves, so X went to +5
+            # and a second press didn't move it, and C took the long way
+            # round to an absolute angle. The operator's own modes and
+            # modal F are put back afterwards, as Sync Move does.
+            modal = set(s.gcodes)
+            restore = " ".join([
+                "G21" if 210 in modal else "G20",
+                "G91" if 910 in modal else "G90",
+                "G93" if 930 in modal else "G95" if 950 in modal else "G94",
+                "G7" if 70 in modal else "G8",
+                "F%.4f" % s.settings[1]])
+            units = "G21" if getattr(self, "_sync_metric", False) else "G20"
+            Gcode = (units + " G91 G94 G8 G1 " + gcode_axis + gcode_sign + str(amount)
+                     + " F" + str(feed))
 
             print(Gcode)
             c.mdi(Gcode)
+            c.wait_complete()
+            c.mdi(restore)
             c.wait_complete()
 
             # Fwd (plus-sign column, sends "+") counts up, Rev counts down -
