@@ -820,7 +820,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.3 - 04 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.4 - 08 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -2351,7 +2351,7 @@ Without the expansion box, its channels and limit switch jacks are greyed out an
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.3 - 04 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.4 - 08 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -3721,7 +3721,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.3 - 04 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.4 - 08 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -9712,7 +9712,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.3 - 04 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.4 - 08 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
