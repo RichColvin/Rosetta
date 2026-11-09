@@ -34,6 +34,7 @@
 #
 # Version
 #   1.0 - 04 September 2026
+#   1.1 - 09 November 2026 - File menu: Back Up to USB, Restore from USB
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -2090,6 +2091,10 @@ class HandlerClass:
         whether to save first. Returns True (keep the window open) if
         the operator cancels.
         '''
+        # After Restore from USB the settings file on disk is the
+        # restored one - nothing here may be saved over it.
+        if getattr(self, "_closing_after_restore", False):
+            return False
         if self._tuning_values() == self._saved_tuning:
             return False
         dialog = Gtk.MessageDialog(
@@ -3689,6 +3694,9 @@ def _add_file_menu(builder, handler, window):
         ("Save Subset of Settings As...", "Export_Settings", handler.Export_Settings, None),
         ("_Load Settings from File...", "Settings_Load", handler.Settings_Load, "<Control>o"),
         (None, None, None, None),
+        ("Back _Up to USB...", None, lambda widget: _open_backup(window), None),
+        ("_Restore from USB...", None, lambda widget: _open_restore(handler, window), None),
+        (None, None, None, None),
         ("_Quit", None, lambda widget: window.close(), "<Control>q"),
     ):
         if label is None:
@@ -3708,6 +3716,54 @@ def _add_file_menu(builder, handler, window):
     outer_box = builder.get_object("Settings_Outer_Box")
     outer_box.pack_start(menu_bar, False, False, 0)
     outer_box.reorder_child(menu_bar, 0)
+
+def _open_backup(window):
+    '''
+    File > Back Up to USB (added 09 November 2026): the same window as
+    the Back Up launcher (Rosetta_Backup.py), over this one.
+    '''
+    import Rosetta_Backup
+    Rosetta_Backup.BackupWindow(parent=window).show_all()
+
+def _open_restore(handler, window):
+    '''
+    File > Restore from USB (added 09 November 2026; see
+    Rosetta_Backup.py's header). The restore replaces RosettaSet_v1.ini
+    underneath this program, whose widgets still hold the old values -
+    and some of them save as soon as they change - so once anything has
+    been restored this program closes without saving; reopening it
+    reads the restored file. Unsaved tuning changes are asked about
+    first, since closing would otherwise lose them silently.
+    '''
+    if handler._tuning_values() != handler._saved_tuning:
+        dialog = Gtk.MessageDialog(
+            transient_for=window, flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.NONE,
+            text="Unsaved changes",
+        )
+        dialog.format_secondary_text(
+            "Some Scale, speed, acceleration or PID values have changed since "
+            "they were last saved. A restore replaces the settings and then "
+            "closes Rosetta Settings, so those changes would be lost.\n\n"
+            "Save them first if you want them in this machine's settings "
+            "(they'll be set aside with the other replaced files).")
+        dialog.add_button("Continue Without Saving", Gtk.ResponseType.NO)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.add_button("Save and Continue", Gtk.ResponseType.YES)
+        dialog.set_default_response(Gtk.ResponseType.CANCEL)
+        response = dialog.run()
+        dialog.destroy()
+        if response == Gtk.ResponseType.YES:
+            handler._write_rebset_snapshot()
+        elif response != Gtk.ResponseType.NO:
+            return
+    import Rosetta_Backup
+
+    def restored():
+        handler._closing_after_restore = True
+        window.close()
+    Rosetta_Backup.RestoreWindow(window, restored).show_all()
 
 def _run_menu_action(window, method, button):
     # A shortcut key leaves focus in a spin button that's still being

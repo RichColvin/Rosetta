@@ -15,8 +15,9 @@
 # File:
 #   Rosetta_Backup.py
 #
-# Purpose:  Standalone "Back Up to USB" program for Rosetta.
-#   A plain, independently launched GTK window (see Rosetta_Backup.sh) that
+# Purpose:  "Back Up to USB" and "Restore from USB" for Rosetta.
+#   Back Up is a plain GTK window - launched on its own (see
+#   Rosetta_Backup.sh) or from Rosetta Settings' File menu - that
 #   copies the operator's own files onto a USB memory stick inserted
 #   into the Raspberry Pi:
 #
@@ -43,6 +44,22 @@
 #   the Pi can add latency to the realtime motion thread, so a backup
 #   is best done with no program cutting.
 #
+#   Restore from USB (added 09 November 2026; only from Rosetta
+#   Settings' File menu - RestoreWindow) copies a chosen dated backup
+#   back to the same places. Agreed with Rich: the operator picks which
+#   backup on the stick; every file it would replace is first copied to
+#   ~/Documents/Before_Restore/YYYY-MM-DD_HHMM/ (laid out like a
+#   backup, so it could itself be copied back); it refuses while
+#   LinuxCNC is running (LinuxCNC saves RosettaSet_v1.ini as it closes,
+#   which would undo the restore); and it warns, without blocking, when
+#   the backup's channel assignments or expansion box differ from this
+#   machine's. Files on the Pi that aren't in the backup are left
+#   alone. Older backups (REB_Backup/ on the stick, with REBset_v1.ini
+#   and REB_Custom/) are found too, and their old file names mapped to
+#   the new ones. Once anything has been copied, Rosetta Settings
+#   closes without saving (its on_restored), so it can't write the
+#   values it had loaded over the restored settings.
+#
 # End User Customisation:
 #   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY
 #   THIS FILE.
@@ -52,6 +69,9 @@
 #
 # Version
 #   1.0 - 06 October 2026
+#   1.1 - 09 November 2026 - Restore from USB; both windows can open
+#         from Rosetta Settings' File menu; the repo is found from this
+#         file's own folder
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -99,7 +119,7 @@ from gi.repository import GLib
 from gi.repository import Gtk
 
 HOME_DIR = os.path.expanduser("~")
-REPO_DIR = os.path.join(HOME_DIR, "linuxcnc/configs/Rosetta")
+REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # (destination folder on the stick, source folder, filename patterns,
 #  recurse into subfolders?). A source folder that doesn't exist on
@@ -114,6 +134,18 @@ BACKUP_SOURCES = [
 
 BACKUP_ROOT_NAME = "Rosetta_Backup"
 LOG_FILE_NAME = "backup_log.txt"
+
+# Restore: backup folders on the stick to look in (REB_Backup is what
+# the program wrote before the Rosetta renaming), and old file/folder
+# names in a backup mapped to today's (relative to the backup folder).
+RESTORE_ROOT_NAMES = (BACKUP_ROOT_NAME, "REB_Backup")
+RESTORE_RENAMES = {
+    "Documents/REBset_v1.ini": "Documents/RosettaSet_v1.ini",
+    "REB_Custom/REB_Custom.hal": "Rosetta_Custom/Rosetta_Custom.hal",
+    "REB_Custom/REB_Tool.tbl": "Rosetta_Custom/Rosetta_Tool.tbl",
+}
+SETTINGS_RELATIVE = "Documents/RosettaSet_v1.ini"
+BEFORE_RESTORE_DIR = os.path.join(HOME_DIR, "Documents", "Before_Restore")
 
 # Where the desktop's automounter (udisks2) mounts removable media.
 MEDIA_PREFIXES = ("/media/", "/run/media/")
@@ -322,12 +354,21 @@ def _format_size(n):
 
 class BackupWindow(Gtk.Window):
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        '''parent: the window it was opened from (Rosetta Settings), or
+        None when run on its own - then closing it ends the program.'''
         Gtk.Window.__init__(self, title="Rosetta - Back Up to USB")
         self.set_border_width(16)
         self.set_default_size(520, -1)
-        self.set_position(Gtk.WindowPosition.CENTER)
-        self.connect("destroy", Gtk.main_quit)
+        if parent is None:
+            self.set_position(Gtk.WindowPosition.CENTER)
+            self.connect("destroy", Gtk.main_quit)
+        else:
+            self.set_transient_for(parent)
+            self.set_modal(True)
+            self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self._poll_id = None
+        self.connect("destroy", self._stop_polling)
 
         self.mounts = []
         self.busy = False
@@ -385,7 +426,12 @@ class BackupWindow(Gtk.Window):
         box.pack_start(buttons, False, False, 0)
 
         self.refresh()
-        GLib.timeout_add(STICK_POLL_MS, self.refresh)
+        self._poll_id = GLib.timeout_add(STICK_POLL_MS, self.refresh)
+
+    def _stop_polling(self, widget):
+        if self._poll_id is not None:
+            GLib.source_remove(self._poll_id)
+            self._poll_id = None
 
     def refresh(self):
         '''Re-scans for sticks and LinuxCNC; runs every STICK_POLL_MS.'''
@@ -497,6 +543,454 @@ class BackupWindow(Gtk.Window):
         dialog.run()
         dialog.destroy()
         self.refresh()
+        return False
+
+
+#######################################################################
+# Restore from USB (added 09 November 2026) - see the header.
+#######################################################################
+
+def find_backups(mount_point):
+    '''
+    Every backup folder on the stick, newest first, as
+    [(name, path), ...]. Names are the folders' own YYYY-MM-DD_HHMM
+    (plus _2, _3, ... for a second backup in the same minute), so
+    sorting them sorts by date.
+    '''
+    backups = []
+    for root_name in RESTORE_ROOT_NAMES:
+        root = os.path.join(mount_point, root_name)
+        try:
+            names = os.listdir(root)
+        except OSError:
+            continue
+        for name in names:
+            path = os.path.join(root, name)
+            if os.path.isdir(path) and not name.startswith("."):
+                backups.append((name, path))
+    backups.sort(key=lambda b: b[0], reverse=True)
+    return backups
+
+
+def describe_backup(name):
+    '''"09 November 2026 14:30" from 2026-11-09_1430 (the name
+    itself if it doesn't fit that pattern).'''
+    stamp = name.split("_")[0] + "_" + name.split("_")[1] if name.count("_") else name
+    try:
+        when = time.strptime(stamp, "%Y-%m-%d_%H%M")
+    except ValueError:
+        return name
+    text = time.strftime("%d %B %Y %H:%M", when)
+    if name != stamp:
+        text += " (" + name[len(stamp) + 1:] + ")"
+    return text
+
+
+def _restore_destination(relative):
+    '''
+    Where a file in a backup (its path relative to the backup folder)
+    goes on this Pi, or None if it isn't one Back Up would have written
+    (the log, or a folder or name Back Up doesn't use).
+    '''
+    relative = RESTORE_RENAMES.get(relative, relative)
+    folder, _, rest = relative.partition("/")
+    for dest_name, source_dir, patterns, recurse in BACKUP_SOURCES:
+        if folder != dest_name or not rest:
+            continue
+        if not recurse and "/" in rest:
+            return None
+        name = os.path.basename(rest)
+        if name.startswith(".") or not any(
+                fnmatch.fnmatch(name.lower(), p.lower()) for p in patterns):
+            return None
+        return relative, os.path.join(source_dir, rest)
+    return None
+
+
+def collect_restore(backup_dir):
+    '''
+    Returns [(backup_path, new_relative, destination, size), ...] for
+    every file in the backup that restores somewhere. A backup holding
+    both REBset_v1.ini and RosettaSet_v1.ini keeps RosettaSet_v1.ini.
+    '''
+    found = {}
+    for dir_path, dir_names, file_names in os.walk(backup_dir):
+        dir_names[:] = sorted(d for d in dir_names if not d.startswith("."))
+        for name in sorted(file_names):
+            path = os.path.join(dir_path, name)
+            if os.path.islink(path) or not os.path.isfile(path):
+                continue
+            relative = os.path.relpath(path, backup_dir).replace(os.sep, "/")
+            target = _restore_destination(relative)
+            if target is None:
+                continue
+            new_relative, destination = target
+            renamed = new_relative != relative
+            if new_relative in found and renamed:
+                continue    # today's name wins over the old one
+            found[new_relative] = (path, new_relative, destination,
+                                   os.path.getsize(path))
+    return [found[k] for k in sorted(found)]
+
+
+def restore_summary(files):
+    '''"3 settings files, 40 G-code files, ..." for the confirm box.'''
+    labels = (("Documents", "settings file"), ("gcode", "G-code file"),
+              ("Rosetta_Custom", "custom HAL / tool table file"),
+              ("nc_files", "nc_files file"))
+    counts = {}
+    for _, relative, _, _ in files:
+        folder = relative.split("/")[0]
+        counts[folder] = counts.get(folder, 0) + 1
+    parts = []
+    for folder, label in labels:
+        n = counts.get(folder, 0)
+        if n:
+            parts.append("%d %s%s" % (n, label, "" if n == 1 else "s"))
+    return ", ".join(parts)
+
+
+def _read_settings(path):
+    try:
+        import rosetta_settings_io
+        with open(path) as f:
+            data = rosetta_settings_io.parse_settings_text(f.read())
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
+
+
+def setup_differences(files):
+    '''
+    Lines saying how the backup's machine setup (channel assignments,
+    expansion box) differs from this machine's, from the two
+    RosettaSet_v1.ini files - empty if they match or either can't be
+    read (an old XML-format file, say). A warning only.
+    '''
+    backup_path = next((p for p, rel, _, _ in files if rel == SETTINGS_RELATIVE), None)
+    if backup_path is None:
+        return ["The backup has no RosettaSet_v1.ini, so this machine's "
+                "settings stay as they are."]
+    import rosetta_settings_io
+    here = _read_settings(rosetta_settings_io.SETTINGS_PATH)
+    there = _read_settings(backup_path)
+    if here is None or there is None:
+        return []
+    lines = []
+    if bool(here.get("expansion_box")) != bool(there.get("expansion_box")):
+        lines.append("Expansion box: %s here, %s in the backup." % (
+            "connected" if here.get("expansion_box") else "not connected",
+            "connected" if there.get("expansion_box") else "not connected"))
+    mine = rosetta_settings_io.complete_channel_assignments(here.get("channel_assignments"))
+    theirs = rosetta_settings_io.complete_channel_assignments(there.get("channel_assignments"))
+    for channel in rosetta_settings_io.CHANNEL_IDS:
+        if mine.get(channel) != theirs.get(channel):
+            lines.append("Channel %s: %s here, %s in the backup." % (
+                channel, mine.get(channel) or "nothing", theirs.get(channel) or "nothing"))
+    return lines
+
+
+def run_restore(files, progress=None):
+    '''
+    Copies the backup's files into place. Every file that would be
+    replaced is first copied to a new Before_Restore/YYYY-MM-DD_HHMM
+    folder (if that fails for a file, the file isn't replaced). Returns
+    (saved_dir or None, copied, errors). progress, if given, is called
+    as progress(done, total, relative) after each file.
+    '''
+    stamp = time.strftime("%Y-%m-%d_%H%M")
+    saved_dir = os.path.join(BEFORE_RESTORE_DIR, stamp)
+    suffix = 2
+    while os.path.exists(saved_dir):
+        saved_dir = os.path.join(BEFORE_RESTORE_DIR, "%s_%d" % (stamp, suffix))
+        suffix += 1
+    saved_any = False
+    copied = 0
+    errors = []
+    for index, (source, relative, destination, size) in enumerate(files, 1):
+        try:
+            if os.path.isfile(destination):
+                keep = os.path.join(saved_dir, relative)
+                os.makedirs(os.path.dirname(keep), exist_ok=True)
+                shutil.copy2(destination, keep)
+                saved_any = True
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            # Write beside the file then rename over it, so a failed
+            # copy never leaves a half-written file in its place.
+            temporary = destination + ".restoring"
+            shutil.copyfile(source, temporary)
+            if os.path.getsize(temporary) != size:
+                os.remove(temporary)
+                raise OSError("size mismatch after copy")
+            try:
+                st = os.stat(source)
+                os.utime(temporary, (st.st_atime, st.st_mtime))
+            except OSError:
+                pass
+            os.replace(temporary, destination)
+            copied += 1
+        except OSError as e:
+            errors.append("%s: %s" % (relative, e))
+        if progress:
+            progress(index, len(files), relative)
+    os.sync()
+    return (saved_dir if saved_any else None), copied, errors
+
+
+class RestoreWindow(Gtk.Window):
+    '''
+    Restore from USB, opened from Rosetta Settings (parent). on_restored
+    is called once the restore has copied anything, after the operator
+    closes the result box - Rosetta Settings then closes without saving.
+    '''
+
+    def __init__(self, parent, on_restored):
+        Gtk.Window.__init__(self, title="Rosetta - Restore from USB")
+        self.set_border_width(16)
+        self.set_default_size(560, -1)
+        self.set_transient_for(parent)
+        self.set_modal(True)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.on_restored = on_restored
+        self.mounts = None      # so the first refresh fills the lists
+        self.backups = []
+        self.files = []
+        self.differences = []
+        self.busy = False
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.add(box)
+
+        heading = Gtk.Label()
+        heading.set_markup("<big><b>Restore from USB Memory Stick</b></big>")
+        heading.set_xalign(0)
+        box.pack_start(heading, False, False, 0)
+
+        summary = Gtk.Label(
+            label="Copies a backup made with Back Up to USB back onto this "
+                  "Raspberry Pi: settings (.ini) files, G-code, custom HAL "
+                  "and tool table, and nc_files.\n"
+                  "Each file it replaces is first copied to "
+                  "Documents/Before_Restore. Files that aren't in the "
+                  "backup are left as they are.")
+        summary.set_line_wrap(True)
+        summary.set_xalign(0)
+        box.pack_start(summary, False, False, 0)
+
+        grid = Gtk.Grid(column_spacing=8, row_spacing=8)
+        grid.attach(Gtk.Label(label="USB stick:", xalign=0), 0, 0, 1, 1)
+        self.stick_combo = Gtk.ComboBoxText(hexpand=True)
+        self.stick_combo.connect("changed", self.on_stick_changed)
+        grid.attach(self.stick_combo, 1, 0, 1, 1)
+        grid.attach(Gtk.Label(label="Backup:", xalign=0), 0, 1, 1, 1)
+        self.backup_combo = Gtk.ComboBoxText(hexpand=True)
+        self.backup_combo.connect("changed", self.on_backup_changed)
+        grid.attach(self.backup_combo, 1, 1, 1, 1)
+        box.pack_start(grid, False, False, 0)
+
+        self.details = Gtk.Label()
+        self.details.set_line_wrap(True)
+        self.details.set_xalign(0)
+        box.pack_start(self.details, False, False, 0)
+
+        self.warning = Gtk.Label()
+        self.warning.set_line_wrap(True)
+        self.warning.set_xalign(0)
+        box.pack_start(self.warning, False, False, 0)
+
+        self.progress = Gtk.ProgressBar()
+        self.progress.set_show_text(True)
+        box.pack_start(self.progress, False, False, 0)
+
+        self.status = Gtk.Label()
+        self.status.set_line_wrap(True)
+        self.status.set_xalign(0)
+        box.pack_start(self.status, False, False, 0)
+
+        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self.restore_button = Gtk.Button(label="Restore")
+        self.restore_button.connect("clicked", self.on_restore_clicked)
+        self.close_button = Gtk.Button(label="Close")
+        self.close_button.connect("clicked", lambda w: self.destroy())
+        buttons.pack_end(self.close_button, False, False, 0)
+        buttons.pack_end(self.restore_button, False, False, 0)
+        box.pack_start(buttons, False, False, 0)
+
+        self.connect("delete-event", lambda w, e: self.busy)
+        self.refresh()
+        self._poll_id = GLib.timeout_add(STICK_POLL_MS, self.refresh)
+        self.connect("destroy", self._stop_polling)
+
+    def _stop_polling(self, widget):
+        if self._poll_id is not None:
+            GLib.source_remove(self._poll_id)
+            self._poll_id = None
+
+    def refresh(self):
+        '''Re-scans for sticks; runs every STICK_POLL_MS.'''
+        if self.busy:
+            return True
+        mounts = find_usb_mounts()
+        if mounts != self.mounts:
+            selected = self.stick_combo.get_active()
+            selected_mount = self.mounts[selected][1] \
+                if self.mounts and 0 <= selected < len(self.mounts) else None
+            self.mounts = mounts
+            self.stick_combo.remove_all()
+            active = 0
+            for i, (label, mount_point, _) in enumerate(mounts):
+                self.stick_combo.append_text(label)
+                if mount_point == selected_mount:
+                    active = i
+            if mounts:
+                self.stick_combo.set_active(active)
+            else:
+                self.on_stick_changed(self.stick_combo)
+        return True
+
+    def _selected_mount(self):
+        index = self.stick_combo.get_active()
+        return self.mounts[index] if self.mounts and 0 <= index < len(self.mounts) else None
+
+    def on_stick_changed(self, combo):
+        mount = self._selected_mount()
+        self.backups = find_backups(mount[1]) if mount else []
+        self.backup_combo.remove_all()
+        for name, _ in self.backups:
+            self.backup_combo.append_text(describe_backup(name))
+        if self.backups:
+            self.backup_combo.set_active(0)
+        else:
+            self.on_backup_changed(self.backup_combo)
+
+    def _selected_backup(self):
+        index = self.backup_combo.get_active()
+        return self.backups[index] if 0 <= index < len(self.backups) else None
+
+    def on_backup_changed(self, combo):
+        backup = self._selected_backup()
+        self.files = collect_restore(backup[1]) if backup else []
+        self.differences = setup_differences(self.files) if self.files else []
+        self.progress.set_fraction(0)
+        self.progress.set_text("")
+        if not self.mounts:
+            self.details.set_text("")
+            self.status.set_text("Insert the USB memory stick that holds the backup...")
+        elif not self.backups:
+            self.details.set_text("")
+            self.status.set_text("No backups on this USB stick (Back Up to USB "
+                                 "puts them in a Rosetta_Backup folder).")
+        elif not self.files:
+            self.details.set_text("")
+            self.status.set_text("This backup has no files to restore.")
+        else:
+            self.details.set_text("This backup has %s (%s)." % (
+                restore_summary(self.files),
+                _format_size(sum(f[3] for f in self.files))))
+            self.status.set_text("Ready. Press Restore to start.")
+        if self.differences:
+            self.warning.set_markup(
+                "<span foreground='#b00000'><b>This backup's machine setup is "
+                "different:</b>\n" + GLib.markup_escape_text("\n".join(self.differences))
+                + "</span>")
+            self.warning.show()
+        else:
+            self.warning.set_text("")
+            self.warning.hide()
+        self.restore_button.set_sensitive(bool(self.files))
+
+    def _message(self, message_type, text, detail, buttons=Gtk.ButtonsType.OK):
+        dialog = Gtk.MessageDialog(transient_for=self, flags=0,
+                                   message_type=message_type,
+                                   buttons=buttons, text=text)
+        dialog.format_secondary_text(detail)
+        return dialog
+
+    def on_restore_clicked(self, widget):
+        mount = self._selected_mount()
+        backup = self._selected_backup()
+        if not (mount and backup and self.files):
+            return
+        if linuxcnc_is_running():
+            dialog = self._message(
+                Gtk.MessageType.ERROR, "LinuxCNC is running",
+                "Close LinuxCNC first, then restore. LinuxCNC saves its "
+                "settings as it closes, which would undo the restore.")
+            dialog.run()
+            dialog.destroy()
+            return
+        detail = ("This replaces files on this Raspberry Pi with the copies "
+                  "in the backup from %s: %s.\n\n"
+                  "Each file it replaces is first copied to Documents/"
+                  "Before_Restore. Rosetta Settings closes when it's done."
+                  % (describe_backup(backup[0]), restore_summary(self.files)))
+        if self.differences:
+            detail += ("\n\nThe backup's machine setup is different from "
+                       "this machine's:\n" + "\n".join(self.differences))
+        dialog = self._message(Gtk.MessageType.WARNING if self.differences
+                               else Gtk.MessageType.QUESTION,
+                               "Restore this backup?", detail, Gtk.ButtonsType.NONE)
+        dialog.add_button("Restore", Gtk.ResponseType.ACCEPT)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.set_default_response(Gtk.ResponseType.CANCEL)
+        answer = dialog.run()
+        dialog.destroy()
+        if answer != Gtk.ResponseType.ACCEPT:
+            return
+
+        self.busy = True
+        for w in (self.restore_button, self.close_button,
+                  self.stick_combo, self.backup_combo):
+            w.set_sensitive(False)
+        self.progress.set_fraction(0)
+        self.status.set_text("Restoring... do not remove the USB stick.")
+        threading.Thread(target=self._restore_thread,
+                         args=(list(self.files), mount[2]), daemon=True).start()
+
+    def _restore_thread(self, files, device):
+        def progress(done, total, name):
+            GLib.idle_add(self._show_progress, done, total, name)
+        result = run_restore(files, progress)
+        GLib.idle_add(self.status.set_text, "Finishing with the USB stick...")
+        ejected = eject(device)
+        GLib.idle_add(self._finish, result, ejected)
+
+    def _show_progress(self, done, total, name):
+        self.progress.set_fraction(done / total if total else 1.0)
+        self.progress.set_text("%d of %d" % (done, total))
+        self.status.set_text("Restoring %s" % name)
+        return False
+
+    def _finish(self, result, ejected):
+        saved_dir, copied, errors = result
+        self.busy = False
+        detail = "%d files restored." % copied
+        if saved_dir:
+            detail += ("\n\nThe files they replaced are in %s."
+                       % os.path.relpath(saved_dir, HOME_DIR))
+        if errors:
+            message_type = Gtk.MessageType.WARNING
+            text = "Restore finished with problems"
+            detail += "\n\n%d files could not be restored:\n%s" % (
+                len(errors), "\n".join(errors[:10]))
+            if len(errors) > 10:
+                detail += "\n..."
+        else:
+            message_type = Gtk.MessageType.INFO
+            text = "Restore complete"
+        detail += ("\n\nIt is now safe to remove the USB stick." if ejected else
+                   "\n\nThe stick could not be ejected automatically. Use "
+                   "Eject in the file manager before removing it.")
+        if copied:
+            detail += ("\n\nRosetta Settings will now close. Open it again "
+                       "to see the restored settings.")
+        self.status.set_text("Done.")
+        dialog = self._message(message_type, text, detail)
+        dialog.run()
+        dialog.destroy()
+        self.destroy()
+        if copied and self.on_restored:
+            self.on_restored()
         return False
 
 
