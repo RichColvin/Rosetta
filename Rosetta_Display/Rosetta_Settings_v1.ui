@@ -10289,72 +10289,15 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="label" translatable="yes">General</property>
                                 <property name="justify">center</property>
                                 <attributes>
-                                  <attribute name="font-desc" value="DejaVu Serif 20"/>
-                                  <attribute name="weight" value="bold"/>
-                                  <attribute name="foreground" value="#1a1a5f5fb4b4"/>
+                                  <attribute name="font-desc" value="DejaVu Serif 20" />
+                                  <attribute name="weight" value="bold" />
+                                  <attribute name="foreground" value="#1a1a5f5fb4b4" />
                                 </attributes>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
                                 <property name="top-attach">0</property>
-                                <property name="width">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="margin-top">10</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">center</property>
-                                    <property name="margin-right">4</property>
-                                    <property name="margin-end">4</property>
-                                    <property name="margin-top">4</property>
-                                    <property name="margin-bottom">4</property>
-                                    <property name="label" translatable="yes">Measurement
-System</property>
-                                    <attributes>
-                                      <attribute name="font-desc" value="DejaVu Serif 10"/>
-                                      <attribute name="weight" value="bold"/>
-                                    </attributes>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBoxText" id="Measurement_System">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="tooltip-text" translatable="yes">Metric or Imperial units for the linear axes (X, Z, U, V, W). Angular axes (A, B, C) are always in degrees and are unaffected.</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">center</property>
-                                    <property name="margin-left">5</property>
-                                    <property name="margin-start">5</property>
-                                    <property name="margin-top">4</property>
-                                    <property name="margin-bottom">4</property>
-                                    <items>
-                                      <item translatable="yes">Metric</item>
-                                      <item translatable="yes">Imperial</item>
-                                    </items>
-                                    <signal name="changed" handler="Measurement_System_Changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">4</property>
+                                <property name="width">3</property>
                               </packing>
                             </child>
                             <child>
@@ -10370,76 +10313,12 @@ System</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
-                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
                                 </attributes>
                               </object>
                               <packing>
-                                <property name="left-attach">1</property>
+                                <property name="left-attach">2</property>
                                 <property name="top-attach">4</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="margin-top">10</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">start</property>
-                                    <property name="margin-right">4</property>
-                                    <property name="margin-end">4</property>
-                                    <property name="margin-top">4</property>
-                                    <property name="margin-bottom">4</property>
-                                    <property name="label" translatable="yes">Device Names</property>
-                                    <attributes>
-                                      <attribute name="font-desc" value="DejaVu Serif 10"/>
-                                      <attribute name="weight" value="bold"/>
-                                    </attributes>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkScrolledWindow" id="Device_Names_Scroll">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="margin-left">5</property>
-                                    <property name="margin-start">5</property>
-                                    <property name="hscrollbar-policy">never</property>
-                                    <property name="shadow-type">in</property>
-                                    <property name="min-content-width">300</property>
-                                    <property name="min-content-height">160</property>
-                                    <property name="max-content-height">220</property>
-                                    <child>
-                                      <object class="GtkTextView" id="Device_Names">
-                                        <property name="width-request">250</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="wrap-mode">word</property>
-                                        <property name="left-margin">4</property>
-                                        <property name="right-margin">4</property>
-                                        <property name="top-margin">2</property>
-                                        <property name="bottom-margin">2</property>
-                                        <property name="buffer">Device_Names_Buffer</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">1</property>
                               </packing>
                             </child>
                             <child>
@@ -10457,103 +10336,12 @@ When using Export Settings, you can pick one of these names to label which physi
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
-                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
                                 </attributes>
                               </object>
                               <packing>
-                                <property name="left-attach">1</property>
+                                <property name="left-attach">2</property>
                                 <property name="top-attach">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="margin-top">10</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">start</property>
-                                    <property name="margin-right">4</property>
-                                    <property name="margin-end">4</property>
-                                    <property name="margin-top">4</property>
-                                    <property name="margin-bottom">4</property>
-                                    <property name="label" translatable="yes">Startup File Check</property>
-                                    <attributes>
-                                      <attribute name="font-desc" value="DejaVu Serif 10"/>
-                                      <attribute name="weight" value="bold"/>
-                                    </attributes>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkBox">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="margin-left">5</property>
-                                    <property name="margin-start">5</property>
-                                    <property name="orientation">vertical</property>
-                                    <child>
-                                      <object class="GtkRadioButton" id="Startup_Check_Abort">
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="receives-default">False</property>
-                                        <property name="tooltip-text" translatable="yes">Refuses to start LinuxCNC while the gcode directory contains a file starting with "Rosetta" (any case) or named M100-M199, until the file is renamed. Prevents such a file from ever silently shadowing a Rosetta subroutine or a future Rosetta M-code.</property>
-                                        <property name="halign">start</property>
-                                        <property name="draw-indicator">True</property>
-                                        <signal name="toggled" handler="Startup_Check_Toggled" swapped="no"/>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <property name="label" translatable="yes">Abort startup - recommended</property>
-                                            <attributes>
-                                              <attribute name="weight" value="bold"/>
-                                            </attributes>
-                                          </object>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkRadioButton" id="Startup_Check_Warn">
-                                        <property name="label" translatable="yes">Warn, but let me continue</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="receives-default">False</property>
-                                        <property name="tooltip-text" translatable="yes">Shows the same warning, listing the offending file(s), but starts LinuxCNC anyway.</property>
-                                        <property name="halign">start</property>
-                                        <property name="draw-indicator">True</property>
-                                        <property name="group">Startup_Check_Abort</property>
-                                        <signal name="toggled" handler="Startup_Check_Toggled" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">2</property>
                               </packing>
                             </child>
                             <child>
@@ -10569,103 +10357,12 @@ When using Export Settings, you can pick one of these names to label which physi
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
-                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
                                 </attributes>
                               </object>
                               <packing>
-                                <property name="left-attach">1</property>
+                                <property name="left-attach">2</property>
                                 <property name="top-attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="margin-top">10</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">start</property>
-                                    <property name="margin-right">4</property>
-                                    <property name="margin-end">4</property>
-                                    <property name="margin-top">4</property>
-                                    <property name="margin-bottom">4</property>
-                                    <property name="label" translatable="yes">Axis Not Enabled</property>
-                                    <attributes>
-                                      <attribute name="font-desc" value="DejaVu Serif 10"/>
-                                      <attribute name="weight" value="bold"/>
-                                    </attributes>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkBox">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="margin-left">5</property>
-                                    <property name="margin-start">5</property>
-                                    <property name="orientation">vertical</property>
-                                    <child>
-                                      <object class="GtkRadioButton" id="Not_Enabled_Ask">
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="receives-default">False</property>
-                                        <property name="tooltip-text" translatable="yes">Before a program, index, Sync Move or thread moves an axis or spindle whose ENA button is off, a box asks whether to turn it on (Enable and Run) or Cancel.</property>
-                                        <property name="halign">start</property>
-                                        <property name="draw-indicator">True</property>
-                                        <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no"/>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <property name="label" translatable="yes">Ask - recommended</property>
-                                            <attributes>
-                                              <attribute name="weight" value="bold"/>
-                                            </attributes>
-                                          </object>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkRadioButton" id="Not_Enabled_Enable">
-                                        <property name="label" translatable="yes">Enable it automatically</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">False</property>
-                                        <property name="receives-default">False</property>
-                                        <property name="tooltip-text" translatable="yes">Turns the axis's or spindle's ENA on by itself and carries on, with no box.</property>
-                                        <property name="halign">start</property>
-                                        <property name="draw-indicator">True</property>
-                                        <property name="group">Not_Enabled_Ask</property>
-                                        <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left-attach">0</property>
-                                <property name="top-attach">3</property>
                               </packing>
                             </child>
                             <child>
@@ -10681,25 +10378,273 @@ When using Export Settings, you can pick one of these names to label which physi
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
-                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
                                 </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">2</property>
+                                <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Measurement
+System</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="Measurement_System">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="tooltip-text" translatable="yes">Metric or Imperial units for the linear axes (X, Z, U, V, W). Angular axes (A, B, C) are always in degrees and are unaffected.</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <items>
+                                  <item translatable="yes">Metric</item>
+                                  <item translatable="yes">Imperial</item>
+                                </items>
+                                <signal name="changed" handler="Measurement_System_Changed" swapped="no" />
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Device Names</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkScrolledWindow" id="Device_Names_Scroll">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="hscrollbar-policy">never</property>
+                                <property name="shadow-type">in</property>
+                                <property name="min-content-width">300</property>
+                                <property name="min-content-height">160</property>
+                                <property name="max-content-height">220</property>
+                                <property name="margin-top">10</property>
+                                <property name="valign">start</property>
+                                <property name="halign">start</property>
+                                <child>
+                                  <object class="GtkTextView" id="Device_Names">
+                                    <property name="width-request">250</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="wrap-mode">word</property>
+                                    <property name="left-margin">4</property>
+                                    <property name="right-margin">4</property>
+                                    <property name="top-margin">2</property>
+                                    <property name="bottom-margin">2</property>
+                                    <property name="buffer">Device_Names_Buffer</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Startup File Check</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="orientation">vertical</property>
+                                <property name="margin-top">10</property>
+                                <property name="valign">start</property>
+                                <property name="halign">start</property>
+                                <child>
+                                  <object class="GtkRadioButton" id="Startup_Check_Abort">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Refuses to start LinuxCNC while the gcode directory contains a file starting with "Rosetta" (any case) or named M100-M199, until the file is renamed. Prevents such a file from ever silently shadowing a Rosetta subroutine or a future Rosetta M-code.</property>
+                                    <property name="halign">start</property>
+                                    <property name="draw-indicator">True</property>
+                                    <signal name="toggled" handler="Startup_Check_Toggled" swapped="no" />
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Abort startup - recommended</property>
+                                        <attributes>
+                                          <attribute name="weight" value="bold" />
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkRadioButton" id="Startup_Check_Warn">
+                                    <property name="label" translatable="yes">Warn, but let me continue</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Shows the same warning, listing the offending file(s), but starts LinuxCNC anyway.</property>
+                                    <property name="halign">start</property>
+                                    <property name="draw-indicator">True</property>
+                                    <property name="group">Startup_Check_Abort</property>
+                                    <signal name="toggled" handler="Startup_Check_Toggled" swapped="no" />
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Axis Not Enabled</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="orientation">vertical</property>
+                                <property name="margin-top">10</property>
+                                <property name="valign">start</property>
+                                <property name="halign">start</property>
+                                <child>
+                                  <object class="GtkRadioButton" id="Not_Enabled_Ask">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Before a program, index, Sync Move or thread moves an axis or spindle whose ENA button is off, a box asks whether to turn it on (Enable and Run) or Cancel.</property>
+                                    <property name="halign">start</property>
+                                    <property name="draw-indicator">True</property>
+                                    <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no" />
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Ask - recommended</property>
+                                        <attributes>
+                                          <attribute name="weight" value="bold" />
+                                        </attributes>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkRadioButton" id="Not_Enabled_Enable">
+                                    <property name="label" translatable="yes">Enable it automatically</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Turns the axis's or spindle's ENA on by itself and carries on, with no box.</property>
+                                    <property name="halign">start</property>
+                                    <property name="draw-indicator">True</property>
+                                    <property name="group">Not_Enabled_Ask</property>
+                                    <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no" />
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
                                 <property name="top-attach">3</property>
                               </packing>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
                             </child>
                           </object>
                           <packing>
