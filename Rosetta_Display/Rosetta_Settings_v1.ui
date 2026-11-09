@@ -10304,6 +10304,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="margin-top">10</property>
                                 <child>
                                   <object class="GtkLabel">
                                     <property name="visible">True</property>
@@ -10353,7 +10354,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
-                                <property name="top-attach">1</property>
+                                <property name="top-attach">4</property>
                               </packing>
                             </child>
                             <child>
@@ -10364,7 +10365,8 @@ System</property>
                                 <property name="margin-start">4</property>
                                 <property name="margin-end">4</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Select the preferred measurement system.</property>
+                                <property name="margin-top">10</property>
+                                <property name="label" translatable="yes">Select the preferred measurement system.  Normally set once, when the machine is first set up.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
@@ -10373,7 +10375,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
-                                <property name="top-attach">1</property>
+                                <property name="top-attach">4</property>
                               </packing>
                             </child>
                             <child>
@@ -10437,7 +10439,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
-                                <property name="top-attach">2</property>
+                                <property name="top-attach">1</property>
                               </packing>
                             </child>
                             <child>
@@ -10460,7 +10462,7 @@ When using Export Settings, you can pick one of these names to label which physi
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
-                                <property name="top-attach">2</property>
+                                <property name="top-attach">1</property>
                               </packing>
                             </child>
                             <child>
@@ -10551,7 +10553,7 @@ When using Export Settings, you can pick one of these names to label which physi
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
-                                <property name="top-attach">3</property>
+                                <property name="top-attach">2</property>
                               </packing>
                             </child>
                             <child>
@@ -10564,6 +10566,118 @@ When using Export Settings, you can pick one of these names to label which physi
                                 <property name="margin-top">10</property>
                                 <property name="hexpand">True</property>
                                 <property name="label" translatable="yes">Checked at every LinuxCNC startup. The gcode directory must never hold a file starting with "Rosetta" (any case) or named M100-M199 - LinuxCNC searches that folder before Rosetta's own subroutines, and before any future Rosetta M-code, so a matching file would quietly run instead of Rosetta's. Rename the file (the Gcode icon on the panel opens that folder) to clear this.</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="margin-top">10</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="halign">start</property>
+                                    <property name="valign">start</property>
+                                    <property name="margin-right">4</property>
+                                    <property name="margin-end">4</property>
+                                    <property name="margin-top">4</property>
+                                    <property name="margin-bottom">4</property>
+                                    <property name="label" translatable="yes">Axis Not Enabled</property>
+                                    <attributes>
+                                      <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                      <attribute name="weight" value="bold"/>
+                                    </attributes>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="margin-left">5</property>
+                                    <property name="margin-start">5</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkRadioButton" id="Not_Enabled_Ask">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="receives-default">False</property>
+                                        <property name="tooltip-text" translatable="yes">Before a program, index, Sync Move or thread moves an axis or spindle whose ENA button is off, a box asks whether to turn it on (Enable and Run) or Cancel.</property>
+                                        <property name="halign">start</property>
+                                        <property name="draw-indicator">True</property>
+                                        <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no"/>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Ask - recommended</property>
+                                            <attributes>
+                                              <attribute name="weight" value="bold"/>
+                                            </attributes>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkRadioButton" id="Not_Enabled_Enable">
+                                        <property name="label" translatable="yes">Enable it automatically</property>
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="receives-default">False</property>
+                                        <property name="tooltip-text" translatable="yes">Turns the axis's or spindle's ENA on by itself and carries on, with no box.</property>
+                                        <property name="halign">start</property>
+                                        <property name="draw-indicator">True</property>
+                                        <property name="group">Not_Enabled_Ask</property>
+                                        <signal name="toggled" handler="Not_Enabled_Toggled" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="valign">start</property>
+                                <property name="margin-start">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">10</property>
+                                <property name="hexpand">True</property>
+                                <property name="label" translatable="yes">What happens when a G-code program (Run), an index, a Sync Move or a thread would move an axis or spindle whose ENA button is off - it would otherwise stop with a following error, or the index would never finish. Ask shows a box: Enable and Run turns the ENA on and carries on, Cancel stops. Enable it automatically turns the ENA on with no box. Ask is recommended: an axis is often turned off on purpose, for example to turn the work by hand, and switching its motor on with a hand on it is unsafe. Takes effect the next time LinuxCNC starts.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>

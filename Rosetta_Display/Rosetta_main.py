@@ -590,48 +590,102 @@ def _roles_not_enabled(roles):
     return off
 
 
+# What to do when a move needs an axis or spindle whose ENA is off -
+# RosettaSet_v1.ini's "not_enabled_action" (Rosetta Settings > Other >
+# Axis Not Enabled, added 09 November 2026): "ask" (the default) or
+# "enable". Read once at startup, like the other settings.
+try:
+    NOT_ENABLED_ACTION = rosetta_settings_io.load_settings().get("not_enabled_action", "ask")
+except Exception:
+    NOT_ENABLED_ACTION = "ask"
+if NOT_ENABLED_ACTION not in ("ask", "enable"):
+    NOT_ENABLED_ACTION = "ask"
+ENABLE_WAIT_SECONDS = 1.0
+
+
+def _enable_roles(roles):
+    '''
+    Turns on each of roles' ENA the way clicking its ENA button does:
+    pulses its "<role>-ena-flip.set" (Rosetta_PostGUI_v1.hal's ENA
+    flipflop), so the panel's ENA light and the next click carry on
+    from there. Doesn't touch Rosetta Settings' override
+    ("<role>-ena-settings-allow") - a role it still blocks stays off.
+    Returns the roles still not enabled after ENABLE_WAIT_SECONDS.
+    '''
+    for role in roles:
+        pin = role.lower() + "-ena-flip.set"
+        try:
+            subprocess.run(["halcmd", "setp", pin, "TRUE"], check=True, capture_output=True, text=True)
+            subprocess.run(["halcmd", "setp", pin, "FALSE"], check=True, capture_output=True, text=True)
+            idx_log("Enabled " + role + " (" + pin + " pulsed)")
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            idx_log("Could not pulse " + pin + ": " + str(e))
+    deadline = time.monotonic() + ENABLE_WAIT_SECONDS
+    while True:
+        still_off = _roles_not_enabled(roles)
+        if not still_off or time.monotonic() > deadline:
+            return still_off
+        time.sleep(0.02)
+
+
+def _names(roles):
+    return roles[0] if len(roles) == 1 else ", ".join(roles[:-1]) + " and " + roles[-1]
+
+
 def _confirm_roles_enabled(widget, roles):
     '''
-    Added 09 November 2026 - the panel's side of the warning AXIS gives
+    Added 08 November 2026 - the panel's side of the check AXIS makes
     before a run (Rosetta_Axis_Commands.py): before an index, Sync Move
-    or Threading button moves anything, says which of roles aren't
-    enabled and offers Cancel (the default) or Move Anyway. True means
-    go ahead. An axis with ENA off ends in a following error as soon as
-    it has to move; a spindle with ENA off doesn't turn, so its index
-    never finishes.
+    or Threading button moves anything, looks for roles whose ENA is
+    off. An axis with ENA off ends in a following error as soon as it
+    has to move; a spindle with ENA off doesn't turn, so its index
+    never finishes. Since 09 November 2026 (Rich): with
+    NOT_ENABLED_ACTION "enable" they are switched on with no box;
+    otherwise a box offers "Enable <names> and Move" (the default) or
+    Cancel - "Move Anyway" was removed at Rich's request. True means
+    go ahead.
     '''
     off = _roles_not_enabled(roles)
     if not off:
         return True
-    one = len(off) == 1
-    names = off[0] if one else ", ".join(off[:-1]) + " and " + off[-1]
-    axes = [r for r in off if not r.startswith("Sp")]
-    spindles = [r for r in off if r.startswith("Sp")]
-    text = ("This moves " + names + ", which " + ("is" if one else "are")
-            + " not enabled.\n\nClick the ENA " + ("button" if one else "buttons")
-            + " for " + names + ", then try again.")
-    if axes:
-        text += ("\n\nIf you move anyway, it will stop with a following error "
-                 "as soon as " + " and ".join(axes) + " "
-                 + ("has" if len(axes) == 1 else "have") + " to move.")
-    if spindles:
-        text += ("\n\n" + ("If you move anyway, " if not axes else "")
-                 + " and ".join(spindles) + (" won't turn, so the index won't finish."))
+    names = _names(off)
     idx_log("Not enabled: " + names)
-    dialog = Gtk.MessageDialog(
-        transient_for=widget.get_toplevel(),
-        flags=0,
-        message_type=Gtk.MessageType.WARNING,
-        buttons=Gtk.ButtonsType.NONE,
-        text=names + " not enabled",
-    )
-    dialog.format_secondary_text(text)
-    dialog.add_button("Move Anyway", Gtk.ResponseType.ACCEPT)
-    dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
-    dialog.set_default_response(Gtk.ResponseType.CANCEL)
-    answer = dialog.run()
-    dialog.destroy()
-    return answer == Gtk.ResponseType.ACCEPT
+    if NOT_ENABLED_ACTION == "enable":
+        off = _enable_roles(off)
+        if not off:
+            return True
+        names = _names(off)
+    else:
+        one = len(off) == 1
+        dialog = Gtk.MessageDialog(
+            transient_for=widget.get_toplevel(),
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.NONE,
+            text=names + " not enabled",
+        )
+        dialog.format_secondary_text(
+            "This moves " + names + ", which " + ("is" if one else "are") + " not enabled.\n\n"
+            "Enable and Move turns " + ("its ENA" if one else "their ENAs") + " on - the same as "
+            "clicking the ENA " + ("button" if one else "buttons") + " - then makes the move.  "
+            "Cancel leaves " + ("it" if one else "them") + " off and moves nothing.")
+        dialog.add_button("Enable " + names + " and Move", Gtk.ResponseType.ACCEPT)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.set_default_response(Gtk.ResponseType.ACCEPT)
+        answer = dialog.run()
+        dialog.destroy()
+        if answer != Gtk.ResponseType.ACCEPT:
+            return False
+        off = _enable_roles(off)
+        if not off:
+            return True
+        names = _names(off)
+    # Still off: Rosetta Settings' override is blocking it, or HAL
+    # couldn't be reached.
+    _show_settings_error(widget, names + " could not be enabled.  Click the ENA "
+                         + ("button" if len(off) == 1 else "buttons") + " for " + names
+                         + ", then try again.")
+    return False
 
 def _show_settings_error(widget, message):
     dialog = Gtk.MessageDialog(

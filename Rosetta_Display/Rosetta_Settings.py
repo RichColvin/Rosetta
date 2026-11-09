@@ -35,6 +35,8 @@
 # Version
 #   1.0 - 04 September 2026
 #   1.1 - 09 November 2026 - File menu: Back Up to USB, Restore from USB
+#   1.2 - 09 November 2026 - Other page: Axis Not Enabled (Ask or
+#         Enable it automatically); Measurement System moved last
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -433,6 +435,24 @@ def _save_startup_file_check(choice):
 def _read_persisted_startup_file_check():
     choice = rosetta_settings_io.load_settings().get("startup_file_check", "abort")
     return choice if choice in STARTUP_FILE_CHECKS else "abort"
+
+# What happens when a program, index, Sync Move or thread would move an
+# axis or spindle whose ENA is off (added 09 November 2026, Rich's
+# idea) - the Not_Enabled_Ask / Not_Enabled_Enable radios on the Other
+# page, persisted as RosettaSet_v1.ini's "not_enabled_action" ("ask" or
+# "enable"; absent = "ask"). Read at startup by AXIS's
+# Rosetta_Axis_Commands.py and by the panel (Rosetta_main.py).
+NOT_ENABLED_ACTIONS = ("ask", "enable")
+
+def _save_not_enabled_action(choice):
+    settings = rosetta_settings_io.load_settings()
+    settings["not_enabled_action"] = choice
+    rosetta_settings_io.save_settings(settings)
+    print("Saved not enabled action: " + choice)
+
+def _read_persisted_not_enabled_action():
+    choice = rosetta_settings_io.load_settings().get("not_enabled_action", "ask")
+    return choice if choice in NOT_ENABLED_ACTIONS else "ask"
 
 def _save_limit_switch_type(switch_type):
     settings = rosetta_settings_io.load_settings()
@@ -1782,6 +1802,27 @@ class HandlerClass:
             return
         _save_startup_file_check(Gtk.Buildable.get_name(widget).split("_")[-1].lower())
 
+    def _load_not_enabled_action(self):
+        '''
+        Reads the persisted choice (RosettaSet_v1.ini's
+        "not_enabled_action") into the Not_Enabled_Ask / _Enable radios.
+        '''
+        radio = self.builder.get_object("Not_Enabled_" + _read_persisted_not_enabled_action().capitalize())
+        if radio is None:
+            return
+        self._applying_not_enabled_action = True
+        radio.set_active(True)
+        self._applying_not_enabled_action = False
+
+    def Not_Enabled_Toggled(self, widget):
+        '''
+        Persists the not-enabled choice. Each click fires "toggled" on
+        both radios; only the one becoming active saves.
+        '''
+        if self._applying_not_enabled_action or not widget.get_active():
+            return
+        _save_not_enabled_action(Gtk.Buildable.get_name(widget).split("_")[-1].lower())
+
     def _load_limit_switch_type(self):
         '''
         Reads the persisted limit switch type (RosettaSet_v1.ini's
@@ -3040,6 +3081,10 @@ class HandlerClass:
         # the Startup_Check_Abort / _Warn radios.
         self._applying_startup_file_check = False
 
+        # Same suppression as above, for _load_not_enabled_action driving
+        # the Not_Enabled_Ask / _Enable radios.
+        self._applying_not_enabled_action = False
+
         # Same suppression as above, for _load_limit_switch_type driving
         # the Limit_Switch_NC / _NO radios.
         self._applying_limit_switch_type = False
@@ -3118,6 +3163,7 @@ class HandlerClass:
         self._load_signal_tower()
         self._load_limit_switch_type()
         self._load_startup_file_check()
+        self._load_not_enabled_action()
         self._load_done_sound()
         self._load_fault_sound()
 
