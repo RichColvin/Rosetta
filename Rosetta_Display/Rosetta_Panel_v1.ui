@@ -838,7 +838,7 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">O/S 1.0 Beta 1.4 - 08 November 2026</property>
+                <property name="label" translatable="yes">O/S 1.0 Beta 1.5 - 09 November 2026</property>
                 <property name="justify">right</property>
                 <property name="width-chars">9</property>
                 <attributes>
