@@ -350,6 +350,10 @@ SPINDLE_NUMBER_CANONICAL_ORDER = ("Sp0", "Sp1")
 #
 # Jacks 4-6 (two-box hardware, 14 October 2026) are the same three
 # inputs on the expansion box's card, used only when it's connected.
+#
+# This map is the Rosetta standard (Rich, 09 November 2026): the new
+# circuit board was ordered wired to it, so don't change these pins
+# without a board change to match.
 LIMIT_JACK_INPUT = {
     "1": ("hm2_7i92.0", "002"),
     "2": ("hm2_7i92.0", "006"),
