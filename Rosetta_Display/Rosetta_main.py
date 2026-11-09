@@ -624,8 +624,19 @@ def _enable_roles(roles):
     while True:
         still_off = _roles_not_enabled(roles)
         if not still_off or time.monotonic() > deadline:
-            return still_off
+            break
         time.sleep(0.02)
+    # Show the ENA lights now (found by Rich 09 November 2026: they only
+    # turned green after the move). The move that follows holds up the
+    # panel (wait_complete), and gladevcp only reads its -light pins
+    # every 100 ms from the main loop - so read them now and draw.
+    try:
+        hal_glib.GPin.update_all()
+    except Exception:
+        pass
+    while Gtk.events_pending():
+        Gtk.main_iteration()
+    return still_off
 
 
 def _names(roles):
