@@ -573,6 +573,66 @@ def _show_no_spindle_enabled_popup(widget):
     dialog.run()
     dialog.destroy()
 
+def _roles_not_enabled(roles):
+    '''
+    Those of roles (axis letters, "Sp0", "Sp1") whose ENA is off - the
+    "<role>-ena-and.out" pin in Rosetta_PostGUI_v1.hal (the panel's ENA
+    toggle AND Rosetta Settings' override). A role with no such pin
+    isn't counted.
+    '''
+    off = []
+    for role in roles:
+        try:
+            if not hal.get_value(role.lower() + "-ena-and.out"):
+                off.append(role)
+        except Exception:
+            pass
+    return off
+
+
+def _confirm_roles_enabled(widget, roles):
+    '''
+    Added 09 November 2026 - the panel's side of the warning AXIS gives
+    before a run (Rosetta_Axis_Commands.py): before an index, Sync Move
+    or Threading button moves anything, says which of roles aren't
+    enabled and offers Cancel (the default) or Move Anyway. True means
+    go ahead. An axis with ENA off ends in a following error as soon as
+    it has to move; a spindle with ENA off doesn't turn, so its index
+    never finishes.
+    '''
+    off = _roles_not_enabled(roles)
+    if not off:
+        return True
+    one = len(off) == 1
+    names = off[0] if one else ", ".join(off[:-1]) + " and " + off[-1]
+    axes = [r for r in off if not r.startswith("Sp")]
+    spindles = [r for r in off if r.startswith("Sp")]
+    text = ("This moves " + names + ", which " + ("is" if one else "are")
+            + " not enabled.\n\nClick the ENA " + ("button" if one else "buttons")
+            + " for " + names + ", then try again.")
+    if axes:
+        text += ("\n\nIf you move anyway, it will stop with a following error "
+                 "as soon as " + " and ".join(axes) + " "
+                 + ("has" if len(axes) == 1 else "have") + " to move.")
+    if spindles:
+        text += ("\n\n" + ("If you move anyway, " if not axes else "")
+                 + " and ".join(spindles) + (" won't turn, so the index won't finish."))
+    idx_log("Not enabled: " + names)
+    dialog = Gtk.MessageDialog(
+        transient_for=widget.get_toplevel(),
+        flags=0,
+        message_type=Gtk.MessageType.WARNING,
+        buttons=Gtk.ButtonsType.NONE,
+        text=names + " not enabled",
+    )
+    dialog.format_secondary_text(text)
+    dialog.add_button("Move Anyway", Gtk.ResponseType.ACCEPT)
+    dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+    dialog.set_default_response(Gtk.ResponseType.CANCEL)
+    answer = dialog.run()
+    dialog.destroy()
+    return answer == Gtk.ResponseType.ACCEPT
+
 def _show_settings_error(widget, message):
     dialog = Gtk.MessageDialog(
         transient_for=widget.get_toplevel(),
@@ -1664,6 +1724,9 @@ class HandlerClass:
             idx_log("No spindle enabled - aborting move")
             _show_no_spindle_enabled_popup(widget)
             return
+        if not _confirm_roles_enabled(widget, [sp for sp, on in (("Sp0", self.Sp0_Idx_Bool),
+                                                                 ("Sp1", self.Sp1_Idx_Bool)) if on]):
+            return
 
         _set_busy_cursor(widget, True)
         try:
@@ -1768,6 +1831,9 @@ class HandlerClass:
         if not self.Sp0_Idx_Bool and not self.Sp1_Idx_Bool:
             idx_log("No spindle enabled - aborting move")
             _show_no_spindle_enabled_popup(widget)
+            return
+        if not _confirm_roles_enabled(widget, [sp for sp, on in (("Sp0", self.Sp0_Idx_Bool),
+                                                                 ("Sp1", self.Sp1_Idx_Bool)) if on]):
             return
 
         _set_busy_cursor(widget, True)
@@ -2564,6 +2630,8 @@ class HandlerClass:
             return
         if not self._sync_ready_to_move(widget):
             return
+        if not _confirm_roles_enabled(widget, list(deltas)):
+            return
 
         self._sync_start = tuple(s.position)
         self._sync_feeds = feeds
@@ -2607,6 +2675,8 @@ class HandlerClass:
                 deltas[axis] = delta
         if not deltas:
             _show_settings_error(widget, "Already at the starting point.")
+            return
+        if not _confirm_roles_enabled(widget, list(deltas)):
             return
 
         self._sync_start_move(widget, deltas, self._sync_feeds)
@@ -2925,6 +2995,8 @@ class HandlerClass:
             return
         if not self._sync_ready_to_move(widget):
             return
+        if not _confirm_roles_enabled(widget, list(THREAD_AXES)):
+            return
 
         # Outside threads feed in toward the work's centre (-X), inside
         # threads out toward the bore wall (+X) - the same convention as
@@ -3056,6 +3128,9 @@ class HandlerClass:
         deltas["C"] = math.remainder(deltas["C"], 360.0)
         if all(abs(d) < SYNC_POSITION_TOLERANCE for d in deltas.values()):
             _show_settings_error(widget, "Already at the starting point.")
+            return
+        if not _confirm_roles_enabled(widget, [a for a, d in deltas.items()
+                                               if abs(d) >= SYNC_POSITION_TOLERANCE]):
             return
 
         args = (deltas["X"], deltas["Z"], deltas["C"], 21 if self._thread_metric else 20)
@@ -3912,6 +3987,8 @@ def _axis_idx_move(axis, handler_name, gcode_sign):
     def handler(self, widget):
         print("=================================================")
         print("FUNCTION " + handler_name)
+        if not _confirm_roles_enabled(widget, [axis]):
+            return
 
         # Depress the button for the duration of the move (see
         # _set_depressed for why this isn't a HAL_ToggleButton).
