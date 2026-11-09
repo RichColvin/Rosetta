@@ -512,7 +512,9 @@ def _merge_defaults(loaded):
     A loaded file's stale "channel_types" key (written only briefly, 3-4
     September 2026, by a feature since retired) is intentionally left
     alone here rather than merged in or deleted - it's just inert dead
-    data now, nothing reads it.
+    data now, nothing reads it. Since 09 November 2026 the update
+    (Rosetta_Update_Settings.py's remove_old_keys) takes it out of the
+    machine's file, along with the other retired keys.
     '''
     merged = default_settings()
 

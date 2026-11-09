@@ -59,6 +59,8 @@
 #         over to the Rosetta names)                                  #
 #   1.6 - 08 November 2026 - spindles still on the old indexing PID   #
 #         (I 1, D 1.2) get I 0 and D 0                                #
+#   1.7 - 09 November 2026 - removes old keys nothing reads           #
+#         (channel_types, signal_tower_active_low, spindles' pid_vel) #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -201,6 +203,42 @@ def fix_spindle_index_pid(user):
     return changed
 
 
+# Keys nothing reads any more (09 November 2026, tracker "Old keys in
+# settings files"): top-level ones, and ones inside a spindle's axes
+# entry.
+OLD_TOP_LEVEL_KEYS = (
+    "channel_types",            # Type choice, retired 4 September 2026
+    "signal_tower_active_low",  # relay polarity checkbox, removed 11 October 2026
+)
+OLD_SPINDLE_KEYS = (
+    "pid_vel",                  # spindle velocity PID, removed 08 October 2026
+)
+
+
+def remove_old_keys(user):
+    '''
+    Takes out of the machine's settings the keys left behind by
+    features since removed (OLD_TOP_LEVEL_KEYS, OLD_SPINDLE_KEYS) -
+    nothing reads them, they only clutter the file. Exported files are
+    left alone: Import already ignores these keys. Returns a list of
+    what was removed.
+    '''
+    removed = []
+    for key in OLD_TOP_LEVEL_KEYS:
+        if key in user:
+            del user[key]
+            removed.append(key)
+    for axis_id in rosetta_settings_io.SPINDLE_IDS:
+        entry = user.get("axes", {}).get(axis_id)
+        if not isinstance(entry, dict):
+            continue
+        for key in OLD_SPINDLE_KEYS:
+            if key in entry:
+                del entry[key]
+                removed.append(axis_id + " " + key)
+    return removed
+
+
 def add_notes_to_other_files(main_path):
     '''
     Gives every other Rosetta settings or export file in the
@@ -324,12 +362,13 @@ def update_settings():
         print("WARNING: could not read " + ROSETTA_INI_PATH + " (" + str(e) + ") - speed limits not filled in.")
         raised = []
     raised += fix_spindle_index_pid(user)
+    removed = remove_old_keys(user)
     added = add_missing(user, seed)
     # A file from before the explanatory notes (08 October 2026 and
     # earlier) gets them now, rather than at the next program save.
     needs_notes = rosetta_settings_io.SETTINGS_HEADER not in raw
     add_notes_to_other_files(SETTINGS_PATH)
-    if not added and not raised and not needs_notes:
+    if not added and not raised and not removed and not needs_notes:
         print("Settings file is up to date - nothing to add.")
         return 0
 
@@ -343,6 +382,10 @@ def update_settings():
     if raised:
         print("Set up or changed %d tuning value(s) (see Rosetta Settings):" % len(raised))
         for what in raised:
+            print("    " + what)
+    if removed:
+        print("Removed %d old setting(s) nothing uses any more:" % len(removed))
+        for what in removed:
             print("    " + what)
     if needs_notes:
         print("Added the notes explaining what the settings file is.")
