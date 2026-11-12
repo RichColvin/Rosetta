@@ -43,6 +43,12 @@
 #   only a note in AXIS's notification area. An axis Rosetta Settings'
 #   override still blocks stays off, and the run is cancelled.
 #
+#   Axis not available (11 November 2026): a program using an axis
+#   this session doesn't have at all (not assigned, or on an Expansion
+#   Box that isn't connected) gets Rosetta's explanation as it opens
+#   instead of AXIS's "Bad character" error, and Run/Step are refused -
+#   see "Axes a program uses that this session doesn't have" below.
+#
 #   How a move is seen: the preview (rs274.glcanon) lists every
 #   traverse, feed and arc segment with its start and end in all nine
 #   axes (X Y Z A B C U V W). An axis counts as moved if any segment
@@ -68,6 +74,8 @@
 #   1.0 - 08 November 2026
 #   1.1 - 09 November 2026 - Enable and Run instead of Run Anyway;
 #         optional automatic enable
+#   1.2 - 11 November 2026 - programs using an axis this session
+#         doesn't have get an explanation and can't be run
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -90,23 +98,170 @@ ROSETTA_MOVE_TOLERANCE = 1e-6
 ROSETTA_ENABLE_WAIT_SECONDS = 1.0
 
 
-def _rosetta_not_enabled_action():
+def _rosetta_read_settings():
     '''
-    RosettaSet_v1.ini's "not_enabled_action" - "ask" (default) or
-    "enable". The file is JSON wrapped in "#" comment lines (see
-    rosetta_settings_io.py, not importable from inside AXIS).
+    RosettaSet_v1.ini as a dict ({} if it can't be read). The file is
+    JSON wrapped in "#" comment lines (see rosetta_settings_io.py, not
+    importable from inside AXIS). Rosetta Settings can't run while
+    LinuxCNC does, so reading it once as AXIS starts is enough.
     '''
     import json
     try:
         with open(os.path.expanduser("~/Documents/RosettaSet_v1.ini")) as f:
             text = "\n".join(l for l in f.read().splitlines() if not l.lstrip().startswith("#"))
-        choice = json.loads(text).get("not_enabled_action", "ask")
+        settings = json.loads(text)
+        return settings if isinstance(settings, dict) else {}
     except Exception:
-        choice = "ask"
+        return {}
+
+
+ROSETTA_SETTINGS = _rosetta_read_settings()
+
+
+def _rosetta_not_enabled_action():
+    '''RosettaSet_v1.ini's "not_enabled_action" - "ask" (default) or "enable".'''
+    choice = ROSETTA_SETTINGS.get("not_enabled_action", "ask")
     return choice if choice in ("ask", "enable") else "ask"
 
 
 ROSETTA_NOT_ENABLED_ACTION = _rosetta_not_enabled_action()
+
+
+# ---------------------------------------------------------------------
+# Axes a program uses that this session doesn't have (11 November 2026)
+#
+# An axis letter not in this session's coordinates - not assigned to a
+# channel, or on the Expansion Box while Rosetta Settings says it isn't
+# connected - makes LinuxCNC's interpreter stop with "Bad character
+# 'c' used". AXIS shows that as it loads the program, which doesn't say
+# what's wrong, and still lets the program run, which then stops at the
+# same line, possibly after other axes have moved. So the preview's
+# result is checked here: an unavailable axis gets a message saying
+# which axes, why, and what to change in Rosetta Settings (in place of
+# AXIS's), and Run/Step are refused until a program without them is
+# loaded. The interpreter stops at the first such letter, so the rest
+# of the file is also scanned for others to name in the message.
+# ---------------------------------------------------------------------
+
+ROSETTA_EXPANSION_CHANNELS = ("06", "07", "08", "09")
+ROSETTA_BAD_CHARACTER = re.compile(r"Bad character '([A-Za-z])' used")
+ROSETTA_OWORD_KEYWORDS = re.compile(
+    r"\b(ENDWHILE|WHILE|ENDIF|ELSEIF|ELSE|IF|ENDSUB|SUB|CALL|RETURN|DO|"
+    r"BREAK|CONTINUE|ENDREPEAT|REPEAT)\b")
+ROSETTA_AXIS_WORD = re.compile(r"([XYZABCUVW])\s*[-+.0-9\[#]")
+
+rosetta_unavailable = None      # {"letters": [...], "line": n} for the loaded program
+
+
+def rosetta_session_letters():
+    '''The axis letters in this session's coordinates.'''
+    s.poll()
+    return set(letter for i, letter in enumerate(ROSETTA_AXIS_LETTERS)
+               if s.axis_mask & (1 << i))
+
+
+def rosetta_axis_words_in_file(path):
+    '''
+    Axis letters used as words anywhere in the file - a best-effort
+    scan, used only to name every missing axis in the message, never to
+    decide whether a program can run. Comments, named parameters,
+    bracketed expressions (COS, ...) and o-word keywords (CALL, ...)
+    are removed first so their letters aren't counted.
+    '''
+    found = set()
+    try:
+        with open(path, errors="replace") as f:
+            lines = f.read().upper().splitlines()
+    except Exception:
+        return found
+    for line in lines:
+        line = re.sub(r"\([^)]*\)", " ", line).split(";", 1)[0]
+        line = re.sub(r"#<[^>]*>", "#1", line)
+        while True:             # innermost brackets first
+            stripped = re.sub(r"\[[^\[\]]*\]", "[]", line)
+            if stripped == line:
+                break
+            line = stripped
+        line = re.sub(r"O\s*(<[^>]*>|\d+)", " ", line)
+        line = ROSETTA_OWORD_KEYWORDS.sub(" ", line)
+        found.update(ROSETTA_AXIS_WORD.findall(line))
+    return found
+
+
+def rosetta_axis_reason(letter):
+    '''Why letter isn't in this session, from RosettaSet_v1.ini.'''
+    if letter == "Y":
+        return "Rosetta doesn't use a Y axis (it is set up as a lathe)."
+    assignments = ROSETTA_SETTINGS.get("channel_assignments") or {}
+    channels = sorted(ch for ch, role in assignments.items() if role == letter)
+    if channels and not ROSETTA_SETTINGS.get("expansion_box", False) \
+            and all(ch in ROSETTA_EXPANSION_CHANNELS for ch in channels):
+        return (letter + " is on channel " + channels[0] + ", on the Expansion Box, "
+                "but Rosetta Settings says the Expansion Box isn't connected.")
+    return letter + " isn't assigned to a channel."
+
+
+def rosetta_unavailable_text(problem, running):
+    letters = problem["letters"]
+    names = _rosetta_names(letters)
+    one = len(letters) == 1
+    reasons = [rosetta_axis_reason(letter) for letter in letters]
+    on_expansion = any("Expansion Box" in reason for reason in reasons)
+    text = ("This program uses " + names + " (near line " + str(problem["line"]) + "), but "
+            + ("it isn't" if one else "they aren't") + " available on this machine as it is set up now:\n\n")
+    text += "\n".join("  " + reason for reason in reasons)
+    text += ("\n\n" + ("The program can't be run.  " if running else "")
+             + "To use " + names + ", close LinuxCNC and open Rosetta Settings.  ")
+    if on_expansion:
+        text += ("If the Expansion Box is plugged in, tick Expansion Box Connected on the "
+                 "Axis Selection page.  If it isn't, move " + ("the axis" if one else "the axes")
+                 + " to a Base Box channel on that page.")
+    else:
+        text += ("On the Axis Selection page, assign " + ("it" if one else "them")
+                 + " to a channel.")
+    text += "  Then start LinuxCNC again and open the program."
+    return text
+
+
+def rosetta_show_unavailable(problem, running):
+    names = _rosetta_names(problem["letters"])
+    root_window.tk.call("nf_dialog", ".error", names + " not available",
+                        rosetta_unavailable_text(problem, running), "error", 0, "OK")
+
+
+_rosetta_load_preview = o.load_preview
+
+
+def rosetta_load_preview(f, canon, *args):
+    '''
+    AXIS's preview load, then the unavailable-axes check. If the
+    interpreter stopped on an axis letter this session doesn't have,
+    shows Rosetta's message and returns a no-error result so AXIS
+    doesn't show its own "Bad character" one as well (the preview has
+    already handled the real result by then).
+    '''
+    global rosetta_unavailable
+    rosetta_unavailable = None
+    result, seq = _rosetta_load_preview(f, canon, *args)
+    if result <= gcode.MIN_ERROR:
+        return result, seq
+    try:
+        match = ROSETTA_BAD_CHARACTER.search(gcode.strerror(result) or "")
+        letter = match.group(1).upper() if match else None
+        session = rosetta_session_letters()
+        if letter not in ROSETTA_AXIS_LETTERS or letter in session:
+            return result, seq
+        others = rosetta_axis_words_in_file(f) - session
+        letters = [l for l in ROSETTA_AXIS_LETTERS if l == letter or l in others]
+        rosetta_unavailable = {"letters": letters, "line": seq}
+        rosetta_show_unavailable(rosetta_unavailable, False)
+        return gcode.MIN_ERROR, seq
+    except Exception:
+        print(traceback.format_exc(), file=sys.stderr)
+        return result, seq
+
+
+o.load_preview = rosetta_load_preview
 
 
 def rosetta_axes_moved():
@@ -225,6 +380,9 @@ def run_warn():
     (asked, or automatically) and returns AXIS's own result, or
     returns 3 (cancel).
     '''
+    if rosetta_unavailable:
+        rosetta_show_unavailable(rosetta_unavailable, True)
+        return 3
     result = _rosetta_axis_run_warn()
     if result in (1, 3):
         return result
