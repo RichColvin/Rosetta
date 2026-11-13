@@ -605,6 +605,52 @@ Software work once the design is fixed (not started):
 6. The update step converting existing settings files' channel IDs.
 7. New firmware/pin files for both cards.
 
+### Sync Move changes - O/S 1.0 Beta 1.7 (agreed with Rich 13 November 2026, not yet built)
+
+Rich's reason for 1 and 2: users often ask Sync Move for a large
+rotation. All of this is Sync Move only - the Indexing and Threading
+tabs don't change. These are Beta 1.7: when built, raise the five
+"O/S ..." labels to "O/S 1.0 Beta 1.7 - 13 November 2026".
+
+1. **A/B/C Distance up to 99,999,999.00 degrees**: 2 decimals,
+   thousands commas shown (`1,000,000.00`), typed with or without
+   commas, tidied on Enter / focus out. X/Z/U/V/W keep their range and 3
+   decimals. The Distance column gets about 5 characters wider (Rich
+   accepted). With it: write the G93 F (1/minutes) so very long, slow
+   moves don't round it towards 0 (today `%.8f`).
+2. **deg / rev radios** on the A/B/C rows, in place of the fixed "deg"
+   label (same style as Indexing's deg / div, so no extra width). The
+   number stays as typed when switching (40 then rev = 40 rev); rev =
+   x360 when sent, 3 decimals (eighths of a turn), capped at
+   999,999.999 rev; switching rev -> deg rounds to 2 decimals, deg ->
+   rev lowers a too-large number to the cap. Remembered per row in
+   `panel_state`; deg is the default. Tooltip: rev isn't exact for
+   thirds/sixths - use deg.
+3. **Pause / Continue** - one button beside Sync Move / Return to Start
+   (the label changes). Pause is a feed hold, silent (no Pause beeps),
+   and doesn't touch Sp0/Sp1 (the cutter isn't Rosetta-controlled).
+   Continue: still paused and machine on -> resume; move lost (E-stop,
+   machine off, AXIS Stop - e.g. to fix a broken belt) -> a new move from
+   where the axes are to the original targets, same timing, same path;
+   an axis moved off the line meanwhile (jogged clear of the chuck) ->
+   ask before continuing. Return to Start works while paused (ends the
+   paused move, then returns). Progress bar "Sync Move 42% (paused)";
+   done beeps only when the move really finishes. To prove on the
+   machine first: pause/resume of a panel MDI move on LinuxCNC 2.9.10,
+   and E-stop while paused then Continue.
+4. **External Pause button on a limit jack**: a new "Pause button"
+   choice in the jack combos (one jack only - "Duplicate!" otherwise;
+   jacks 4-6 with the expansion box). Pause only, never resume (jacks
+   have no debounce since `num_inms=0`; Continue stays a deliberate act
+   on the screen). Pauses Sync Move and G-code programs (AXIS's Pause;
+   AXIS's Resume continues). Follows the shared Limit Switch Type
+   (NC/NO), with a warning in the notes column. Not a fault - no red
+   light, siren or E-stop. While it reads pressed (pressed, mismatched,
+   or a broken NC wire), Sync Move and AXIS's Run (via
+   `Rosetta_Axis_Commands.py`) refuse: "Pause button is pressed or
+   disconnected". User Manual: a Pause button section on the Inputs
+   page, drafted into `~/Downloads`.
+
 ## Done
 
 Most recent first.
