@@ -70,6 +70,20 @@
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <requires lib="gladevcp" version="0.0"/>
+  <object class="GtkAdjustment" id="Pi_Temp_Warning_Adj">
+    <property name="lower">50</property>
+    <property name="upper">95</property>
+    <property name="value">75</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">5</property>
+  </object>
+  <object class="GtkAdjustment" id="Pi_Temp_Alarm_Adj">
+    <property name="lower">50</property>
+    <property name="upper">95</property>
+    <property name="value">82</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">5</property>
+  </object>
   <object class="GtkAdjustment" id="A_Set_Backlash_adj">
     <property name="upper">10</property>
     <property name="step-increment">0.0001</property>
@@ -820,7 +834,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.8 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -2351,7 +2365,7 @@ Without the expansion box, its channels and limit switch jacks are greyed out an
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.8 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -3724,7 +3738,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.8 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -9715,7 +9729,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.8 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -10312,7 +10326,9 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="margin-end">4</property>
                                 <property name="hexpand">True</property>
                                 <property name="margin-top">10</property>
-                                <property name="label" translatable="yes">Select the preferred measurement system.  Normally set once, when the machine is first set up.</property>
+                                <property name="label" translatable="yes">The Raspberry Pi is the small computer inside the Base Box that runs Rosetta and LinuxCNC.  Like any computer it gets warm while it works, and it has a fan to keep it cool.  If it gets too hot (near 85 °C) it slows itself down, which can cause following errors or a lost-contact E-stop part way through a program.
+
+Its temperature is shown at the top of the main screen.  At the Warning temperature it turns orange and LinuxCNC shows a notice; at the Alarm temperature it turns red, a message box appears and the alarm sounds on the speaker (if ticked).  Nothing is stopped.  Takes effect the next time LinuxCNC starts.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <attributes>
@@ -10322,6 +10338,27 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                               <packing>
                                 <property name="left-attach">2</property>
                                 <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="valign">start</property>
+                                <property name="margin-start">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="hexpand">True</property>
+                                <property name="margin-top">10</property>
+                                <property name="label" translatable="yes">Select the preferred measurement system.  Normally set once, when the machine is first set up.</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">2</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                             <child>
@@ -10408,7 +10445,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
-                                <property name="top-attach">4</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                             <child>
@@ -10430,7 +10467,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
-                                <property name="top-attach">4</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                             <child>
@@ -10647,6 +10684,171 @@ System</property>
                               <packing>
                                 <property name="left-attach">1</property>
                                 <property name="top-attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Raspberry Pi
+Temperature</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <!-- Pi temperature monitor (13 November 2026) - see
+                                   Pi_Temp_Changed in Rosetta_Settings.py and
+                                   "Pi temperature" in Rosetta_main.py. -->
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="orientation">vertical</property>
+                                <property name="margin-top">10</property>
+                                <property name="valign">start</property>
+                                <property name="halign">start</property>
+                                <property name="spacing">4</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">Warning at</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="Pi_Temp_Warning">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="tooltip-text" translatable="yes">The Raspberry Pi temperature at the top of the main screen turns orange, and LinuxCNC shows a notice, at this temperature.</property>
+                                        <property name="width-chars">4</property>
+                                        <property name="adjustment">Pi_Temp_Warning_Adj</property>
+                                        <property name="numeric">True</property>
+                                        <property name="update-policy">if-valid</property>
+                                        <signal name="value-changed" handler="Pi_Temp_Changed" swapped="no" />
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">°C</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">    Alarm at</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinButton" id="Pi_Temp_Alarm">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="tooltip-text" translatable="yes">At this temperature the readout turns red, a message box appears and (if ticked below) the alarm sounds on the speaker.  Nothing stops - the program carries on.</property>
+                                        <property name="width-chars">4</property>
+                                        <property name="adjustment">Pi_Temp_Alarm_Adj</property>
+                                        <property name="numeric">True</property>
+                                        <property name="update-policy">if-valid</property>
+                                        <signal name="value-changed" handler="Pi_Temp_Changed" swapped="no" />
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">4</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">°C</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">5</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="Pi_Temp_Alarm_Sound">
+                                    <property name="label" translatable="yes">Sound the alarm on the speaker</property>
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="receives-default">False</property>
+                                    <property name="tooltip-text" translatable="yes">Plays the overheating alarm on the speaker when the temperature reaches the Alarm level.</property>
+                                    <property name="halign">start</property>
+                                    <property name="draw-indicator">True</property>
+                                    <signal name="toggled" handler="Pi_Temp_Alarm_Sound_Toggled" swapped="no" />
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="Pi_Temp_Warning_Label">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="halign">start</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">4</property>
                               </packing>
                             </child>
                           </object>

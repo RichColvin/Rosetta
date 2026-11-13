@@ -39,6 +39,8 @@
 #         Enable it automatically); Measurement System moved last
 #   1.3 - 13 November 2026 - a limit jack can be an external Pause
 #         button
+#   1.4 - 13 November 2026 - Other page: Pi Temperature (warning,
+#         alarm, alarm sound)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -470,6 +472,20 @@ def _save_not_enabled_action(choice):
 def _read_persisted_not_enabled_action():
     choice = rosetta_settings_io.load_settings().get("not_enabled_action", "ask")
     return choice if choice in NOT_ENABLED_ACTIONS else "ask"
+
+def _save_pi_temp(warning, alarm, alarm_sound):
+    '''
+    Pi temperature monitor (13 November 2026): the Other page's Warning
+    and Alarm temperatures and the alarm sound tick box - RosettaSet_v1.ini
+    "pi_temp_warning", "pi_temp_alarm" (whole degrees C) and
+    "pi_temp_alarm_sound". Read at startup by the main panel.
+    '''
+    settings = rosetta_settings_io.load_settings()
+    settings["pi_temp_warning"] = warning
+    settings["pi_temp_alarm"] = alarm
+    settings["pi_temp_alarm_sound"] = alarm_sound
+    rosetta_settings_io.save_settings(settings)
+    print("Saved Pi temperature: warning %d C, alarm %d C, sound %s" % (warning, alarm, alarm_sound))
 
 def _save_limit_switch_type(switch_type):
     settings = rosetta_settings_io.load_settings()
@@ -1840,6 +1856,40 @@ class HandlerClass:
             return
         _save_not_enabled_action(Gtk.Buildable.get_name(widget).split("_")[-1].lower())
 
+    def _load_pi_temp(self):
+        '''Reads the Pi temperature settings into the Other page.'''
+        if self.builder.get_object("Pi_Temp_Warning") is None:
+            return
+        warning, alarm, sound = rosetta_settings_io.pi_temp_settings(rosetta_settings_io.load_settings())
+        self._applying_pi_temp = True
+        self.builder.get_object("Pi_Temp_Warning").set_value(warning)
+        self.builder.get_object("Pi_Temp_Alarm").set_value(alarm)
+        self.builder.get_object("Pi_Temp_Alarm_Sound").set_active(sound)
+        self._applying_pi_temp = False
+
+    def _save_pi_temp_from_page(self):
+        '''
+        Saves the three Pi temperature controls - unless Warning isn't
+        below Alarm, which shows a red note instead (saved once fixed,
+        like the jog speeds' Min <= Default <= Max check).
+        '''
+        warning = int(self.builder.get_object("Pi_Temp_Warning").get_value())
+        alarm = int(self.builder.get_object("Pi_Temp_Alarm").get_value())
+        note = self.builder.get_object("Pi_Temp_Warning_Label")
+        if warning >= alarm:
+            note.set_markup('<span foreground="red" weight="bold">Warning must be below Alarm - not saved.</span>')
+            return
+        note.set_text("")
+        _save_pi_temp(warning, alarm, self.builder.get_object("Pi_Temp_Alarm_Sound").get_active())
+
+    def Pi_Temp_Changed(self, widget):
+        if not self._applying_pi_temp:
+            self._save_pi_temp_from_page()
+
+    def Pi_Temp_Alarm_Sound_Toggled(self, widget):
+        if not self._applying_pi_temp:
+            self._save_pi_temp_from_page()
+
     def _load_limit_switch_type(self):
         '''
         Reads the persisted limit switch type (RosettaSet_v1.ini's
@@ -3106,6 +3156,10 @@ class HandlerClass:
         # the Not_Enabled_Ask / _Enable radios.
         self._applying_not_enabled_action = False
 
+        # Same suppression, for _load_pi_temp driving the Pi Temperature
+        # controls on the Other page.
+        self._applying_pi_temp = False
+
         # Same suppression as above, for _load_limit_switch_type driving
         # the Limit_Switch_NC / _NO radios.
         self._applying_limit_switch_type = False
@@ -3185,6 +3239,7 @@ class HandlerClass:
         self._load_limit_switch_type()
         self._load_startup_file_check()
         self._load_not_enabled_action()
+        self._load_pi_temp()
         self._load_done_sound()
         self._load_fault_sound()
 

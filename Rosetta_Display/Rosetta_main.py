@@ -436,6 +436,29 @@ PROGRAM_ESTIMATE_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)
 # moves was started part way (Run From Line) - no progress shown.
 PROGRESS_START_MOVES = 500
 
+# Pi temperature monitor (13 November 2026, Rich - see "Pi temperature"
+# below). The CPU temperature in thousandths of a degree C, readable
+# without special permissions (vcgencmd isn't: this login can't open
+# /dev/vcio). Undervoltage: the hwmon device named "rpi_volt" holds
+# in0_lcrit_alarm, 1 while the supply is too low.
+PI_TEMP_PATH = "/sys/class/thermal/thermal_zone0/temp"
+PI_HWMON_DIR = "/sys/class/hwmon"
+PI_VOLT_HWMON_NAME = "rpi_volt"
+PI_TEMP_POLL_MS = 5000
+# A level counts as cleared only once the temperature is this far below
+# it, so a reading hovering at the limit doesn't warn over and over.
+PI_TEMP_HYSTERESIS = 3.0
+# An undervoltage notice at most this often.
+PI_UNDERVOLTAGE_NOTICE_SECONDS = 60
+# Highest temperature and undervoltage events since the last version
+# report (Rosetta_Setup/Rosetta_Report_Version.py sends this file, then
+# removes it). A new highest is saved once it beats the saved one by
+# PI_HEALTH_SAVE_STEP. The path is duplicated there.
+PI_HEALTH_PATH = os.path.expanduser("~/.config/Rosetta/pi_health.json")
+PI_HEALTH_SAVE_STEP = 0.5
+PI_TEMP_COLORS = {0: None, 1: "#c06000", 2: "#c01c28"}
+OVERHEAT_SOUND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Sounds", "Rosetta_Overheat.wav")
+
 # Card contact (see _poll_card_contact). The cards' names on screen.
 CARD_NAMES = {0: "Base box", 1: "Expansion box"}
 CARD_CONTACT_POLL_MS = 500
@@ -4090,6 +4113,190 @@ class HandlerClass:
 
 
 #######################################################################
+# Pi temperature
+# Purpose:              Watches the Raspberry Pi's CPU temperature and
+#                       power supply (13 November 2026, Rich). A hot
+#                       Pi slows itself down (the Pi 5 at about 85 C),
+#                       which upsets LinuxCNC's real-time timing and the
+#                       Ethernet link to the 7i92 cards - a following
+#                       error or "lost contact" E-stop part way through
+#                       a program. Shows "Pi 61 °C" in the panel header:
+#                       orange with an AXIS notice at Rosetta Settings'
+#                       Warning temperature, red with a message box and
+#                       the overheating sound (speaker only, if ticked)
+#                       at its Alarm temperature. Warn only - nothing
+#                       pauses or stops (Rich). Undervoltage (the 5V
+#                       supply not keeping up) shows a lightning mark
+#                       and a notice only - it's often brief. Keeps the
+#                       highest temperature and undervoltage events for
+#                       the version report (PI_HEALTH_PATH). Main panel
+#                       only.
+# Updated:              ver 1.0, 13 November 2026
+#######################################################################
+    @staticmethod
+    def _read_sys_number(path):
+        try:
+            with open(path) as f:
+                return float(f.read().strip())
+        except (OSError, ValueError):
+            return None
+
+    @staticmethod
+    def _find_undervoltage_alarm():
+        '''The rpi_volt hwmon's in0_lcrit_alarm file, or None.'''
+        try:
+            for entry in sorted(os.listdir(PI_HWMON_DIR)):
+                folder = os.path.join(PI_HWMON_DIR, entry)
+                with open(os.path.join(folder, "name")) as f:
+                    if f.read().strip() == PI_VOLT_HWMON_NAME:
+                        path = os.path.join(folder, "in0_lcrit_alarm")
+                        return path if os.path.exists(path) else None
+        except OSError:
+            pass
+        return None
+
+    def _load_pi_temp(self):
+        self._pi_temp_label = self.builder.get_object("Pi_Temp_Label")
+        if self._pi_temp_label is None or self.builder.get_object("Sync_Run") is None:
+            return
+        self._pi_temp_warning, self._pi_temp_alarm, sound = \
+            rosetta_settings_io.pi_temp_settings(rosetta_settings_io.load_settings())
+        self._pi_temp_player = None
+        if sound:
+            for player in SOUND_PLAYERS:
+                if shutil.which(player[0]):
+                    self._pi_temp_player = player
+                    break
+        self._pi_temp_level = 0         # 0 normal, 1 warning, 2 alarm
+        self._pi_volt_alarm_path = self._find_undervoltage_alarm()
+        self._pi_undervoltage = False
+        self._pi_undervoltage_noticed = 0.0
+        self._pi_health_max = self._pi_health_load().get("max_temp_c")
+        print("Pi temperature monitor: warning %d C, alarm %d C, alarm sound %s; undervoltage %s"
+              % (self._pi_temp_warning, self._pi_temp_alarm,
+                 "on" if self._pi_temp_player else "off",
+                 "watched" if self._pi_volt_alarm_path else "not available"))
+        self._pi_temp_label.set_tooltip_text(
+            "The Raspberry Pi's temperature.  It turns orange at %d °C and red at %d °C "
+            "(set in Rosetta Settings, Other page).  A lightning mark means the power "
+            "supply isn't keeping up." % (self._pi_temp_warning, self._pi_temp_alarm))
+        self._poll_pi_temp()
+        GLib.timeout_add(PI_TEMP_POLL_MS, self._poll_pi_temp)
+
+    def _pi_temp_new_level(self, temp):
+        '''0/1/2 for temp, staying at a level until PI_TEMP_HYSTERESIS below it.'''
+        level = self._pi_temp_level
+        if temp >= self._pi_temp_alarm or (level == 2 and temp > self._pi_temp_alarm - PI_TEMP_HYSTERESIS):
+            return 2
+        if temp >= self._pi_temp_warning or (level >= 1 and temp > self._pi_temp_warning - PI_TEMP_HYSTERESIS):
+            return 1
+        return 0
+
+    def _poll_pi_temp(self):
+        reading = self._read_sys_number(PI_TEMP_PATH)
+        under = bool(self._read_sys_number(self._pi_volt_alarm_path)) if self._pi_volt_alarm_path else False
+        if reading is None:
+            self._pi_temp_label.set_markup("Raspberry Pi -- °C")
+            return True
+        temp = reading / 1000.0
+        level = self._pi_temp_new_level(temp)
+        if level > self._pi_temp_level:
+            self._pi_temp_rose(level, temp)
+        self._pi_temp_level = level
+
+        if under and not self._pi_undervoltage \
+                and time.time() - self._pi_undervoltage_noticed > PI_UNDERVOLTAGE_NOTICE_SECONDS:
+            self._pi_undervoltage_noticed = time.time()
+            print("Pi undervoltage")
+            c.text_msg("Raspberry Pi: the power supply isn't keeping up (undervoltage).  "
+                       "If this keeps happening, check the 5V power supply and its wiring.")
+        if under and not self._pi_undervoltage:
+            self._pi_health_record(undervoltage=True)
+        self._pi_undervoltage = under
+
+        # (The version report removes the file - start a new record then.)
+        if self._pi_health_max is None or not os.path.exists(PI_HEALTH_PATH) \
+                or temp >= self._pi_health_max + PI_HEALTH_SAVE_STEP:
+            self._pi_health_record(temp=temp)
+
+        text = "Raspberry Pi %d °C" % round(temp)
+        color = PI_TEMP_COLORS[level]
+        if color:
+            text = '<span foreground="%s" weight="bold">%s</span>' % (color, text)
+        if under:
+            text += ' <span foreground="#c06000" weight="bold">⚡</span>'
+        self._pi_temp_label.set_markup(text)
+        return True
+
+    def _pi_temp_rose(self, level, temp):
+        if level == 1:
+            print("Pi temperature warning: %.1f C" % temp)
+            c.text_msg("Raspberry Pi is warm: %d °C.  Check that its vents aren't blocked, its "
+                       "fan is turning and the room isn't too hot." % round(temp))
+            return
+        print("Pi temperature ALARM: %.1f C" % temp)
+        message = ("The Raspberry Pi is at %d °C.  Near 85 °C it slows itself down, which can "
+                   "cause following errors or a lost-contact E-stop part way through a program." % round(temp))
+        c.error_msg("Raspberry Pi is too hot: %d °C" % round(temp))
+        if self._pi_temp_player is not None:
+            try:
+                subprocess.Popen(self._pi_temp_player + [OVERHEAT_SOUND],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            except OSError as e:
+                print("Could not play " + OVERHEAT_SOUND + ": " + str(e))
+        # Not modal - the panel (and anything running) carries on.
+        dialog = Gtk.MessageDialog(
+            transient_for=self._pi_temp_label.get_toplevel(),
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text="Raspberry Pi is too hot",
+        )
+        dialog.format_secondary_text(
+            message + "\n\nCheck that the box's vents aren't blocked, the Pi's fan is turning "
+            "and the room isn't too hot.  Nothing has been stopped.")
+        dialog.connect("response", lambda d, r: d.destroy())
+        dialog.show()
+
+    @staticmethod
+    def _pi_health_load():
+        try:
+            with open(PI_HEALTH_PATH) as f:
+                health = json.load(f)
+            return health if isinstance(health, dict) else {}
+        except (OSError, ValueError):
+            return {}
+
+    def _pi_health_record(self, temp=None, undervoltage=False):
+        '''
+        Updates PI_HEALTH_PATH: a new highest temperature, or one more
+        undervoltage event. Re-read each time, since the version report
+        removes the file after sending it (an update can run while the
+        panel is up).
+        '''
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+        health = self._pi_health_load()
+        health.setdefault("since", now)
+        if temp is not None:
+            if temp <= health.get("max_temp_c", -1000):
+                self._pi_health_max = health["max_temp_c"]
+                return
+            health["max_temp_c"] = round(temp, 1)
+            health["max_temp_at"] = now
+            self._pi_health_max = health["max_temp_c"]
+        if undervoltage:
+            health["undervoltage_events"] = health.get("undervoltage_events", 0) + 1
+            health["undervoltage_last"] = now
+        try:
+            os.makedirs(os.path.dirname(PI_HEALTH_PATH), exist_ok=True)
+            with open(PI_HEALTH_PATH + ".tmp", "w") as f:
+                json.dump(health, f)
+            os.replace(PI_HEALTH_PATH + ".tmp", PI_HEALTH_PATH)
+        except OSError as e:
+            print("Could not save " + PI_HEALTH_PATH + ": " + str(e))
+
+
+#######################################################################
 # Card contact
 # Purpose:              A Mesa card that loses contact with the Pi -
 #                       network cable, switch or the box's power - stops
@@ -4325,6 +4532,10 @@ class HandlerClass:
         # E-stop on a card losing contact, and bringing it back (main
         # panel only) - see _load_card_contact.
         self._load_card_contact()
+
+        # Pi temperature and undervoltage (main panel only) - see
+        # _load_pi_temp.
+        self._load_pi_temp()
 
 
 

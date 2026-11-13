@@ -53,6 +53,8 @@
 #   1.2 - 02 November 2026 - Rosetta: new REPORT_URL; reads the
 #         "O/S ..." label with or without the old "REB " in front
 #   1.3 - 04 November 2026 - REPORT_URL moved to rosetta.colvintools.com
+#   1.4 - 13 November 2026 - reports the Pi's highest temperature and
+#         undervoltage events since the last report
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -78,6 +80,14 @@ HARDWARE_ID_PATHS = (
     "/proc/cpuinfo",
     "/sys/firmware/devicetree/base/serial-number",
 )
+
+# The Pi's health since the last report (13 November 2026): the
+# highest CPU temperature and any undervoltage events, kept by the main
+# panel (Rosetta_main.py's "Pi temperature" section - path duplicated
+# there). Sent with the report, then removed, so each report covers
+# the time since the one before.
+PI_HEALTH_PATH = os.path.expanduser("~/.config/Rosetta/pi_health.json")
+PI_TEMP_PATH = "/sys/class/thermal/thermal_zone0/temp"
 
 REPORT_URL = "https://rosetta.colvintools.com/Support/reb_report.php"
 REPORT_TIMEOUT_SECONDS = 10
@@ -130,15 +140,54 @@ def read_version():
     return match.group(1).strip(), match.group(2).strip()
 
 
+def read_pi_health():
+    '''
+    The panel's record since the last report, as report fields (empty
+    values when there's no record - LinuxCNC hasn't run since), plus
+    the temperature now.
+    '''
+    try:
+        with open(PI_HEALTH_PATH) as f:
+            health = json.load(f)
+        if not isinstance(health, dict):
+            health = {}
+    except (OSError, ValueError):
+        health = {}
+    try:
+        with open(PI_TEMP_PATH) as f:
+            now = round(int(f.read().strip()) / 1000.0, 1)
+    except (OSError, ValueError):
+        now = None
+    return {
+        "pi_temp_now_c": now,
+        "pi_max_temp_c": health.get("max_temp_c"),
+        "pi_max_temp_at": health.get("max_temp_at", ""),
+        "pi_undervoltage_events": health.get("undervoltage_events", 0),
+        "pi_undervoltage_last": health.get("undervoltage_last", ""),
+        "pi_health_since": health.get("since", ""),
+    }
+
+
+def clear_pi_health():
+    try:
+        os.remove(PI_HEALTH_PATH)
+    except FileNotFoundError:
+        pass
+    except OSError as e:
+        print("WARNING: could not clear " + PI_HEALTH_PATH + ": " + str(e))
+
+
 def build_report():
     version, version_date = read_version()
-    return {
+    report = {
         "hardware_id": read_hardware_id(),
         "serial_number": read_friendly_serial(),
         "version": version,
         "version_date": version_date,
         "reported_at": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
+    report.update(read_pi_health())
+    return report
 
 
 def send_report(report):
@@ -168,6 +217,9 @@ def send_report(report):
 def report_version():
     try:
         send_report(build_report())
+        # Logged locally by send_report whether or not it reached the
+        # server, so the record can start afresh.
+        clear_pi_health()
         return 0
     except OSError as e:
         print("WARNING: could not report this machine's version: " + str(e))

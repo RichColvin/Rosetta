@@ -829,7 +829,31 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">0</property>
-                <property name="width">13</property>
+                <property name="width">9</property>
+              </packing>
+            </child>
+            <child>
+              <!-- Pi temperature readout (13 November 2026) - set by
+                   _poll_pi_temp in Rosetta_main.py: normal, orange at
+                   Warning, red at Alarm, a lightning mark during
+                   undervoltage. -->
+              <object class="GtkLabel" id="Pi_Temp_Label">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="margin-right">8</property>
+                <property name="margin-end">8</property>
+                <property name="label" translatable="yes"></property>
+                <property name="use-markup">True</property>
+                <attributes>
+                  <attribute name="font-desc" value="DejaVu Sans 10"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left-attach">9</property>
+                <property name="top-attach">0</property>
+                <property name="width">4</property>
               </packing>
             </child>
             <child>
@@ -838,7 +862,7 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
+                <property name="label" translatable="yes">O/S 1.0 Beta 1.8 - 13 November 2026</property>
                 <property name="justify">right</property>
                 <property name="width-chars">9</property>
                 <attributes>

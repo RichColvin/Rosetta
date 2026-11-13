@@ -32,6 +32,7 @@ Built and committed, but not yet seen working on real hardware.
 | Folder shortcuts on other machines | 20 October 2026 | `REB_Setup/REB_Add_Shortcuts.sh` (265ca51): Thunar Places "RoseEngineButler" and "Gcode", plus Reuben-head launchers for them on the bottom bar right after File Manager (Gcode's icon has a "G" badge). Tested on Rich's Pi (from a clean state, re-run, `--force` - nothing doubled). Still to see: the Trixie installer's new Step 10 on a fresh install (the Bookworm installer wasn't changed), and S/N 1 and 2 getting them on their first update once `main` moves (via `REB_Update_Settings.py`) - their bottom bar may be laid out differently; with no File Manager launcher the launchers are skipped but Places is still added. |
 | Startup gcode reserved-name check | 23 October 2026 | New REB Settings > Other tab > Startup File Check radios (Abort startup - default, or Warn but continue), plus a scan added to `REB_Setup/REB_Generate_Local_Ini.py` (`check_reserved_gcode_names`, run from `main()` before anything else): refuses, or warns, if `gcode/` holds a file starting with "reb"/"REB" (any case) or named M100-M199, since LinuxCNC's `PROGRAM_PREFIX` search would find such a file before REB's own subroutines/M-codes - see "Reserved names" in CLAUDE.md. REBset_v1.ini's `startup_file_check` ("abort"/"warn"), seeded in `REB_Setup/REBset_v1.ini`. Verified stand-alone on Rich's Pi 23 October 2026 (no LinuxCNC running): the Abort and Warn GTK dialogs both render correctly with the offending file(s) listed, the scan correctly matches `reb_test.ngc`/`REBrose.ngc`/`M105.ngc`/`m199` and excludes `m200.ngc`/`myprogram.ngc`/`M1.ngc`, and the Settings radios save/load round-trip. Not yet run through a real `REB_Launch.sh` -> `linuxcnc` start: check a reserved file in `gcode/` is caught at a real launch, Abort stops before LinuxCNC opens (and the dialog's wording is legible full-size), Warn shows the dialog then LinuxCNC starts normally, and a clean `gcode/` launches with no dialog at all. Also added the same day: Abort plays a new short "uh oh" sound (`REB_Display/Sounds/REB_Abort.wav`, two tones, raised an octave per Rich's ear) on the speaker - the fault siren was tried first and found too alarming for a renamed-file nag; not yet heard through a real launch, only the stand-alone test. |
 | Sync Move changes, Beta 1.7 | 13 November 2026 | Agreed with Rich and built the same day (Rich's reason: users often ask for a large rotation, and need to stop a move part way - a broken cutter belt, a cutter about to hit the chuck; Roy finds limit switches a good option but rarely uses them). Checked off the machine only (LinuxCNC was running on Rich's Pi): the panel rendered off-screen (both tabs 880 px wide, 23 more than before - no shift between tabs), the comma/deg/rev handling on the real .ui, and Pause/Continue/Return run against a stand-in for LinuxCNC. Check on the machine, with LinuxCNC restarted: (1) A/B/C Distance takes `1,000,000` and `1000000`, shows `1,000,000.00`; deg/rev radios - 40 then rev sends `C14400` (console `print`), rev has 3 decimals, switching keeps the number; deg/rev comes back after a restart. (2) **Pause on a panel MDI move works on LinuxCNC 2.9.10** - Pause during a Sync Move: axes slow and stop, button reads Continue, progress bar "(paused)"; Continue resumes. If the console says "Sync Move didn't pause - stopping it instead", pause doesn't work in MDI and every Pause becomes a stop (Continue still finishes it, as a new move). (3) E-stop (or F2 off) while paused, back on, Continue: finishes along the same line, done beeps at the end. (4) Jog an axis while stopped, Continue: asks, naming that axis. (5) Return to Start while paused: stops, then goes back. (6) Pause button: set a limit jack to Pause button in Rosetta Settings (only one allowed - "Duplicate!"), plug in an NC push button; pressing pauses a Sync Move and a G-code program, not Cut Thread - 13 November 2026: Rich confirmed it pauses a program; a second press doesn't resume (by design - no debounce), so at Rich's request the panel's Continue (Sync Move tab) now resumes a paused program too, like AXIS's Resume - check that; with it pressed or unplugged, Sync Move and AXIS's Run refuse with "Pause button is pressed or disconnected". `halcmd show sig pause-button` shows it. User Manual drafts: `~/Downloads/Rosetta_UserManual_SyncMove_2026-11-13/` (README lists the changes, made against the live pages of 13 November 2026). |
+| Pi temperature monitor, Beta 1.8 | 13 November 2026 | Agreed with Rich and built the same day (see CLAUDE.md, "Pi temperature monitor"). Checked off the machine only: the panel header and Rosetta Settings' Other page rendered off-screen (panel width unchanged), the monitor run against fake temperatures (warning, alarm, hysteresis, undervoltage, the record), and the version report in a scratch home with sending off. Check on the machine, after restarting LinuxCNC: `Raspberry Pi NN °C` beside the logo matches `cat /sys/class/thermal/thermal_zone0/temp`; set Warning/Alarm low in Rosetta Settings (e.g. 55/60) to see orange + notice, then red + box + the new alarm sound (speaker); Warning >= Alarm is refused with a red note; Measurement System still works, now one row lower; `~/.config/Rosetta/pi_health.json` appears; after an Update the report (`~/.config/Rosetta/report_log.jsonl`) has the `pi_*` fields and the file is gone. **Server, Rich:** upload the updated `reb_report.php` (it kept only the fields it knew, so the `pi_*` fields would have been dropped) and `reb_report_view.php` (four Pi health columns) from `~/Downloads/Rosetta_Server_PiTemperature_2026-11-13/` - not run (no PHP on the Pi): after uploading, check the viewer page opens and fills in after an Update. User Manual drafts: `~/Downloads/Rosetta_UserManual_PiTemperature_2026-11-13/` (Other, Main Screen, Troubleshooting). |
 ## Open items and follow-ups
 
 | Item | Since | Notes |
@@ -605,40 +606,6 @@ Software work once the design is fixed (not started):
 5. Either card losing contact = E-stop.
 6. The update step converting existing settings files' channel IDs.
 7. New firmware/pin files for both cards.
-
-### Pi temperature monitor (agreed with Rich 13 November 2026, not yet built)
-
-Rich's idea (Chuck had a Pi temperature script, not to hand - built
-fresh). A hot Pi throttles (Pi 5: about 85 C, unconfirmed), which upsets
-LinuxCNC's real-time timing and the Ethernet link to the 7i92s - a
-following error or "lost contact" E-stop mid-program. Rich's Pi read
-61.2 C with LinuxCNC running (fan about 2,500 RPM; its fan steps are at
-50/60/67.5/75 C; thermal trip 110 C).
-
-1. **Read** `/sys/class/thermal/thermal_zone0/temp` (no permissions
-   needed) every few seconds from the main panel; undervoltage from
-   `/sys/class/hwmon/<rpi_volt>/in0_lcrit_alarm` (find the hwmon by its
-   `name`). Not `vcgencmd` - the login can't open `/dev/vcio`.
-2. **Readout** `Pi 61 C` in the panel header, top right beside the Turk's
-   head (Rich asked about beside Axis Assignments; the header was chosen
-   since the expansion tiles fill the bottom). Orange at Warning, red at
-   Alarm, a lightning mark while undervoltage is reported.
-3. **Warning** (default 75 C): orange, one AXIS notification
-   (`c.error_msg`, like "lost contact") saying what to check - vents,
-   fan, room temperature.
-4. **Alarm** (default 82 C): red, a message box, and a **new alarm
-   sound on the speaker only** (distinct from the fault siren; not the
-   tower). **Warn only** - nothing pauses or stops (Rich). Sounds again
-   only after falling a few degrees below and rising back.
-5. **Undervoltage: notification only** (no sound, no box) - often brief.
-6. **Rosetta Settings** (Other page): Warning and Alarm temperatures,
-   and the alarm sound on/off; new RosettaSet_v1.ini keys go into the
-   seed in the same commit.
-7. **Version report**: highest temperature and any undervoltage since
-   the last update (the panel keeps a small record; the report sends it
-   and starts afresh). `reb_report_view.php` needs a column - it lives
-   only on the server: Rich to send the current file so an updated
-   draft can be made.
 
 ## Done
 

@@ -54,6 +54,8 @@
 #         config folder to their new names
 #   1.2 - 08 November 2026 - spindle indexing PID starts with I 0 and
 #         D 0 (was 1 and 1.2)
+#   1.3 - 13 November 2026 - Pi temperature monitor defaults
+#         (pi_temp_settings)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -469,6 +471,38 @@ def _default_axis_entry(axis_id):
     entry["usercomment"] = ""
     entry["pid"] = default_pid(axis_id)
     return entry
+
+
+# Pi temperature monitor (13 November 2026, Rich): Rosetta Settings'
+# Other page sets these RosettaSet_v1.ini keys; the main panel
+# (Rosetta_main.py's "Pi temperature" section) reads them at startup.
+# Warning turns the panel's readout orange with a notice; Alarm turns it
+# red with a message box and (pi_temp_alarm_sound) a sound on the
+# speaker. Warn only - nothing stops. The Pi 5 starts slowing itself
+# down at about 85 C, which upsets LinuxCNC's real-time timing.
+PI_TEMP_WARNING_DEFAULT = 75
+PI_TEMP_ALARM_DEFAULT = 82
+PI_TEMP_LOWEST = 50
+PI_TEMP_HIGHEST = 95
+
+
+def pi_temp_settings(settings):
+    '''
+    (warning, alarm, alarm_sound) from settings, falling back to the
+    defaults for anything missing or unusable - including a Warning
+    that isn't below the Alarm, which Rosetta Settings won't save.
+    '''
+    def degrees(key, default):
+        try:
+            value = int(settings.get(key, default))
+        except (TypeError, ValueError):
+            return default
+        return value if PI_TEMP_LOWEST <= value <= PI_TEMP_HIGHEST else default
+    warning = degrees("pi_temp_warning", PI_TEMP_WARNING_DEFAULT)
+    alarm = degrees("pi_temp_alarm", PI_TEMP_ALARM_DEFAULT)
+    if warning >= alarm:
+        warning, alarm = PI_TEMP_WARNING_DEFAULT, PI_TEMP_ALARM_DEFAULT
+    return warning, alarm, settings.get("pi_temp_alarm_sound", True) is not False
 
 
 def default_settings():
