@@ -37,6 +37,8 @@
 #   1.1 - 09 November 2026 - File menu: Back Up to USB, Restore from USB
 #   1.2 - 09 November 2026 - Other page: Axis Not Enabled (Ask or
 #         Enable it automatically); Measurement System moved last
+#   1.3 - 13 November 2026 - a limit jack can be an external Pause
+#         button
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -268,6 +270,14 @@ LIMIT_JACKS = ("1", "2", "3", "4", "5", "6")
 EXPANSION_LIMIT_JACKS = ("4", "5", "6")
 LIMIT_JACK_NOT_USED = "Not used"
 
+# A jack can instead take an external Pause button (13 November 2026,
+# Rich) - limit_switches value "Pause", on one jack only. It pauses a
+# Sync Move or a G-code program (Rosetta_main.py's _poll_pause_button;
+# Rosetta_Generate_Local_Ini.py wires it to the pause-button signal) and
+# follows the same Limit Switch Type (NC/NO) as the limit switches.
+LIMIT_JACK_PAUSE = "Pause"
+LIMIT_JACK_PAUSE_LABEL = "Pause button"
+
 # limit_switches value suffix -> which end(s) of travel it covers, and
 # the text the combo shows for it (after the letter).
 LIMIT_ENDS = {"": "both", " min": "min", " max": "max"}
@@ -294,6 +304,8 @@ def _limit_ends_conflict(end_a, end_b):
 
 def _limit_value_label(value):
     '''The combo text for a limit_switches value ("" -> "Not used").'''
+    if value == LIMIT_JACK_PAUSE:
+        return LIMIT_JACK_PAUSE_LABEL
     parsed = _parse_limit_value(value)
     if parsed is None:
         return LIMIT_JACK_NOT_USED
@@ -304,8 +316,8 @@ def _save_limit_jacks(jacks):
     '''
     Persists the Axis Selection page's limit jack choices into
     RosettaSet_v1.ini's "limit_switches" dict. jacks is a dict of jack
-    ("1".."3") -> "<letter>", "<letter> min", "<letter> max", or "" for
-    a jack that isn't used.
+    ("1".."6") -> "<letter>", "<letter> min", "<letter> max", "Pause"
+    (the external Pause button), or "" for a jack that isn't used.
     '''
     settings = rosetta_settings_io.load_settings()
     settings["limit_switches"] = {jack: jacks.get(jack, "") for jack in LIMIT_JACKS}
@@ -325,6 +337,11 @@ def _read_persisted_limit_jacks():
     stored = rosetta_settings_io.load_settings().get("limit_switches", {})
     for jack in LIMIT_JACKS:
         value = stored.get(jack, "")
+        if value == LIMIT_JACK_PAUSE:
+            # One Pause button only - the lowest-numbered jack keeps it.
+            if LIMIT_JACK_PAUSE not in jacks.values():
+                jacks[jack] = value
+            continue
         parsed = _parse_limit_value(value)
         if parsed is None:
             continue
@@ -1694,7 +1711,7 @@ class HandlerClass:
         values = ("",) + tuple(
             letter + suffix
             for letter in AXIS_SELECTION_LETTERS if letter in assigned
-            for suffix in LIMIT_ENDS)
+            for suffix in LIMIT_ENDS) + (LIMIT_JACK_PAUSE,)
 
         cleared = False
         self._applying_limit_jacks = True
@@ -1931,6 +1948,10 @@ class HandlerClass:
             if warning is None:
                 continue
             problem = None
+            if self._limit_jacks[jack] == LIMIT_JACK_PAUSE and jack in in_use:
+                if any(self._limit_jacks[o] == LIMIT_JACK_PAUSE
+                       for o in in_use if o != jack):
+                    problem = "Duplicate!"
             if parsed[jack]:
                 for other in LIMIT_JACKS:
                     if other == jack or not parsed[other] or parsed[other][0] != parsed[jack][0]:
@@ -3566,7 +3587,8 @@ def _limit_jack_axis_changed(jack):
             return
 
         value = widget.get_active_id()
-        if value is None or (value and _parse_limit_value(value) is None):
+        if value is None or (value and value != LIMIT_JACK_PAUSE
+                             and _parse_limit_value(value) is None):
             return
         self._limit_jack_notices.pop(jack, None)
         self._limit_jacks[jack] = value

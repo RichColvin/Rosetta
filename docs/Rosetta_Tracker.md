@@ -31,6 +31,7 @@ Built and committed, but not yet seen working on real hardware.
 | Notes in REBset_v1.ini | 11 October 2026 | After an update (run twice on Chuck's and Roy's machines), `~/Documents/REBset_v1.ini` starts with the "Rose Engine Butler settings" notes and ends with the copyright, and the other settings/export files there have their notes too (not the `.bak-` backups); LinuxCNC and REB Settings still start, and Load Settings reads both a "Save All Settings As..." copy and a Save Subset export. |
 | Folder shortcuts on other machines | 20 October 2026 | `REB_Setup/REB_Add_Shortcuts.sh` (265ca51): Thunar Places "RoseEngineButler" and "Gcode", plus Reuben-head launchers for them on the bottom bar right after File Manager (Gcode's icon has a "G" badge). Tested on Rich's Pi (from a clean state, re-run, `--force` - nothing doubled). Still to see: the Trixie installer's new Step 10 on a fresh install (the Bookworm installer wasn't changed), and S/N 1 and 2 getting them on their first update once `main` moves (via `REB_Update_Settings.py`) - their bottom bar may be laid out differently; with no File Manager launcher the launchers are skipped but Places is still added. |
 | Startup gcode reserved-name check | 23 October 2026 | New REB Settings > Other tab > Startup File Check radios (Abort startup - default, or Warn but continue), plus a scan added to `REB_Setup/REB_Generate_Local_Ini.py` (`check_reserved_gcode_names`, run from `main()` before anything else): refuses, or warns, if `gcode/` holds a file starting with "reb"/"REB" (any case) or named M100-M199, since LinuxCNC's `PROGRAM_PREFIX` search would find such a file before REB's own subroutines/M-codes - see "Reserved names" in CLAUDE.md. REBset_v1.ini's `startup_file_check` ("abort"/"warn"), seeded in `REB_Setup/REBset_v1.ini`. Verified stand-alone on Rich's Pi 23 October 2026 (no LinuxCNC running): the Abort and Warn GTK dialogs both render correctly with the offending file(s) listed, the scan correctly matches `reb_test.ngc`/`REBrose.ngc`/`M105.ngc`/`m199` and excludes `m200.ngc`/`myprogram.ngc`/`M1.ngc`, and the Settings radios save/load round-trip. Not yet run through a real `REB_Launch.sh` -> `linuxcnc` start: check a reserved file in `gcode/` is caught at a real launch, Abort stops before LinuxCNC opens (and the dialog's wording is legible full-size), Warn shows the dialog then LinuxCNC starts normally, and a clean `gcode/` launches with no dialog at all. Also added the same day: Abort plays a new short "uh oh" sound (`REB_Display/Sounds/REB_Abort.wav`, two tones, raised an octave per Rich's ear) on the speaker - the fault siren was tried first and found too alarming for a renamed-file nag; not yet heard through a real launch, only the stand-alone test. |
+| Sync Move changes, Beta 1.7 | 13 November 2026 | Agreed with Rich and built the same day (Rich's reason: users often ask for a large rotation, and need to stop a move part way - a broken cutter belt, a cutter about to hit the chuck; Roy finds limit switches a good option but rarely uses them). Checked off the machine only (LinuxCNC was running on Rich's Pi): the panel rendered off-screen (both tabs 880 px wide, 23 more than before - no shift between tabs), the comma/deg/rev handling on the real .ui, and Pause/Continue/Return run against a stand-in for LinuxCNC. Check on the machine, with LinuxCNC restarted: (1) A/B/C Distance takes `1,000,000` and `1000000`, shows `1,000,000.00`; deg/rev radios - 40 then rev sends `C14400` (console `print`), rev has 3 decimals, switching keeps the number; deg/rev comes back after a restart. (2) **Pause on a panel MDI move works on LinuxCNC 2.9.10** - Pause during a Sync Move: axes slow and stop, button reads Continue, progress bar "(paused)"; Continue resumes. If the console says "Sync Move didn't pause - stopping it instead", pause doesn't work in MDI and every Pause becomes a stop (Continue still finishes it, as a new move). (3) E-stop (or F2 off) while paused, back on, Continue: finishes along the same line, done beeps at the end. (4) Jog an axis while stopped, Continue: asks, naming that axis. (5) Return to Start while paused: stops, then goes back. (6) Pause button: set a limit jack to Pause button in Rosetta Settings (only one allowed - "Duplicate!"), plug in an NC push button; pressing pauses a Sync Move and a G-code program (AXIS Resume carries on), not Cut Thread; with it pressed or unplugged, Sync Move and AXIS's Run refuse with "Pause button is pressed or disconnected". `halcmd show sig pause-button` shows it. User Manual drafts: `~/Downloads/Rosetta_UserManual_SyncMove_2026-11-13/` (README lists the changes, made against the live pages of 13 November 2026). |
 ## Open items and follow-ups
 
 | Item | Since | Notes |
@@ -604,52 +605,6 @@ Software work once the design is fixed (not started):
 5. Either card losing contact = E-stop.
 6. The update step converting existing settings files' channel IDs.
 7. New firmware/pin files for both cards.
-
-### Sync Move changes - O/S 1.0 Beta 1.7 (agreed with Rich 13 November 2026, not yet built)
-
-Rich's reason for 1 and 2: users often ask Sync Move for a large
-rotation. All of this is Sync Move only - the Indexing and Threading
-tabs don't change. These are Beta 1.7: when built, raise the five
-"O/S ..." labels to "O/S 1.0 Beta 1.7 - 13 November 2026".
-
-1. **A/B/C Distance up to 99,999,999.00 degrees**: 2 decimals,
-   thousands commas shown (`1,000,000.00`), typed with or without
-   commas, tidied on Enter / focus out. X/Z/U/V/W keep their range and 3
-   decimals. The Distance column gets about 5 characters wider (Rich
-   accepted). With it: write the G93 F (1/minutes) so very long, slow
-   moves don't round it towards 0 (today `%.8f`).
-2. **deg / rev radios** on the A/B/C rows, in place of the fixed "deg"
-   label (same style as Indexing's deg / div, so no extra width). The
-   number stays as typed when switching (40 then rev = 40 rev); rev =
-   x360 when sent, 3 decimals (eighths of a turn), capped at
-   999,999.999 rev; switching rev -> deg rounds to 2 decimals, deg ->
-   rev lowers a too-large number to the cap. Remembered per row in
-   `panel_state`; deg is the default. Tooltip: rev isn't exact for
-   thirds/sixths - use deg.
-3. **Pause / Continue** - one button beside Sync Move / Return to Start
-   (the label changes). Pause is a feed hold, silent (no Pause beeps),
-   and doesn't touch Sp0/Sp1 (the cutter isn't Rosetta-controlled).
-   Continue: still paused and machine on -> resume; move lost (E-stop,
-   machine off, AXIS Stop - e.g. to fix a broken belt) -> a new move from
-   where the axes are to the original targets, same timing, same path;
-   an axis moved off the line meanwhile (jogged clear of the chuck) ->
-   ask before continuing. Return to Start works while paused (ends the
-   paused move, then returns). Progress bar "Sync Move 42% (paused)";
-   done beeps only when the move really finishes. To prove on the
-   machine first: pause/resume of a panel MDI move on LinuxCNC 2.9.10,
-   and E-stop while paused then Continue.
-4. **External Pause button on a limit jack**: a new "Pause button"
-   choice in the jack combos (one jack only - "Duplicate!" otherwise;
-   jacks 4-6 with the expansion box). Pause only, never resume (jacks
-   have no debounce since `num_inms=0`; Continue stays a deliberate act
-   on the screen). Pauses Sync Move and G-code programs (AXIS's Pause;
-   AXIS's Resume continues). Follows the shared Limit Switch Type
-   (NC/NO), with a warning in the notes column. Not a fault - no red
-   light, siren or E-stop. While it reads pressed (pressed, mismatched,
-   or a broken NC wire), Sync Move and AXIS's Run (via
-   `Rosetta_Axis_Commands.py`) refuse: "Pause button is pressed or
-   disconnected". User Manual: a Pause button section on the Inputs
-   page, drafted into `~/Downloads`.
 
 ## Done
 

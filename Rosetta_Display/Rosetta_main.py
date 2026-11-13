@@ -74,6 +74,7 @@ import shutil
 import re
 import json
 import bisect
+import decimal
 from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GLib
@@ -287,6 +288,34 @@ SPINDLE_ROW_FIELDS = {
 # direction on both tabs.
 SYNC_DIR_SIGN = {"Rev": "-", "Fwd": "+"}
 
+# Sync Move's A/B/C Distance (13 November 2026, Rich - users often ask
+# for a large rotation): deg or rev, chosen per row with the
+# <letter>_Sync_Unit_Deg/_Rev radios. Unit -> (decimals shown, spin
+# step, largest value, degrees per unit). Rev has 3 decimals so eighths
+# of a turn are exact. X/Z/U/V/W keep their .ui settings.
+SYNC_ANGULAR_UNITS = {
+    "deg": (2, 0.01, 99999999.0, 1.0),
+    "rev": (3, 0.001, 999999.999, 360.0),
+}
+
+# Continue after a Sync Move was stopped part way (see _sync_continue):
+# an axis further than this (machine units or degrees) from the move's
+# straight line counts as moved while stopped, and Continue asks first.
+SYNC_LINE_TOLERANCE = 0.001
+
+# Pause asks LinuxCNC for a feed hold. If the move hasn't paused this
+# long afterwards, it's stopped instead (and Continue sends the rest of
+# it as a new move) - see _sync_check_paused.
+SYNC_PAUSE_CHECK_MS = 500
+
+# The external Pause button: a limit jack set to "Pause button" in
+# Rosetta Settings (RosettaSet_v1.ini's limit_switches value "Pause") is
+# wired by Rosetta_Generate_Local_Ini.py to this HAL signal, true while
+# the button reads pressed (or, for an NC button, while its wire is
+# broken or unplugged).
+PAUSE_BUTTON_SIGNAL = "pause-button"
+PAUSE_JACK_VALUE = "Pause"
+
 # Axis letter -> its index in linuxcnc.stat().position (always the
 # fixed X Y Z A B C U V W order, regardless of [TRAJ]COORDINATES).
 STAT_POSITION_INDEX = {
@@ -316,6 +345,8 @@ MODE_HEADER_WIDGETS = ("Mode_Hdr_Rev", "Mode_Hdr_Fwd", "Title_Minus_Sign1", "Tit
 # Every button that starts a polled Sync Move/Threading motion - all
 # disabled while any one of them is running (see _start_polled_mdi).
 MOTION_BUTTONS = ("Sync_Run", "Sync_Return", "Thread_Run", "Thread_Return")
+# Sync_Pause (Pause / Continue) isn't one of them: it's set by
+# _sync_update_pause_button instead.
 
 # The startup splash (the Turk's head over "ROSETTA", written each launch
 # by Rosetta_Generate_Local_Ini.py) and the empty file swapped in for it
@@ -708,6 +739,30 @@ def _show_settings_error(widget, message):
     )
     dialog.run()
     dialog.destroy()
+
+def _round_half_up(value, digits):
+    '''
+    value rounded to `digits` decimals with halves going up, the way
+    people round (40.125 -> 40.13) - Python's round() sends an exact half
+    to the even digit (40.12).
+    '''
+    return float(decimal.Decimal(repr(value)).quantize(
+        decimal.Decimal(1).scaleb(-digits), rounding=decimal.ROUND_HALF_UP))
+
+
+def _gcode_number(value, significant=8):
+    '''
+    value as a G-code number - plain decimals (G-code has no "1e-09"),
+    with enough places to keep `significant` significant digits however
+    small it is. Added 13 November 2026 for Sync Move's inverse-time F
+    (1 / minutes): with a fixed 8 decimals, a very long, slow move's F
+    would round towards 0 (99,999,999 deg at 0.1 deg/min is F
+    0.000000001).
+    '''
+    if value == 0:
+        return "0"
+    places = max(4, significant - 1 - int(math.floor(math.log10(abs(value)))))
+    return "%.*f" % (places, value)
 
 def _planner_length(deltas):
     '''
@@ -2461,7 +2516,11 @@ class HandlerClass:
 #                       all back where they started. Only the main panel
 #                       component has these widgets; every other
 #                       component no-ops.
-# Updated:              ver 1.0, 22 September 2026
+#                       13 November 2026 (Rich): A/B/C distances up to
+#                       99,999,999.00 deg or 999,999.999 rev, shown with
+#                       thousands commas; a Pause / Continue button; an
+#                       optional external Pause button on a limit jack.
+# Updated:              ver 1.1, 13 November 2026
 #######################################################################
     def _load_sync_move_tab(self):
         '''
@@ -2475,7 +2534,8 @@ class HandlerClass:
         _apply_measurement_system_labels) no longer can - it's a
         separate program. Unassigned letters are greyed out by
         _load_panel_axis_controls (AXIS_ROW_FIELDS includes the Sync
-        widgets).
+        widgets). Also starts watching the external Pause button, if a
+        limit jack is set to one.
         '''
         if self.builder.get_object("Sync_Run") is None:
             return
@@ -2485,6 +2545,21 @@ class HandlerClass:
         self._sync_feeds = {}        # letter -> feed rate used by that Run Operation
         self._sync_target = {}       # letter -> where the current move should end
         self._sync_poll_id = None
+        # A/B/C rows' Distance unit, "deg" or "rev" (Sync_Set_Unit).
+        self._sync_unit = {axis: "deg" for axis in AXIS_SELECTION_LETTERS
+                           if _axis_type_for_letter(axis) == "ANGULAR"}
+        # Which Sync Move button's move is running: "run" (Sync Move or
+        # Continue), "return", or None (nothing, or a Cut Thread, which
+        # shares _start_polled_mdi but can't be paused from here).
+        self._sync_kind = None
+        # A Sync Move stopped before it got to its end point, which
+        # Continue can finish: {"start": stat position, "target":
+        # {letter: end position}, "feeds": {letter: feed}}. None once it
+        # finishes or Return to Start is used.
+        self._sync_resume = None
+        # Something to do once the move being stopped has wound down -
+        # Return to Start pressed while paused (see Sync_Return).
+        self._sync_after_stop = None
 
         system = rosetta_settings_io.load_settings().get("measurement_system", "Imperial")
         self._sync_metric = system == "Metric"
@@ -2496,6 +2571,15 @@ class HandlerClass:
             self.builder.get_object(axis + "_Sync_Dist_UOM").set_text(dist_uom)
             self.builder.get_object(axis + "_IdxDist_UOM").set_text(dist_uom)
             self.builder.get_object(axis + "_Feed_UOM").set_text(dist_uom + " / min")
+        for axis in self._sync_unit:
+            self._sync_apply_unit(axis, "deg")
+
+        self._pause_jack = self._read_pause_jack()
+        self._pause_button_was_pressed = False
+        if self._pause_jack is not None:
+            print("External Pause button on limit jack " + self._pause_jack)
+            GLib.timeout_add(PROGRAM_POLL_MS, self._poll_pause_button)
+        self._sync_update_pause_button()
 
     def Panel_Mode_Switch(self, notebook, page, page_num):
         '''
@@ -2546,6 +2630,286 @@ class HandlerClass:
         for d in SYNC_DIR_SIGN:
             _set_depressed(self.builder.get_object(axis + "_Sync_" + d), d == direction)
 
+    # -----------------------------------------------------------------
+    # A/B/C Distance: thousands commas, deg / rev (13 November 2026)
+    #
+    # GTK's spin button has no thousands separator, so the A/B/C
+    # Distance boxes draw their own ("output", Sync_Dist_Output) and
+    # have numeric off so a comma can be typed. GTK reads the typed text
+    # with its own parser, which stops at a comma ("1,000" would be 1),
+    # and PyGObject can't hand a value back from the "input" signal
+    # (tried 13 November 2026: TypeError, or a GLib warning), so instead
+    # the commas are taken out just before GTK reads the box - on Enter,
+    # on a click of its +/- arrows, on leaving it (when that event comes -
+    # it doesn't always arrive inside AXIS's embedded panels),
+    # and before Sync Move reads it (_sync_read_spin).
+    # -----------------------------------------------------------------
+    @staticmethod
+    def _strip_commas(spin):
+        text = spin.get_text()
+        if "," in text:
+            spin.set_text(text.replace(",", ""))
+
+    def Sync_Dist_Strip_Commas(self, spin, *args):
+        self._strip_commas(spin)
+        return False     # let GTK go on to read the box as usual
+
+    def Sync_Dist_Output(self, spin):
+        spin.set_text("{:,.{d}f}".format(spin.get_adjustment().get_value(), d=spin.get_digits()))
+        return True
+
+    def _sync_read_spin(self, spin):
+        '''
+        A Sync Distance (or Feed Rate) box's value, after committing
+        anything typed but not yet Enter'd, rounded to the decimals the
+        box shows - so the number sent is the number on screen.
+        '''
+        self._strip_commas(spin)
+        spin.update()
+        return _round_half_up(spin.get_value(), spin.get_digits())
+
+    def _sync_apply_unit(self, axis, unit):
+        '''
+        Sets an A/B/C row's Distance box for deg or rev: decimals, step
+        and largest value. The number stays as it is (Rich: 40 then rev
+        means 40 rev), except that it's rounded to the new decimals and
+        lowered to the new largest value if it's over it.
+        '''
+        digits, step, upper, _ = SYNC_ANGULAR_UNITS[unit]
+        spin = self.builder.get_object(axis + "_Sync_Dist")
+        self._strip_commas(spin)
+        spin.update()
+        value = spin.get_value()
+        adj = spin.get_adjustment()
+        adj.set_upper(upper)
+        adj.set_step_increment(step)
+        adj.set_page_increment(step * 10)
+        spin.set_digits(digits)
+        spin.set_value(_round_half_up(min(value, upper), digits))
+        self._sync_unit[axis] = unit
+        # set_value doesn't redraw an unchanged value in the new decimals.
+        self.Sync_Dist_Output(spin)
+
+    def Sync_Set_Unit(self, widget):
+        '''deg / rev radios on an A/B/C row (<letter>_Sync_Unit_Deg/_Rev).'''
+        if not widget.get_active():
+            return      # the radio being switched off - its partner does the work
+        axis = Gtk.Buildable.get_name(widget)[0]
+        unit = "rev" if Gtk.Buildable.get_name(widget).endswith("_Rev") else "deg"
+        if self._sync_unit.get(axis) != unit:
+            self._sync_apply_unit(axis, unit)
+
+    # -----------------------------------------------------------------
+    # External Pause button (13 November 2026)
+    # -----------------------------------------------------------------
+    @staticmethod
+    def _read_pause_jack():
+        '''
+        The limit jack set to "Pause button" in Rosetta Settings, or None.
+        Jacks 4-6 count only with the expansion box connected - the
+        same rule Rosetta_Generate_Local_Ini.py wires them by.
+        '''
+        settings = rosetta_settings_io.load_settings()
+        expansion = settings.get("expansion_box") is True
+        for jack, value in sorted(settings.get("limit_switches", {}).items()):
+            if value == PAUSE_JACK_VALUE and (expansion or jack not in ("4", "5", "6")):
+                return jack
+        return None
+
+    def _pause_button_pressed(self):
+        '''
+        True while the external Pause button reads pressed - which an NC
+        button also does when its wire is broken or unplugged, or a
+        button doesn't match Rosetta Settings' Limit Switch Type.
+        '''
+        if self._pause_jack is None:
+            return False
+        try:
+            return bool(hal.get_value(PAUSE_BUTTON_SIGNAL))
+        except Exception:
+            return False
+
+    def _refuse_if_pause_pressed(self, widget):
+        if not self._pause_button_pressed():
+            return False
+        _show_settings_error(widget, "The Pause button is pressed or disconnected.  Release it, "
+                             "or check its plug and wiring, then try again.")
+        return True
+
+    def _poll_pause_button(self):
+        '''
+        Watches the external Pause button. Pressing it pauses a Sync
+        Move or a G-code program (AXIS's Resume, or the panel's
+        Continue, carries on); it never resumes anything - the jacks
+        have no debounce filter (num_inms=0), so a bounce mustn't undo
+        the pause, and continuing should be done at the screen. Cut
+        Thread and indexing aren't paused (Rich, 13 November 2026).
+        '''
+        pressed = self._pause_button_pressed()
+        if pressed and not self._pause_button_was_pressed:
+            s.poll()
+            if self._sync_poll_id is not None and self._sync_kind is not None:
+                if s.interp_state != linuxcnc.INTERP_PAUSED:
+                    print("External Pause button: pausing the Sync Move")
+                    self._sync_pause()
+            elif s.task_mode == linuxcnc.MODE_AUTO and s.interp_state in (
+                    linuxcnc.INTERP_READING, linuxcnc.INTERP_WAITING):
+                print("External Pause button: pausing the program")
+                c.auto(linuxcnc.AUTO_PAUSE)
+        self._pause_button_was_pressed = pressed
+        return True
+
+    # -----------------------------------------------------------------
+    # Pause / Continue (13 November 2026)
+    #
+    # One button (Sync_Pause) between Sync Move and Return to Start:
+    #   - while a Sync Move or Return to Start runs: "Pause" - a feed
+    #     hold, so the axes slow down and stop where they are;
+    #   - while paused: "Continue" - resumes the move; Return to Start
+    #     works too (it ends the paused move, then goes back);
+    #   - after a Sync Move that was stopped part way (E-stop, machine
+    #     off, AXIS's Stop - e.g. to fix a broken belt): "Continue" -
+    #     sends the rest of the move from where the axes are, at the
+    #     same speed, along the same line (asking first if an axis was
+    #     moved off that line meanwhile).
+    # Silent, and doesn't touch the spindles (the cutter isn't
+    # Rosetta-controlled). Cut Thread can't be paused from here.
+    # -----------------------------------------------------------------
+    def _sync_update_pause_button(self):
+        button = self.builder.get_object("Sync_Pause")
+        if button is None:
+            return
+        busy = self._sync_poll_id is not None
+        ours = busy and self._sync_kind is not None
+        paused = ours and s.interp_state == linuxcnc.INTERP_PAUSED
+        if paused or (not busy and self._sync_resume is not None):
+            label, sensitive = "Continue", True
+        else:
+            label, sensitive = "Pause", ours
+        if button.get_label() != label:
+            button.set_label(label)
+        if button.get_sensitive() != sensitive:
+            button.set_sensitive(sensitive)
+        # Return to Start is one of MOTION_BUTTONS (off while anything
+        # moves) but works while a Sync Move is paused.
+        if busy:
+            ret = self.builder.get_object("Sync_Return")
+            if ret.get_sensitive() != paused:
+                ret.set_sensitive(paused)
+
+    def Sync_Pause(self, widget):
+        print("=================================================")
+        print("FUNCTION Sync_Pause (" + widget.get_label() + ")")
+        s.poll()
+        if self._sync_poll_id is not None:
+            if self._sync_kind is None:
+                return
+            if s.interp_state == linuxcnc.INTERP_PAUSED:
+                if self._refuse_if_pause_pressed(widget):
+                    return
+                c.auto(linuxcnc.AUTO_RESUME)
+            else:
+                self._sync_pause()
+        elif self._sync_resume is not None:
+            self._sync_continue(widget)
+        self._sync_update_pause_button()
+
+    def _sync_pause(self):
+        c.auto(linuxcnc.AUTO_PAUSE)
+        GLib.timeout_add(SYNC_PAUSE_CHECK_MS, self._sync_check_paused)
+
+    def _sync_check_paused(self):
+        '''
+        If LinuxCNC didn't pause the move (still moving, not paused),
+        stops it instead - it slows to a stop the same way - and
+        Continue then sends the rest as a new move.
+        '''
+        s.poll()
+        if self._sync_poll_id is not None and self._sync_kind is not None \
+                and s.interp_state not in (linuxcnc.INTERP_PAUSED, linuxcnc.INTERP_IDLE):
+            print("Sync Move didn't pause - stopping it instead")
+            c.abort()
+        return False
+
+    def _sync_line_problem(self, resume):
+        '''
+        For Continue: (fraction of the move done, axes no longer on the
+        move's straight line). The fraction comes from the axis with the
+        longest move (the most exact); any other axis further than
+        SYNC_LINE_TOLERANCE from where that fraction puts it - or the
+        lead axis being outside the move - was moved while stopped.
+        '''
+        start, target = resume["start"], resume["target"]
+        total = {axis: end - start[STAT_POSITION_INDEX[axis]] for axis, end in target.items()}
+        lead = max(total, key=lambda axis: abs(total[axis]))
+        done = (s.position[STAT_POSITION_INDEX[lead]] - start[STAT_POSITION_INDEX[lead]]) / total[lead]
+        moved = []
+        for axis, length in total.items():
+            i = STAT_POSITION_INDEX[axis]
+            if abs(start[i] + done * length - s.position[i]) > SYNC_LINE_TOLERANCE:
+                moved.append(axis)
+        if (done < -1e-9 or done > 1 + 1e-9) and lead not in moved:
+            moved.append(lead)
+        return max(0.0, min(done, 1.0)), moved
+
+    def _sync_continue(self, widget):
+        '''
+        Finishes a Sync Move that was stopped part way: one move from
+        where the axes are now to the original end point, at the same
+        feed rates - so, from a point on the original line, the same
+        path at the same speed.
+        '''
+        resume = self._sync_resume
+        if not self._sync_ready_to_move(widget) or self._refuse_if_pause_pressed(widget):
+            return
+        deltas = {}
+        for axis, end in resume["target"].items():
+            delta = end - s.position[STAT_POSITION_INDEX[axis]]
+            if abs(delta) >= SYNC_POSITION_TOLERANCE:
+                deltas[axis] = delta
+        if not deltas:
+            self._sync_resume = None
+            _show_settings_error(widget, "Already at the Sync Move's end point.")
+            return
+        done, moved = self._sync_line_problem(resume)
+        if moved and not self._sync_confirm_off_line(widget, moved):
+            return
+        if not _confirm_roles_enabled(widget, list(deltas)):
+            return
+        total = {axis: end - resume["start"][STAT_POSITION_INDEX[axis]]
+                 for axis, end in resume["target"].items()}
+        length = _planner_length(total)
+        progress = self._mdi_progress_start("Sync Move", length=length)
+        if progress is not None and not moved:
+            # Count what was done before the stop, so the bar picks up
+            # where it left off.
+            progress["start"] -= done * length
+        self._sync_kind = "run"
+        self._sync_start_move(self.builder.get_object("Sync_Run"), deltas,
+                              resume["feeds"], self._sync_run_finished, progress)
+
+    @staticmethod
+    def _sync_confirm_off_line(widget, moved):
+        names = _names(moved)
+        one = len(moved) == 1
+        dialog = Gtk.MessageDialog(
+            transient_for=widget.get_toplevel(),
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.NONE,
+            text=names + (" was" if one else " were") + " moved while the Sync Move was stopped",
+        )
+        dialog.format_secondary_text(
+            "Continue Anyway goes straight from where the axes are now to the Sync Move's "
+            "end point - not the path it was on.  Return to Start goes back to where the "
+            "Sync Move started.  Cancel moves nothing.")
+        dialog.add_button("Continue Anyway", Gtk.ResponseType.ACCEPT)
+        dialog.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        dialog.set_default_response(Gtk.ResponseType.CANCEL)
+        answer = dialog.run()
+        dialog.destroy()
+        return answer == Gtk.ResponseType.ACCEPT
+
     def _sync_ready_to_move(self, widget):
         '''
         Common Run Operation/Return to Start precondition: machine on
@@ -2577,7 +2941,8 @@ class HandlerClass:
         # G8 too (08 November 2026, found with GitHub issue #24): a
         # program that leaves diameter mode (G7) on would otherwise halve
         # every X move, and Return's deltas come from radius positions.
-        gcode = ("G21" if self._sync_metric else "G20") + " G91 G93 G8 G1 " + words + " F%.8f" % (1.0 / minutes)
+        gcode = (("G21" if self._sync_metric else "G20") + " G91 G93 G8 G1 " + words
+                 + " F" + _gcode_number(1.0 / minutes))
         # Where each axis should end up - see _sync_run_finished.
         self._sync_target = {axis: s.position[STAT_POSITION_INDEX[axis]] + d
                              for axis, d in deltas.items()}
@@ -2619,6 +2984,7 @@ class HandlerClass:
         # own Stop/ESC) stays responsive for however long the move takes.
         self._sync_poll_id = GLib.timeout_add(
             100, self._sync_poll_move, widget, " ".join(restore), time.time(), on_done)
+        self._sync_update_pause_button()
 
     @staticmethod
     def _clear_splash():
@@ -2645,6 +3011,7 @@ class HandlerClass:
         # c.mdi() - don't mistake that for "already finished".
         if s.interp_state != linuxcnc.INTERP_IDLE or time.time() - started < 0.5:
             self._mdi_progress_update()
+            self._sync_update_pause_button()
             return True
         # Finished, or aborted from AXIS - either way, put the
         # operator's own modal state back.
@@ -2658,6 +3025,11 @@ class HandlerClass:
         self._sync_poll_id = None
         if on_done is not None:
             on_done()
+        self._sync_kind = None
+        self._sync_update_pause_button()
+        after, self._sync_after_stop = self._sync_after_stop, None
+        if after is not None:
+            GLib.idle_add(after)
         return False
 
     def Sync_Run(self, widget):
@@ -2670,13 +3042,11 @@ class HandlerClass:
                 continue
             if not self.builder.get_object(axis + "_Sync_Use").get_active():
                 continue
-            dist_spin = self.builder.get_object(axis + "_Sync_Dist")
             # The row's own (Indexing tab's) Feed Rate.
             feed_spin = self.builder.get_object(axis + "_Feed")
-            # Commit anything typed but not yet Enter'd/tabbed out of.
-            dist_spin.update()
+            # Commits anything typed but not yet Enter'd/tabbed out of.
+            distance = self._sync_read_spin(self.builder.get_object(axis + "_Sync_Dist"))
             feed_spin.update()
-            distance = dist_spin.get_value()
             feed = feed_spin.get_value()
             if self._sync_dir[axis] is None:
                 _show_settings_error(widget, "Select a direction for " + axis + ".")
@@ -2687,27 +3057,36 @@ class HandlerClass:
             if feed <= 0:
                 _show_settings_error(widget, "Enter a feed rate for " + axis + ".")
                 return
+            if axis in self._sync_unit:
+                # rev -> degrees.
+                distance *= SYNC_ANGULAR_UNITS[self._sync_unit[axis]][3]
             deltas[axis] = -distance if SYNC_DIR_SIGN[self._sync_dir[axis]] == "-" else distance
             feeds[axis] = feed
 
         if not deltas:
             _show_settings_error(widget, "Check \"Use\" for at least one axis.")
             return
-        if not self._sync_ready_to_move(widget):
+        if not self._sync_ready_to_move(widget) or self._refuse_if_pause_pressed(widget):
             return
         if not _confirm_roles_enabled(widget, list(deltas)):
             return
 
         self._sync_start = tuple(s.position)
         self._sync_feeds = feeds
+        self._sync_kind = "run"
         self._sync_start_move(widget, deltas, feeds, self._sync_run_finished,
                               self._mdi_progress_start("Sync Move", length=_planner_length(deltas)))
+        # Continue's record of this move (its end points were just
+        # worked out by _sync_start_move).
+        self._sync_resume = {"start": self._sync_start, "target": dict(self._sync_target),
+                             "feeds": dict(feeds)}
+        self._sync_update_pause_button()
 
     def _sync_run_finished(self):
         '''
-        Run Operation's move is over. Beeps only if every axis actually
-        got where it was going - a move stopped from AXIS part way
-        (or by E-stop) stays silent.
+        A Sync Move's move (or Continue's) is over. Beeps only if every
+        axis actually got where it was going - a move stopped from AXIS
+        part way (or by E-stop) stays silent and can be continued.
         '''
         s.poll()
         finished = (s.task_state == linuxcnc.STATE_ON
@@ -2715,6 +3094,7 @@ class HandlerClass:
                             for axis, end in self._sync_target.items()))
         self._mdi_progress_end(finished)
         if finished:
+            self._sync_resume = None
             self._play_sound(DONE_BEEPS)
 
     def Sync_Return(self, widget):
@@ -2722,14 +3102,25 @@ class HandlerClass:
         Moves every axis the last Run Operation used back to where it
         was when that Run Operation started, at the same feed rates -
         computed from where each axis actually is now, so this is still
-        correct after a Run Operation that was stopped part way.
+        correct after a Run Operation that was stopped part way. Pressed
+        while a Sync Move is paused, it first ends that move (AXIS's
+        Stop does the same), then returns once it has wound down.
         '''
         print("=================================================")
         print("FUNCTION Sync_Return")
         if self._sync_start is None:
             _show_settings_error(widget, "Nothing to return from - use Sync Move first.")
             return
-        if not self._sync_ready_to_move(widget):
+        s.poll()
+        if self._sync_poll_id is not None and self._sync_kind is not None \
+                and s.interp_state == linuxcnc.INTERP_PAUSED:
+            if self._refuse_if_pause_pressed(widget):
+                return
+            print("Return to Start while paused: stopping the paused move first")
+            self._sync_after_stop = lambda: self.Sync_Return(widget) and False
+            c.abort()
+            return
+        if not self._sync_ready_to_move(widget) or self._refuse_if_pause_pressed(widget):
             return
 
         deltas = {}
@@ -2739,11 +3130,16 @@ class HandlerClass:
             if abs(delta) >= SYNC_POSITION_TOLERANCE:
                 deltas[axis] = delta
         if not deltas:
+            self._sync_resume = None
+            self._sync_update_pause_button()
             _show_settings_error(widget, "Already at the starting point.")
             return
         if not _confirm_roles_enabled(widget, list(deltas)):
             return
 
+        # Going back abandons the stopped Sync Move - nothing to continue.
+        self._sync_resume = None
+        self._sync_kind = "return"
         self._sync_start_move(widget, deltas, self._sync_feeds)
 
 
@@ -2813,7 +3209,7 @@ class HandlerClass:
         Snapshot of the main panel's operator-entered values - Indexing
         (Feed Rate, Index Distance, Deg/Div per axis; spindle speed, Sp1 %,
         Sp0/Sp1 index checkboxes), Sync Move (selected, distance,
-        direction per axis) and Threading (every field) - saved to
+        direction per axis, and deg / rev for A/B/C) and Threading (every field) - saved to
         RosettaSet_v1.ini's "panel_state" and put back at the next start
         (_restore_panel_state). ENA states are deliberately not saved:
         every axis starts disabled.
@@ -2829,6 +3225,9 @@ class HandlerClass:
                 "sync_dist": b(axis + "_Sync_Dist").get_value(),
                 "sync_dir": self._sync_dir.get(axis),
             }
+            if axis in self._sync_unit:
+                # deg / rev (13 November 2026).
+                state["axes"][axis]["sync_unit"] = self._sync_unit[axis]
         state["Sp0"] = {"feed": b("Sp0_Set_Feed").get_value(),
                         "idx_dist": b("Sp0_Idx_Dist").get_value(),
                         "idx_degdiv": self.Sp0_Idx_DegDiv,
@@ -2861,6 +3260,10 @@ class HandlerClass:
                 if axis not in AXIS_SELECTION_LETTERS:
                     continue
                 linear = _axis_type_for_letter(axis) == "LINEAR"
+                # deg / rev before the distance, so the box has the
+                # right decimals and largest value when it's set.
+                if row.get("sync_unit") in SYNC_ANGULAR_UNITS and axis in self._sync_unit:
+                    b(axis + ("_Sync_Unit_Rev" if row["sync_unit"] == "rev" else "_Sync_Unit_Deg")).set_active(True)
                 if same_units or not linear:
                     for wid, key in (("_Feed", "feed"), ("_Idx_Dist", "idx_dist"), ("_Sync_Dist", "sync_dist")):
                         if key in row:

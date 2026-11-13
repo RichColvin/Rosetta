@@ -43,6 +43,10 @@
 #   only a note in AXIS's notification area. An axis Rosetta Settings'
 #   override still blocks stays off, and the run is cancelled.
 #
+#   Pause button (13 November 2026): with a limit jack set to Pause
+#   button, Run is refused while it reads pressed - see "External
+#   Pause button" below.
+#
 #   Axis not available (11 November 2026): a program using an axis
 #   this session doesn't have at all (not assigned, or on an Expansion
 #   Box that isn't connected) gets Rosetta's explanation as it opens
@@ -76,6 +80,8 @@
 #         optional automatic enable
 #   1.2 - 11 November 2026 - programs using an axis this session
 #         doesn't have get an explanation and can't be run
+#   1.3 - 13 November 2026 - Run is refused while the external Pause
+#         button reads pressed
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -370,6 +376,24 @@ def rosetta_ask_enable(names, one):
     return answer["enable"]
 
 
+# ---------------------------------------------------------------------
+# External Pause button (13 November 2026)
+#
+# A limit jack set to "Pause button" in Rosetta Settings is wired to
+# the pause-button signal (Rosetta_Generate_Local_Ini.py), true while
+# the button reads pressed - which an NC button also does when it's
+# unplugged or its wire is broken. The panel uses it to pause a program
+# (Rosetta_main.py's _poll_pause_button); here, Run is refused while
+# it's true, since the program would otherwise start and pause at once,
+# which looks like a fault.
+# ---------------------------------------------------------------------
+def rosetta_pause_button_pressed():
+    try:
+        return bool(hal.get_value("pause-button"))
+    except Exception:
+        return False        # no Pause button wired this session
+
+
 _rosetta_axis_run_warn = run_warn
 
 
@@ -382,6 +406,12 @@ def run_warn():
     '''
     if rosetta_unavailable:
         rosetta_show_unavailable(rosetta_unavailable, True)
+        return 3
+    if rosetta_pause_button_pressed():
+        root_window.tk.call("nf_dialog", ".error", "Pause button pressed",
+                            "The Pause button is pressed or disconnected.  Release it, "
+                            "or check its plug and wiring, then click Run again.",
+                            "warning", 0, "OK")
         return 3
     result = _rosetta_axis_run_warn()
     if result in (1, 3):

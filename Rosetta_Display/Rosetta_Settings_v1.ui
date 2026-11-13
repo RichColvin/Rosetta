@@ -820,7 +820,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.6 - 11 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -2351,7 +2351,7 @@ Without the expansion box, its channels and limit switch jacks are greyed out an
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.6 - 11 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -3307,11 +3307,14 @@ Each choice is saved as soon as you make it, and takes effect the next time Linu
                                                 <property name="label" translatable="yes">Each limit jack takes one limit switch (or one at each end of an axis, wired in series). For each jack choose:
     * &lt;axis&gt; min - the switch at the negative end of travel, where the axis stops when moving in the minus (-) direction,
     * &lt;axis&gt; max - the switch at the positive end of travel, where the axis stops when moving in the plus (+) direction, or
-    * &lt;axis&gt; (both ends) - a switch at each end, wired in series into one jack.
+    * &lt;axis&gt; (both ends) - a switch at each end, wired in series into one jack, or
+    * Pause button - a push button instead of a limit switch (one jack only).
 
 Use a min jack and a max jack on the same axis (for example, one at each end of a curvilinear slide) so LinuxCNC knows which end was hit and you can jog back off it. With (both ends), check Override Limits in LinuxCNC to jog off a switch.
 
-Choose Not used for any jack with nothing plugged into it.</property>
+Choose Not used for any jack with nothing plugged into it.
+
+A Pause button pauses a Sync Move or a G-code program, the same as the panel's Pause button; carry on with Continue on the panel (or Resume in LinuxCNC for a program). It doesn't pause Cut Thread or indexing. It follows the Limit Switch Type below - with NC, use a normally closed push button. While it reads as pressed (pressed, the wrong type, or an NC button unplugged), Sync Move and Run won't start.</property>
                                                 <property name="wrap">True</property>
                                                 <property name="xalign">0</property>
                                                 <attributes>
@@ -3721,7 +3724,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.6 - 11 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -9712,7 +9715,7 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.6 - 11 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.7 - 13 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
