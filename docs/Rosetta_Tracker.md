@@ -606,6 +606,40 @@ Software work once the design is fixed (not started):
 6. The update step converting existing settings files' channel IDs.
 7. New firmware/pin files for both cards.
 
+### Pi temperature monitor (agreed with Rich 13 November 2026, not yet built)
+
+Rich's idea (Chuck had a Pi temperature script, not to hand - built
+fresh). A hot Pi throttles (Pi 5: about 85 C, unconfirmed), which upsets
+LinuxCNC's real-time timing and the Ethernet link to the 7i92s - a
+following error or "lost contact" E-stop mid-program. Rich's Pi read
+61.2 C with LinuxCNC running (fan about 2,500 RPM; its fan steps are at
+50/60/67.5/75 C; thermal trip 110 C).
+
+1. **Read** `/sys/class/thermal/thermal_zone0/temp` (no permissions
+   needed) every few seconds from the main panel; undervoltage from
+   `/sys/class/hwmon/<rpi_volt>/in0_lcrit_alarm` (find the hwmon by its
+   `name`). Not `vcgencmd` - the login can't open `/dev/vcio`.
+2. **Readout** `Pi 61 C` in the panel header, top right beside the Turk's
+   head (Rich asked about beside Axis Assignments; the header was chosen
+   since the expansion tiles fill the bottom). Orange at Warning, red at
+   Alarm, a lightning mark while undervoltage is reported.
+3. **Warning** (default 75 C): orange, one AXIS notification
+   (`c.error_msg`, like "lost contact") saying what to check - vents,
+   fan, room temperature.
+4. **Alarm** (default 82 C): red, a message box, and a **new alarm
+   sound on the speaker only** (distinct from the fault siren; not the
+   tower). **Warn only** - nothing pauses or stops (Rich). Sounds again
+   only after falling a few degrees below and rising back.
+5. **Undervoltage: notification only** (no sound, no box) - often brief.
+6. **Rosetta Settings** (Other page): Warning and Alarm temperatures,
+   and the alarm sound on/off; new RosettaSet_v1.ini keys go into the
+   seed in the same commit.
+7. **Version report**: highest temperature and any undervoltage since
+   the last update (the panel keeps a small record; the report sends it
+   and starts afresh). `reb_report_view.php` needs a column - it lives
+   only on the server: Rich to send the current file so an updated
+   draft can be made.
+
 ## Done
 
 Most recent first.
