@@ -2771,7 +2771,10 @@ class HandlerClass:
     #     off, AXIS's Stop - e.g. to fix a broken belt): "Continue" -
     #     sends the rest of the move from where the axes are, at the
     #     same speed, along the same line (asking first if an axis was
-    #     moved off that line meanwhile).
+    #     moved off that line meanwhile);
+    #   - while a G-code program is paused (AXIS's Pause, M0/M1, the
+    #     external Pause button): "Continue" - resumes it, like AXIS's
+    #     Resume (Rich, 13 November 2026).
     # Silent, and doesn't touch the spindles (the cutter isn't
     # Rosetta-controlled). Cut Thread can't be paused from here.
     # -----------------------------------------------------------------
@@ -2782,7 +2785,7 @@ class HandlerClass:
         busy = self._sync_poll_id is not None
         ours = busy and self._sync_kind is not None
         paused = ours and s.interp_state == linuxcnc.INTERP_PAUSED
-        if paused or (not busy and self._sync_resume is not None):
+        if paused or self._program_paused() or (not busy and self._sync_resume is not None):
             label, sensitive = "Continue", True
         else:
             label, sensitive = "Pause", ours
@@ -2797,10 +2800,26 @@ class HandlerClass:
             if ret.get_sensitive() != paused:
                 ret.set_sensitive(paused)
 
+    def _program_paused(self):
+        '''
+        A G-code program (AXIS's Run) is paused - by AXIS's Pause, an M0/M1,
+        or the external Pause button. Continue resumes it too (Rich, 13
+        November 2026), the same as AXIS's Resume. Kept up to date by
+        _poll_program.
+        '''
+        return (self._sync_poll_id is None and s.task_mode == linuxcnc.MODE_AUTO
+                and s.interp_state == linuxcnc.INTERP_PAUSED)
+
     def Sync_Pause(self, widget):
         print("=================================================")
         print("FUNCTION Sync_Pause (" + widget.get_label() + ")")
         s.poll()
+        if self._program_paused():
+            if not self._refuse_if_pause_pressed(widget):
+                print("Continue: resuming the paused program")
+                c.auto(linuxcnc.AUTO_RESUME)
+            self._sync_update_pause_button()
+            return
         if self._sync_poll_id is not None:
             if self._sync_kind is None:
                 return
@@ -3785,6 +3804,8 @@ class HandlerClass:
             self._progress_end(finished)
 
         self._progress_update(running, paused)
+        # Continue also resumes a paused program - see _program_paused.
+        self._sync_update_pause_button()
         self._program_was_running = running
         self._program_was_paused = paused
         return True
