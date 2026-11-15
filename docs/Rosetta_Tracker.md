@@ -171,6 +171,14 @@ Bill.
   (D turned over) so it can be found by its Holtzapffel letter. Check
   each letter for being another one turned over before writing a new
   shape.
+  **Bill Ooms' program** (Rich, 15 November 2026 - the PDF's p15 says
+  its simulations came from it; it's on his GitHub) may define the
+  Holtzapffel profiles exactly. Rich is asking Bill whether he has any
+  issues. Until he answers, don't look at it. His COrnLathe code is
+  GPL-3 and Rosetta is MIT, and rosetta_rosettes.py's header says none
+  of it is used: reading it to understand a profile is fine once Bill
+  agrees, but copying code needs his permission to use it under
+  Rosetta's MIT licence - ask that specifically.
   **From p20-21, for stage 3/4** (Rich: de la Condamine's approach is
   still used today): the instrument works backwards - the pattern
   wanted at a small radius is traced, with a rubber on one side of a
