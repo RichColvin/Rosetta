@@ -23,7 +23,7 @@ Built and committed, but not yet seen working on real hardware.
 
 | Item | Since | What to check |
 |---|---|---|
-| Rosette Designer, stage 1 | 15 November 2026 | On branch `rosette-designer` (not on `dev-rich`/`main`). Checked off the machine: the shapes' maths (range, each turn closing, phase in both units, straight polygon sides at any phase, chord tolerance incl. sharp points); all 64 sample programs (4 shapes x rocking/pumping x face/side x passes/turns x inch/mm) run through the standalone `rs274` interpreter to the end, every move matching the maths; the window rendered off-screen for each kind of drawing; save/reopen round trip; reserved names refused; the menu step in a scratch home. Check on the machine: (1) **Tudor** - is it the shape Rich expects (each lobe two small petals, inner point 0.35 of the amplitude)? (2) Applications > Rosetta > Rosette Designer appears (after an Update, or run `Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh`). (3) Save a Sine 12, rocking, face; open it in Rosetta - AXIS's preview shows the pattern. (4) Air-cut it (cutter clear of the work), passes = 3: plunge, three turns, back out, C reading +1080, X/Z back where they started; one turn takes about the time the designer said. (5) Pumping on the face and on the side, and a lotus (sharp points - C should slow only slightly there). (6) With Rosetta running, Save offers to open it in Rosetta. User Manual drafts in `~/Downloads/Rosetta_UserManual_RosetteDesigner_2026-11-15` on Rich's Pi (new page Rosette Designer, home page link) - publish once on `main`. |
+| Rosette Designer, stage 1 | 15 November 2026 | On branch `rosette-designer` (not on `dev-rich`/`main`). Checked off the machine: the shapes' maths (range, each turn closing, phase in both units, straight polygon sides at any phase, chord tolerance incl. sharp points); all 64 sample programs (4 shapes x rocking/pumping x face/side x passes/turns x inch/mm) run through the standalone `rs274` interpreter to the end, every move matching the maths; the window rendered off-screen for each kind of drawing; save/reopen round trip; reserved names refused; the menu step in a scratch home. Check on the machine: (1) **Tudor** - is it the shape Rich expects (each lobe two small petals, inner point 0.35 of the amplitude)? (2) Applications > Rosetta > Rosette Designer appears (after an Update, or run `Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh`). (3) Save a Sine 12, rocking, face; open it in Rosetta - AXIS's preview shows the pattern. (4) Air-cut it (cutter clear of the work), passes = 3: plunge, three turns, back out, C reading +1080, X/Z back where they started; one turn takes about the time the designer said. (5) Pumping on the face and on the side, and a lotus (sharp points - C should slow only slightly there). (5a) **Motion: Both** (added the same day at Rich's request - a rocking rosette for X and a pumping one for Z, side by side in the window; c8372ba): e.g. Lotus 8 rocking + Sine 24 pumping on the face - X and Z both move during each turn, plunges still on Z. (6) With Rosetta running, Save offers to open it in Rosetta. User Manual drafts in `~/Downloads/Rosetta_UserManual_RosetteDesigner_2026-11-15` on Rich's Pi (new page Rosette Designer, home page link) - publish once on `main`. |
 | Script fixes from the Support Manual write-up | 18 October 2026 | On `dev-rich` (made 18 October 2026, lost in a merge on the Mac, re-applied 24 October 2026): `REB_Update.sh` and `REB_Install_Debian_13_Trixie.sh` are now marked runnable; the installer's first line is `#!/bin/bash` (was `#! /home/reuben/Downloads`), a failed step now exits with code 1 (`exit $?` after an `echo` always gave 0), it copies `REB_Update.sh` and `REBset_v1.ini` without `sudo`, so reuben owns them, and its Step 1 message no longer says "connectin"; `REB_Update.sh`'s "local changes" warning names the Support Manual page "Updating Rose Engine Butler" (it said "Updates and Branches", which doesn't exist); `REB_Settings.sh`/`REB_Launch.sh` header comments updated. Check: after an update the icon still runs `REB_Update.sh` and its warning text fits the box; on the next fresh install `ls -l ~/Documents/REBset_v1.ini ~/REB_Update.sh` shows reuben as owner. |
 | Bench checkout (`REB_Checkout.sh`) | 18 October 2026 | Written on the `two-box` branch 18 October 2026 but left out of its merge; on `dev-rich` since 24 October 2026. First run on S/N REB003 with a labelled test motor on each channel: `./REB_Checkout.sh` in a terminal; check each channel's motor turns channel+1 times each way in both passes, the spindles index in quarter turns (`M19 R.. $n`), the all-together move finishes together, the program's `M0` pauses and `(MSG,...)` lines show in AXIS, and `~/Documents/REBset_v1.ini` is identical to the backup in `~/Documents/Checkout/<run>/` afterwards (also after a Ctrl+C part way). Assumes 6400 steps per turn (`--steps-per-rev` otherwise). |
 | C top speed 30°/s | 07 October 2026 | A 360° G0 rewind of C takes about 12 s (was 36 s). Then time a full run of Roy's Pumping5Sides program - estimated about 46 minutes (was about 4 hours). |
@@ -116,6 +116,24 @@ Bill.
   (rock and pump together, or two combined), saved designs.
 - Stage 3: round rubber (radius r, needs the rosette's physical
   diameter - rounds points, can't reach narrow valleys), flat rubber.
+  **Why a "sine" isn't simple** (Rich, 15 November 2026, from Jon
+  Magill's 2018 OTI Symposium talk on designing rosettes,
+  https://www.youtube.com/watch?v=TsBm2KsV0aI, and talking with him -
+  details to get from Rich): stage 1 makes the cutter's motion an
+  exact sine of the spindle angle (a point rubber following an ideal
+  rosette). A physical rosette doesn't give that: the machine follows
+  the rubber's centre, an offset of the rosette's edge, so a sine-edged
+  rosette with a round rubber gives a non-sine motion (troughs
+  narrowed, a rubber larger than a trough's curvature bridges it) - to
+  get a true sine motion the rosette must be cut to the rubber's
+  inverse offset (Lindow Rose Engine News: a true sine needs "the
+  proper rubber"; a guilloche source: a touch half the lobe's radius
+  gives a sine). Also: the rosette's own radius vs the cut's (the
+  lever ratio, and the same angular wave looks different at another
+  radius), and rocking moves in an arc about the pivot, not a straight
+  line in X. Stage 3 should let the operator choose between "the
+  motion I want" (today) and "what this physical rosette + rubber would
+  do", and stage 4's rosette export needs the reverse.
 - Stage 4, making a physical rosette: export the rosette's outline
   (SVG/DXF) at a chosen diameter, with the rubber compensated in
   reverse; and for comparing with a bought rosette, a machine ratio
