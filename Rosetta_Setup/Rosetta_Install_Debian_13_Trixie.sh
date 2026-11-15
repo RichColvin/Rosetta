@@ -51,6 +51,8 @@
 #   2.0 - 02 November 2026 - Renamed from
 #         REB_Install_Debian_13_Trixie.sh (Rosetta); uses $HOME, not
 #         a fixed /home/reuben, so it suits any login (rosetta).
+#   2.1 - 15 November 2026 - Step 12: adds the Rosette Designer to the
+#         Applications menu (Rosetta_Add_Rosette_Designer.sh).
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -325,6 +327,13 @@ echo -e "${TITLE}                                                               
 # a label for talking to support. Machines installed before this step
 # get asked on their next update instead.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Set_Serial_Number.sh
+
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Step 12 - Add the Rosette Designer to the Applications menu            ${NOCOLOR}"
+echo -e "${TITLE}                                                                       ${NOCOLOR}"
+# Machines installed before this step get it from
+# Rosetta_Update_Settings.py on their next update.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh
 
 # ********************************************************************
 # Success

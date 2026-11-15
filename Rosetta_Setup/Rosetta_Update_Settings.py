@@ -61,6 +61,8 @@
 #         (I 1, D 1.2) get I 0 and D 0                                #
 #   1.7 - 09 November 2026 - removes old keys nothing reads           #
 #         (channel_types, signal_tower_active_low, spindles' pid_vel) #
+#   1.8 - 15 November 2026 - runs the Rosette Designer menu entry     #
+#         one-time step                                               #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -87,6 +89,7 @@ SEED_PATH = os.path.join(REPO_DIR, "Rosetta_Setup", "RosettaSet_v1.ini")
 ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shortcuts.sh"),       # 20 October 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Set_Serial_Number.sh"),   # 23 October 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Rosette_Designer.sh"),  # 15 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 
