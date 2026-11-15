@@ -139,7 +139,7 @@ Bill.
   engine's rubber gives), and show Rich a side-by-side comparison.
   **Source for the series A to Z** (Rich, 15 November 2026): he will
   scan the Holtzapffel & Co. guide *Patterns of Rosettes for the
-  Holtzapffel rose cutting frame* (late 1800s - out of copyright, so
+  Holtzapffel rosette cutting frame* (late 1800s - out of copyright, so
   free to work from, and its pictures could go in the User Manual
   beside each shape). It shows the patterns each rosette cuts - what
   the shapes are matched against - and may list the series better
