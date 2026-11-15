@@ -85,7 +85,12 @@ Bill.
    add rubber shapes over time.
 5. Name: **Rosette Designer**.
 6. Phase entered **either way**: as a fraction of a lobe or in degrees
-   of spindle rotation (like Sync Move's deg / rev).
+   of spindle rotation (like Sync Move's deg / rev). **Changed 15
+   November 2026 (Rich):** no phase for a single rosette - the operator
+   phases the work by indexing on the Rosetta panel, as a physical
+   rosette's phasing holes would. Only the pumping rosette in Both keeps
+   a Phase, relative to the rocking rosette (indexing turns both
+   together, so can't set that).
 7. **Depth is the operator's choice per design:** (a) passes with
    incremental depths, like Threading - the cutter steps deeper between
    turns with C stopped at the start angle, and **backs out** to the
