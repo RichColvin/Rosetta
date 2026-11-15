@@ -78,6 +78,18 @@ Bill.
    lotus, Tudor**.
 4. **Simulate the rubber** - start with a point (the ideal shape) and
    add rubber shapes over time.
+5. Name: **Rosette Designer**.
+6. Phase entered **either way**: as a fraction of a lobe or in degrees
+   of spindle rotation (like Sync Move's deg / rev).
+7. **Depth is the operator's choice per design:** (a) passes with
+   incremental depths, like Threading - the cutter steps deeper between
+   turns with C stopped at the start angle, and **backs out** to the
+   starting depth at the end; or (b) **the same depth every turn** -
+   the rosette motion repeats for the chosen number of turns, and the
+   operator goes deeper between runs (traditional). The depth axis is
+   Z on the face, X on the side (rocking is always X, pumping always Z).
+8. **C is not unwound** at the end (it reads e.g. 1080 deg after 3
+   turns - same place); the program works from wherever C is.
 
 **Proposed (not yet agreed):**
 
@@ -86,13 +98,14 @@ Bill.
   in a module of its own so the window, the G-code writer and later
   exports share it.
 - Stage 1: one rosette - shape, lobes, amplitude (peak to peak, machine
-  units), phase, invert, rubber = point; rocking (X) or pumping (Z);
-  face or side (changes the preview only); C speed (rev/min) and
-  direction; number of passes and depth per pass. Live preview of the
+  units), phase (fraction of a lobe or degrees), invert, rubber =
+  point; rocking (X) or pumping (Z); face or side; C speed (rev/min)
+  and direction; depth option (a) passes + depth per pass or (b) number
+  of turns at one depth. Live preview of the
   cut. Saves `<name>.ngc` into gcode/ (never starting with "Rosetta" -
   reserved). The G-code: G93 timed segments so C turns at a steady
-  speed, sized by a chord tolerance, G64 P blending; returns to the
-  start offset; the design kept in a header comment so it can be
+  speed, sized by a chord tolerance, G64 P blending; backs out to the
+  starting depth; C not unwound; the design kept in a header comment so it can be
   reopened. Warns if C or the rocking/pumping axis isn't assigned.
 - Stage 2: Holtzapffel series, masks, symmetry, compound rosettes
   (rock and pump together, or two combined), saved designs.
@@ -104,6 +117,11 @@ Bill.
   (motion at the cut vs at the rosette).
 - Later: a main-panel tab that runs a saved rosette with phase/depth
   set on the panel, like Sync Move.
+- Later, for depth option (b): LinuxCNC's external offsets (`eoffset`,
+  `[AXIS_n]OFFSET_AV_RATIO`) let an axis be moved by hand (handwheel or
+  panel buttons) while a program runs - the rosette could turn
+  continuously while the operator feeds in, as on a physical rose
+  engine. Needs Rosetta.ini/HAL changes.
 
 ### Rebranding: Rose Engine Butler -> Rosetta (since 02 November 2026)
 
