@@ -18,8 +18,8 @@
 #
 # Purpose:
 #   The Rosette Designer (15 November 2026, Rich): a window in which
-#   the operator defines a software rosette - shape, lobes, amplitude,
-#   phase - sees the cut it would make, and saves it as a G-code
+#   the operator defines a software rosette - shape, lobes, amplitude -
+#   sees the cut it would make, and saves it as a G-code
 #   program in the gcode folder. Running the program turns C while X
 #   follows the rosette (rocking), Z does (pumping), or each follows
 #   a rosette of its own (both), starting from
@@ -56,6 +56,9 @@
 #   1.4 - 15 November 2026 - the notes column shares the spare width
 #         with the drawings (less white space beside the cut); a
 #         header like the main panel's (Rosetta, O/S version, logo)
+#   1.5 - 15 November 2026 - no Phase for the first rosette: the work
+#         is phased by indexing on the Rosetta panel (the pumping
+#         rosette keeps its Phase, relative to the rocking one, in Both)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -156,8 +159,11 @@ NOTES = (
      "Lobes is how many times the shape repeats in one turn of the work.\n\n"
      "Amplitude is how far the cutter moves, from the rosette's highest point to its lowest, measured "
      "at the object being cut.\n\n"
-     "Phase turns the pattern around the work: as a fraction of a lobe (0.5 is half a lobe) or in "
-     "degrees. Invert turns points into hollows.\n\n"
+     "There is no phase setting: put the pattern where you want it on the work by indexing on the "
+     "Rosetta panel before running the program. With Both, the pumping rosette's Phase "
+     "turns it relative to the rocking rosette: as a fraction of a lobe (0.5 is half a lobe) or in "
+     "degrees.\n\n"
+     "Invert turns points into hollows.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
      "straight at the Object Size radius.\n\n"
      "Rubber: only a point for now, which follows the shape exactly.",
@@ -208,10 +214,12 @@ def _linuxcnc_running():
 
 class RosetteControls:
     '''
-    One rosette's controls - shape, lobes, amplitude, phase, invert -
+    One rosette's controls - shape, lobes, amplitude, invert, and for
+    the pumping rosette in Both its phase relative to the rocking one -
     in one column of the form's grid. prefix is "" for the first rosette
-    (rocking, or pumping alone) and rr.SECOND for the pumping rosette
-    when both are used.
+    (rocking, or pumping alone; no phase - the work is phased by
+    indexing on the Rosetta panel) and rr.SECOND for the pumping
+    rosette when both are used.
     '''
 
     def __init__(self, window, grid, column, first_row, prefix):
@@ -252,18 +260,21 @@ class RosetteControls:
         self._place(grid, self.straight, column, row)
         row += 1
 
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
-        self.phase = window._spin(0.0, 1.0, 0.05, 3)
-        self.phase.set_width_chars(7)
-        self.phase_unit = Gtk.ComboBoxText()
-        self.phase_unit.append("lobe", "of a lobe")
-        self.phase_unit.append("deg", "degrees")
-        self.phase_unit.connect("changed", self._on_phase_unit)
-        box.pack_start(self.phase, True, True, 0)
-        box.pack_start(self.phase_unit, False, False, 0)
-        box.set_tooltip_text("Turns the rosette relative to the work: a fraction of one lobe "
-                             "(0.5 = half a lobe), or degrees of the spindle.")
-        self._place(grid, box, column, row)
+        self.has_phase = bool(prefix)
+        if self.has_phase:
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
+            self.phase = window._spin(0.0, 1.0, 0.05, 3)
+            self.phase.set_width_chars(7)
+            self.phase_unit = Gtk.ComboBoxText()
+            self.phase_unit.append("lobe", "of a lobe")
+            self.phase_unit.append("deg", "degrees")
+            self.phase_unit.connect("changed", self._on_phase_unit)
+            box.pack_start(self.phase, True, True, 0)
+            box.pack_start(self.phase_unit, False, False, 0)
+            box.set_tooltip_text("Turns the pumping rosette relative to the rocking rosette: a "
+                                 "fraction of one lobe (0.5 = half a lobe), or degrees of the "
+                                 "spindle.")
+            self._place(grid, box, column, row)
         row += 1
 
         self.invert = Gtk.CheckButton(label="Invert")
@@ -303,18 +314,21 @@ class RosetteControls:
         self.shape.set_active_id(ros["shape"])
         self.lobes.set_value(ros["lobes"])
         self.amplitude.set_value(ros["amplitude"])
-        self.phase_unit.set_active_id(ros["phase_unit"])
-        self._set_phase_range()
-        self.phase.set_value(ros["phase"] if ros["phase_unit"] == "lobe" else rr.phase_degrees(ros))
+        if self.has_phase:
+            self.phase_unit.set_active_id(ros["phase_unit"])
+            self._set_phase_range()
+            self.phase.set_value(ros["phase"] if ros["phase_unit"] == "lobe" else rr.phase_degrees(ros))
         self.invert.set_active(ros["invert"])
 
     def read(self):
         lobes = int(self.lobes.get_value())
-        unit = self.phase_unit.get_active_id() or "lobe"
-        phase = self.phase.get_value()
-        if unit == "deg":
-            phase = phase * lobes / 360.0
-            self._set_phase_range()     # the degrees range follows the lobes
+        unit, phase = "lobe", 0.0
+        if self.has_phase:
+            unit = self.phase_unit.get_active_id() or "lobe"
+            phase = self.phase.get_value()
+            if unit == "deg":
+                phase = phase * lobes / 360.0
+                self._set_phase_range()     # the degrees range follows the lobes
         return {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
                 self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
                 self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active()}
@@ -485,7 +499,10 @@ class DesignerWindow(Gtk.Window):
         # The rosettes: one column each, sharing the row labels.
         row = self._section(grid, row, "Rosette")
         for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "", "Phase", "")):
-            grid.attach(Gtk.Label(label=text, xalign=0), 0, row + i, 1, 1)
+            label = Gtk.Label(label=text, xalign=0)
+            grid.attach(label, 0, row + i, 1, 1)
+            if text == "Phase":
+                self.phase_label = label    # only the pumping rosette in Both has one
         self.rosette_controls = [RosetteControls(self, grid, 1, row, ""),
                                  RosetteControls(self, grid, 2, row, rr.SECOND)]
         row = self.rosette_controls[0].last_row + 1
@@ -688,6 +705,8 @@ class DesignerWindow(Gtk.Window):
         self.turns.set_sensitive(not passes)
         both = d["motion"] == "both"
         self.rosette_controls[1].set_shown(both)
+        self.phase_label.set_no_show_all(not both)
+        self.phase_label.set_visible(both)
         for column, controls in enumerate(self.rosette_controls):
             heading = ROSETTE_HEADINGS.get((d["motion"], column), "")
             controls.heading.set_markup("<i>%s</i>" % heading)

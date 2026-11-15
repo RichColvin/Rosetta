@@ -52,6 +52,8 @@
 #         "both": a rosette for X and one for Z)
 #   1.2 - 15 November 2026 - the drawing's radius is the outside or
 #         the inside of the cut (radius_at, start_radius)
+#   1.3 - 15 November 2026 - no phase for the first rosette (always 0):
+#         the operator phases the work by indexing on the Rosetta panel
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -159,6 +161,13 @@ SHAPE_SHORT = {"sine": "Sine", "polygon": "Polygon", "lotus": "Lotus", "tudor": 
 # engaged on a rose engine). The first rosette's settings are the plain
 # keys (shape, lobes, ...); the second's start "pump_" and are used only
 # when motion is "both".
+#
+# The first rosette has no phase (always 0 - Rich, 15 November 2026):
+# a physical rosette's phasing holes let it turn relative to the work,
+# but with Rosetta the operator phases the work by indexing on the
+# Rosetta panel before running the program. The pumping rosette's phase,
+# used with "both", is how far it's turned relative to the rocking
+# rosette - something indexing can't do, since it turns both together.
 ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert")
 SECOND = "pump_"
 
@@ -166,7 +175,7 @@ DEFAULT_DESIGN = {
     "shape": "sine",
     "lobes": 12,
     "amplitude": 0.05,          # peak to peak, machine units
-    "phase": 0.0,               # fraction of a lobe, 0..1
+    "phase": 0.0,               # fraction of a lobe - always 0 (see above)
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
     "pump_shape": "sine",       # the pumping rosette, when motion is "both"
@@ -223,6 +232,7 @@ def clean_design(design):
         d[prefix + "phase"] = d[prefix + "phase"] % 1.0
         if d[prefix + "phase_unit"] not in ("lobe", "deg"):
             d[prefix + "phase_unit"] = "lobe"
+    d["phase"] = 0.0      # no phase for the first rosette (see ROSETTE_KEYS)
     for key, choices in (("motion", ("rock", "pump", "both")),
                          ("surface", ("face", "side")), ("rubber", ("point",)),
                          ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm")),
@@ -587,7 +597,7 @@ def write_samples(folder):
                             "amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
                             "plunge_feed": 1.0 * scale, "preview_radius": 1.0 * scale,
                             "motion": motion, "surface": surface, "depth_mode": mode,
-                            "turns": 2, "units": units, "phase": 0.25,
+                            "turns": 2, "units": units,
                             "pump_shape": "lotus" if shape == "sine" else "sine",
                             "pump_lobes": 5, "pump_amplitude": 0.02 * scale, "pump_phase": 0.1,
                         })
