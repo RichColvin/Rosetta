@@ -3039,7 +3039,7 @@ Each choice is saved as soon as you make it, and takes effect the next time Linu
                                               <object class="GtkEntry" id="Phone_Alerts_Topic">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">True</property>
-                                                <property name="tooltip-text" translatable="yes">The topic to subscribe to in the ntfy app on your phone - type it there exactly. Anyone who knows it can read your alerts, so keep it private. Letters, numbers, - and _ only. Saved when you press Enter or leave the box.</property>
+                                                <property name="tooltip-text" translatable="yes">The topic to subscribe to in the ntfy app on your phone - type it there exactly. It starts as Rosetta- and this machine's S/N. Anyone who knows it can read your alerts. Letters, numbers, - and _ only. Saved when you press Enter or leave the box.</property>
                                                 <property name="width-chars">22</property>
                                                 <signal name="activate" handler="Phone_Alerts_Topic_Done" swapped="no"/>
                                                 <signal name="focus-out-event" handler="Phone_Alerts_Topic_Focus_Out" swapped="no"/>
@@ -3929,12 +3929,12 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                                 <property name="halign">start</property>
                                                 <property name="valign">start</property>
                                                 <property name="label" translatable="yes">Rosetta can send a message to your phone when something happens, so you can leave the machine while it works. It uses the free ntfy app (App Store or Google Play):
-                                            1. Check Send alerts to my phone - a private topic name is made for you.
-                                            2. In the ntfy app, tap + and type in the topic exactly.
-                                            3. Press Send Test Message and check it arrives.
-                                            4. Tick what you want to hear about under Send When.
+    1. Check Send alerts to my phone - the topic is filled in as Rosetta- and this machine's S/N, so you can tell your machines apart.
+    2. In the ntfy app, tap + and type in the topic exactly (capitals matter).
+    3. Press Send Test Message and check it arrives.
+    4. Tick what you want to hear about under Send When.
 
-                                        Anyone who knows the topic can read your alerts, so keep it to yourself. The Pi needs the internet; if it can't reach ntfy, the message is lost. &lt;b&gt;Note:&lt;/b&gt; phone alerts are a convenience, not a safety device - never leave a running machine where you couldn't get back to it.</property>
+Anyone who knows the topic can read your alerts. To keep them private, add a word of your own to the topic (e.g. Rosetta-RichDev-bluebird) and type the same in the app. The Pi needs the internet; if it can't reach ntfy, the message is lost. &lt;b&gt;Note:&lt;/b&gt; phone alerts are a convenience, not a safety device - never leave a running machine where you couldn't get back to it.</property>
                                                 <property name="use-markup">True</property>
                                                 <property name="wrap">True</property>
                                                 <property name="xalign">0</property>

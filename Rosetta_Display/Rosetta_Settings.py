@@ -1999,8 +1999,8 @@ class HandlerClass:
         entry = self.builder.get_object("Phone_Alerts_Topic")
         values = {"phone_alerts": on}
         if on and not entry.get_text().strip():
-            # A private topic of its own - see rosetta_phone_alerts.new_topic.
-            entry.set_text(rosetta_phone_alerts.new_topic())
+            # "Rosetta-" and the S/N - see rosetta_phone_alerts.default_topic.
+            entry.set_text(rosetta_phone_alerts.default_topic())
             values["phone_alerts_topic"] = entry.get_text()
         self._save_phone_alerts(**values)
         self._apply_phone_alerts_sensitivity()

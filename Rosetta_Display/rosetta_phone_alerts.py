@@ -24,7 +24,10 @@
 #   Alarm temperature, or a box loses contact with the Pi. The
 #   operator subscribes to a "topic" (a private name, like a
 #   password - anyone who knows it can read the alerts) in the app;
-#   the Pi posts each alert to that topic.
+#   the Pi posts each alert to that topic. The topic starts as
+#   "Rosetta-" and the machine's S/N (default_topic - Rich, 15 November
+#   2026: an owner with several machines can tell which one sent it),
+#   e.g. Rosetta-RichDev, Rosetta-Rosetta003.
 #
 #   Shared by Rosetta_main.py (sends the alerts), Rosetta_Settings.py
 #   (the settings and its Send Test Message button) and
@@ -115,16 +118,33 @@ PRIORITY_URGENT = 5
 
 # Topics ntfy accepts: letters, digits, _ and -, at most 64.
 TOPIC_PATTERN = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
-TOPIC_PREFIX = "rosetta-"
-TOPIC_RANDOM_CHARS = 12
-TOPIC_ALPHABET = "abcdefghijkmnpqrstuvwxyz23456789"   # no l/o/0/1 - easy to retype
+TOPIC_PREFIX = "Rosetta-"
+# Without a S/N, random letters instead (no l/o/0/1 - easy to retype).
+TOPIC_RANDOM_CHARS = 8
+TOPIC_ALPHABET = "abcdefghijkmnpqrstuvwxyz23456789"
 
 SERIAL_PATH = os.path.expanduser("~/.config/Rosetta/serial")
 
 
-def new_topic():
-    '''A new, hard-to-guess topic, e.g. "rosetta-k7m2q9xh4c3w".'''
-    return TOPIC_PREFIX + "".join(secrets.choice(TOPIC_ALPHABET) for _ in range(TOPIC_RANDOM_CHARS))
+def serial_number():
+    '''The S/N the owner set (Rosetta_Set_Serial_Number.sh), or "".'''
+    try:
+        with open(SERIAL_PATH) as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
+def default_topic():
+    '''
+    "Rosetta-" and the machine's S/N, with anything ntfy doesn't allow
+    in a topic made "-" (e.g. Rosetta-RichDev). Random letters in
+    place of the S/N if none is set.
+    '''
+    serial = re.sub(r"[^A-Za-z0-9_-]+", "-", serial_number()).strip("-")
+    if not serial:
+        serial = "".join(secrets.choice(TOPIC_ALPHABET) for _ in range(TOPIC_RANDOM_CHARS))
+    return (TOPIC_PREFIX + serial)[:64]
 
 
 def topic_ok(topic):
@@ -147,11 +167,7 @@ def settings_from(settings):
 
 def title():
     '''"Rosetta", plus ", S/N n" once the owner has set a serial number.'''
-    try:
-        with open(SERIAL_PATH) as f:
-            serial = f.read().strip()
-    except OSError:
-        serial = ""
+    serial = serial_number()
     return "Rosetta, S/N " + serial if serial else "Rosetta"
 
 
