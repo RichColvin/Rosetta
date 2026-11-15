@@ -33,7 +33,8 @@
 #   open the program in Rosetta (axis-remote). Reads RosettaSet_v1.ini
 #   for the measurement system, which axes are assigned and their
 #   speed limits (warnings only). The last design is remembered in
-#   ~/.config/Rosetta/rosette_designer.json.
+#   ~/.config/Rosetta/rosette_designer.json. Only one copy runs at a
+#   time (LOCK_PATH): starting another brings the open one forward.
 #
 # End User Customisation:
 #   THE END USER OF THE ROSETTA SYSTEM SHOULD NOT MODIFY
@@ -46,6 +47,8 @@
 #   1.0 - 15 November 2026
 #   1.1 - 15 November 2026 - rocking and pumping together (Motion:
 #         Both - a rosette for X and one for Z, side by side)
+#   1.2 - 15 November 2026 - Radius is the outside or the inside of
+#         the cut, with where to start the cutter; only one copy runs
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -80,15 +83,18 @@
 # authorization from COPYRIGHT HOLDERS.
 #######################################################################
 
+import fcntl
 import json
 import math
 import os
+import signal
 import subprocess
 import sys
 
 import gi
+gi.require_version("Gdk", "3.0")
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GLib
+from gi.repository import Gdk, Gtk, GLib
 
 import numpy
 
@@ -99,6 +105,9 @@ import rosetta_settings_io
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GCODE_DIR = os.path.join(REPO_DIR, "gcode")       # Rosetta.ini's [DISPLAY]PROGRAM_PREFIX
 LAST_DESIGN_PATH = os.path.expanduser("~/.config/Rosetta/rosette_designer.json")
+# Held (flock) by the copy that's open, with its process id - see
+# _take_single_instance_lock.
+LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
 
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
@@ -173,7 +182,7 @@ class RosetteControls:
 
         self.straight = Gtk.Button(label="Straight sides")
         self.straight.set_tooltip_text("Sets the amplitude that makes a plain polygon's sides "
-                                       "straight at the drawing's radius (rocking on the face).")
+                                       "straight at the Radius under Drawing (rocking on the face).")
         self.straight.connect("clicked", self._on_straight_sides)
         self._place(grid, self.straight, column, row)
         row += 1
@@ -259,7 +268,7 @@ class RosetteControls:
     def _on_straight_sides(self, widget):
         d = self.window.design
         self.amplitude.set_value(rr.straight_sides_amplitude(rr.rosette(d, self.prefix),
-                                                             d["preview_radius"]))
+                                                             d["preview_radius"], d["radius_at"]))
 
     def update_sensitivity(self, axis, design):
         ros = rr.rosette(design, self.prefix)
@@ -452,8 +461,13 @@ class DesignerWindow(Gtk.Window):
         row = self._section(grid, row, "Drawing")
         self.preview_radius = self._spin(*ranges["preview_radius"])
         row = self._row(grid, row, "Radius (%s)" % unit, self.preview_radius,
-                        "The radius where you'll cut - for the drawing only. The program cuts wherever "
-                        "the cutter is.")
+                        "The radius where you'll cut - for the drawing and Straight sides only. The "
+                        "program cuts wherever the cutter is.")
+        radius_box, self.radius_at = self._radios((("outside", "Outside (largest)"),
+                                                   ("inside", "Inside (smallest)")))
+        row = self._row(grid, row, "Radius is the", radius_box,
+                        "Whether Radius is where the cut comes furthest out or closest in. The note "
+                        "under the drawings says where to start the cutter for it.")
 
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -499,6 +513,7 @@ class DesignerWindow(Gtk.Window):
         self.turns.set_value(d["turns"])
         self.deeper_plus.set_active(d["deeper_plus"])
         self.preview_radius.set_value(d["preview_radius"])
+        self.radius_at[d["radius_at"]].set_active(True)
         self.loading = False
 
     @staticmethod
@@ -519,6 +534,7 @@ class DesignerWindow(Gtk.Window):
             "turns": int(self.turns.get_value()),
             "deeper_plus": self.deeper_plus.get_active(),
             "preview_radius": self.preview_radius.get_value(),
+            "radius_at": self._chosen(self.radius_at),
             "units": self.units,
         }
         self.loading = True
@@ -576,6 +592,10 @@ class DesignerWindow(Gtk.Window):
                 % (len(angles) - 1, self._duration(seconds / 60.0), self._duration(count * seconds / 60.0)))
         if d["depth_mode"] == "passes":
             text += "  Final depth %s %s." % (self._number(d["passes"] * d["depth_per_pass"]), unit)
+        if d["surface"] == "face" and "X" in offsets:
+            text += ("\nFor the cut's %s to be at radius %s %s, start the cutter at radius %s %s."
+                     % (d["radius_at"], self._number(d["preview_radius"]), unit,
+                        self._number(rr.start_radius(d)), unit))
 
         warnings = []
         roles = self._assigned_roles()
@@ -727,9 +747,9 @@ class DesignerWindow(Gtk.Window):
             cr.stroke()
 
     def _draw_face(self, cr, width, height, theta, lateral, depth, d):
-        radius = d["preview_radius"]
+        radius = rr.start_radius(d)         # where the cutter starts
         spread = numpy.max(numpy.abs(lateral)) if lateral is not None else 0.0
-        outer = radius + spread * 1.1 + radius * 0.15
+        outer = max(radius, d["preview_radius"]) + spread * 1.1 + radius * 0.15
         scale = 0.46 * min(width, height) / outer
         cx, cy = width / 2.0, height / 2.0
         cr.set_source_rgb(*WOOD)
@@ -737,7 +757,7 @@ class DesignerWindow(Gtk.Window):
         cr.fill()
         cr.set_source_rgb(*GUIDE)
         cr.set_line_width(1)
-        cr.arc(cx, cy, radius * scale, 0, 2 * math.pi)
+        cr.arc(cx, cy, d["preview_radius"] * scale, 0, 2 * math.pi)     # the Radius
         cr.stroke()
         angles = numpy.radians(theta)
         r = numpy.clip(radius + (lateral if lateral is not None else 0.0), 0.0, None)
@@ -885,8 +905,81 @@ class DesignerWindow(Gtk.Window):
         return False
 
 
+#######################################################################
+# Only one copy at a time (15 November 2026, Rich): two copies would
+# each remember their own last design, the last one closed winning,
+# and a copy left behind Rosetta's full-screen window is easy to
+# forget - so starting it again brings that one forward instead. The
+# same scheme as Rosetta Settings: an exclusive lock on LOCK_PATH,
+# released by the kernel however the copy ends, holding its process
+# id for SIGUSR1.
+#######################################################################
+_single_instance_lock = None   # kept open (and so locked) until exit
+
+
+def _take_single_instance_lock():
+    '''
+    True if this is the only copy running (the lock is now held), False
+    if another copy holds it. If the lock file can't be made at all,
+    carries on (True) rather than refusing to run.
+    '''
+    global _single_instance_lock
+    try:
+        os.makedirs(os.path.dirname(LOCK_PATH), exist_ok=True)
+        lock = open(LOCK_PATH, "a")
+    except OSError as e:
+        print("Could not open " + LOCK_PATH + " (" + str(e) + ") - not checking for another copy")
+        return True
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        lock.close()
+        _raise_running_copy()
+        return False
+    try:
+        lock.truncate(0)
+        lock.write(str(os.getpid()))
+        lock.flush()
+    except OSError:
+        pass
+    _single_instance_lock = lock
+    # SIGUSR1 would end this copy while it's still loading - ignore it
+    # until _raise_on_signal takes it over.
+    signal.signal(signal.SIGUSR1, signal.SIG_IGN)
+    return True
+
+
+def _raise_running_copy():
+    '''Asks the copy holding the lock to bring its window to the front.'''
+    try:
+        with open(LOCK_PATH) as f:
+            pid = int(f.read().strip())
+        # Only if that process really is the Rosette Designer: the id
+        # could be stale, and SIGUSR1 ends a program that doesn't handle it.
+        with open("/proc/%d/cmdline" % pid, "rb") as f:
+            if b"Rosetta_Rosette_Designer.py" not in f.read():
+                return
+        os.kill(pid, signal.SIGUSR1)
+    except (OSError, ValueError):
+        pass
+
+
+def _raise_on_signal(window):
+    '''In the running copy: SIGUSR1 (from a second start) raises window.'''
+    def raise_window():
+        window.deiconify()
+        window.present_with_time(Gdk.CURRENT_TIME)
+        return True     # keep handling the signal
+    GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGUSR1, raise_window)
+
+
 def main():
+    if not _take_single_instance_lock():
+        # The open copy has been brought forward; nothing more to say.
+        print("The Rosette Designer is already open - brought it to the front.")
+        return
     window = DesignerWindow()
+    _raise_on_signal(window)
     window.show_all()       # the hidden rosette column stays hidden (set_no_show_all)
     Gtk.main()
 

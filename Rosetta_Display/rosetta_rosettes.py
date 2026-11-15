@@ -50,6 +50,8 @@
 #   1.0 - 15 November 2026
 #   1.1 - 15 November 2026 - rocking and pumping together (motion
 #         "both": a rosette for X and one for Z)
+#   1.2 - 15 November 2026 - the drawing's radius is the outside or
+#         the inside of the cut (radius_at, start_radius)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -184,7 +186,8 @@ DEFAULT_DESIGN = {
     "turns": 1,
     "deeper_plus": False,       # depth goes minus (into the work) unless True
     "plunge_feed": 1.0,         # machine units/min
-    "preview_radius": 1.0,      # machine units - the drawing only
+    "preview_radius": 1.0,      # machine units - the drawing and Straight sides only
+    "radius_at": "outside",     # preview_radius is the cut's "outside" (largest) or "inside"
     "units": "inch",            # "inch" or "mm"
 }
 
@@ -222,7 +225,8 @@ def clean_design(design):
             d[prefix + "phase_unit"] = "lobe"
     for key, choices in (("motion", ("rock", "pump", "both")),
                          ("surface", ("face", "side")), ("rubber", ("point",)),
-                         ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm"))):
+                         ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm")),
+                         ("radius_at", ("outside", "inside"))):
         if d[key] not in choices:
             d[key] = DEFAULT_DESIGN[key]
     d["c_direction"] = -1 if d["c_direction"] < 0 else 1
@@ -273,17 +277,37 @@ def phase_degrees(ros):
     return ros["phase"] * 360.0 / ros["lobes"]
 
 
-def straight_sides_amplitude(ros, radius):
+def straight_sides_amplitude(ros, radius, radius_at="outside"):
     '''
     The plain polygon amplitude whose sides come out straight when the
-    cut starts at this radius. The points are at radius + amplitude x
-    the deflection where the cut starts (0 if it starts on a point), and
-    a polygon's sides are straight when amplitude = points' radius x
-    (1 - cos(180/lobes)).
+    cut's outside (its points) or inside (the middle of its sides) is at
+    this radius: a polygon's sides are straight when amplitude = the
+    points' radius x (1 - cos(180/lobes)), and the inside is the points'
+    radius - amplitude.
     '''
     k = 1.0 - math.cos(math.pi / max(ros["lobes"], 3))
-    start = deflection(dict(ros, shape="polygon", invert=False), numpy.array([0.0]))[0]
-    return radius * k / (1.0 - k * start)
+    return radius * k if radius_at == "outside" else radius * k / (1.0 - k)
+
+
+def start_radius(design):
+    '''
+    The radius the cutter starts at, so that the cut's outside (largest
+    radius) or inside (smallest) is at preview_radius - X's offsets move
+    the cutter away from it as C turns. Without an X rosette the radius
+    never changes. For the drawing and the notes only: the program cuts
+    wherever the cutter is.
+    '''
+    radius = design["preview_radius"]
+    ros = rosettes(design).get("X")
+    if ros is None:
+        return radius
+    # Every shape's highest and lowest points are at a quarter, half or
+    # whole lobe - sampled exactly (a lotus's point is too sharp to find
+    # by even sampling alone).
+    lobes = ros["lobes"]
+    quarters = ((numpy.arange(4 * lobes) / 4.0 - ros["phase"]) % lobes) * 360.0 / lobes
+    y = offset(ros, numpy.concatenate((numpy.linspace(0.0, 360.0, 4000), quarters)))
+    return radius - (y.max() if design["radius_at"] == "outside" else y.min())
 
 
 #######################################################################
