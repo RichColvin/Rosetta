@@ -738,16 +738,16 @@
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">end</property>
+                <property name="halign">center</property>
                 <property name="valign">start</property>
                 <property name="margin-top">5</property>
                 <property name="vexpand">False</property>
                 <property name="pixbuf">Images/AxesSm.png</property>
               </object>
               <packing>
-                <property name="left-attach">12</property>
+                <property name="left-attach">11</property>
                 <property name="top-attach">22</property>
-                <property name="width">2</property>
+                <property name="width">3</property>
               </packing>
             </child>
             <child>
@@ -2629,7 +2629,7 @@ W is parallel to Z</property>
               <packing>
                 <property name="left-attach">4</property>
                 <property name="top-attach">22</property>
-                <property name="width">8</property>
+                <property name="width">7</property>
                 <property name="height">3</property>
               </packing>
             </child>
@@ -2675,17 +2675,16 @@ W is parallel to Z</property>
                 <property name="margin-left">2</property>
                 <property name="margin-start">2</property>
                 <property name="vexpand">True</property>
-                <property name="label" translatable="yes">The axis letter
-is on the Fwd /
-plus (+)
+                <property name="label" translatable="yes">The axis letter is on
+the Fwd / plus (+)
 direction</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0.5</property>
               </object>
               <packing>
-                <property name="left-attach">12</property>
+                <property name="left-attach">11</property>
                 <property name="top-attach">23</property>
-                <property name="width">2</property>
+                <property name="width">3</property>
                 <property name="height">2</property>
               </packing>
             </child>
