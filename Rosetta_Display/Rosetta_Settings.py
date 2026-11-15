@@ -41,6 +41,7 @@
 #         button
 #   1.4 - 13 November 2026 - Other page: Pi Temperature (warning,
 #         alarm, alarm sound)
+#   1.5 - 15 November 2026 - only one copy can run at a time
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -76,6 +77,8 @@
 #######################################################################
 
 import os
+import fcntl
+import signal
 import time
 import subprocess
 import shutil
@@ -3757,7 +3760,83 @@ for _widget_id, (_tag, _default) in VELOCITY_SETTINGS.items():
 del _widget_id, _tag, _default, _handler
 
 
+# Only one copy of Rosetta Settings at a time (15 November 2026, Rich):
+# two copies each save RosettaSet_v1.ini from what they read at startup,
+# so one silently undoes the other's changes. The running copy holds an
+# exclusive lock on this file; the kernel lets go of it when that
+# process ends, however it ends, so a crash can't leave it stuck. It
+# also holds that copy's process id: a second start sends it SIGUSR1,
+# which brings its window to the front (_raise_on_signal).
+SINGLE_INSTANCE_LOCK = os.path.expanduser("~/.config/Rosetta/Rosetta_Settings.lock")
+_single_instance_lock = None   # kept open (and so locked) until exit
+
+def _take_single_instance_lock():
+    '''
+    True if this is the only copy running (the lock is now held),
+    False if another copy holds it. If the lock file can't be made at
+    all, carries on (True) rather than refusing to run.
+    '''
+    global _single_instance_lock
+    try:
+        os.makedirs(os.path.dirname(SINGLE_INSTANCE_LOCK), exist_ok=True)
+        lock = open(SINGLE_INSTANCE_LOCK, "a")
+    except OSError as e:
+        print("Could not open " + SINGLE_INSTANCE_LOCK + " (" + str(e) + ") - not checking for another copy")
+        return True
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        lock.close()
+        _raise_running_copy()
+        return False
+    try:
+        lock.truncate(0)
+        lock.write(str(os.getpid()))
+        lock.flush()
+    except OSError:
+        pass
+    _single_instance_lock = lock
+    # SIGUSR1's default action ends the process, so a second start
+    # while this one is still loading would close it - ignore it until
+    # _raise_on_signal takes it over.
+    signal.signal(signal.SIGUSR1, signal.SIG_IGN)
+    return True
+
+def _raise_running_copy():
+    '''Asks the copy holding the lock to bring its window to the front.'''
+    try:
+        with open(SINGLE_INSTANCE_LOCK) as f:
+            os.kill(int(f.read().strip()), signal.SIGUSR1)
+    except (OSError, ValueError):
+        pass
+
+def _raise_on_signal(window):
+    '''In the running copy: SIGUSR1 (from a second start) raises window.'''
+    def raise_window():
+        window.deiconify()
+        window.present_with_time(Gdk.CURRENT_TIME)
+        return True     # keep handling the signal
+    GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGUSR1, raise_window)
+
+
 def main():
+    if not _take_single_instance_lock():
+        print("Rosetta Settings is already open - not starting a second copy.")
+        dialog = Gtk.MessageDialog(
+            transient_for=None,
+            flags=0,
+            message_type=Gtk.MessageType.INFO,
+            buttons=Gtk.ButtonsType.OK,
+            text="Rosetta Settings is already open",
+        )
+        dialog.format_secondary_text(
+            "Only one copy of Rosetta Settings can be open at a time, so "
+            "the one already open has been brought to the front."
+        )
+        dialog.run()
+        dialog.destroy()
+        return
+
     if _linuxcnc_is_running():
         dialog = Gtk.MessageDialog(
             transient_for=None,
@@ -3783,6 +3862,7 @@ def main():
     window.connect("delete-event", handler.confirm_close)
     window.connect("destroy", Gtk.main_quit)
     window.set_title("Rosetta Settings")
+    _raise_on_signal(window)
     _add_file_menu(builder, handler, window)
     # window1/scrolledwindow1 no longer propagate their content's
     # natural size upward (see scrolledwindow1's propagate-natural-
