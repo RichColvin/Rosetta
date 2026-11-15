@@ -59,6 +59,8 @@
 #   1.5 - 15 November 2026 - no Phase for the first rosette: the work
 #         is phased by indexing on the Rosetta panel (the pumping
 #         rosette keeps its Phase, relative to the rocking one, in Both)
+#   1.6 - 15 November 2026 - Object Size note: phasing holes on a
+#         physical rosette made with it
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -179,6 +181,9 @@ NOTES = (
      "If you are making a rosette for later use on a rose engine, the object is that rosette: enter "
      "the radius of the rosette you want to make. Rose engines differ - some measure their rosettes "
      "across the points (Outside), others across the hollows (Inside).\n\n"
+     "A physical rosette usually has phasing holes, which let it be turned relative to the work on "
+     "the rose engine. This program doesn't cut them - add them as you would for any rosette. "
+     "(Patterns cut with Rosetta itself don't need them: index on the Rosetta panel instead.)\n\n"
      "Radius is used for the drawing, Straight sides and the note on where to start the cutter. The "
      "program itself cuts wherever the cutter is.",
      "ObjectSize"),
