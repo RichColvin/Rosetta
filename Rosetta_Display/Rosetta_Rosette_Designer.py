@@ -61,6 +61,10 @@
 #         rosette keeps its Phase, relative to the rocking one, in Both)
 #   1.6 - 15 November 2026 - Object Size note: phasing holes on a
 #         physical rosette made with it
+#   1.7 - 15 November 2026 - Finishing pass (chosen; a percentage of C
+#         speed, 10% to start) and Spring passes, in Passes mode
+#   1.8 - 15 November 2026 - Running the Program note: the panel's
+#         pass counter
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -173,6 +177,9 @@ NOTES = (
     ("Depth",
      "Passes, deeper each time: put the cutter just touching the work. Each pass goes Depth per pass "
      "deeper, and at the end the cutter backs out to where it started.\n\n"
+     "Finishing pass: tick it to run the last pass slower - a percentage of C speed (10% to start) - "
+     "for a better finish, while the earlier passes run at full speed. Spring passes repeat the final "
+     "depth to clean up the cut, at the finishing speed when Finishing pass is ticked.\n\n"
      "Turns at one depth: the cutter stays at one depth, as with a physical rosette. To go deeper, move "
      "the cutter in yourself and run the program again.",
      "Depth"),
@@ -193,6 +200,8 @@ NOTES = (
      "Open it in Rosetta and put the cutter where the pattern should be cut before starting: the "
      "program works from wherever the cutter is, the same as setting up a cut with a physical "
      "rosette.\n\n"
+     "While it runs, the progress bar on the Rosetta panel shows which pass it's on - e.g. "
+     "\"Program 42% - pass 2 of 3\".\n\n"
      "C isn't turned back at the end - after three turns it reads 1080 degrees.",
      "Saving"),
 )
@@ -539,6 +548,21 @@ class DesignerWindow(Gtk.Window):
         self.plunge_feed = self._spin(*ranges["plunge_feed"])
         row = self._row(grid, row, "    Plunge feed (%s/min)" % unit, self.plunge_feed,
                         "How fast the cutter moves deeper between passes.")
+        finish_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.finish_pass = Gtk.CheckButton()
+        self.finish_pass.connect("toggled", lambda w: self._changed())
+        self.finish_pct = self._spin(1, 100, 1, 0)
+        self.finish_pct.set_width_chars(5)
+        finish_box.pack_start(self.finish_pass, False, False, 0)
+        finish_box.pack_start(self.finish_pct, True, True, 0)
+        finish_box.pack_start(Gtk.Label(label="% of C speed"), False, False, 0)
+        row = self._row(grid, row, "    Finishing pass", finish_box,
+                        "Tick to run the last pass slower than the others, for a better finish: "
+                        "C turns at this percentage of C speed.")
+        self.spring_passes = self._spin(0, 5, 1, 0)
+        row = self._row(grid, row, "    Spring passes", self.spring_passes,
+                        "Extra turns at the final depth, to clean up the cut - at the finishing "
+                        "speed when Finishing pass is ticked.")
         grid.attach(self.mode_turns, 0, row, 3, 1)
         row += 1
         self.turns = self._spin(1, 100, 1, 0)
@@ -666,6 +690,9 @@ class DesignerWindow(Gtk.Window):
         self.passes.set_value(d["passes"])
         self.depth_per_pass.set_value(d["depth_per_pass"])
         self.plunge_feed.set_value(d["plunge_feed"])
+        self.finish_pass.set_active(d["finish_pass"])
+        self.finish_pct.set_value(d["finish_pct"])
+        self.spring_passes.set_value(d["spring_passes"])
         self.turns.set_value(d["turns"])
         self.deeper_plus.set_active(d["deeper_plus"])
         self.preview_radius.set_value(d["preview_radius"])
@@ -687,6 +714,9 @@ class DesignerWindow(Gtk.Window):
             "passes": int(self.passes.get_value()),
             "depth_per_pass": self.depth_per_pass.get_value(),
             "plunge_feed": self.plunge_feed.get_value(),
+            "finish_pass": self.finish_pass.get_active(),
+            "finish_pct": self.finish_pct.get_value(),
+            "spring_passes": int(self.spring_passes.get_value()),
             "turns": int(self.turns.get_value()),
             "deeper_plus": self.deeper_plus.get_active(),
             "preview_radius": self.preview_radius.get_value(),
@@ -705,8 +735,10 @@ class DesignerWindow(Gtk.Window):
         self.design = self._read_form()
         d = self.design
         passes = d["depth_mode"] == "passes"
-        for widget in (self.passes, self.depth_per_pass, self.plunge_feed):
+        for widget in (self.passes, self.depth_per_pass, self.plunge_feed, self.finish_pass,
+                       self.spring_passes):
             widget.set_sensitive(passes)
+        self.finish_pct.set_sensitive(passes and d["finish_pass"])
         self.turns.set_sensitive(not passes)
         both = d["motion"] == "both"
         self.rosette_controls[1].set_shown(both)
@@ -744,10 +776,21 @@ class DesignerWindow(Gtk.Window):
         limits = {axis: self._axis_limit(axis) for axis in moving}
         c_limit = self._axis_limit("C")
         seconds, nominal = rr.turn_time(d, limits, c_limit, points)
-        count = d["passes"] if d["depth_mode"] == "passes" else d["turns"]
+        # Each turn at its own speed (a finishing pass is slower); C's
+        # speed only changes the time of the turn, not its points.
+        total = 0.0
+        turn_seconds = {}
+        for rpm in rr.pass_speeds(d):
+            if rpm not in turn_seconds:
+                turn_seconds[rpm] = rr.turn_time(dict(d, c_rpm=rpm), limits, c_limit, points)[0]
+            total += turn_seconds[rpm]
         unit = "in" if self.units == "inch" else "mm"
         text = ("%d points per turn.  One turn takes about %s; the whole program about %s."
-                % (len(angles) - 1, self._duration(seconds / 60.0), self._duration(count * seconds / 60.0)))
+                % (len(angles) - 1, self._duration(seconds / 60.0), self._duration(total / 60.0)))
+        if d["depth_mode"] == "passes" and d["finish_pass"]:
+            finish_rpm = d["c_rpm"] * d["finish_pct"] / 100.0
+            text += "  Finishing at %s rev/min (a turn about %s)." % (
+                rr._num(round(finish_rpm, 3)), self._duration(turn_seconds[finish_rpm] / 60.0))
         if d["depth_mode"] == "passes":
             text += "  Final depth %s %s." % (self._number(d["passes"] * d["depth_per_pass"]), unit)
         if d["surface"] == "face" and "X" in offsets:

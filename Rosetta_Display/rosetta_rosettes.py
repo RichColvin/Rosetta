@@ -54,6 +54,10 @@
 #         the inside of the cut (radius_at, start_radius)
 #   1.3 - 15 November 2026 - no phase for the first rosette (always 0):
 #         the operator phases the work by indexing on the Rosetta panel
+#   1.4 - 15 November 2026 - finishing pass (chosen; at a percentage of
+#         C's speed, 10% to start) and spring passes, in "passes" mode; the one-turn sub takes a
+#         speed factor (#3); each pass is reported on M67 E0 for the
+#         panel's progress bar ("pass 2 of 3", as Threading counts)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -195,6 +199,9 @@ DEFAULT_DESIGN = {
     "turns": 1,
     "deeper_plus": False,       # depth goes minus (into the work) unless True
     "plunge_feed": 1.0,         # machine units/min
+    "finish_pass": False,       # passes mode: the last pass slower, at finish_pct
+    "finish_pct": 10.0,         # finishing (and spring) passes' speed, % of c_rpm
+    "spring_passes": 0,         # passes mode: extra turns at the final depth
     "preview_radius": 1.0,      # machine units - the drawing and Straight sides only
     "radius_at": "outside",     # preview_radius is the cut's "outside" (largest) or "inside"
     "units": "inch",            # "inch" or "mm"
@@ -242,7 +249,24 @@ def clean_design(design):
     d["c_direction"] = -1 if d["c_direction"] < 0 else 1
     d["passes"] = min(max(d["passes"], 1), 100)
     d["turns"] = min(max(d["turns"], 1), 100)
+    d["finish_pct"] = min(max(d["finish_pct"], 1.0), 100.0)
+    d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     return d
+
+
+def pass_speeds(design):
+    '''
+    C's speed (rev/min) for each turn the program makes, in order. In
+    "passes" mode: the passes, then any spring passes at the final
+    depth; with a finishing pass the last pass and the spring passes
+    run at finish_pct percent of c_rpm (roughing fast, finishing slow -
+    Rich, 15 November 2026; 10% to start). In "turns" mode every turn is at c_rpm.
+    '''
+    d = design
+    if d["depth_mode"] != "passes":
+        return [d["c_rpm"]] * d["turns"]
+    finish = d["c_rpm"] * d["finish_pct"] / 100.0 if d["finish_pass"] else d["c_rpm"]
+    return [d["c_rpm"]] * (d["passes"] - 1) + [finish] * (1 + d["spring_passes"])
 
 
 def rosette(design, prefix=""):
@@ -489,6 +513,25 @@ def _signed(value):
     return ("-" if value < 0 and text != "0" else "+") + text
 
 
+# Each pass or turn is reported on motion.analog-out-00 (M67 E0, net
+# thread-status -> the main panel's gladevcp.thread-status, shared with
+# rosetta_thread.ngc), so the panel's progress bar can say "pass 2 of 3"
+# (15 November 2026, Rich - as Threading counts its passes). Code =
+# kind x PASS_STATUS_BASE + how many x 1000 + which; Threading's codes
+# all stay below PASS_STATUS_BASE. M67 changes it as that pass's first
+# move starts, not when the interpreter reads ahead to it. The program
+# sets it to 0 first (M68, at once), clearing the last run's code. The
+# panel shows codes only for a program whose first line starts
+# "(Rosette Designer - " (gcode's first line - keep it). Duplicated in
+# Rosetta_main.py (ROSETTE_PASS_*, ROSETTE_PROGRAM_MARK).
+PASS_STATUS_BASE = 1000000
+PASS_KIND = {"pass": 1, "finish": 2, "spring": 3, "turn": 4}
+
+
+def _pass_status(kind, number, of):
+    return "M67 E0 Q%d" % (PASS_KIND[kind] * PASS_STATUS_BASE + of * 1000 + number)
+
+
 def gcode(design):
     '''The whole program, as text.'''
     d = clean_design(design)
@@ -497,7 +540,8 @@ def gcode(design):
     depth = depth_axis(d)
     deeper = 1.0 if d["deeper_plus"] else -1.0
     turn_minutes = 1.0 / d["c_rpm"]
-    count = d["passes"] if d["depth_mode"] == "passes" else d["turns"]
+    speeds = pass_speeds(d)
+    count = len(speeds)
 
     lines = [
         "(Rosette Designer - %s - %s)" % (describe(d), time.strftime("%d %B %Y")),
@@ -512,8 +556,10 @@ def gcode(design):
         "#<_rd_x0> = #5420",
         "#<_rd_z0> = #5422",
         "#<_rd_c0> = #5425",
+        "M68 E0 Q0  (pass counter for Rosetta's progress bar: this run's start)",
         "",
-        "(One turn of the rosette. #1 = depth from the start, #2 = C at the start)",
+        "(One turn of the rosette. #1 = depth from the start, #2 = C at the start,)",
+        "(#3 = speed factor: 1 at the set C speed, less for a slower finishing pass)",
         "o100 sub",
     ]
     for i in range(1, len(angles)):
@@ -530,25 +576,37 @@ def gcode(design):
         c = d["c_direction"] * angles[i]
         words.append("C[#2%s]" % _signed(c))
         minutes = (angles[i] - angles[i - 1]) / 360.0 * turn_minutes
-        words.append("F%s" % _num(1.0 / minutes))
+        words.append("F[%s*#3]" % _num(1.0 / minutes))
         lines.append("  G93 G1 " + " ".join(words))
     lines += ["  G94", "o100 endsub", ""]
 
     depth_var = "#<_rd_%s0>" % depth.lower()
     if d["depth_mode"] == "passes":
-        for k in range(1, d["passes"] + 1):
-            depth_now = deeper * d["depth_per_pass"] * k
-            lines.append("(Pass %d of %d - %s deep)" % (k, d["passes"], _num(abs(depth_now))))
-            lines.append("G94 G1 %s[%s%s] F%s" % (depth, depth_var, _signed(depth_now),
-                                                 _num(d["plunge_feed"])))
-            lines.append("o100 call [%s] [#<_rd_c0>%s]" % (_num(depth_now),
-                                                          _signed(d["c_direction"] * 360.0 * (k - 1))))
+        for k in range(1, count + 1):
+            factor = speeds[k - 1] / d["c_rpm"]
+            c_start = "[#<_rd_c0>%s]" % _signed(d["c_direction"] * 360.0 * (k - 1))
+            if k > d["passes"]:
+                depth_now = deeper * d["depth_per_pass"] * d["passes"]
+                lines.append("(Spring pass %d of %d - %s rev/min)"
+                             % (k - d["passes"], d["spring_passes"], _num(speeds[k - 1])))
+                lines.append(_pass_status("spring", k - d["passes"], d["spring_passes"]))
+            else:
+                depth_now = deeper * d["depth_per_pass"] * k
+                finishing = k == d["passes"] and d["finish_pass"]
+                lines.append("(%s %d of %d - %s deep - %s rev/min)"
+                             % ("Finishing pass" if finishing else "Pass", k, d["passes"],
+                                _num(abs(depth_now)), _num(speeds[k - 1])))
+                lines.append(_pass_status("finish" if finishing else "pass", k, d["passes"]))
+                lines.append("G94 G1 %s[%s%s] F%s" % (depth, depth_var, _signed(depth_now),
+                                                     _num(d["plunge_feed"])))
+            lines.append("o100 call [%s] %s [%s]" % (_num(depth_now), c_start, _num(factor)))
         lines += ["(Back out to where the cutter started)",
                   "G0 %s[%s]" % (depth, depth_var)]
     else:
         for k in range(1, d["turns"] + 1):
             lines.append("(Turn %d of %d)" % (k, d["turns"]))
-            lines.append("o100 call [0] [#<_rd_c0>%s]" % _signed(d["c_direction"] * 360.0 * (k - 1)))
+            lines.append(_pass_status("turn", k, d["turns"]))
+            lines.append("o100 call [0] [#<_rd_c0>%s] [1]" % _signed(d["c_direction"] * 360.0 * (k - 1)))
     lines += [
         "",
         "G94",
@@ -597,7 +655,8 @@ def write_samples(folder):
                             "amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
                             "plunge_feed": 1.0 * scale, "preview_radius": 1.0 * scale,
                             "motion": motion, "surface": surface, "depth_mode": mode,
-                            "turns": 2, "units": units,
+                            "turns": 2, "units": units, "finish_pass": mode == "passes",
+                            "finish_pct": 10.0, "spring_passes": 1,
                             "pump_shape": "lotus" if shape == "sine" else "sine",
                             "pump_lobes": 5, "pump_amplitude": 0.02 * scale, "pump_phase": 0.1,
                         })

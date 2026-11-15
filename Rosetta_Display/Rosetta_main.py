@@ -399,6 +399,15 @@ THREAD_KIND_SPRING = 3
 THREAD_KIND_INDEX = 8
 THREAD_KIND_DONE = 9
 
+# A Rosette Designer program's pass counter, on the same pin (15
+# November 2026, Rich): kind x ROSETTE_PASS_BASE + how many x 1000 +
+# which - always above Threading's codes. Duplicated from
+# rosetta_rosettes.py's PASS_STATUS_BASE / PASS_KIND.
+ROSETTE_PASS_BASE = 1000000
+ROSETTE_PASS_WORDS = {1: "pass", 2: "finishing pass", 3: "spring pass", 4: "turn"}
+# A Rosette Designer program's first line starts with this.
+ROSETTE_PROGRAM_MARK = "(Rosette Designer - "
+
 # How long a Cut Thread's "Done"/"Stopped" message stays up before the
 # Threading tab's instructions come back.
 THREAD_RESULT_SECONDS = 20
@@ -3597,6 +3606,7 @@ class HandlerClass:
 
     def _on_thread_status(self, pin, data=None):
         code = pin.get()
+        self._rosette_pass_status(code)
         if not self._thread_running or code == 0:
             return
         text = self._thread_describe(code)
@@ -3894,7 +3904,18 @@ class HandlerClass:
 #                       so the panel doesn't change size when it appears -
 #                       the Sync Move row is otherwise empty on the other
 #                       tabs. Main panel only.
-# Updated:              ver 1.0, 20 October 2026
+#                       A Rosette Designer program also reports each
+#                       pass (M67 E0, thread-status - see
+#                       ROSETTE_PASS_BASE), shown after the percentage:
+#                       "Program 42% - pass 2 of 3" - only for a program
+#                       whose first line says the Rosette Designer made
+#                       it (_rosette_program), read as the run starts
+#                       along with the pin's value then: the first pass
+#                       starts at once, often before this poll sees the
+#                       run (the first version waited to see the pin go
+#                       to 0 this run, and missed it - found on the
+#                       machine 15 November 2026).
+# Updated:              ver 1.1, 15 November 2026 - rosette pass counter
 #######################################################################
     def _load_program_progress(self):
         self._progress_bar = None
@@ -3907,6 +3928,8 @@ class HandlerClass:
         self._progress_output = "/tmp/Rosetta_progress_%d.json" % os.getpid()
         self._progress_run = None           # the run being shown
         self._mdi_progress = None           # a Sync Move or Cut Thread being shown
+        self._rosette_program = False       # this run is a Rosette Designer program
+        self._rosette_pass = ""             # e.g. "pass 2 of 3", or ""
 
     def _progress_collect(self):
         '''Picks up the estimate helper's result once it has finished.'''
@@ -3937,6 +3960,30 @@ class HandlerClass:
         except Exception:
             return None
 
+    def _rosette_pass_status(self, code):
+        '''A Rosette Designer program's pass counter (see ROSETTE_PASS_BASE).'''
+        if self._progress_bar is None or not self._rosette_program:
+            return
+        if code < ROSETTE_PASS_BASE:
+            self._rosette_pass = ""      # 0 as the program starts
+            return
+        kind, rest = divmod(int(round(code)), ROSETTE_PASS_BASE)
+        total, number = divmod(rest, 1000)
+        word = ROSETTE_PASS_WORDS.get(kind)
+        if word:
+            self._rosette_pass = "%s %d of %d" % (word, number, total)
+
+    @staticmethod
+    def _is_rosette_program(path):
+        try:
+            with open(path, errors="replace") as f:
+                return f.readline().startswith(ROSETTE_PROGRAM_MARK)
+        except (OSError, TypeError):
+            return False
+
+    def _progress_with_pass(self, text):
+        return text + " - " + self._rosette_pass if self._rosette_pass else text
+
     def _progress_start(self):
         '''
         A program has started: works out its moves from where the
@@ -3963,6 +4010,11 @@ class HandlerClass:
             print("Program progress: could not start the estimate - " + str(e))
         self._progress_run = {"start": start, "elapsed": 0.0, "last": time.monotonic(),
                               "first_line": 0, "part_way": None, "fraction": 0.0}
+        # A Rosette Designer program's pass counter - its first pass may
+        # already have started, so take the pin's value now.
+        self._rosette_pass = ""
+        self._rosette_program = self._is_rosette_program(s.file)
+        self._rosette_pass_status(self._thread_status_pin.get())
         self._progress_bar.set_fraction(0.0)
         self._progress_bar.set_text("Program 0% - working it out")
         self._progress_bar.set_child_visible(True)
@@ -3980,11 +4032,12 @@ class HandlerClass:
         self._progress_collect()
         data = self._progress_estimate
         if data is None:
+            self._progress_bar.set_text(self._progress_with_pass("Program 0% - working it out"))
             return
         if run["part_way"] is None and run["first_line"]:
             run["part_way"] = run["first_line"] not in data["line"][:PROGRESS_START_MOVES]
         if run["part_way"]:
-            self._progress_bar.set_text("Started part way - no progress shown")
+            self._progress_bar.set_text(self._progress_with_pass("Started part way - no progress shown"))
             return
         path = self._progress_path()
         if path is None:
@@ -3997,7 +4050,7 @@ class HandlerClass:
         text = "Program %d%%" % int(fraction * 100)
         if paused:
             text += " (paused)"
-        self._progress_bar.set_text(text)
+        self._progress_bar.set_text(self._progress_with_pass(text))
 
     @staticmethod
     def _progress_time_at(data, distance):
@@ -4024,7 +4077,8 @@ class HandlerClass:
             self._progress_bar.set_fraction(1.0)
             self._progress_bar.set_text("Program done in " + self._progress_duration(run["elapsed"]))
         else:
-            self._progress_bar.set_text("Program stopped at %d%%" % int(run["fraction"] * 100))
+            self._progress_bar.set_text(self._progress_with_pass(
+                "Program stopped at %d%%" % int(run["fraction"] * 100)))
         print("Program progress: run took %s (not counting pauses), estimate %s"
               % (self._progress_duration(run["elapsed"]),
                  self._progress_duration(self._progress_estimate["time"][-1])
