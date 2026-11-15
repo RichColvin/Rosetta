@@ -19,9 +19,10 @@
 # Purpose:
 #   The maths of software-defined rosettes, for the Rosette Designer
 #   (Rosetta_Rosette_Designer.py), which saves a rosette as a G-code
-#   program: C turns the work and X follows the rosette (rocking) or Z
-#   does (pumping), as the rubber follows a physical rosette on a rose
-#   engine (https://otbok.info/index.php?n=Main.Rosette).
+#   program: C turns the work and X follows the rosette (rocking), Z
+#   does (pumping), or each follows a rosette of its own (both), as the
+#   rubbers follow physical rosettes on a rose engine
+#   (https://otbok.info/index.php?n=Main.Rosette).
 #
 #   A shape is one lobe's deflection, f(u) for u = 0..1 across the
 #   lobe: 0 = no deflection, 1 = the full amplitude. Deflection moves
@@ -47,6 +48,8 @@
 #
 # Version
 #   1.0 - 15 November 2026
+#   1.1 - 15 November 2026 - rocking and pumping together (motion
+#         "both": a rosette for X and one for Z)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -148,6 +151,15 @@ SHAPE_SHORT = {"sine": "Sine", "polygon": "Polygon", "lotus": "Lotus", "tudor": 
 # The design
 #######################################################################
 
+# A design has one rosette (rocking or pumping) or two (both - a
+# rocking rosette for X and a pumping rosette for Z, each with its own
+# shape, lobes, amplitude and phase, as with two rosettes and rubbers
+# engaged on a rose engine). The first rosette's settings are the plain
+# keys (shape, lobes, ...); the second's start "pump_" and are used only
+# when motion is "both".
+ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert")
+SECOND = "pump_"
+
 DEFAULT_DESIGN = {
     "shape": "sine",
     "lobes": 12,
@@ -155,7 +167,13 @@ DEFAULT_DESIGN = {
     "phase": 0.0,               # fraction of a lobe, 0..1
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
-    "motion": "rock",           # "rock" (X) or "pump" (Z)
+    "pump_shape": "sine",       # the pumping rosette, when motion is "both"
+    "pump_lobes": 12,
+    "pump_amplitude": 0.02,
+    "pump_phase": 0.0,
+    "pump_phase_unit": "lobe",
+    "pump_invert": False,
+    "motion": "rock",           # "rock" (X), "pump" (Z) or "both"
     "surface": "face",          # "face" or "side"
     "rubber": "point",          # only a point so far (stage 3: round, flat)
     "c_rpm": 2.0,               # C's speed, rev/min
@@ -195,11 +213,14 @@ def clean_design(design):
         except (TypeError, ValueError):
             value = default
         d[key] = value
-    if d["shape"] not in SHAPES:
-        d["shape"] = DEFAULT_DESIGN["shape"]
-    d["lobes"] = min(max(d["lobes"], 1), 360)
-    d["phase"] = d["phase"] % 1.0
-    for key, choices in (("phase_unit", ("lobe", "deg")), ("motion", ("rock", "pump")),
+    for prefix in ("", SECOND):
+        if d[prefix + "shape"] not in SHAPES:
+            d[prefix + "shape"] = DEFAULT_DESIGN[prefix + "shape"]
+        d[prefix + "lobes"] = min(max(d[prefix + "lobes"], 1), 360)
+        d[prefix + "phase"] = d[prefix + "phase"] % 1.0
+        if d[prefix + "phase_unit"] not in ("lobe", "deg"):
+            d[prefix + "phase_unit"] = "lobe"
+    for key, choices in (("motion", ("rock", "pump", "both")),
                          ("surface", ("face", "side")), ("rubber", ("point",)),
                          ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm"))):
         if d[key] not in choices:
@@ -210,35 +231,49 @@ def clean_design(design):
     return d
 
 
-def deflection(design, theta_deg):
+def rosette(design, prefix=""):
+    '''One rosette's settings (shape, lobes, ...) from a design.'''
+    return {key: design[prefix + key] for key in ROSETTE_KEYS}
+
+
+def rosettes(design):
+    '''{axis: rosette} - the rosette each moving axis follows.'''
+    if design["motion"] == "rock":
+        return {"X": rosette(design)}
+    if design["motion"] == "pump":
+        return {"Z": rosette(design)}
+    return {"X": rosette(design), "Z": rosette(design, SECOND)}
+
+
+def deflection(ros, theta_deg):
     '''
-    The rosette's deflection (0..1) at spindle angles theta_deg
-    (numpy array, degrees from the program's start).
+    A rosette's deflection (0..1) at spindle angles theta_deg (numpy
+    array, degrees from the program's start).
     '''
-    lobes = design["lobes"]
-    u = numpy.mod(lobes * numpy.asarray(theta_deg, dtype=float) / 360.0 + design["phase"], 1.0)
-    f = SHAPES[design["shape"]][1](u, lobes)
-    if design["invert"]:
+    lobes = ros["lobes"]
+    u = numpy.mod(lobes * numpy.asarray(theta_deg, dtype=float) / 360.0 + ros["phase"], 1.0)
+    f = SHAPES[ros["shape"]][1](u, lobes)
+    if ros["invert"]:
         f = 1.0 - f
     return f
 
 
-def offset(design, theta_deg):
+def offset(ros, theta_deg):
     '''
-    How far the cutter moves along the motion axis at theta_deg, from
-    where it was at the start: minus = deflection (towards the centre
-    when rocking). 0 at theta 0, and again after each whole turn.
+    How far a rosette moves the cutter along its axis at theta_deg,
+    from where it was at the start: minus = deflection (towards the
+    centre when rocking). 0 at theta 0, and again after each whole turn.
     '''
-    start = deflection(design, numpy.array([0.0]))[0]
-    return -design["amplitude"] * (deflection(design, theta_deg) - start)
+    start = deflection(ros, numpy.array([0.0]))[0]
+    return -ros["amplitude"] * (deflection(ros, theta_deg) - start)
 
 
-def phase_degrees(design):
-    '''The phase as spindle degrees (a whole lobe = 360 / lobes).'''
-    return design["phase"] * 360.0 / design["lobes"]
+def phase_degrees(ros):
+    '''A rosette's phase as spindle degrees (a whole lobe = 360 / lobes).'''
+    return ros["phase"] * 360.0 / ros["lobes"]
 
 
-def straight_sides_amplitude(design, radius):
+def straight_sides_amplitude(ros, radius):
     '''
     The plain polygon amplitude whose sides come out straight when the
     cut starts at this radius. The points are at radius + amplitude x
@@ -246,8 +281,8 @@ def straight_sides_amplitude(design, radius):
     a polygon's sides are straight when amplitude = points' radius x
     (1 - cos(180/lobes)).
     '''
-    k = 1.0 - math.cos(math.pi / max(design["lobes"], 3))
-    start = deflection(dict(design, shape="polygon", invert=False), numpy.array([0.0]))[0]
+    k = 1.0 - math.cos(math.pi / max(ros["lobes"], 3))
+    start = deflection(dict(ros, shape="polygon", invert=False), numpy.array([0.0]))[0]
     return radius * k / (1.0 - k * start)
 
 
@@ -262,42 +297,48 @@ SHARP_POINTS = {"sine": (), "polygon": (0.0,), "lotus": (0.0,), "tudor": (0.0, 0
 
 
 def _sample_angles(design):
-    lobes = design["lobes"]
-    samples = int(min(max(3600, lobes * 600), 200000))
+    ros_list = list(rosettes(design).values())
+    most_lobes = max(r["lobes"] for r in ros_list)
+    samples = int(min(max(3600, most_lobes * 600), 200000))
     theta = [numpy.linspace(0.0, 360.0, samples + 1)]
-    lobe_deg = 360.0 / lobes
-    near = numpy.geomspace(1e-7, 0.05, 60) * lobe_deg
-    for u in SHARP_POINTS[design["shape"]]:
-        # The invert of a sharp point is still sharp.
-        centres = (numpy.arange(lobes) + u - design["phase"]) * lobe_deg
-        centres = numpy.mod(centres, 360.0)
-        centres = numpy.concatenate([centres, centres + 360.0])   # a point at 0 is also at 360
-        theta.append(centres)
-        theta.append((centres[:, None] + near[None, :]).ravel())
-        theta.append((centres[:, None] - near[None, :]).ravel())
+    for ros in ros_list:
+        lobes = ros["lobes"]
+        lobe_deg = 360.0 / lobes
+        near = numpy.geomspace(1e-7, 0.05, 60) * lobe_deg
+        for u in SHARP_POINTS[ros["shape"]]:
+            # The invert of a sharp point is still sharp.
+            centres = (numpy.arange(lobes) + u - ros["phase"]) * lobe_deg
+            centres = numpy.mod(centres, 360.0)
+            centres = numpy.concatenate([centres, centres + 360.0])   # a point at 0 is also at 360
+            theta.append(centres)
+            theta.append((centres[:, None] + near[None, :]).ravel())
+            theta.append((centres[:, None] - near[None, :]).ravel())
     theta = numpy.concatenate(theta)
-    theta = numpy.unique(numpy.clip(theta, 0.0, 360.0))
-    return theta
+    return numpy.unique(numpy.clip(theta, 0.0, 360.0))
 
 
 def turn_points(design):
     '''
-    (angles, offsets, capped) for one turn, 0..360 degrees: the fewest
-    points whose straight lines stay within CHORD_TOLERANCE of the
-    rosette (no step over MAX_SEGMENT_DEG). capped is True when that
-    needed more than MAX_POINTS_PER_TURN, so fewer were kept and the cut
-    is less exact (very many sharp lobes).
+    (angles, {axis: offsets}, capped) for one turn, 0..360 degrees: the
+    fewest points whose straight lines stay within CHORD_TOLERANCE of
+    every rosette (no step over MAX_SEGMENT_DEG). capped is True when
+    that needed more than MAX_POINTS_PER_TURN, so fewer were kept and
+    the cut is less exact (very many sharp lobes).
     '''
     tol = CHORD_TOLERANCE[design["units"]]
     theta = _sample_angles(design)
-    y = offset(design, theta)
+    ys = {axis: offset(ros, theta) for axis, ros in rosettes(design).items()}
     last = len(theta) - 1
 
     def fits(i, j):
         if j - i <= 1:
             return True
-        line = y[i] + (y[j] - y[i]) * (theta[i:j + 1] - theta[i]) / (theta[j] - theta[i])
-        return numpy.max(numpy.abs(y[i:j + 1] - line)) <= tol
+        fraction = (theta[i:j + 1] - theta[i]) / (theta[j] - theta[i])
+        for y in ys.values():
+            line = y[i] + (y[j] - y[i]) * fraction
+            if numpy.max(numpy.abs(y[i:j + 1] - line)) > tol:
+                return False
+        return True
 
     keep = [0]
     i = 0
@@ -319,13 +360,16 @@ def turn_points(design):
                 high = mid - 1
         i += low
         keep.append(i)
-    angles, offsets = theta[keep], y[keep]
-    capped = len(angles) - 1 > MAX_POINTS_PER_TURN
+    keep = numpy.array(keep)
+    capped = len(keep) - 1 > MAX_POINTS_PER_TURN
     if capped:
-        pick = numpy.unique(numpy.round(numpy.linspace(0, len(angles) - 1,
-                                                       MAX_POINTS_PER_TURN + 1)).astype(int))
-        angles, offsets = angles[pick], offsets[pick]
-    offsets[-1] = 0.0       # exactly back where it started
+        keep = keep[numpy.unique(numpy.round(numpy.linspace(0, len(keep) - 1,
+                                                            MAX_POINTS_PER_TURN + 1)).astype(int))]
+    angles = theta[keep]
+    offsets = {}
+    for axis, y in ys.items():
+        offsets[axis] = y[keep]
+        offsets[axis][-1] = 0.0     # exactly back where it started
     return angles, offsets, capped
 
 
@@ -333,20 +377,22 @@ def turn_seconds(design):
     return 60.0 / max(design["c_rpm"], 1e-9)
 
 
-def turn_time(design, motion_max_speed=None, c_max_speed=None, points=None):
+def turn_time(design, max_speeds=None, c_max_speed=None, points=None):
     '''
     (seconds, nominal seconds) for one turn: nominal at C's set speed;
-    seconds allowing for the motion axis's and C's Max Speed (units/sec,
-    deg/sec) - where the rosette is steeper than the motion axis can
-    follow, LinuxCNC slows that move, and C with it (a sharp point
-    always does this). Acceleration isn't counted, so it's a little
-    short where the rosette changes direction sharply.
+    seconds allowing for each moving axis's Max Speed (max_speeds,
+    {axis: units/sec}) and C's (deg/sec) - where a rosette is steeper
+    than its axis can follow, LinuxCNC slows that move, and C with it (a
+    sharp point always does this). Acceleration isn't counted, so it's
+    a little short where a rosette changes direction sharply.
     '''
     angles, offsets, _ = points or turn_points(design)
     nominal = numpy.diff(angles) / 360.0 * turn_seconds(design)
     needed = nominal.copy()
-    if motion_max_speed:
-        needed = numpy.maximum(needed, numpy.abs(numpy.diff(offsets)) / motion_max_speed)
+    for axis, y in offsets.items():
+        speed = (max_speeds or {}).get(axis)
+        if speed:
+            needed = numpy.maximum(needed, numpy.abs(numpy.diff(y)) / speed)
     if c_max_speed:
         needed = numpy.maximum(needed, numpy.diff(angles) / c_max_speed)
     return float(needed.sum()), float(nominal.sum())
@@ -372,24 +418,28 @@ def name_is_reserved(file_name):
     return bool(RESERVED_NAME.match(os.path.basename(file_name)))
 
 
+def _short(ros):
+    return "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
+
+
 def default_file_name(design):
-    return "%s%d_%s_%s.ngc" % (SHAPE_SHORT[design["shape"]], design["lobes"],
-                               design["motion"], design["surface"])
+    if design["motion"] == "both":
+        return "%s_rock_%s_pump_%s.ngc" % (_short(rosette(design)), _short(rosette(design, SECOND)),
+                                           design["surface"])
+    return "%s_%s_%s.ngc" % (_short(rosette(design)), design["motion"], design["surface"])
 
 
 def describe(design):
     d = design
-    return "%s %d, %s, %s" % (SHAPE_SHORT[d["shape"]], d["lobes"],
-                              "rocking" if d["motion"] == "rock" else "pumping",
-                              "face" if d["surface"] == "face" else "side")
+    if d["motion"] == "both":
+        what = "%s rocking, %s pumping" % (_short(rosette(d)), _short(rosette(d, SECOND)))
+    else:
+        what = "%s %s" % (_short(rosette(d)), "rocking" if d["motion"] == "rock" else "pumping")
+    return "%s, %s" % (what, "face" if d["surface"] == "face" else "side")
 
 
 def depth_axis(design):
     return "Z" if design["surface"] == "face" else "X"
-
-
-def motion_axis(design):
-    return "X" if design["motion"] == "rock" else "Z"
 
 
 def _num(value):
@@ -410,16 +460,16 @@ def gcode(design):
     d = clean_design(design)
     angles, offsets, _ = turn_points(d)
     tol = CHORD_TOLERANCE[d["units"]]
-    motion, depth = motion_axis(d), depth_axis(d)
+    depth = depth_axis(d)
     deeper = 1.0 if d["deeper_plus"] else -1.0
     turn_minutes = 1.0 / d["c_rpm"]
+    count = d["passes"] if d["depth_mode"] == "passes" else d["turns"]
 
     lines = [
         "(Rosette Designer - %s - %s)" % (describe(d), time.strftime("%d %B %Y")),
         "(Runs from where the cutter is: put it where the pattern should be cut,)",
         "(then run. C turns %d time%s. Made by Rosetta's Rosette Designer -)"
-        % (d["passes"] if d["depth_mode"] == "passes" else d["turns"],
-           "" if (d["passes"] if d["depth_mode"] == "passes" else d["turns"]) == 1 else "s"),
+        % (count, "" if count == 1 else "s"),
         "(open it there to change it.)",
     ] + [DESIGN_PREFIX + "%s %s)" % (key, json.dumps(d[key])) for key in sorted(d)] + [
         "",
@@ -435,13 +485,13 @@ def gcode(design):
     for i in range(1, len(angles)):
         words = []
         for axis in ("X", "Z"):
-            if axis not in (motion, depth):
+            if axis not in offsets and axis != depth:
                 continue
             expr = "#<_rd_%s0>" % axis.lower()
             if axis == depth:
                 expr += "+#1"
-            if axis == motion:
-                expr += _signed(offsets[i])
+            if axis in offsets:
+                expr += _signed(offsets[axis][i])
             words.append("%s[%s]" % (axis, expr))
         c = d["c_direction"] * angles[i]
         words.append("C[#2%s]" % _signed(c))
@@ -505,7 +555,7 @@ def write_samples(folder):
     for units in ("inch", "mm"):
         scale = 1.0 if units == "inch" else 25.4
         for shape in SHAPE_IDS:
-            for motion in ("rock", "pump"):
+            for motion in ("rock", "pump", "both"):
                 for surface in ("face", "side"):
                     for mode in ("passes", "turns"):
                         d = clean_design({
@@ -514,6 +564,8 @@ def write_samples(folder):
                             "plunge_feed": 1.0 * scale, "preview_radius": 1.0 * scale,
                             "motion": motion, "surface": surface, "depth_mode": mode,
                             "turns": 2, "units": units, "phase": 0.25,
+                            "pump_shape": "lotus" if shape == "sine" else "sine",
+                            "pump_lobes": 5, "pump_amplitude": 0.02 * scale, "pump_phase": 0.1,
                         })
                         name = "%s_%s_%s_%s_%s.ngc" % (shape, motion, surface, mode, units)
                         with open(os.path.join(folder, name), "w") as f:

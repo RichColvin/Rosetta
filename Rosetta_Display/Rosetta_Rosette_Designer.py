@@ -21,7 +21,8 @@
 #   the operator defines a software rosette - shape, lobes, amplitude,
 #   phase - sees the cut it would make, and saves it as a G-code
 #   program in the gcode folder. Running the program turns C while X
-#   follows the rosette (rocking) or Z does (pumping), starting from
+#   follows the rosette (rocking), Z does (pumping), or each follows
+#   a rosette of its own (both), starting from
 #   wherever the operator has put the cutter, as on a rose engine.
 #   For trying a rosette before buying or making one, or for one
 #   needed too rarely to be worth making. The maths and the G-code
@@ -43,6 +44,8 @@
 #
 # Version
 #   1.0 - 15 November 2026
+#   1.1 - 15 November 2026 - rocking and pumping together (Motion:
+#         Both - a rosette for X and one for Z, side by side)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -99,7 +102,7 @@ LAST_DESIGN_PATH = os.path.expanduser("~/.config/Rosetta/rosette_designer.json")
 
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
-LENGTH_KEYS = ("amplitude", "depth_per_pass", "preview_radius")
+LENGTH_KEYS = ("amplitude", "pump_amplitude", "depth_per_pass", "preview_radius")
 FEED_KEYS = ("plunge_feed",)
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
@@ -110,11 +113,16 @@ RANGES = {
            "plunge_feed": (2.0, 500.0, 1.0, 0), "preview_radius": (1.0, 250.0, 1.0, 1)},
 }
 
-# Drawing colours.
-INK = (0.10, 0.10, 0.35)
+# Drawing colours: X's rosette, Z's rosette, guides, background, the work.
+AXIS_INK = {"X": (0.10, 0.10, 0.35), "Z": (0.60, 0.15, 0.10)}
+INK = AXIS_INK["X"]
 GUIDE = (0.70, 0.70, 0.75)
 BACKGROUND = (1.0, 1.0, 1.0)
 WOOD = (0.93, 0.85, 0.70)
+
+# Column headings for the rosette controls: (motion, column) -> heading.
+ROSETTE_HEADINGS = {("rock", 0): "Rocking rosette (X)", ("pump", 0): "Pumping rosette (Z)",
+                    ("both", 0): "Rocking rosette (X)", ("both", 1): "Pumping rosette (Z)"}
 
 
 def _linuxcnc_running():
@@ -122,6 +130,141 @@ def _linuxcnc_running():
         return subprocess.run(["pgrep", "-x", "linuxcncsvr"], capture_output=True).returncode == 0
     except OSError:
         return False
+
+
+class RosetteControls:
+    '''
+    One rosette's controls - shape, lobes, amplitude, phase, invert -
+    in one column of the form's grid. prefix is "" for the first rosette
+    (rocking, or pumping alone) and rr.SECOND for the pumping rosette
+    when both are used.
+    '''
+
+    def __init__(self, window, grid, column, first_row, prefix):
+        self.window = window
+        self.prefix = prefix
+        self.widgets = []
+        ranges = RANGES[window.units]
+        row = first_row
+
+        self.heading = Gtk.Label(xalign=0)
+        self._place(grid, self.heading, column, row)
+        row += 1
+
+        self.shape = Gtk.ComboBoxText()
+        for shape_id in rr.SHAPE_IDS:
+            self.shape.append(shape_id, rr.SHAPES[shape_id][0])
+        self.shape.set_tooltip_text("The shape of each lobe.")
+        self.shape.connect("changed", lambda w: window._changed())
+        self._place(grid, self.shape, column, row)
+        row += 1
+
+        self.lobes = window._spin(1, 360, 1, 0)
+        self.lobes.set_tooltip_text("How many times the shape repeats around the rosette "
+                                    "(e.g. 24 for a Sine 24).")
+        self._place(grid, self.lobes, column, row)
+        row += 1
+
+        self.amplitude = window._spin(*ranges["amplitude"])
+        self.amplitude.set_tooltip_text("How far the cutter moves, peak to peak - at the work, "
+                                        "not at the rosette.")
+        self._place(grid, self.amplitude, column, row)
+        row += 1
+
+        self.straight = Gtk.Button(label="Straight sides")
+        self.straight.set_tooltip_text("Sets the amplitude that makes a plain polygon's sides "
+                                       "straight at the drawing's radius (rocking on the face).")
+        self.straight.connect("clicked", self._on_straight_sides)
+        self._place(grid, self.straight, column, row)
+        row += 1
+
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
+        self.phase = window._spin(0.0, 1.0, 0.05, 3)
+        self.phase.set_width_chars(7)
+        self.phase_unit = Gtk.ComboBoxText()
+        self.phase_unit.append("lobe", "of a lobe")
+        self.phase_unit.append("deg", "degrees")
+        self.phase_unit.connect("changed", self._on_phase_unit)
+        box.pack_start(self.phase, True, True, 0)
+        box.pack_start(self.phase_unit, False, False, 0)
+        box.set_tooltip_text("Turns the rosette relative to the work: a fraction of one lobe "
+                             "(0.5 = half a lobe), or degrees of the spindle.")
+        self._place(grid, box, column, row)
+        row += 1
+
+        self.invert = Gtk.CheckButton(label="Invert")
+        self.invert.set_tooltip_text("Turns the shape inside out (points become hollows).")
+        self.invert.connect("toggled", lambda w: window._changed())
+        self._place(grid, self.invert, column, row)
+        self.last_row = row
+
+    def _place(self, grid, widget, column, row):
+        grid.attach(widget, column, row, 1, 1)
+        self.widgets.append(widget)
+
+    def set_shown(self, shown):
+        for widget in self.widgets:
+            widget.set_no_show_all(not shown)
+            if shown:
+                widget.show_all()
+            else:
+                widget.hide()
+
+    def key(self, name):
+        return self.prefix + name
+
+    def _set_phase_range(self):
+        if self.phase_unit.get_active_id() == "deg":
+            lobe_deg = 360.0 / max(int(self.lobes.get_value()), 1)
+            self.phase.set_range(0.0, lobe_deg)
+            self.phase.set_increments(0.5, 5.0)
+            self.phase.set_digits(2)
+        else:
+            self.phase.set_range(0.0, 1.0)
+            self.phase.set_increments(0.05, 0.25)
+            self.phase.set_digits(3)
+
+    def put(self, design):
+        ros = rr.rosette(design, self.prefix)
+        self.shape.set_active_id(ros["shape"])
+        self.lobes.set_value(ros["lobes"])
+        self.amplitude.set_value(ros["amplitude"])
+        self.phase_unit.set_active_id(ros["phase_unit"])
+        self._set_phase_range()
+        self.phase.set_value(ros["phase"] if ros["phase_unit"] == "lobe" else rr.phase_degrees(ros))
+        self.invert.set_active(ros["invert"])
+
+    def read(self):
+        lobes = int(self.lobes.get_value())
+        unit = self.phase_unit.get_active_id() or "lobe"
+        phase = self.phase.get_value()
+        if unit == "deg":
+            phase = phase * lobes / 360.0
+            self._set_phase_range()     # the degrees range follows the lobes
+        return {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
+                self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
+                self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active()}
+
+    def _on_phase_unit(self, widget):
+        # Keep the same phase, shown in the other unit.
+        if self.window.loading:
+            return
+        ros = rr.rosette(self.window.design, self.prefix)
+        self.window.loading = True
+        self._set_phase_range()
+        self.phase.set_value(ros["phase"] if widget.get_active_id() == "lobe" else rr.phase_degrees(ros))
+        self.window.loading = False
+        self.window._changed()
+
+    def _on_straight_sides(self, widget):
+        d = self.window.design
+        self.amplitude.set_value(rr.straight_sides_amplitude(rr.rosette(d, self.prefix),
+                                                             d["preview_radius"]))
+
+    def update_sensitivity(self, axis, design):
+        ros = rr.rosette(design, self.prefix)
+        self.straight.set_sensitive(ros["shape"] == "polygon" and not ros["invert"]
+                                    and axis == "X" and design["surface"] == "face")
 
 
 class DesignerWindow(Gtk.Window):
@@ -206,12 +349,10 @@ class DesignerWindow(Gtk.Window):
         grid.attach(label, 0, row, 3, 1)
         return row + 1
 
-    def _row(self, grid, row, text, widget, tip=None, extra=None):
+    def _row(self, grid, row, text, widget, tip=None):
         label = Gtk.Label(label=text, xalign=0)
         grid.attach(label, 0, row, 1, 1)
-        grid.attach(widget, 1, row, 1, 1)
-        if extra is not None:
-            grid.attach(extra, 2, row, 1, 1)
+        grid.attach(widget, 1, row, 2, 1)
         if tip:
             label.set_tooltip_text(tip)
             widget.set_tooltip_text(tip)
@@ -245,52 +386,13 @@ class DesignerWindow(Gtk.Window):
         grid = Gtk.Grid(column_spacing=8, row_spacing=4)
         unit = "in" if self.units == "inch" else "mm"
         ranges = RANGES[self.units]
-        row = self._section(grid, 0, "Rosette")
 
-        self.shape = Gtk.ComboBoxText()
-        for shape_id in rr.SHAPE_IDS:
-            self.shape.append(shape_id, rr.SHAPES[shape_id][0])
-        self.shape.connect("changed", lambda w: self._changed())
-        row = self._row(grid, row, "Shape", self.shape, "The shape of each lobe.")
-
-        self.lobes = self._spin(1, 360, 1, 0)
-        row = self._row(grid, row, "Lobes", self.lobes,
-                        "How many times the shape repeats around the rosette (e.g. 24 for a Sine 24).")
-
-        self.amplitude = self._spin(*ranges["amplitude"])
-        self.straight = Gtk.Button(label="Straight sides")
-        self.straight.set_tooltip_text("Sets the amplitude that makes a plain polygon's sides straight "
-                                       "at the preview radius.")
-        self.straight.connect("clicked", self._on_straight_sides)
-        row = self._row(grid, row, "Amplitude (%s)" % unit, self.amplitude,
-                        "How far the cutter moves, peak to peak, as at the rubber of a rose engine.",
-                        self.straight)
-
-        self.phase = self._spin(0.0, 1.0, 0.05, 3)
-        phase_box, self.phase_unit = self._radios((("lobe", "of a lobe"), ("deg", "degrees")))
-        for button in self.phase_unit.values():
-            button.connect("toggled", self._on_phase_unit)
-        row = self._row(grid, row, "Phase", self.phase,
-                        "Turns the rosette relative to the work: a fraction of one lobe (0.5 = half a "
-                        "lobe), or degrees of the spindle.", phase_box)
-
-        self.invert = Gtk.CheckButton(label="Invert")
-        self.invert.set_tooltip_text("Turns the shape inside out (points become hollows).")
-        self.invert.connect("toggled", lambda w: self._changed())
-        grid.attach(self.invert, 1, row, 2, 1)
-        row += 1
-
-        self.rubber = Gtk.ComboBoxText()
-        self.rubber.append("point", "Point")
-        self.rubber.set_tooltip_text("The rubber that follows the rosette. Only a point for now - "
-                                     "it follows the shape exactly.")
-        self.rubber.connect("changed", lambda w: self._changed())
-        row = self._row(grid, row, "Rubber", self.rubber)
-
-        row = self._section(grid, row, "Movement")
-        motion_box, self.motion = self._radios((("rock", "Rocking (X)"), ("pump", "Pumping (Z)")))
+        row = self._section(grid, 0, "Movement")
+        motion_box, self.motion = self._radios((("rock", "Rocking (X)"), ("pump", "Pumping (Z)"),
+                                                ("both", "Both")))
         row = self._row(grid, row, "Motion", motion_box,
-                        "Rocking moves the cutter in X, pumping in Z.")
+                        "Rocking moves the cutter in X, pumping in Z; Both uses a rosette for each, "
+                        "as with two rosettes engaged on a rose engine.")
         surface_box, self.surface = self._radios((("face", "Face"), ("side", "Side")))
         row = self._row(grid, row, "Cutting on", surface_box,
                         "Where the cut is: the face (end) of the work, or its side. Sets which axis "
@@ -300,6 +402,21 @@ class DesignerWindow(Gtk.Window):
                         "How fast C turns the work while cutting.")
         direction_box, self.c_direction = self._radios(((1, "+"), (-1, "-")))
         row = self._row(grid, row, "C direction", direction_box, "Which way C turns.")
+
+        # The rosettes: one column each, sharing the row labels.
+        row = self._section(grid, row, "Rosette")
+        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "", "Phase", "")):
+            grid.attach(Gtk.Label(label=text, xalign=0), 0, row + i, 1, 1)
+        self.rosette_controls = [RosetteControls(self, grid, 1, row, ""),
+                                 RosetteControls(self, grid, 2, row, rr.SECOND)]
+        row = self.rosette_controls[0].last_row + 1
+
+        self.rubber = Gtk.ComboBoxText()
+        self.rubber.append("point", "Point")
+        self.rubber.connect("changed", lambda w: self._changed())
+        row = self._row(grid, row, "Rubber", self.rubber,
+                        "The rubber that follows the rosette. Only a point for now - it follows the "
+                        "shape exactly.")
 
         row = self._section(grid, row, "Depth")
         self.mode_passes = Gtk.RadioButton.new_with_label_from_widget(None, "Passes, deeper each time")
@@ -340,7 +457,7 @@ class DesignerWindow(Gtk.Window):
 
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.set_min_content_width(470)
+        scroll.set_min_content_width(560)
         # Ask for the whole form's height (scrolls only on a small screen).
         scroll.set_propagate_natural_height(True)
         scroll.add(grid)
@@ -349,7 +466,6 @@ class DesignerWindow(Gtk.Window):
     def _build_previews(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
         self.profile_title = Gtk.Label(xalign=0)
-        self.profile_title.set_markup("<b>The rosette</b> - how far the cutter moves as the work turns")
         box.pack_start(self.profile_title, False, False, 0)
         self.profile_area = Gtk.DrawingArea()
         self.profile_area.set_size_request(400, 170)
@@ -369,13 +485,8 @@ class DesignerWindow(Gtk.Window):
     def _put_design_in_form(self):
         d = self.design
         self.loading = True
-        self.shape.set_active_id(d["shape"])
-        self.lobes.set_value(d["lobes"])
-        self.amplitude.set_value(d["amplitude"])
-        self.phase_unit[d["phase_unit"]].set_active(True)
-        self._set_phase_range()
-        self.phase.set_value(d["phase"] if d["phase_unit"] == "lobe" else rr.phase_degrees(d))
-        self.invert.set_active(d["invert"])
+        for controls in self.rosette_controls:
+            controls.put(d)
         self.rubber.set_active_id(d["rubber"])
         self.motion[d["motion"]].set_active(True)
         self.surface[d["surface"]].set_active(True)
@@ -390,49 +501,12 @@ class DesignerWindow(Gtk.Window):
         self.preview_radius.set_value(d["preview_radius"])
         self.loading = False
 
-    def _chosen(self, radios):
+    @staticmethod
+    def _chosen(radios):
         return next(value for value, button in radios.items() if button.get_active())
 
-    def _set_phase_range(self):
-        if self._chosen(self.phase_unit) == "lobe":
-            self.phase.set_range(0.0, 1.0)
-            self.phase.set_increments(0.05, 0.25)
-            self.phase.set_digits(3)
-        else:
-            lobe_deg = 360.0 / max(int(self.lobes.get_value()), 1)
-            self.phase.set_range(0.0, lobe_deg)
-            self.phase.set_increments(0.5, 5.0)
-            self.phase.set_digits(2)
-
-    def _on_phase_unit(self, widget):
-        # Keep the same phase, shown in the other unit.
-        if self.loading or not widget.get_active():
-            return
-        fraction = self.design["phase"]
-        self.loading = True
-        self._set_phase_range()
-        self.phase.set_value(fraction if self._chosen(self.phase_unit) == "lobe"
-                             else fraction * 360.0 / self.design["lobes"])
-        self.loading = False
-        self._changed()
-
     def _read_form(self):
-        lobes = int(self.lobes.get_value())
-        unit = self._chosen(self.phase_unit)
-        phase = self.phase.get_value()
-        if unit == "deg":
-            phase = phase * lobes / 360.0
-            # The degrees range follows the lobes.
-            self.loading = True
-            self._set_phase_range()
-            self.loading = False
-        return rr.clean_design({
-            "shape": self.shape.get_active_id(),
-            "lobes": lobes,
-            "amplitude": self.amplitude.get_value(),
-            "phase": phase,
-            "phase_unit": unit,
-            "invert": self.invert.get_active(),
+        values = {
             "rubber": self.rubber.get_active_id() or "point",
             "motion": self._chosen(self.motion),
             "surface": self._chosen(self.surface),
@@ -446,25 +520,33 @@ class DesignerWindow(Gtk.Window):
             "deeper_plus": self.deeper_plus.get_active(),
             "preview_radius": self.preview_radius.get_value(),
             "units": self.units,
-        })
+        }
+        self.loading = True
+        for controls in self.rosette_controls:
+            values.update(controls.read())
+        self.loading = False
+        return rr.clean_design(values)
 
     def _changed(self):
         if self.loading:
             return
         self.design = self._read_form()
-        passes = self.design["depth_mode"] == "passes"
+        d = self.design
+        passes = d["depth_mode"] == "passes"
         for widget in (self.passes, self.depth_per_pass, self.plunge_feed):
             widget.set_sensitive(passes)
         self.turns.set_sensitive(not passes)
-        self.straight.set_sensitive(self.design["shape"] == "polygon" and not self.design["invert"])
+        both = d["motion"] == "both"
+        self.rosette_controls[1].set_shown(both)
+        for column, controls in enumerate(self.rosette_controls):
+            heading = ROSETTE_HEADINGS.get((d["motion"], column), "")
+            controls.heading.set_markup("<i>%s</i>" % heading)
+            axis = "Z" if (d["motion"] == "pump" or column == 1) else "X"
+            controls.update_sensitivity(axis, d)
         self._update_info()
         self.profile_area.queue_draw()
         self.cut_area.queue_draw()
         self._save_last_design()
-
-    def _on_straight_sides(self, widget):
-        d = self.design
-        self.amplitude.set_value(rr.straight_sides_amplitude(d, d["preview_radius"]))
 
     #################################################################
     # Information and warnings
@@ -484,10 +566,10 @@ class DesignerWindow(Gtk.Window):
         d = self.design
         points = rr.turn_points(d)
         angles, offsets, capped = points
-        letter = rr.motion_axis(d)
-        limit = self._axis_limit(letter)
+        moving = sorted(offsets)
+        limits = {axis: self._axis_limit(axis) for axis in moving}
         c_limit = self._axis_limit("C")
-        seconds, nominal = rr.turn_time(d, limit, c_limit, points)
+        seconds, nominal = rr.turn_time(d, limits, c_limit, points)
         count = d["passes"] if d["depth_mode"] == "passes" else d["turns"]
         unit = "in" if self.units == "inch" else "mm"
         text = ("%d points per turn.  One turn takes about %s; the whole program about %s."
@@ -497,7 +579,7 @@ class DesignerWindow(Gtk.Window):
 
         warnings = []
         roles = self._assigned_roles()
-        needed = sorted(set(["C", rr.motion_axis(d), rr.depth_axis(d)]))
+        needed = sorted(set(["C", rr.depth_axis(d)] + moving))
         missing = [axis for axis in needed if axis not in roles]
         if missing:
             warnings.append("%s %s not assigned to a channel in Rosetta Settings - the program "
@@ -509,10 +591,13 @@ class DesignerWindow(Gtk.Window):
                             % self._number(c_limit / 6.0))
         c_only, _ = rr.turn_time(d, None, c_limit, points)
         if seconds > c_only * 1.02:
-            warnings.append("%s can't always keep up with C at this speed (its Max Speed is %s %s/sec), "
-                            "so C slows down at the steepest places - one turn takes about %s instead "
-                            "of %s." % (letter, self._number(limit), unit,
-                                        self._duration(seconds / 60.0), self._duration(nominal / 60.0)))
+            slow = [axis for axis in moving
+                    if rr.turn_time(d, {axis: limits[axis]}, c_limit, points)[0] > c_only * 1.02]
+            warnings.append("%s can't always keep up with C at this speed (Max Speed %s), so C slows "
+                            "down at the steepest places - one turn takes about %s instead of %s."
+                            % (" and ".join(slow) or "An axis",
+                               ", ".join("%s %s %s/sec" % (a, self._number(limits[a]), unit) for a in slow),
+                               self._duration(seconds / 60.0), self._duration(nominal / 60.0)))
         if capped:
             warnings.append("This rosette needs more than %d points per turn, so the cut will be "
                             "slightly less exact." % rr.MAX_POINTS_PER_TURN)
@@ -521,14 +606,24 @@ class DesignerWindow(Gtk.Window):
                                      % GLib.markup_escape_text(w) for w in warnings)
         self.info.set_markup(text)
 
-        surface, motion = d["surface"], d["motion"]
-        titles = {
-            ("face", "rock"): "the groove on the face, seen from the end",
-            ("side", "pump"): "the groove around the side, unrolled",
-            ("face", "pump"): "the face, seen from the end - darker is deeper",
-            ("side", "rock"): "the side, unrolled - darker is deeper",
-        }
-        self.cut_title.set_markup("<b>The cut</b> - " + titles[(surface, motion)])
+        if d["motion"] == "both":
+            self.profile_title.set_markup("<b>The rosettes</b> - how far the cutter moves as the work "
+                                          "turns: <span foreground='#1a1a5a'>X (rocking)</span>, "
+                                          "<span foreground='#992619'>Z (pumping)</span>")
+        else:
+            self.profile_title.set_markup("<b>The rosette</b> - how far the cutter moves as the work turns")
+        lateral, depth = self._lateral_axis(d), rr.depth_axis(d)
+        across = lateral in offsets
+        into = depth in offsets
+        where = "on the face, seen from the end" if d["surface"] == "face" else "around the side, unrolled"
+        if across and into:
+            what = "the groove %s - darker is deeper" % where
+        elif across:
+            what = "the groove %s" % where
+        else:
+            what = "%s - darker is deeper" % ("the face, seen from the end" if d["surface"] == "face"
+                                              else "the side, unrolled")
+        self.cut_title.set_markup("<b>The cut</b> - " + what)
 
     def _number(self, value):
         return ("%.4f" if self.units == "inch" else "%.3f") % value
@@ -545,14 +640,20 @@ class DesignerWindow(Gtk.Window):
     #################################################################
     # Drawings
     #################################################################
+    @staticmethod
+    def _lateral_axis(d):
+        '''The axis that moves the cutter across the surface (not into it).'''
+        return "X" if d["surface"] == "face" else "Z"
+
     def _draw_profile(self, area, cr):
         width, height = area.get_allocated_width(), area.get_allocated_height()
         cr.set_source_rgb(*BACKGROUND)
         cr.paint()
         d = self.design
         theta = numpy.linspace(0.0, 360.0, 2000)
-        y = rr.offset(d, theta)
-        low, high = min(y.min(), -d["amplitude"]), max(y.max(), 0.0)
+        curves = {axis: rr.offset(ros, theta) for axis, ros in rr.rosettes(d).items()}
+        low = min(min(y.min() for y in curves.values()), 0.0)
+        high = max(max(y.max() for y in curves.values()), 0.0)
         span = max(high - low, 1e-9)
         left, right, top, bottom = 40, width - 10, 14, height - 22
 
@@ -574,52 +675,29 @@ class DesignerWindow(Gtk.Window):
         cr.stroke()
         cr.move_to(2, y0 + 4)
         cr.show_text("start")
-        cr.set_source_rgb(*INK)
-        cr.set_line_width(1.6)
-        for i, (t, v) in enumerate(zip(theta, y)):
-            (cr.move_to if i == 0 else cr.line_to)(*px(t, v))
-        cr.stroke()
+        for axis, y in curves.items():
+            cr.set_source_rgb(*AXIS_INK[axis])
+            cr.set_line_width(1.6)
+            for i, (t, v) in enumerate(zip(theta, y)):
+                (cr.move_to if i == 0 else cr.line_to)(*px(t, v))
+            cr.stroke()
 
     def _draw_cut(self, area, cr):
         width, height = area.get_allocated_width(), area.get_allocated_height()
         cr.set_source_rgb(*BACKGROUND)
         cr.paint()
         d = self.design
-        steps = int(min(max(2000, d["lobes"] * 60), 20000))
+        ros = rr.rosettes(d)
+        most_lobes = max(r["lobes"] for r in ros.values())
+        steps = int(min(max(2000, most_lobes * 60), 20000))
         theta = numpy.linspace(0.0, 360.0, steps)
-        y = rr.offset(d, theta)
+        lateral_axis, depth_axis = self._lateral_axis(d), rr.depth_axis(d)
+        lateral = rr.offset(ros[lateral_axis], theta) if lateral_axis in ros else None
+        depth = self._depths(rr.offset(ros[depth_axis], theta), d) if depth_axis in ros else None
         if d["surface"] == "face":
-            self._draw_face(cr, width, height, theta, y, d)
+            self._draw_face(cr, width, height, theta, lateral, depth, d)
         else:
-            self._draw_side(cr, width, height, theta, y, d)
-
-    def _draw_face(self, cr, width, height, theta, y, d):
-        radius = d["preview_radius"]
-        outer = radius + (d["amplitude"] if d["motion"] == "rock" else 0) * 1.1 + radius * 0.15
-        scale = 0.46 * min(width, height) / outer
-        cx, cy = width / 2.0, height / 2.0
-        cr.set_source_rgb(*WOOD)
-        cr.arc(cx, cy, outer * scale, 0, 2 * math.pi)
-        cr.fill()
-        cr.set_source_rgb(*GUIDE)
-        cr.set_line_width(1)
-        cr.arc(cx, cy, radius * scale, 0, 2 * math.pi)
-        cr.stroke()
-        angles = numpy.radians(theta)
-        if d["motion"] == "rock":
-            r = numpy.clip(radius + y, 0.0, None)
-            cr.set_source_rgb(*INK)
-            cr.set_line_width(2.0)
-            for i in range(len(theta)):
-                point = (cx + r[i] * scale * math.cos(angles[i]), cy - r[i] * scale * math.sin(angles[i]))
-                (cr.move_to if i == 0 else cr.line_to)(*point)
-            cr.close_path()
-            cr.stroke()
-        else:
-            self._depth_ring(cr, cx, cy, radius * scale, max(6.0, radius * scale * 0.08), angles, y, d)
-        cr.set_source_rgb(*INK)
-        cr.arc(cx, cy, 2.5, 0, 2 * math.pi)
-        cr.fill()
+            self._draw_side(cr, width, height, theta, lateral, depth, d)
 
     @staticmethod
     def _depths(y, d):
@@ -632,15 +710,48 @@ class DesignerWindow(Gtk.Window):
     def _depth_shade(depth):
         return (0.85 - 0.75 * depth, 0.80 - 0.70 * depth, 0.75 - 0.45 * depth)
 
-    def _depth_ring(self, cr, cx, cy, r, band, angles, y, d):
-        cr.set_line_width(band)
-        depths = self._depths(y, d)
-        for i in range(len(angles) - 1):
-            cr.set_source_rgb(*self._depth_shade(depths[i]))
-            cr.arc_negative(cx, cy, r, -angles[i], -angles[i + 1] - 0.002)
+    def _stroke_path(self, cr, points, depth, width):
+        '''A line through points; shaded by depth (0..1 each) if given.'''
+        cr.set_line_width(width)
+        if depth is None:
+            cr.set_source_rgb(*INK)
+            for i, p in enumerate(points):
+                (cr.move_to if i == 0 else cr.line_to)(*p)
+            cr.stroke()
+            return
+        cr.set_line_cap(1)      # round, so the short pieces join up
+        for i in range(len(points) - 1):
+            cr.set_source_rgb(*self._depth_shade(depth[i]))
+            cr.move_to(*points[i])
+            cr.line_to(*points[i + 1])
             cr.stroke()
 
-    def _draw_side(self, cr, width, height, theta, y, d):
+    def _draw_face(self, cr, width, height, theta, lateral, depth, d):
+        radius = d["preview_radius"]
+        spread = numpy.max(numpy.abs(lateral)) if lateral is not None else 0.0
+        outer = radius + spread * 1.1 + radius * 0.15
+        scale = 0.46 * min(width, height) / outer
+        cx, cy = width / 2.0, height / 2.0
+        cr.set_source_rgb(*WOOD)
+        cr.arc(cx, cy, outer * scale, 0, 2 * math.pi)
+        cr.fill()
+        cr.set_source_rgb(*GUIDE)
+        cr.set_line_width(1)
+        cr.arc(cx, cy, radius * scale, 0, 2 * math.pi)
+        cr.stroke()
+        angles = numpy.radians(theta)
+        r = numpy.clip(radius + (lateral if lateral is not None else 0.0), 0.0, None)
+        points = list(zip(cx + r * scale * numpy.cos(angles), cy - r * scale * numpy.sin(angles)))
+        if lateral is None:
+            # Pumping alone: a band of even width, shaded by depth.
+            self._stroke_path(cr, points, depth, max(6.0, radius * scale * 0.08))
+        else:
+            self._stroke_path(cr, points, depth, 2.0 if depth is None else 4.0)
+        cr.set_source_rgb(*INK)
+        cr.arc(cx, cy, 2.5, 0, 2 * math.pi)
+        cr.fill()
+
+    def _draw_side(self, cr, width, height, theta, lateral, depth, d):
         left, right = 20, width - 20
         top, bottom = 30, height - 30
         cr.set_source_rgb(*WOOD)
@@ -654,29 +765,24 @@ class DesignerWindow(Gtk.Window):
         cr.move_to(left, top - 10)
         cr.show_text("around the work ->")
         mid = (top + bottom) / 2.0
-        if d["motion"] == "pump":
-            # The groove wanders along Z: scale so the full amplitude
-            # fills half the band, but never exaggerate more than the
-            # band's own size in circumference terms.
-            circumference = 2 * math.pi * d["preview_radius"]
-            scale = (right - left) / circumference
-            scale = min(scale, (bottom - top) * 0.4 / max(d["amplitude"], 1e-9))
-            cr.set_source_rgb(*INK)
-            cr.set_line_width(2.0)
-            for i, (t, v) in enumerate(zip(theta, y)):
-                point = (left + (right - left) * t / 360.0, mid - v * scale - d["amplitude"] * scale / 2)
-                (cr.move_to if i == 0 else cr.line_to)(*point)
-            cr.stroke()
-        else:
+        xs = left + (right - left) * theta / 360.0
+        if lateral is None:
+            # Rocking alone on the side: a band of even width, shaded by depth.
             band = (bottom - top) * 0.2
-            cr.set_line_width(1.0)
-            depths = self._depths(y, d)
             for i in range(len(theta) - 1):
-                x0 = left + (right - left) * theta[i] / 360.0
-                x1 = left + (right - left) * theta[i + 1] / 360.0
-                cr.set_source_rgb(*self._depth_shade(depths[i]))
-                cr.rectangle(x0, mid - band / 2, max(x1 - x0, 0.6), band)
+                cr.set_source_rgb(*self._depth_shade(depth[i]))
+                cr.rectangle(xs[i], mid - band / 2, max(xs[i + 1] - xs[i], 0.6), band)
                 cr.fill()
+            return
+        # The groove wanders along Z, drawn to scale (the band is the
+        # work's circumference wide), unless that would overflow it.
+        circumference = 2 * math.pi * d["preview_radius"]
+        scale = (right - left) / circumference
+        spread = max(numpy.ptp(lateral), 1e-9)
+        scale = min(scale, (bottom - top) * 0.8 / spread)
+        centre = (lateral.max() + lateral.min()) / 2.0
+        points = list(zip(xs, mid - (lateral - centre) * scale))
+        self._stroke_path(cr, points, depth, 2.0 if depth is None else 4.0)
 
     #################################################################
     # Buttons
@@ -781,7 +887,7 @@ class DesignerWindow(Gtk.Window):
 
 def main():
     window = DesignerWindow()
-    window.show_all()
+    window.show_all()       # the hidden rosette column stays hidden (set_no_show_all)
     Gtk.main()
 
 
