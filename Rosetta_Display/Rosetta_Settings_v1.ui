@@ -3003,6 +3003,249 @@ Each choice is saved as soon as you make it, and takes effect the next time Linu
                                           <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alerts_Enabled">
+                                                <property name="label" translatable="yes">Send alerts to my phone</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">Check to have Rosetta send a message to your phone, through the free ntfy app, when the things ticked under Send When happen. The Pi needs the internet. Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alerts_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="Phone_Alerts_Topic_Label">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="label" translatable="yes">ntfy topic:</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEntry" id="Phone_Alerts_Topic">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="tooltip-text" translatable="yes">The topic to subscribe to in the ntfy app on your phone - type it there exactly. Anyone who knows it can read your alerts, so keep it private. Letters, numbers, - and _ only. Saved when you press Enter or leave the box.</property>
+                                                <property name="width-chars">22</property>
+                                                <signal name="activate" handler="Phone_Alerts_Topic_Done" swapped="no"/>
+                                                <signal name="focus-out-event" handler="Phone_Alerts_Topic_Focus_Out" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="Phone_Alerts_Test">
+                                                <property name="label" translatable="yes">Send Test Message</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="tooltip-text" translatable="yes">Sends a test message to the topic now, so you can check it arrives on your phone.</property>
+                                                <property name="halign">start</property>
+                                                <signal name="clicked" handler="Phone_Alerts_Test_Clicked" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="Phone_Alerts_Status">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="label" translatable="yes"></property>
+                                                <property name="wrap">True</property>
+                                                <property name="max-width-chars">28</property>
+                                                <property name="use-markup">True</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Phone Alerts</property>
+                                            <attributes>
+                                              <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                              <attribute name="weight" value="bold"/>
+                                            </attributes>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">7</property>
+                                        <property name="width">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label-xalign">0</property>
+                                        <child>
+                                          <object class="GtkBox" id="Phone_Alerts_Events">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alert_done">
+                                                <property name="label" translatable="yes">Finished</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">A G-code program, a Sync Move or a Cut Thread finished. Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alert_Event_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alert_pause">
+                                                <property name="label" translatable="yes">Paused (M0/M1)</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">A program stopped at M0 or M1 to wait for you. Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alert_Event_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alert_fault">
+                                                <property name="label" translatable="yes">Fault siren</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">A following error or a tripped limit switch stopped the machine. Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alert_Event_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alert_pi_temp">
+                                                <property name="label" translatable="yes">Pi too hot</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">The Raspberry Pi reached its Alarm temperature (Other page). Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alert_Event_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkCheckButton" id="Phone_Alert_card">
+                                                <property name="label" translatable="yes">Box lost contact</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="receives-default">False</property>
+                                                <property name="tooltip-text" translatable="yes">The base box or expansion box lost contact with the Pi - E-stop. Takes effect the next time LinuxCNC starts.</property>
+                                                <property name="halign">start</property>
+                                                <property name="draw-indicator">True</property>
+                                                <signal name="toggled" handler="Phone_Alert_Event_Toggled" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="label">
+                                          <object class="GtkLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="label" translatable="yes">Send When</property>
+                                            <attributes>
+                                              <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                              <attribute name="weight" value="bold"/>
+                                            </attributes>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">2</property>
+                                        <property name="top-attach">7</property>
+                                        <property name="width">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="margin-right">10</property>
+                                        <property name="margin-end">10</property>
+                                        <property name="label" translatable="yes">Phone Alerts</property>
+                                        <attributes>
+                                          <attribute name="font-desc" value="DejaVu Serif 12"/>
+                                          <attribute name="weight" value="bold"/>
+                                        </attributes>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">7</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkFrame">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label-xalign">0</property>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
                                             <property name="halign">center</property>
                                             <property name="valign">center</property>
                                             <property name="orientation">vertical</property>
@@ -3652,6 +3895,81 @@ The button plugs into the E-stop (GX-16) plug. Check Connected only when a butto
                                             <property name="expand">False</property>
                                             <property name="fill">True</property>
                                             <property name="position">7</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">start</property>
+                                            <property name="margin-top">18</property>
+                                            <property name="label" translatable="yes">Phone Alerts</property>
+                                            <attributes>
+                                              <attribute name="font-desc" value="DejaVu Serif 16"/>
+                                              <attribute name="weight" value="bold"/>
+                                              <attribute name="foreground" value="#1a1a5f5fb4b4"/>
+                                            </attributes>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">8</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkBox" id="Phone_Alerts_Notes_Row">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="spacing">12</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="halign">start</property>
+                                                <property name="valign">start</property>
+                                                <property name="label" translatable="yes">Rosetta can send a message to your phone when something happens, so you can leave the machine while it works. It uses the free ntfy app (App Store or Google Play):
+                                            1. Check Send alerts to my phone - a private topic name is made for you.
+                                            2. In the ntfy app, tap + and type in the topic exactly.
+                                            3. Press Send Test Message and check it arrives.
+                                            4. Tick what you want to hear about under Send When.
+
+                                        Anyone who knows the topic can read your alerts, so keep it to yourself. The Pi needs the internet; if it can't reach ntfy, the message is lost. &lt;b&gt;Note:&lt;/b&gt; phone alerts are a convenience, not a safety device - never leave a running machine where you couldn't get back to it.</property>
+                                                <property name="use-markup">True</property>
+                                                <property name="wrap">True</property>
+                                                <property name="xalign">0</property>
+                                                <attributes>
+                                                  <attribute name="font-desc" value="DejaVu Serif 10"/>
+                                                </attributes>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="Phone_Alerts_How_Link">
+                                                <property name="label" translatable="yes">How Phone Alerts Work</property>
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="tooltip-text" translatable="yes">Opens the User Manual page on phone alerts.</property>
+                                                <property name="valign">start</property>
+                                                <property name="margin-end">6</property>
+                                                <signal name="clicked" handler="Open_Manual_Link" swapped="no"/>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">9</property>
                                           </packing>
                                         </child>
                                       </object>

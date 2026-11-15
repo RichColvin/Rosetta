@@ -27,6 +27,8 @@
 #
 # Version
 #   1.0 - 21 July 2026
+#   1.1 - 15 November 2026 - phone alerts (ntfy app): finished,
+#         paused, fault siren, Pi too hot, box lost contact
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -79,6 +81,7 @@ from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GLib
 import rosetta_settings_io
+import rosetta_phone_alerts
 
 SETTINGS_PATH = os.path.expanduser("~/Documents/RosettaSet_v1.ini")
 
@@ -458,6 +461,11 @@ PI_HEALTH_PATH = os.path.expanduser("~/.config/Rosetta/pi_health.json")
 PI_HEALTH_SAVE_STEP = 0.5
 PI_TEMP_COLORS = {0: None, 1: "#c06000", 2: "#c01c28"}
 OVERHEAT_SOUND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Sounds", "Rosetta_Overheat.wav")
+
+# Phone alerts (see "Phone alerts" below). A lost card also sets off
+# the fault siren, so the fault alert waits this long and isn't sent if
+# a card was lost - its own alert says more.
+FAULT_ALERT_DELAY_MS = 1500
 
 # Card contact (see _poll_card_contact). The cards' names on screen.
 CARD_NAMES = {0: "Base box", 1: "Expansion box"}
@@ -3137,7 +3145,7 @@ class HandlerClass:
         self._mdi_progress_end(finished)
         if finished:
             self._sync_resume = None
-            self._play_sound(DONE_BEEPS)
+            self._play_sound(DONE_BEEPS, "Sync Move finished.")
 
     def Sync_Return(self, widget):
         '''
@@ -3613,7 +3621,7 @@ class HandlerClass:
         finished = (int(round(self._thread_last_code)) % 10000) // 1000 == THREAD_KIND_DONE
         self._mdi_progress_end(finished)
         if finished:
-            self._play_sound(DONE_BEEPS)
+            self._play_sound(DONE_BEEPS, "Threading finished.")
 
     def Thread_Return(self, widget):
         '''
@@ -3659,10 +3667,11 @@ class HandlerClass:
 #                       read once at startup, like the tower itself).
 #                       Also plays the fault siren on the speaker, per
 #                       "fault_sound" (the tower's own siren is all HAL).
+#                       Each of these also sends its phone alert, if on,
+#                       whatever the sound settings (see Phone alerts).
 #                       Only the main panel component plays them; every
 #                       other component no-ops.
-# Updated:              ver 1.1, 20 October 2026 - program finish
-#                       detection (_poll_program)
+# Updated:              ver 1.2, 15 November 2026 - phone alerts
 #######################################################################
     def _load_sounds(self):
         if self.builder.get_object("Sync_Run") is None:
@@ -3688,9 +3697,12 @@ class HandlerClass:
         # Fault siren for the speaker: netted (in Rosetta_PostGUI_v1.local.hal)
         # to the tower-siren pulse only when fault_sound includes the
         # speaker. The pulse lasts 3 s, so polling can't miss it.
+        # Also netted when the fault phone alert is on (_read_fault_to_panel
+        # in Rosetta_Generate_Local_Ini.py).
         self.halcomp.newpin("fault-siren", hal.HAL_BIT, hal.HAL_IN)
         self._fault_siren_was_on = False
-        if fault_speaker and self._sound_player is not None:
+        self._fault_siren_speaker = fault_speaker and self._sound_player is not None
+        if self._fault_siren_speaker or self._phone_alert_wanted("fault"):
             GLib.timeout_add(PROGRAM_POLL_MS, self._poll_fault_siren)
 
         # Pulsed in the beep pattern; Rosetta_Generate_Local_Ini.py nets it
@@ -3706,9 +3718,19 @@ class HandlerClass:
         self._program_read_end = False
         GLib.timeout_add(PROGRAM_POLL_MS, self._poll_program)
 
-    def _play_sound(self, beeps):
+    def _play_sound(self, beeps, alert=None):
+        '''
+        Plays the done (DONE_BEEPS) or pause (PAUSE_BEEPS) sound, and
+        sends alert - what happened, in a sentence - as that event's
+        phone alert.
+        '''
         if self.builder.get_object("Sync_Run") is None:
             return
+        if alert:
+            if beeps == PAUSE_BEEPS:
+                self._phone_alert("pause", alert, rosetta_phone_alerts.PRIORITY_HIGH, "pause_button")
+            else:
+                self._phone_alert("done", alert, rosetta_phone_alerts.PRIORITY_NORMAL, "white_check_mark")
         print("Attention sound: %d beeps" % beeps)
         if self._sound_speaker:
             self._play_on_speaker(SOUND_FILES[beeps])
@@ -3731,7 +3753,10 @@ class HandlerClass:
         on = self.halcomp["fault-siren"]
         if on and not self._fault_siren_was_on:
             print("Fault siren")
-            self._play_on_speaker(SOUND_FILES[FAULT_SIREN])
+            if self._fault_siren_speaker:
+                self._play_on_speaker(SOUND_FILES[FAULT_SIREN])
+            if self._phone_alert_wanted("fault"):
+                GLib.timeout_add(FAULT_ALERT_DELAY_MS, self._send_fault_alert)
         self._fault_siren_was_on = on
         return True
 
@@ -3812,7 +3837,8 @@ class HandlerClass:
         if paused and not self._program_was_paused:
             if self._line_is_operator_stop(s.file, s.current_line) or \
                     self._line_is_operator_stop(s.file, s.motion_line):
-                self._play_sound(PAUSE_BEEPS)
+                self._play_sound(PAUSE_BEEPS, "Program paused at line %d (%s) - waiting for you."
+                                 % (s.motion_line or s.current_line, os.path.basename(s.file)))
 
         if self._program_was_running and not running:
             finished = (s.task_state == linuxcnc.STATE_ON
@@ -3823,7 +3849,7 @@ class HandlerClass:
                      "on" if s.task_state == linuxcnc.STATE_ON else "off",
                      "finished" if finished else "stopped/aborted"), flush=True)
             if finished:
-                self._play_sound(DONE_BEEPS)
+                self._play_sound(DONE_BEEPS, "Program finished (%s)." % os.path.basename(s.file))
             self._progress_end(finished)
 
         self._progress_update(running, paused)
@@ -4131,7 +4157,8 @@ class HandlerClass:
 #                       highest temperature and undervoltage events for
 #                       the version report (PI_HEALTH_PATH). Main panel
 #                       only.
-# Updated:              ver 1.0, 13 November 2026
+# Updated:              ver 1.1, 15 November 2026 - Alarm sends
+#                       the Pi-too-hot phone alert
 #######################################################################
     @staticmethod
     def _read_sys_number(path):
@@ -4235,6 +4262,9 @@ class HandlerClass:
                        "fan is turning and the room isn't too hot." % round(temp))
             return
         print("Pi temperature ALARM: %.1f C" % temp)
+        self._phone_alert("pi_temp", "Raspberry Pi is too hot: %d °C. Check its vents and fan - "
+                          "nothing has been stopped." % round(temp),
+                          rosetta_phone_alerts.PRIORITY_HIGH, "thermometer")
         message = ("The Raspberry Pi is at %d °C.  Near 85 °C it slows itself down, which can "
                    "cause following errors or a lost-contact E-stop part way through a program." % round(temp))
         c.error_msg("Raspberry Pi is too hot: %d °C" % round(temp))
@@ -4297,6 +4327,49 @@ class HandlerClass:
 
 
 #######################################################################
+# Phone alerts
+# Purpose:              Sends a message to the operator's phone through
+#                       the ntfy app (rosetta_phone_alerts.py) when a
+#                       program, Sync Move or Cut Thread finishes, a
+#                       program pauses at M0/M1/M60, the fault siren
+#                       goes off, the Pi reaches its Alarm temperature,
+#                       or a box loses contact - each only if ticked in
+#                       Rosetta Settings (Inputs, Outputs, and Sounds
+#                       page), whatever the sound settings. Read once
+#                       at startup. Sent in the background; a message
+#                       that can't be sent is only printed. Main panel
+#                       only.
+# Updated:              ver 1.0, 15 November 2026
+#######################################################################
+    def _load_phone_alerts(self):
+        self._phone_alerts_topic = None
+        self._phone_alerts_events = set()
+        if self.builder.get_object("Sync_Run") is None:
+            return
+        enabled, topic, events = rosetta_phone_alerts.settings_from(rosetta_settings_io.load_settings())
+        if enabled:
+            self._phone_alerts_topic = topic
+            self._phone_alerts_events = events
+        print("Phone alerts: " + ("on (" + ", ".join(sorted(events)) + ")" if enabled else "off"))
+
+    def _phone_alert_wanted(self, event):
+        return self._phone_alerts_topic is not None and event in self._phone_alerts_events
+
+    def _phone_alert(self, event, message, priority=rosetta_phone_alerts.PRIORITY_NORMAL, tag=None):
+        if not self._phone_alert_wanted(event):
+            return
+        rosetta_phone_alerts.send(self._phone_alerts_topic, message, priority, [tag] if tag else None)
+
+    def _send_fault_alert(self):
+        # A lost card sets off the siren too, and has its own alert.
+        if any(getattr(self, "_card_lost", {}).values()):
+            return False
+        self._phone_alert("fault", "Fault - a following error or a limit switch stopped the "
+                          "machine.", rosetta_phone_alerts.PRIORITY_URGENT, "warning")
+        return False
+
+
+#######################################################################
 # Card contact
 # Purpose:              A Mesa card that loses contact with the Pi -
 #                       network cable, switch or the box's power - stops
@@ -4315,7 +4388,8 @@ class HandlerClass:
 #                       still unplugged fails again at once, keeping the
 #                       latch set, so F1 can't reset until it's fixed.
 #                       Main panel only.
-# Updated:              ver 1.0, 16 October 2026
+# Updated:              ver 1.1, 15 November 2026 - sends the
+#                       box-lost-contact phone alert
 #######################################################################
     def _load_card_contact(self):
         if self.builder.get_object("Sync_Run") is None:
@@ -4347,6 +4421,8 @@ class HandlerClass:
                            "the switch and its power, then press F1.")
                 print(message)
                 c.error_msg(message)
+                self._phone_alert("card", CARD_NAMES[n] + " lost contact - the machine is in E-stop.",
+                                  rosetta_phone_alerts.PRIORITY_URGENT, "rotating_light")
             elif self._card_lost[n] and not lost:
                 print(CARD_NAMES[n] + " back in contact.")
             self._card_lost[n] = lost
@@ -4525,6 +4601,10 @@ class HandlerClass:
         # _load_program_progress. Before _load_sounds, whose program poll
         # drives it.
         self._load_program_progress()
+
+        # Phone alerts (main panel only) - see _load_phone_alerts. Before
+        # _load_sounds, which asks whether the fault alert is on.
+        self._load_phone_alerts()
 
         # Program-done / pause beeps (main panel only) - see _load_sounds.
         self._load_sounds()

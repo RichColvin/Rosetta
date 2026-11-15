@@ -41,6 +41,8 @@
 #         button
 #   1.4 - 13 November 2026 - Other page: Pi Temperature (warning,
 #         alarm, alarm sound)
+#   1.5 - 15 November 2026 - Inputs, Outputs, and Sounds page: Phone
+#         Alerts (ntfy app)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -137,6 +139,8 @@ def _suppress_fd2():
 with _suppress_fd2():
     import gladevcp.hal_widgets
 import rosetta_settings_io
+import rosetta_phone_alerts
+import threading
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 UI_FILE = os.path.join(SCRIPT_DIR, "Rosetta_Settings_v1.ui")
@@ -430,6 +434,7 @@ MANUAL_LINKS = {
     "Tower_Cabling_Link":        MANUAL_URL + "SignalTowerCabling",
     "Tower_How_Link":            MANUAL_URL + "InputsOutputsSound#SignalTower",
     "Sounds_How_Link":           MANUAL_URL + "InputsOutputsSound#Sounds",
+    "Phone_Alerts_How_Link":     MANUAL_URL + "InputsOutputsSound#PhoneAlerts",
     "Expansion_Box_How_Link":    MANUAL_URL + "AxisSelection#ExpansionBox",
     "Linear_Scale_Link":         MANUAL_URL + "ScaleSettingsForADevice",
     "Rotary_Scale_Link":         MANUAL_URL + "ScaleSettingsForADevice",
@@ -1954,6 +1959,108 @@ class HandlerClass:
             return
         _save_fault_sound(widget.get_active_id())
 
+    # Phone alerts (15 November 2026) - RosettaSet_v1.ini's phone_alerts,
+    # phone_alerts_topic and phone_alerts_events, sent by Rosetta_main.py
+    # through the ntfy app (rosetta_phone_alerts.py). Each saves as soon
+    # as it changes; the topic on Enter or leaving its box. Take effect
+    # the next time LinuxCNC starts.
+    def _load_phone_alerts(self):
+        if self.builder.get_object("Phone_Alerts_Enabled") is None:
+            return
+        settings = rosetta_settings_io.load_settings()
+        _, topic, events = rosetta_phone_alerts.settings_from(settings)
+        self._applying_phone_alerts = True
+        self.builder.get_object("Phone_Alerts_Enabled").set_active(settings.get("phone_alerts") is True)
+        self.builder.get_object("Phone_Alerts_Topic").set_text(topic)
+        for event in rosetta_phone_alerts.EVENT_IDS:
+            self.builder.get_object("Phone_Alert_" + event).set_active(event in events)
+        self._applying_phone_alerts = False
+        self._apply_phone_alerts_sensitivity()
+
+    def _apply_phone_alerts_sensitivity(self):
+        on = self.builder.get_object("Phone_Alerts_Enabled").get_active()
+        for name in ("Phone_Alerts_Topic_Label", "Phone_Alerts_Topic", "Phone_Alerts_Test",
+                     "Phone_Alerts_Events"):
+            self.builder.get_object(name).set_sensitive(on)
+
+    def _phone_alerts_status(self, markup):
+        self.builder.get_object("Phone_Alerts_Status").set_markup(markup)
+
+    def _save_phone_alerts(self, **values):
+        settings = rosetta_settings_io.load_settings()
+        settings.update(values)
+        rosetta_settings_io.save_settings(settings)
+        print("Saved phone alerts: " + ", ".join("%s=%s" % kv for kv in values.items()))
+
+    def Phone_Alerts_Toggled(self, widget):
+        if self._applying_phone_alerts:
+            return
+        on = widget.get_active()
+        entry = self.builder.get_object("Phone_Alerts_Topic")
+        values = {"phone_alerts": on}
+        if on and not entry.get_text().strip():
+            # A private topic of its own - see rosetta_phone_alerts.new_topic.
+            entry.set_text(rosetta_phone_alerts.new_topic())
+            values["phone_alerts_topic"] = entry.get_text()
+        self._save_phone_alerts(**values)
+        self._apply_phone_alerts_sensitivity()
+        self._phone_alerts_status("")
+
+    def _save_phone_alerts_topic(self):
+        if self._applying_phone_alerts:
+            return
+        topic = self.builder.get_object("Phone_Alerts_Topic").get_text().strip()
+        if not rosetta_phone_alerts.topic_ok(topic):
+            self._phone_alerts_status('<span foreground="red" weight="bold">Letters, numbers, - and _ '
+                                      'only (at most 64) - not saved.</span>')
+            return
+        if topic != rosetta_settings_io.load_settings().get("phone_alerts_topic"):
+            self._save_phone_alerts(phone_alerts_topic=topic)
+        self._phone_alerts_status("")
+
+    def Phone_Alerts_Topic_Done(self, widget):
+        self._save_phone_alerts_topic()
+
+    def Phone_Alerts_Topic_Focus_Out(self, widget, event):
+        self._save_phone_alerts_topic()
+        return False
+
+    def Phone_Alert_Event_Toggled(self, widget):
+        if self._applying_phone_alerts:
+            return
+        events = [e for e in rosetta_phone_alerts.EVENT_IDS
+                  if self.builder.get_object("Phone_Alert_" + e).get_active()]
+        self._save_phone_alerts(phone_alerts_events=events)
+
+    def Phone_Alerts_Test_Clicked(self, widget):
+        '''
+        Sends a test message now, in the background (it can take up to
+        rosetta_phone_alerts.SEND_TIMEOUT_SECONDS), and says how it went.
+        '''
+        self._save_phone_alerts_topic()
+        topic = self.builder.get_object("Phone_Alerts_Topic").get_text().strip()
+        if not rosetta_phone_alerts.topic_ok(topic):
+            return
+        widget.set_sensitive(False)
+        self._phone_alerts_status("Sending...")
+
+        def worker():
+            problem = rosetta_phone_alerts.send_now(
+                topic, "Test message from Rosetta Settings - phone alerts are working.")
+            GLib.idle_add(done, problem)
+
+        def done(problem):
+            widget.set_sensitive(True)
+            if problem:
+                self._phone_alerts_status('<span foreground="red" weight="bold">Not sent: %s</span>'
+                                          % GLib.markup_escape_text(problem))
+            else:
+                self._phone_alerts_status('<span foreground="#26a269" weight="bold">Sent - check your '
+                                          'phone.</span>')
+            return False
+
+        threading.Thread(target=worker, daemon=True).start()
+
     def _load_version_label(self):
         '''
         Appends ", Machine S/N <n>" to each page's "O/S ..." label
@@ -3172,6 +3279,10 @@ class HandlerClass:
         # Fault_Sound combo.
         self._applying_fault_sound = False
 
+        # Same suppression as above, for _load_phone_alerts driving the
+        # Phone Alerts controls.
+        self._applying_phone_alerts = False
+
         # Restore persisted axis scale values (RosettaSet_v1.ini) into the
         # spin buttons and the real stepgen scale pins.
         self._load_scale_settings()
@@ -3242,6 +3353,7 @@ class HandlerClass:
         self._load_pi_temp()
         self._load_done_sound()
         self._load_fault_sound()
+        self._load_phone_alerts()
 
         # Append ", Machine S/N <n>" to each page's "O/S ..." label
         # if this owner has set a friendly serial number.
