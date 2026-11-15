@@ -163,7 +163,14 @@ Bill.
   Ferraglio, SOT Bulletin 52; Jerry Decker's modern build). p1-14 are
   the old Holtzapffel guide; p15-21 are a modern write-up - its paper
   drawings (right-hand side of p15-18) can be used (Rich); keep its
-  3D simulations and text as reference. Start with D.
+  3D simulations and text as reference. Start with D, and C with it:
+  **C is the inverse of D** (Rich, 15 November 2026). Invert already
+  turns any rosette over, for pumping as well as rocking (on a rose
+  engine only rocking can swap sides - near side / far side - which is
+  why C exists as a rosette of its own), but list C as its own shape
+  (D turned over) so it can be found by its Holtzapffel letter. Check
+  each letter for being another one turned over before writing a new
+  shape.
   **From p20-21, for stage 3/4** (Rich: de la Condamine's approach is
   still used today): the instrument works backwards - the pattern
   wanted at a small radius is traced, with a rubber on one side of a
