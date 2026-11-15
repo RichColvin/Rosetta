@@ -54,7 +54,8 @@
 #         Settings has); "Drawing" is now "Object Size"; opens
 #         maximized, like Rosetta Settings and LinuxCNC
 #   1.4 - 15 November 2026 - the notes column shares the spare width
-#         with the drawings (less white space beside the cut)
+#         with the drawings (less white space beside the cut); a
+#         header like the main panel's (Rosetta, O/S version, logo)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -93,6 +94,7 @@ import fcntl
 import json
 import math
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -111,6 +113,16 @@ import rosetta_settings_io
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GCODE_DIR = os.path.join(REPO_DIR, "gcode")       # Rosetta.ini's [DISPLAY]PROGRAM_PREFIX
+# The header, as the main panel's: its logo, and its "O/S ..." label
+# read from Rosetta_Panel_v1.ui (the label kept up to date on each
+# release) rather than another copy to keep in step; the machine's S/N
+# appended as the panel does (~/.config/Rosetta/serial).
+LOGO_PATH = os.path.join(REPO_DIR, "Rosetta_Display", "Images", "RosettaLogo-Sm-rev.png")
+PANEL_UI_PATH = os.path.join(REPO_DIR, "Rosetta_Display", "Rosetta_Panel_v1.ui")
+OS_VERSION_PATTERN = re.compile(r">((?:REB )?O/S [^<]+)</property>")
+SERIAL_PATH = os.path.expanduser("~/.config/Rosetta/serial")
+TITLE_COLOUR = "#1a5fb4"
+VERSION_COLOUR = "#c01c28"
 LAST_DESIGN_PATH = os.path.expanduser("~/.config/Rosetta/rosette_designer.json")
 # Held (flock) by the copy that's open, with its process id - see
 # _take_single_instance_lock.
@@ -344,6 +356,7 @@ class DesignerWindow(Gtk.Window):
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, border_width=10)
         self.add(outer)
+        outer.pack_start(self._build_header(), False, False, 0)
         columns = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         outer.pack_start(columns, True, True, 0)
 
@@ -534,6 +547,43 @@ class DesignerWindow(Gtk.Window):
         scroll.set_propagate_natural_height(True)
         scroll.add(grid)
         return scroll
+
+    def _build_header(self):
+        '''The main panel's header: "Rosetta", the O/S version (and the
+        machine's S/N) under it, the logo on the right, then a line.'''
+        grid = Gtk.Grid()
+        title = Gtk.Label(xalign=0, hexpand=True)
+        title.set_markup('<span font_desc="DejaVu Serif 20" weight="bold" foreground="%s">Rosetta</span>'
+                         % TITLE_COLOUR)
+        grid.attach(title, 0, 0, 1, 1)
+        version = Gtk.Label(xalign=0, valign=Gtk.Align.START)
+        version.set_markup('<span font_desc="Serif Italic 9" foreground="%s">%s</span>'
+                           % (VERSION_COLOUR, GLib.markup_escape_text(self._version_text())))
+        grid.attach(version, 0, 1, 1, 1)
+        if os.path.exists(LOGO_PATH):
+            logo = Gtk.Image.new_from_file(LOGO_PATH)
+            logo.set_valign(Gtk.Align.START)
+            grid.attach(logo, 1, 0, 1, 2)
+        separator = Gtk.Separator(margin_top=5, margin_bottom=5, hexpand=True)
+        grid.attach(separator, 0, 2, 2, 1)
+        return grid
+
+    @staticmethod
+    def _version_text():
+        try:
+            with open(PANEL_UI_PATH) as f:
+                match = OS_VERSION_PATTERN.search(f.read())
+        except OSError:
+            match = None
+        text = match.group(1).replace("REB ", "", 1) if match else ""
+        try:
+            with open(SERIAL_PATH) as f:
+                serial = f.read().strip()
+        except OSError:
+            serial = ""
+        if serial:
+            text = (text + ", " if text else "") + "Machine S/N " + serial
+        return text
 
     def _build_notes(self):
         '''The notes column, like Rosetta Settings': a heading, the text
