@@ -27,8 +27,11 @@
 #   A shape is one lobe's deflection, f(u) for u = 0..1 across the
 #   lobe: 0 = no deflection, 1 = the full amplitude. Deflection moves
 #   the cutter in the minus direction of the motion axis (towards the
-#   centre when rocking), so a lotus's rounded petals point outward and
-#   its sharp points inward. Written from the shapes' geometry - none of
+#   centre when rocking), so a polygon's points point outward. Each
+#   shape is drawn to match the paper-chuck pictures of the MDF Rose
+#   Engine's rosettes (https://www.colvintools.com/MDF-RE%20-%20Rosettes.html,
+#   near side) - what the work moves through with that engine's rubber,
+#   not the outline of the rosette itself. Written from the shapes' geometry - none of
 #   Bill Ooms' COrnLathe code (GPL-3) is used.
 #
 #   The cutter is where the operator put it: the program reads X, Z and
@@ -58,6 +61,8 @@
 #         C's speed, 10% to start) and spring passes, in "passes" mode; the one-turn sub takes a
 #         speed factor (#3); each pass is reported on M67 E0 for the
 #         panel's progress bar ("pass 2 of 3", as Threading counts)
+#   1.5 - 15 November 2026 - Lotus and Tudor redrawn from the MDF Rose
+#         Engine's paper-chuck pictures (Rich); sharp_points
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -105,10 +110,21 @@ import numpy
 # Shapes
 #######################################################################
 
-# Tudor: each lobe is two small petals; the point between them reaches
-# this fraction of the amplitude (the points between lobes reach all of
-# it). To be confirmed with Rich, 15 November 2026.
-TUDOR_INNER_POINT = 0.35
+# Lotus (MDF Rose Engine Lotus-8's paper chuck, 15 November 2026): a
+# polygon's straight sides from point to point, with a narrow V notch
+# in the middle of each - where the rubber can't follow the lotus
+# rosette's pointed trough. The notch's depth (of the amplitude) and
+# half width (of a lobe) are measured off the pictures.
+LOTUS_NOTCH_DEPTH = 0.25
+LOTUS_NOTCH_HALF_WIDTH = 0.08
+
+# Tudor (Tudor-5 and Tudor-8's paper chucks): a rounded petal per lobe
+# - a polygon turned over - and at each join between petals a small
+# sharp barb pointing outward (the Tudor rose's sepals: its "inner
+# pattern rotated one half lobe"). Barb height (of the amplitude) and
+# half width (of a lobe), measured off the pictures.
+TUDOR_BARB_HEIGHT = 0.6
+TUDOR_BARB_HALF_WIDTH = 0.04
 
 
 def _sine(u, lobes):
@@ -124,24 +140,37 @@ def _polygon(u, lobes):
     return (1.0 - math.cos(half) / numpy.cos(half * (2.0 * u - 1.0))) / (1.0 - math.cos(half))
 
 
-def _petal(v):
-    # A half circle, 0 at its top (v = 0.5), 1 at its ends - a sharp
-    # point where two meet.
-    return 1.0 - numpy.sqrt(numpy.clip(1.0 - (2.0 * v - 1.0) ** 2, 0.0, 1.0))
-
-
 def _lotus(u, lobes):
-    # Rounded petals meeting in sharp points.
-    return _petal(u)
+    # Points at the lobe's ends, a V notch at its middle.
+    notch = numpy.clip(1.0 - numpy.abs(u - 0.5) / LOTUS_NOTCH_HALF_WIDTH, 0.0, 1.0)
+    return (1.0 - LOTUS_NOTCH_DEPTH) * _polygon(u, lobes) + LOTUS_NOTCH_DEPTH * notch
+
+
+def _tudor_barb(u):
+    d = numpy.minimum(u, 1.0 - u)
+    return TUDOR_BARB_HEIGHT * numpy.clip(1.0 - d / TUDOR_BARB_HALF_WIDTH, 0.0, 1.0)
 
 
 def _tudor(u, lobes):
-    # Two petals per lobe; the point between them is shallower.
-    first = u < 0.5
-    v = numpy.where(first, 2.0 * u, 2.0 * u - 1.0)
-    # 0 at the lobe's ends, 1 at its middle point.
-    toward_middle = numpy.where(first, 2.0 * u, 2.0 * (1.0 - u))
-    return _petal(v) * (1.0 - (1.0 - TUDOR_INNER_POINT) * toward_middle)
+    # A petal (highest mid-lobe) with the barb at the lobe's ends,
+    # scaled so the notches beside the barb - its deepest points - are
+    # the full amplitude.
+    height = 1.0 - numpy.maximum(_polygon(u, lobes), _tudor_barb(u))
+    meet = numpy.array([_tudor_barb_meets_petal(lobes)])
+    return height / (1.0 - _tudor_barb(meet)[0])
+
+
+def _tudor_barb_meets_petal(lobes):
+    '''How far from the lobe's end (a fraction of a lobe) the barb's
+    side meets the petal - a sharp notch.'''
+    low, high = 0.0, TUDOR_BARB_HALF_WIDTH
+    for _ in range(60):
+        mid = 0.5 * (low + high)
+        if _tudor_barb(numpy.array([mid]))[0] > _polygon(numpy.array([mid]), lobes)[0]:
+            low = mid
+        else:
+            high = mid
+    return 0.5 * (low + high)
 
 
 # id -> (name on screen, function)
@@ -336,11 +365,12 @@ def start_radius(design):
     if ros is None:
         return radius
     # Every shape's highest and lowest points are at a quarter, half or
-    # whole lobe - sampled exactly (a lotus's point is too sharp to find
-    # by even sampling alone).
+    # whole lobe or at one of its sharp points - sampled exactly (a
+    # sharp point is too narrow to find by even sampling alone).
     lobes = ros["lobes"]
-    quarters = ((numpy.arange(4 * lobes) / 4.0 - ros["phase"]) % lobes) * 360.0 / lobes
-    y = offset(ros, numpy.concatenate((numpy.linspace(0.0, 360.0, 4000), quarters)))
+    where = numpy.concatenate((numpy.arange(4) / 4.0, sharp_points(ros["shape"], lobes)))
+    marks = ((numpy.arange(lobes)[:, None] + where[None, :] - ros["phase"]) % lobes).ravel() * 360.0 / lobes
+    y = offset(ros, numpy.concatenate((numpy.linspace(0.0, 360.0, 4000), marks)))
     return radius - (y.max() if design["radius_at"] == "outside" else y.min())
 
 
@@ -349,9 +379,18 @@ def start_radius(design):
 #######################################################################
 
 # Where each shape has sharp points, as fractions of a lobe - sampled
-# exactly, with more samples close by (a lotus's sides are vertical at
-# its points, so even sampling would cut the corner).
-SHARP_POINTS = {"sine": (), "polygon": (0.0,), "lotus": (0.0,), "tudor": (0.0, 0.5)}
+# exactly, with more samples close by, so the program's straight lines
+# don't cut across a point.
+def sharp_points(shape, lobes):
+    '''Where a shape has sharp points, as fractions of a lobe.'''
+    if shape == "polygon":
+        return (0.0,)
+    if shape == "lotus":
+        return (0.0, 0.5 - LOTUS_NOTCH_HALF_WIDTH, 0.5, 0.5 + LOTUS_NOTCH_HALF_WIDTH)
+    if shape == "tudor":
+        meet = _tudor_barb_meets_petal(lobes)
+        return (0.0, meet, 1.0 - meet)
+    return ()
 
 
 def _sample_angles(design):
@@ -363,7 +402,7 @@ def _sample_angles(design):
         lobes = ros["lobes"]
         lobe_deg = 360.0 / lobes
         near = numpy.geomspace(1e-7, 0.05, 60) * lobe_deg
-        for u in SHARP_POINTS[ros["shape"]]:
+        for u in sharp_points(ros["shape"], lobes):
             # The invert of a sharp point is still sharp.
             centres = (numpy.arange(lobes) + u - ros["phase"]) * lobe_deg
             centres = numpy.mod(centres, 360.0)
