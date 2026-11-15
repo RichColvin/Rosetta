@@ -62,7 +62,8 @@
 #         speed factor (#3); each pass is reported on M67 E0 for the
 #         panel's progress bar ("pass 2 of 3", as Threading counts)
 #   1.5 - 15 November 2026 - Lotus and Tudor redrawn from the MDF Rose
-#         Engine's paper-chuck pictures (Rich); sharp_points
+#         Engine's paper-chuck pictures (Rich); sharp_points;
+#         suggested file names start "Rosette-"
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -519,11 +520,19 @@ def _short(ros):
     return "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
 
 
+# Every suggested name starts with this, so the Designer's programs sort
+# together in the gcode folder (Rich, 15 November 2026). Not reserved:
+# only names starting "rosetta" are (RESERVED_NAME).
+FILE_NAME_PREFIX = "Rosette-"
+
+
 def default_file_name(design):
     if design["motion"] == "both":
-        return "%s_rock_%s_pump_%s.ngc" % (_short(rosette(design)), _short(rosette(design, SECOND)),
+        name = "%s_rock_%s_pump_%s.ngc" % (_short(rosette(design)), _short(rosette(design, SECOND)),
                                            design["surface"])
-    return "%s_%s_%s.ngc" % (_short(rosette(design)), design["motion"], design["surface"])
+    else:
+        name = "%s_%s_%s.ngc" % (_short(rosette(design)), design["motion"], design["surface"])
+    return FILE_NAME_PREFIX + name
 
 
 def describe(design):
