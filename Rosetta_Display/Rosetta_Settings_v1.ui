@@ -33,6 +33,7 @@
 #   1.0 - 21 July 2026                                                #
 #   1.1 - 14 October 2026 - Base and expansion box channels side by   #
 #         side                                                        #
+#   1.2 - 15 November 2026 - page headers say "Rosetta Settings"      #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -815,7 +816,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Rosetta</property>
+                                <property name="label" translatable="yes">Rosetta Settings</property>
                                 <property name="justify">center</property>
                                 <attributes>
                                   <attribute name="font-desc" value="DejaVu Serif 20"/>
@@ -2346,7 +2347,7 @@ Without the expansion box, its channels and limit switch jacks are greyed out an
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Rosetta</property>
+                                <property name="label" translatable="yes">Rosetta Settings</property>
                                 <property name="justify">center</property>
                                 <attributes>
                                   <attribute name="font-desc" value="DejaVu Serif 20"/>
@@ -4037,7 +4038,7 @@ Anyone who knows the topic can read your alerts. To keep them private, add a wor
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Rosetta</property>
+                                <property name="label" translatable="yes">Rosetta Settings</property>
                                 <property name="justify">center</property>
                                 <attributes>
                                   <attribute name="font-desc" value="DejaVu Serif 20"/>
@@ -10028,7 +10029,7 @@ Anyone who knows the topic can read your alerts. To keep them private, add a wor
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">Rosetta</property>
+                                <property name="label" translatable="yes">Rosetta Settings</property>
                                 <property name="justify">center</property>
                                 <attributes>
                                   <attribute name="font-desc" value="DejaVu Serif 20"/>
