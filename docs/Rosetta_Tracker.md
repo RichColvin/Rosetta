@@ -148,8 +148,8 @@ Bill.
   pages; Rich installed poppler-utils the same day, so the Read tool
   can show pages, or `pdftoppm -f N -l N -r 110 -png <pdf> pN`). Where
   things are: p1-2 title and introduction; p3 simple patterns from
-  rosettes A-F; p4 compound patterns from D (with step, tangent
-  screw, division plate); **p5-14 the series, each rosette at its
+  rosettes A-F; p4 (the original's page 135, compound
+  patterns from D) - **ignore it** (Rich); **p5-14 the series, each rosette at its
   lobe counts** - A p5, B p6, C p6-7, D p7-8, E p8-9, F p9 (F 3/4/6/8),
   G p9-10, H p10, I p10-11, J p11, K p11, L p12, M p12, N p12, O p13,
   P p13, Q p14, R p14, S 32 p14 (a heart) - the series ends at S, not
