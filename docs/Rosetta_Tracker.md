@@ -119,6 +119,26 @@ Bill.
   reopened. Warns if C or the rocking/pumping axis isn't assigned.
 - Stage 2: Holtzapffel series, masks, symmetry, compound rosettes
   (rock and pump together, or two combined), saved designs.
+  **Next shapes, agreed 15 November 2026 (Rich):** the Holtzapffel
+  series from https://www.colvintools.com/MDF-RE%20-%20Rosettes.html -
+  **D** (convex lobes), **F** (heart / Cupid's bow), **J** (arcs of
+  eccentric circles, each with a sine wave on it) and **M** (long lobes
+  3x the length, separated by short ones). One shape per series: the
+  number is just the lobes (D-12 and D-30 are one shape, 12 or 30
+  lobes) - except **F-1**, a single heart, which needs its own
+  treatment. J and M names carry two numbers (J6-36, M18-42), so check
+  what each means; they may need a second setting. Then an **ellipse**
+  with settings the operator can play with to reshape it (e.g. the
+  distance between the foci), written from an ellipse's own geometry.
+  **Not to be added:** Jon Magill's designs (Archie, GDP-3, Shamrock,
+  Snowflake, PF-9, Z-12/18, Bumpy Ellipse) - Jon is particular about
+  his work being shared; and the Oval, a variation of the ellipse.
+  Method, as for Lotus and Tudor: match the shape to the rosette's
+  near-side paper-chuck picture on its MDF Rose Engine page (the
+  rosette's own outline is only a guide - the picture is what that
+  engine's rubber gives), and show Rich a side-by-side comparison.
+  3D printing (stage 4, below) comes after these and after stage 3's
+  rubbers.
 - Stage 3: round rubber (radius r, needs the rosette's physical
   diameter - rounds points, can't reach narrow valleys), flat rubber.
   **Why a "sine" isn't simple** (Rich, 15 November 2026, from Jon
