@@ -56,6 +56,8 @@
 #         D 0 (was 1 and 1.2)
 #   1.3 - 13 November 2026 - Pi temperature monitor defaults
 #         (pi_temp_settings)
+#   1.4 - 15 November 2026 - SETTINGS_LOCK_PATH / settings_program_open
+#         (one copy of Rosetta Settings; LinuxCNC not started beside it)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -90,6 +92,7 @@
 # authorization from COPYRIGHT HOLDERS.
 #######################################################################
 
+import fcntl
 import json
 import os
 import re
@@ -97,6 +100,29 @@ import shutil
 from xml.sax.saxutils import unescape
 
 SETTINGS_PATH = os.path.expanduser("~/Documents/RosettaSet_v1.ini")
+
+# Held (an exclusive flock) by Rosetta Settings for as long as it's open,
+# and holding its process id (15 November 2026). Rosetta_Settings.py uses
+# it to refuse a second copy; Rosetta_Generate_Local_Ini.py (so
+# Rosetta_Launch.sh) refuses to start LinuxCNC while it's held.
+SETTINGS_LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosetta_Settings.lock")
+
+
+def settings_program_open():
+    '''
+    True while Rosetta Settings is open (its lock is held). Takes the
+    lock for an instant to find out, and lets go at once.
+    '''
+    try:
+        with open(SETTINGS_LOCK_PATH) as f:
+            try:
+                fcntl.flock(f, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            except OSError:
+                return True
+            fcntl.flock(f, fcntl.LOCK_UN)
+    except OSError:
+        pass    # no lock file: Settings has never been opened here
+    return False
 
 # Names used before the Rosetta renaming (02 November 2026), and what
 # they became. adopt_old_paths (run when this module is imported - every
