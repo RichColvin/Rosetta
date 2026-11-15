@@ -549,11 +549,11 @@ class DesignerWindow(Gtk.Window):
         return scroll
 
     def _build_header(self):
-        '''The main panel's header: "Rosetta", the O/S version (and the
+        '''The main panel's header, saying "Rosetta Rosette Designer": the O/S version (and the
         machine's S/N) under it, the logo on the right, then a line.'''
         grid = Gtk.Grid()
         title = Gtk.Label(xalign=0, hexpand=True)
-        title.set_markup('<span font_desc="DejaVu Serif 20" weight="bold" foreground="%s">Rosetta</span>'
+        title.set_markup('<span font_desc="DejaVu Serif 20" weight="bold" foreground="%s">Rosetta Rosette Designer</span>'
                          % TITLE_COLOUR)
         grid.attach(title, 0, 0, 1, 1)
         version = Gtk.Label(xalign=0, valign=Gtk.Align.START)
