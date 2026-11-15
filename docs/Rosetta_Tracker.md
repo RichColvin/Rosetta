@@ -145,22 +145,25 @@ Bill.
   the shapes are matched against - and may list the series better
   than Holtzapffel's Volume V. **Scans arrived 15 November 2026:**
   `~/Downloads/Holtz Rose Cutting Frame Rosettes.pdf` on Rich's Pi (21
-  pages; `pdftoppm` isn't installed, so render pages with Ghostscript:
-  `gs -q -dNOPAUSE -dBATCH -dSAFER -sDEVICE=png16m -r110
-  -dFirstPage=N -dLastPage=N -sOutputFile=pN.png <pdf>`). Where
+  pages; Rich installed poppler-utils the same day, so the Read tool
+  can show pages, or `pdftoppm -f N -l N -r 110 -png <pdf> pN`). Where
   things are: p1-2 title and introduction; p3 simple patterns from
   rosettes A-F; p4 compound patterns from D (with step, tangent
   screw, division plate); **p5-14 the series, each rosette at its
   lobe counts** - A p5, B p6, C p6-7, D p7-8, E p8-9, F p9 (F 3/4/6/8),
   G p9-10, H p10, I p10-11, J p11, K p11, L p12, M p12, N p12, O p13,
   P p13, Q p14, R p14, S 32 p14 (a heart) - the series ends at S, not
-  Z; p15-18 modern 3D simulations of several (A10, B15, C10, D10, E30,
-  F4, G8, H12, I24, J24, K4, L12, M18, N15, O18, P18, Q24, R18, S32);
+  Z; p15-18 one rosette per letter (A10, B15, C10, D10, E30,
+  F4, G8, H12, I24, J24, K4, L12, M18, N15, O18, P18, Q24, R18, S32) -
+  a modern 3D simulation on the left, a paper drawing on the right;
+  Rich says the paper drawings can be used (a clear single-pattern
+  reference for each letter);
   p19 effects of pumping and phasing (A10, C10, D10, F3); p20-21 "The
   Rosette Designing Instrument" (de la Condamine, 1733, via Paul
   Ferraglio, SOT Bulletin 52; Jerry Decker's modern build). p1-14 are
-  the old Holtzapffel guide; p15-21 are a modern write-up - use them
-  as reference only, don't copy them into the manual. Start with D.
+  the old Holtzapffel guide; p15-21 are a modern write-up - its paper
+  drawings (right-hand side of p15-18) can be used (Rich); keep its
+  3D simulations and text as reference. Start with D.
   **From p20-21, for stage 3/4** (Rich: de la Condamine's approach is
   still used today): the instrument works backwards - the pattern
   wanted at a small radius is traced, with a rubber on one side of a
