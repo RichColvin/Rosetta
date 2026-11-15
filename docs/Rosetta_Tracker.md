@@ -48,6 +48,63 @@ Built and committed, but not yet seen working on real hardware.
 
 Ideas and designs not yet being built. Nothing here has code yet.
 
+### Software-defined rosettes - Rosette Designer (since 15 November 2026)
+
+Rich's idea: a program in which the operator defines a rosette (the
+rose engine's cam - https://otbok.info/index.php?n=Main.Rosette) and
+saves it as a G-code program: C turns the work, X follows the rosette
+for **rocking**, Z for **pumping**. Purpose: try a rosette before buying
+or making a physical one; also to use one that would be needed too
+rarely to be worth making.
+
+Prior art: Bill Ooms' COrnLathe (https://github.com/billooms/COrnLathe,
+Java 8, last changed 2019). Its rosette model: a pattern is one lobe's
+shape as 0..1 across the lobe; a rosette = pattern x repeats, with
+peak-to-peak amplitude, phase (fraction of a lobe), invert, mask (skip
+lobes), symmetry (lobes of different width/height) and compound
+rosettes; built-in shapes plus the Holtzapffel A-S series. **It is
+GPL-3 and Rosetta is MIT - don't copy or translate its code**; write our
+own from the definitions (the shapes are plain maths). Worth contacting
+Bill.
+
+**Decided by Rich, 15 November 2026:**
+
+1. Cuts on the **face and on the side** of the work.
+2. **The operator positions the cutter**, as with a traditional
+   rosette - the design doesn't plan the cutter. So the program starts
+   from wherever the machine is (reads X/Z/C from #5420/#5422/#5425) and
+   every move is relative to that.
+3. First shapes: **sine (Holtzapffel A), plain polygon (Holtzapffel P),
+   lotus, Tudor**.
+4. **Simulate the rubber** - start with a point (the ideal shape) and
+   add rubber shapes over time.
+
+**Proposed (not yet agreed):**
+
+- A new standalone program (Python/GTK, like Rosetta Settings and
+  Backup - no LinuxCNC needed), menu/desktop launcher; the rosette maths
+  in a module of its own so the window, the G-code writer and later
+  exports share it.
+- Stage 1: one rosette - shape, lobes, amplitude (peak to peak, machine
+  units), phase, invert, rubber = point; rocking (X) or pumping (Z);
+  face or side (changes the preview only); C speed (rev/min) and
+  direction; number of passes and depth per pass. Live preview of the
+  cut. Saves `<name>.ngc` into gcode/ (never starting with "Rosetta" -
+  reserved). The G-code: G93 timed segments so C turns at a steady
+  speed, sized by a chord tolerance, G64 P blending; returns to the
+  start offset; the design kept in a header comment so it can be
+  reopened. Warns if C or the rocking/pumping axis isn't assigned.
+- Stage 2: Holtzapffel series, masks, symmetry, compound rosettes
+  (rock and pump together, or two combined), saved designs.
+- Stage 3: round rubber (radius r, needs the rosette's physical
+  diameter - rounds points, can't reach narrow valleys), flat rubber.
+- Stage 4, making a physical rosette: export the rosette's outline
+  (SVG/DXF) at a chosen diameter, with the rubber compensated in
+  reverse; and for comparing with a bought rosette, a machine ratio
+  (motion at the cut vs at the rosette).
+- Later: a main-panel tab that runs a saved rosette with phase/depth
+  set on the panel, like Sync Move.
+
 ### Rebranding: Rose Engine Butler -> Rosetta (since 02 November 2026)
 
 Rose Engine Butler is being renamed **Rosetta**. Done so far: new images
