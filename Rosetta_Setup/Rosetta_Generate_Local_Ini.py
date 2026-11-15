@@ -119,7 +119,9 @@
 #         (its OT name, Rich): SPLASH_ROSETTE_* -> SPLASH_TURKS_HEAD_*
 #   1.3 - 13 November 2026 - a limit jack set to Pause button is
 #         wired to the pause-button signal
-#   1.4 - 15 November 2026 - the fault siren's pulse also reaches the
+#   1.4 - 15 November 2026 - refuses to start while Rosetta Settings
+#         is open
+#   1.5 - 15 November 2026 - the fault siren's pulse also reaches the
 #         main panel when the fault phone alert is on
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
@@ -1796,7 +1798,32 @@ def _overlay_splash(text):
     )
 
 
+def check_settings_program_closed():
+    '''
+    Stops startup while Rosetta Settings is open (15 November 2026, Rich):
+    a change saved there after this point wouldn't take effect until the
+    next start, and Settings itself refuses to open while LinuxCNC is
+    running. GTK dialog, since this runs from the desktop launcher with
+    no terminal visible.
+    '''
+    if not rosetta_settings_io.settings_program_open():
+        return
+    title = "Rosetta Settings is open - startup stopped"
+    detail = ("Rosetta can't start while Rosetta Settings is open.  Close "
+              "Rosetta Settings (its changes are used the next time Rosetta "
+              "starts), then start Rosetta again.")
+    print("ABORTING: " + title)
+    dialog = Gtk.MessageDialog(message_type=Gtk.MessageType.ERROR,
+                               buttons=Gtk.ButtonsType.OK, text=title)
+    dialog.format_secondary_text(detail)
+    dialog.run()
+    dialog.destroy()
+    sys.exit(1)
+
+
 def main():
+    check_settings_program_closed()
+
     try:
         with open(ROSETTA_INI_PATH, "r") as f:
             text = f.read()

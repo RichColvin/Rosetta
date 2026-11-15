@@ -41,7 +41,8 @@
 #         button
 #   1.4 - 13 November 2026 - Other page: Pi Temperature (warning,
 #         alarm, alarm sound)
-#   1.5 - 15 November 2026 - only one copy can run at a time
+#   1.5 - 15 November 2026 - only one copy can run at a time (and
+#         LinuxCNC won't start while it's open)
 #   1.6 - 15 November 2026 - Inputs, Outputs, and Sounds page: Phone
 #         Alerts (ntfy app)
 #
@@ -3879,7 +3880,9 @@ del _widget_id, _tag, _default, _handler
 # process ends, however it ends, so a crash can't leave it stuck. It
 # also holds that copy's process id: a second start sends it SIGUSR1,
 # which brings its window to the front (_raise_on_signal).
-SINGLE_INSTANCE_LOCK = os.path.expanduser("~/.config/Rosetta/Rosetta_Settings.lock")
+# Rosetta_Launch.sh (the generator) also refuses to start LinuxCNC while
+# it's held - rosetta_settings_io.settings_program_open.
+SINGLE_INSTANCE_LOCK = rosetta_settings_io.SETTINGS_LOCK_PATH
 _single_instance_lock = None   # kept open (and so locked) until exit
 
 def _take_single_instance_lock():
@@ -3918,7 +3921,13 @@ def _raise_running_copy():
     '''Asks the copy holding the lock to bring its window to the front.'''
     try:
         with open(SINGLE_INSTANCE_LOCK) as f:
-            os.kill(int(f.read().strip()), signal.SIGUSR1)
+            pid = int(f.read().strip())
+        # Only if that process really is Rosetta Settings: the id could be
+        # stale, and SIGUSR1 ends a program that doesn't handle it.
+        with open("/proc/%d/cmdline" % pid, "rb") as f:
+            if b"Rosetta_Settings.py" not in f.read():
+                return
+        os.kill(pid, signal.SIGUSR1)
     except (OSError, ValueError):
         pass
 
