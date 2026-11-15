@@ -151,6 +151,19 @@ Bill.
   (SVG/DXF) at a chosen diameter, with the rubber compensated in
   reverse; and for comparing with a bought rosette, a machine ratio
   (motion at the cut vs at the rosette).
+  **3D printing** (Rich asked 15 November 2026): also save an STL of
+  the rosette itself, written by the program (numpy only, nothing to
+  install) - a rocking rosette as a disc whose edge follows the
+  pattern; a pumping rosette as a ring whose face rises and falls with
+  it. New settings, used only for this file: thickness, centre bore,
+  and phasing holes (number, radius, size) - printed in, so the owner
+  needn't drill them (see the Object Size note on phasing holes). Same
+  rubber compensation in reverse as the outline, so it belongs after
+  stage 3 (a point-rubber STL works, but cuts a little softer than
+  designed). Printers hold about 0.1 mm (0.004 in) - fine for
+  amplitudes of a few mm, marginal for very fine patterns - and plastic
+  wears against the rubber, so it suits trying a design before making
+  it in metal or wood.
 - Later: a main-panel tab that runs a saved rosette with phase/depth
   set on the panel, like Sync Move.
 - Later, for depth option (b): LinuxCNC's external offsets (`eoffset`,
