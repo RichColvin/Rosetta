@@ -50,6 +50,9 @@
 #   1.2 - 15 November 2026 - Radius is the outside or the inside of
 #         the cut, with where to start the cutter; only one copy runs
 #         (a second start brings it forward and says so, as Settings)
+#   1.3 - 15 November 2026 - notes column on the right (as Rosetta
+#         Settings has); "Drawing" is now "Object Size"; opens
+#         maximized, like Rosetta Settings and LinuxCNC
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -91,6 +94,7 @@ import os
 import signal
 import subprocess
 import sys
+import webbrowser
 
 import gi
 gi.require_version("Gdk", "3.0")
@@ -122,6 +126,52 @@ RANGES = {
     "mm": {"amplitude": (0.002, 25.0, 0.02, 3), "depth_per_pass": (0.002, 2.5, 0.02, 3),
            "plunge_feed": (2.0, 500.0, 1.0, 0), "preview_radius": (1.0, 250.0, 1.0, 1)},
 }
+
+# The notes column on the right: (heading, text, User Manual anchor),
+# in the order of the form's sections.
+MANUAL_PAGE = "https://rosetta.colvintools.com/UserManual/index.php?n=Main.RosetteDesigner"
+NOTES = (
+    ("Movement",
+     "Rocking moves the cutter in X, pumping moves it in Z, and Both follows a rosette with each - "
+     "like two rosettes engaged at once.\n\n"
+     "Cutting on sets which axis takes the cutter deeper: Z on the face, X on the side.\n\n"
+     "C speed is how fast the work turns while cutting. If X or Z can't keep up at the steepest places, "
+     "C slows down there; the note under the drawings says so.",
+     "Movement"),
+    ("Rosette",
+     "Lobes is how many times the shape repeats in one turn of the work.\n\n"
+     "Amplitude is how far the cutter moves, from the rosette's highest point to its lowest, measured "
+     "at the object being cut.\n\n"
+     "Phase turns the pattern around the work: as a fraction of a lobe (0.5 is half a lobe) or in "
+     "degrees. Invert turns points into hollows.\n\n"
+     "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
+     "straight at the Object Size radius.\n\n"
+     "Rubber: only a point for now, which follows the shape exactly.",
+     "Rosette"),
+    ("Depth",
+     "Passes, deeper each time: put the cutter just touching the work. Each pass goes Depth per pass "
+     "deeper, and at the end the cutter backs out to where it started.\n\n"
+     "Turns at one depth: the cutter stays at one depth, as with a physical rosette. To go deeper, move "
+     "the cutter in yourself and run the program again.",
+     "Depth"),
+    ("Object Size",
+     "Radius is the radius on the object being made - the piece you are cutting.\n\n"
+     "If you are making a rosette for later use on a rose engine, the object is that rosette: enter "
+     "the radius of the rosette you want to make. Rose engines differ - some measure their rosettes "
+     "across the points (Outside), others across the hollows (Inside).\n\n"
+     "Radius is used for the drawing, Straight sides and the note on where to start the cutter. The "
+     "program itself cuts wherever the cutter is.",
+     "ObjectSize"),
+    ("Running the Program",
+     "Save G-code puts the program in the gcode folder. Don't name it starting with \"Rosetta\", or "
+     "M100 to M199 - those names are reserved.\n\n"
+     "Open it in Rosetta and put the cutter where the pattern should be cut before starting: the "
+     "program works from wherever the cutter is, the same as setting up a cut with a physical "
+     "rosette.\n\n"
+     "C isn't turned back at the end - after three turns it reads 1080 degrees.",
+     "Saving"),
+)
+NOTES_HEADING_COLOUR = "#1a5fb4"     # as Rosetta Settings' notes
 
 # Drawing colours: X's rosette, Z's rosette, guides, background, the work.
 AXIS_INK = {"X": (0.10, 0.10, 0.35), "Z": (0.60, 0.15, 0.10)}
@@ -183,7 +233,7 @@ class RosetteControls:
 
         self.straight = Gtk.Button(label="Straight sides")
         self.straight.set_tooltip_text("Sets the amplitude that makes a plain polygon's sides "
-                                       "straight at the Radius under Drawing (rocking on the face).")
+                                       "straight at the Object Size radius (rocking on the face).")
         self.straight.connect("clicked", self._on_straight_sides)
         self._place(grid, self.straight, column, row)
         row += 1
@@ -281,7 +331,7 @@ class DesignerWindow(Gtk.Window):
 
     def __init__(self):
         Gtk.Window.__init__(self, title="Rosette Designer")
-        self.set_default_size(1250, 920)
+        self.set_default_size(1660, 920)
         self.connect("delete-event", self._on_close)
 
         settings = rosetta_settings_io.load_settings()
@@ -297,6 +347,7 @@ class DesignerWindow(Gtk.Window):
 
         columns.pack_start(self._build_form(), False, False, 0)
         columns.pack_start(self._build_previews(), True, True, 0)
+        columns.pack_start(self._build_notes(), False, False, 0)
 
         self.info = Gtk.Label(xalign=0, wrap=True)
         self.info.set_use_markup(True)
@@ -459,11 +510,12 @@ class DesignerWindow(Gtk.Window):
         grid.attach(self.deeper_plus, 0, row, 3, 1)
         row += 1
 
-        row = self._section(grid, row, "Drawing")
+        row = self._section(grid, row, "Object Size")
         self.preview_radius = self._spin(*ranges["preview_radius"])
         row = self._row(grid, row, "Radius (%s)" % unit, self.preview_radius,
-                        "The radius where you'll cut - for the drawing and Straight sides only. The "
-                        "program cuts wherever the cutter is.")
+                        "The radius of the object being made - for a rosette you'll use later, the "
+                        "rosette's radius. For the drawing and Straight sides only: the program cuts "
+                        "wherever the cutter is.")
         radius_box, self.radius_at = self._radios((("outside", "Outside (largest)"),
                                                    ("inside", "Inside (smallest)")))
         row = self._row(grid, row, "Radius is the", radius_box,
@@ -476,6 +528,31 @@ class DesignerWindow(Gtk.Window):
         # Ask for the whole form's height (scrolls only on a small screen).
         scroll.set_propagate_natural_height(True)
         scroll.add(grid)
+        return scroll
+
+    def _build_notes(self):
+        '''The notes column, like Rosetta Settings': a heading, the text
+        and a User Manual button for each section of the form.'''
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, margin_end=6)
+        for i, (heading, text, anchor) in enumerate(NOTES):
+            title = Gtk.Label(xalign=0)
+            title.set_markup('<span font_desc="DejaVu Serif 16" weight="bold" foreground="%s">%s</span>'
+                             % (NOTES_HEADING_COLOUR, GLib.markup_escape_text(heading)))
+            title.set_margin_top(12 if i else 0)
+            box.pack_start(title, False, False, 0)
+            body = Gtk.Label(xalign=0, wrap=True)
+            body.set_max_width_chars(46)
+            body.set_markup('<span font_desc="DejaVu Serif 10">%s</span>' % GLib.markup_escape_text(text))
+            box.pack_start(body, False, False, 0)
+            button = Gtk.Button(label="User Manual: " + heading)
+            button.set_tooltip_text("Opens the User Manual's Rosette Designer page at %s." % heading)
+            button.set_halign(Gtk.Align.START)
+            button.connect("clicked", lambda w, a=anchor: webbrowser.open(MANUAL_PAGE + "#" + a))
+            box.pack_start(button, False, False, 0)
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_min_content_width(380)
+        scroll.add(box)
         return scroll
 
     def _build_previews(self):
@@ -986,6 +1063,7 @@ def main():
         return
     window = DesignerWindow()
     _raise_on_signal(window)
+    window.maximize()       # full screen, like Rosetta Settings and LinuxCNC
     window.show_all()       # the hidden rosette column stays hidden (set_no_show_all)
     Gtk.main()
 
