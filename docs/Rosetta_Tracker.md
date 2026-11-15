@@ -164,6 +164,13 @@ Bill.
   amplitudes of a few mm, marginal for very fine patterns - and plastic
   wears against the rubber, so it suits trying a design before making
   it in metal or wood.
+  **Pumping rosettes - warn the user** (Rich, 15 November 2026), in
+  the notes and when the STL is saved: a pumping rosette is printed
+  lying flat, so its patterned face is built up in layers that leave
+  ridges as the face rises and falls. Tell them (1) to use printer
+  settings that keep the ridges down (fine layers, e.g. variable /
+  adaptive layer height), and (2) to use a rubber that rides over what
+  ridges remain, e.g. one with a roller bearing on its nose.
 - Later: a main-panel tab that runs a saved rosette with phase/depth
   set on the panel, like Sync Move.
 - Later, for depth option (b): LinuxCNC's external offsets (`eoffset`,
