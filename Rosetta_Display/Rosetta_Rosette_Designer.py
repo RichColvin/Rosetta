@@ -53,6 +53,8 @@
 #   1.3 - 15 November 2026 - notes column on the right (as Rosetta
 #         Settings has); "Drawing" is now "Object Size"; opens
 #         maximized, like Rosetta Settings and LinuxCNC
+#   1.4 - 15 November 2026 - the notes column shares the spare width
+#         with the drawings (less white space beside the cut)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -347,7 +349,10 @@ class DesignerWindow(Gtk.Window):
 
         columns.pack_start(self._build_form(), False, False, 0)
         columns.pack_start(self._build_previews(), True, True, 0)
-        columns.pack_start(self._build_notes(), False, False, 0)
+        # The drawings and the notes share the spare width equally - the
+        # cut drawing is limited by its height, so given all of it, it
+        # only left white space either side (Rich, 15 November 2026).
+        columns.pack_start(self._build_notes(), True, True, 0)
 
         self.info = Gtk.Label(xalign=0, wrap=True)
         self.info.set_use_markup(True)
@@ -541,7 +546,7 @@ class DesignerWindow(Gtk.Window):
             title.set_margin_top(12 if i else 0)
             box.pack_start(title, False, False, 0)
             body = Gtk.Label(xalign=0, wrap=True)
-            body.set_max_width_chars(46)
+            body.set_max_width_chars(80)
             body.set_markup('<span font_desc="DejaVu Serif 10">%s</span>' % GLib.markup_escape_text(text))
             box.pack_start(body, False, False, 0)
             button = Gtk.Button(label="User Manual: " + heading)
@@ -552,6 +557,7 @@ class DesignerWindow(Gtk.Window):
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.set_min_content_width(380)
+        scroll.set_hexpand(True)
         scroll.add(box)
         return scroll
 
