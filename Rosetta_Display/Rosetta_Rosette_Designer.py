@@ -49,6 +49,7 @@
 #         Both - a rosette for X and one for Z, side by side)
 #   1.2 - 15 November 2026 - Radius is the outside or the inside of
 #         the cut, with where to start the cutter; only one copy runs
+#         (a second start brings it forward and says so, as Settings)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -975,8 +976,13 @@ def _raise_on_signal(window):
 
 def main():
     if not _take_single_instance_lock():
-        # The open copy has been brought forward; nothing more to say.
-        print("The Rosette Designer is already open - brought it to the front.")
+        print("The Rosette Designer is already open - not starting a second copy.")
+        dialog = Gtk.MessageDialog(transient_for=None, flags=0, message_type=Gtk.MessageType.INFO,
+                                   buttons=Gtk.ButtonsType.OK, text="The Rosette Designer is already open")
+        dialog.format_secondary_text("Only one copy of the Rosette Designer can be open at a time, so "
+                                     "the one already open has been brought to the front.")
+        dialog.run()
+        dialog.destroy()
         return
     window = DesignerWindow()
     _raise_on_signal(window)
