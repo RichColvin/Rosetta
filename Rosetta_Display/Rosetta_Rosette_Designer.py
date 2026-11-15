@@ -65,6 +65,8 @@
 #         speed, 10% to start) and Spring passes, in Passes mode
 #   1.8 - 15 November 2026 - Running the Program note: the panel's
 #         pass counter
+#   1.9 - 15 November 2026 - Invert explained as the cutter on the
+#         opposite side of the spindle's axis (far side cutting)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -169,7 +171,8 @@ NOTES = (
      "Rosetta panel before running the program. With Both, the pumping rosette's Phase "
      "turns it relative to the rocking rosette: as a fraction of a lobe (0.5 is half a lobe) or in "
      "degrees.\n\n"
-     "Invert turns points into hollows.\n\n"
+     "Invert turns points into hollows. It is the same as running the rosette with the cutter on the "
+     "opposite side of the spindle's axis of rotation - far side cutting instead of near side.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
      "straight at the Object Size radius.\n\n"
      "Rubber: only a point for now, which follows the shape exactly.",
@@ -292,7 +295,9 @@ class RosetteControls:
         row += 1
 
         self.invert = Gtk.CheckButton(label="Invert")
-        self.invert.set_tooltip_text("Turns the shape inside out (points become hollows).")
+        self.invert.set_tooltip_text("Turns points into hollows - the same as running the rosette "
+                                     "with the cutter on the opposite side of the spindle's axis "
+                                     "(far side instead of near side).")
         self.invert.connect("toggled", lambda w: window._changed())
         self._place(grid, self.invert, column, row)
         self.last_row = row
