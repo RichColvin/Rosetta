@@ -130,13 +130,30 @@ Bill.
   what each means; they may need a second setting. Then an **ellipse**
   with settings the operator can play with to reshape it (e.g. the
   distance between the foci), written from an ellipse's own geometry.
-  **Not to be added:** Jon Magill's designs (Archie, GDP-3, Shamrock,
-  Snowflake, PF-9, Z-12/18, Bumpy Ellipse) - Jon is particular about
+  **Not to be added:** Jon Magill's own designs (Archie, GDP-3,
+  Shamrock, Snowflake, PF-9, Z-12/18, Bumpy Ellipse) - Jon is particular about
   his work being shared; and the Oval, a variation of the ellipse.
   Method, as for Lotus and Tudor: match the shape to the rosette's
   near-side paper-chuck picture on its MDF Rose Engine page (the
   rosette's own outline is only a guide - the picture is what that
   engine's rubber gives), and show Rich a side-by-side comparison.
+  **Source for the series A to Z** (Rich, 15 November 2026): he will
+  scan the Holtzapffel & Co. guide *Patterns of Rosettes for the
+  Holtzapffel rose cutting frame* (late 1800s - out of copyright, so
+  free to work from, and its pictures could go in the User Manual
+  beside each shape). It shows the patterns each rosette cuts - what
+  the shapes are matched against - and may list the series better
+  than Holtzapffel's Volume V. Wait for the scans (Rich will say which
+  folder); start with D. **J6-36** (Rich): arcs of eccentric circles,
+  each with a superimposed arc of sine waves - read as 6 arcs and 36
+  sine waves around the whole rosette (6 per arc), so settings for
+  arcs, waves and the waves' size against the arcs; confirm 36 is per
+  rosette, not per arc, by counting the waves on one arc in a scan.
+  M18-42 probably similar (two lobe counts) - check its page or scan.
+  **Ellipse:** Rich has no concern about Jon here - an ellipse is a
+  standard mathematical form; only the proportions of the one on
+  ColvinTools are Jon's choice, so pick default proportions that look
+  right to Rich.
   3D printing (stage 4, below) comes after these and after stage 3's
   rubbers.
 - Stage 3: round rubber (radius r, needs the rosette's physical
