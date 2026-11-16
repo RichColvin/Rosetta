@@ -82,8 +82,8 @@
 #   1.8 - 16 November 2026 - advance and retract: the cutter can start
 #         clear of the work, move in on X and/or Z (advance_x/_z and
 #         their directions) before cutting and back out at the end
-#   1.9 - 16 November 2026 - shorter shape names (the group sizes are
-#         in the notes), so the Shape lists are narrower
+#   1.9 - 16 November 2026 - shorter shape names (no group sizes -
+#         Lobes steps by a group), so the Shape lists are narrower
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
