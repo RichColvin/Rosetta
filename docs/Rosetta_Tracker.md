@@ -24,6 +24,7 @@ Built and committed, but not yet seen working on real hardware.
 | Item | Since | What to check |
 |---|---|---|
 | Rosette Designer, stage 1 | 15 November 2026 | Built on branch `rosette-designer`, merged into `dev-rich` 15 November 2026, on `main` the same day (Beta 1.10). User Manual drafts updated for everything built that day. Checked off the machine: the shapes' maths (range, each turn closing, phase in both units, straight polygon sides at any phase, chord tolerance incl. sharp points); all 96 sample programs (4 shapes x rocking/pumping/both x face/side x passes/turns x inch/mm) run through the standalone `rs274` interpreter to the end, every move matching the maths; the window rendered off-screen for each kind of drawing; save/reopen round trip; reserved names refused; the menu step in a scratch home. Check on the machine: (1) **Lotus and Tudor** - redrawn 15 November 2026 after Rich found them wrong (the sine was right): now matched to the MDF Rose Engine's near-side paper-chuck pictures (lotus: polygon sides with a V notch mid-lobe; Tudor: round petals with a sharp barb at each join; comparison in `~/Downloads/Rosette_Shapes_vs_Paper_Chuck.png` on Rich's Pi). Check they look right in the Designer's drawing and on a paper chuck. The plain polygon was left alone - the photo's corners are slightly rounder, the rubber's doing (stage 3). (2) Applications > Rosetta > Rosette Designer appears (after an Update, or run `Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh`). (3) Save a Sine 12, rocking, face; open it in Rosetta - AXIS's preview shows the pattern. (4) Air-cut it (cutter clear of the work), passes = 3: plunge, three turns, back out, C reading +1080, X/Z back where they started; one turn takes about the time the designer said. (5) Pumping on the face and on the side, and a lotus (sharp points - C should slow only slightly there). (5a) **Motion: Both** (added the same day at Rich's request - a rocking rosette for X and a pumping one for Z, side by side in the window; c8372ba): e.g. Lotus 8 rocking + Sine 24 pumping on the face - X and Z both move during each turn, plunges still on Z. (6) With Rosetta running, Save offers to open it in Rosetta. (7) **Radius is the Outside / Inside** (added the same day, Rich's request): with a Lotus 8 rocking on the face, the drawing's grey circle touches the petals' outer edges (Outside) or the points (Inside), and the note under the drawings gives where to start the cutter - air-cut from there and check X's furthest-out / closest-in reading is the Radius; Straight sides on a polygon gives straight sides with either. (8) **One copy only**: open Rosette Designer from the menu twice - the second brings the first window forward, no new window (also when it's behind Rosetta), with an "already open" message. (9) The window opens full screen, with notes on the right (Rich, same day); each User Manual button opens the Rosette Designer page at its section once the page is published (anchors Movement, Rosette, Depth, ObjectSize, Saving). (10) **Finishing pass and spring passes** (added the same day, Rich: rough fast, finish slow): Passes mode, Finishing pass ticked at 10%, Spring passes 1 - air-cut: the last pass and the spring pass turn C at a tenth of the speed, the spring pass stays at the final depth (no plunge), and the whole run takes about what the note under the drawings says. Checked off the machine: all 96 samples (now with a finishing and a spring pass) run to the end in `rs274`, finishing/spring feeds exactly 10% of the others. (11) **Pass counter** on the panel's progress bar ("Program 42% - pass 2 of 3", then finishing pass, spring pass; "turn 1 of 2" for Turns at one depth) - seen working on Rich's machine 15 November 2026 after a first version missed it; still to see: Turns mode, and that Stop leaves "Program stopped at N% - pass 2 of 3". User Manual drafts in `~/Downloads/Rosetta_UserManual_RosetteDesigner_2026-11-15` on Rich's Pi (new page Rosette Designer, home page link) - published 15 November 2026 with a screenshot of the window (Rich). |
+| Holtzapffel shapes and the clean-room rewrite | 16 November 2026 | On branch `holtzapffel` (19efa91), not merged into `dev-rich` - Rich's Pi doesn't have it until he checks it out (`git checkout holtzapffel`, then back with `git checkout dev-rich`). The rosette shape code rewritten clean room (see the Rosette Designer planning entry's Provenance), and Holtzapffel C, D, F, J, K, M, N, O, P, Q and S added - first versions read off the 1880s guide's drawings. Lobes are counted as the guide numbers them (J24 = 4 arcs of 6 waves), so J/M/N/O/P/Q step by whole groups; the pumping rosette's phase is a fraction of a repeat. Checked off the machine: every shape runs 0..1 and closes each turn; all 360 sample programs (15 shapes x rocking/pumping/both x face/side x passes/turns x inch/mm) run to the end in `rs274`; the window built off-screen and driven through every shape (lobes snap to whole groups, file names `Rosette-HoltzJ24_...`); the Designer's drawing rendered for eight of them. Check: (1) compare `~/Downloads/Holtzapffel_Shapes_vs_Guide.png` (the guide's drawing beside a simulated one for each) and, better, cut each on a paper chuck against the guide's pages 5-14 - each shape's proportions are constants (`HOLTZ_*` in rosetta_rosettes.py) that are easy to adjust; (2) the Lobes box steps by 6 for J, 8 for M, etc., and a count that isn't a whole number of groups snaps to the nearest; (3) a design saved before the rewrite (e.g. a Sine 12 or Lotus 8) reopens and cuts the same as before. Then merge into `dev-rich`. |
 | Script fixes from the Support Manual write-up | 18 October 2026 | On `dev-rich` (made 18 October 2026, lost in a merge on the Mac, re-applied 24 October 2026): `REB_Update.sh` and `REB_Install_Debian_13_Trixie.sh` are now marked runnable; the installer's first line is `#!/bin/bash` (was `#! /home/reuben/Downloads`), a failed step now exits with code 1 (`exit $?` after an `echo` always gave 0), it copies `REB_Update.sh` and `REBset_v1.ini` without `sudo`, so reuben owns them, and its Step 1 message no longer says "connectin"; `REB_Update.sh`'s "local changes" warning names the Support Manual page "Updating Rose Engine Butler" (it said "Updates and Branches", which doesn't exist); `REB_Settings.sh`/`REB_Launch.sh` header comments updated. Check: after an update the icon still runs `REB_Update.sh` and its warning text fits the box; on the next fresh install `ls -l ~/Documents/REBset_v1.ini ~/REB_Update.sh` shows reuben as owner. |
 | Bench checkout (`REB_Checkout.sh`) | 18 October 2026 | Written on the `two-box` branch 18 October 2026 but left out of its merge; on `dev-rich` since 24 October 2026. First run on S/N REB003 with a labelled test motor on each channel: `./REB_Checkout.sh` in a terminal; check each channel's motor turns channel+1 times each way in both passes, the spindles index in quarter turns (`M19 R.. $n`), the all-together move finishes together, the program's `M0` pauses and `(MSG,...)` lines show in AXIS, and `~/Documents/REBset_v1.ini` is identical to the backup in `~/Documents/Checkout/<run>/` afterwards (also after a Ctrl+C part way). Assumes 6400 steps per turn (`--steps-per-rev` otherwise). |
 | C top speed 30°/s | 07 October 2026 | A 360° G0 rewind of C takes about 12 s (was 36 s). Then time a full run of Roy's Pumping5Sides program - estimated about 46 minutes (was about 4 hours). |
@@ -90,6 +91,11 @@ Holtzapffel shapes; told to Rich the same day. Since then: Lotus and
 Tudor were redrawn from the MDF paper-chuck photos; sine is a plain
 cosine. What to do about the rest (and what to tell Bill) is Rich's
 decision - the Holtzapffel shape work is stopped until he decides.
+**Rich's decisions, 16 November 2026:** the downloaded copies were
+deleted (nothing else of COrnLathe's was found on the Pi); the rosette
+shape code and deflection maths were rewritten clean room on branch
+`holtzapffel` (19efa91 - see Provenance); what to tell Bill is Rich's
+to send (Claude drafted a short, open note).
 
 **Decided by Rich, 15 November 2026:**
 
@@ -127,8 +133,23 @@ from Rich's own machines, never from other rosette software:
 - Rosette, rubber, rocking, pumping, lobes, amplitude, phasing, invert
   (far-side cutting): standard rose-engine practice, as described in
   Holtzapffel and on OTBoK (https://otbok.info/index.php?n=Main.Rosette).
-- Sine (Holtzapffel A) and plain polygon (Holtzapffel P): written from
-  the geometry - a cosine curve, and the chord of a regular polygon.
+- The shape model and deflection maths: rewritten 16 November 2026
+  (branch `holtzapffel`) - a repeat's profile 0..1 in from the
+  rosette's highest point, lobes counted as the Holtzapffel guide counts
+  them (the small waves round the edge).
+- Sine (Holtzapffel A) and plain polygon: written from the geometry - a
+  cosine curve, and a straight side of a regular polygon (apothem /
+  cos). Plain polygon is no longer called Holtzapffel P: the guide's P
+  is groups of waves. Rich (16 November 2026): a plain polygon is what
+  a puffy-sided rosette cuts on work much smaller than itself - de la
+  Condamine's point (the guide's p20-21).
+- Holtzapffel C, D, F, J, K, M, N, O, P, Q, S (16 November 2026): read
+  off the old guide's own drawings (Rich's scan, pages 5-14 - not the
+  simulations on p15-19) by comparing simulated drawings with them
+  (`~/Downloads/Holtzapffel_Shapes_vs_Guide.png` on Rich's Pi); built
+  from circular arcs (D's petals, sag from the drawing), cosine waves,
+  polygon sides and V notches; J from Rich's description (arcs of
+  eccentric circles, each with sine waves on it).
 - Lotus and Tudor: measured off the paper-chuck pictures of the MDF
   Rose Engine's rosettes (https://www.colvintools.com/MDF-RE%20-%20Rosettes.html).
 - Later stages (more Holtzapffel shapes, rubber simulation, etc.): work
@@ -167,6 +188,15 @@ from Rich's own machines, never from other rosette software:
   **Not to be added:** Jon Magill's own designs (Archie, GDP-3,
   Shamrock, Snowflake, PF-9, Z-12/18, Bumpy Ellipse) - Jon is particular about
   his work being shared; and the Oval, a variation of the ellipse.
+  **Built 16 November 2026 (branch `holtzapffel`, not yet merged):**
+  C, D, F, J, K, M, N, O, P, Q, S - see "Untested on a machine". Still
+  to do: **B, E, G, H, I, L, R** (their drawings are subtle variations
+  of waves that couldn't be read reliably - Rich has another book that
+  may describe them), **F-1** (the single heart), and the ellipse.
+  **Check against Rich's own note:** he described M as "long lobes 3x
+  the length, separated by short ones"; the guide's M24 (left) reads as
+  3 long round lobes with 8 small scallops on each, and its second M24
+  (right) differs - which is right?
   Method, as for Lotus and Tudor: match the shape to the rosette's
   near-side paper-chuck picture on its MDF Rose Engine page (the
   rosette's own outline is only a guide - the picture is what that
