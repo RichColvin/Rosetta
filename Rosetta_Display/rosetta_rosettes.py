@@ -75,6 +75,10 @@
 #         group size times (count_per_repeat, fit_lobes, repeats);
 #         phase is a fraction of a repeat; "Plain polygon" is no longer
 #         called Holtzapffel P (the guide's P is groups of waves)
+#   1.7 - 16 November 2026 - from the paper chuck: _scaled stretches
+#         over the whole repeat, not the angles asked for (F, J, N, O,
+#         P, Q and S jumped the whole amplitude on the first move);
+#         Holtzapffel F turned over
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -179,10 +183,20 @@ def _notch(t, half_width):
     return numpy.clip(1.0 - d / half_width, 0.0, 1.0)
 
 
-def _scaled(f):
-    # Stretch a profile to run exactly 0..1.
-    low, high = numpy.min(f), numpy.max(f)
-    return (f - low) / max(high - low, 1e-12)
+# One repeat finely divided (7200 steps divides by every group size and
+# count used here, so the cusps and notches fall on it exactly).
+_SCALE_GRID = numpy.linspace(0.0, 1.0, 7201)
+
+
+def _scaled(raw, t):
+    # Stretch a profile to run exactly 0..1, from its lowest and highest
+    # over the whole repeat - never from the t asked for, which may be a
+    # single point (offset's start): stretched alone, that always gave 0,
+    # so a shape starting at a cusp jumped the whole amplitude on its
+    # first move (found on the paper chuck, 16 November 2026).
+    grid = raw(_SCALE_GRID)
+    low, high = numpy.min(grid), numpy.max(grid)
+    return numpy.clip((raw(t) - low) / max(high - low, 1e-12), 0.0, 1.0)
 
 
 # Lotus (MDF Rose Engine Lotus-8's paper chuck, colvintools.com,
@@ -326,15 +340,20 @@ def _holtz_c(t, repeats, count):
 
 def _holtz_f(t, repeats, count):
     # Wave tops at 1/6, 1/2 and 5/6 of the group; the notch at 1/2.
-    waves = _cosine((t * HOLTZ_F_WAVES + 0.5) % 1.0)
-    return _scaled((1.0 - HOLTZ_F_NOTCH_DEPTH) * waves
-                   + HOLTZ_F_NOTCH_DEPTH * _notch((t + 0.5) % 1.0, HOLTZ_F_NOTCH_HALF_WIDTH))
+    # Turned over (1 - ...) since the paper chuck, 16 November 2026: Rich
+    # had to tick Invert to get the guide's shape.
+    def raw(t):
+        waves = _cosine((t * HOLTZ_F_WAVES + 0.5) % 1.0)
+        return ((1.0 - HOLTZ_F_NOTCH_DEPTH) * waves
+                + HOLTZ_F_NOTCH_DEPTH * _notch((t + 0.5) % 1.0, HOLTZ_F_NOTCH_HALF_WIDTH))
+    return 1.0 - _scaled(raw, t)
 
 
 def _on_arcs(t, arc_sag, small, per_arc, share):
     # Small waves riding on round arcs: the arc's own profile plus the
     # small waves, each its share of the amplitude.
-    return _scaled((1.0 - share) * _arc(t, arc_sag) + share * small((t * per_arc) % 1.0))
+    return _scaled(lambda t: (1.0 - share) * _arc(t, arc_sag)
+                   + share * small((t * per_arc) % 1.0), t)
 
 
 def _holtz_j(t, repeats, count):
@@ -342,8 +361,8 @@ def _holtz_j(t, repeats, count):
 
 
 def _holtz_k(t, repeats, count):
-    return _scaled((1.0 - HOLTZ_K_WAVES) * _chord(t, repeats)
-                   + HOLTZ_K_WAVES * _cosine((t * HOLTZ_K_WAVES_PER_SIDE) % 1.0))
+    return _scaled(lambda t: (1.0 - HOLTZ_K_WAVES) * _chord(t, repeats)
+                   + HOLTZ_K_WAVES * _cosine((t * HOLTZ_K_WAVES_PER_SIDE) % 1.0), t)
 
 
 def _holtz_m(t, repeats, count):
@@ -358,9 +377,11 @@ def _holtz_n(t, repeats, count):
 
 def _swelling(t, small, share):
     # Waves on an arc, largest mid-arc, smallest at its ends.
-    size = 1.0 - HOLTZ_OP_SWELL * _cosine((t + 0.5) % 1.0)
-    return _scaled((1.0 - share) * _arc(t, HOLTZ_OP_ARC_SAG)
-                   + share * size * small((t * HOLTZ_OP_PER_GROUP) % 1.0))
+    def raw(t):
+        size = 1.0 - HOLTZ_OP_SWELL * _cosine((t + 0.5) % 1.0)
+        return ((1.0 - share) * _arc(t, HOLTZ_OP_ARC_SAG)
+                + share * size * small((t * HOLTZ_OP_PER_GROUP) % 1.0))
+    return _scaled(raw, t)
 
 
 def _holtz_o(t, repeats, count):
@@ -389,8 +410,8 @@ def _heart(t):
 
 
 def _holtz_s(t, repeats, count):
-    return _scaled((1.0 - HOLTZ_S_SCALLOPS) * _heart(t)
-                   + HOLTZ_S_SCALLOPS * _arc((t * count) % 1.0, HOLTZ_S_SCALLOP_SAG))
+    return _scaled(lambda t: (1.0 - HOLTZ_S_SCALLOPS) * _heart(t)
+                   + HOLTZ_S_SCALLOPS * _arc((t * count) % 1.0, HOLTZ_S_SCALLOP_SAG), t)
 
 
 # id -> (name on screen, short name for file names, function,
