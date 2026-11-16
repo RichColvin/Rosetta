@@ -89,6 +89,8 @@
 #   1.11 - 16 November 2026 - F-1 traced from the MDF Rose Engine's
 #         near-side cut (HOLTZ_F1_PROFILE) - the formula's point was
 #         too blunt on the paper chuck
+#   1.12 - 16 November 2026 - F-1's cleft deepened (HOLTZ_F1_CLEFT), so
+#         the upper lobes stand out more (Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -262,6 +264,12 @@ HOLTZ_F1_PROFILE = (
     0.578, 0.584, 0.589, 0.591, 0.591, 0.589, 0.584, 0.577, 0.567, 0.555,
     0.541, 0.523, 0.502, 0.475, 0.445, 0.413, 0.374, 0.329, 0.278, 0.221,
     0.157, 0.083, 0.0)
+# The cleft at the top deepened beyond the traced cut, to make more of
+# the two upper lobes (Rich, 16 November 2026, from the Designer's
+# drawing): an extra V, this much of the traced depth, fading out
+# this many degrees each side of the cleft.
+HOLTZ_F1_CLEFT = 0.5
+HOLTZ_F1_CLEFT_HALF_DEG = 40.0
 
 # Holtzapffel J (pages 11-12, J24-J36; Rich, 15 November 2026: "arcs of
 # eccentric circles with each arch having on it a superimposed arc of
@@ -372,10 +380,16 @@ def _holtz_c(t, repeats, count):
 
 
 def _f1_heart(t):
-    # The traced profile, the same both sides of the notch-point line.
+    # The traced profile, the same both sides of the notch-point line,
+    # with the cleft at the top deepened by a V (HOLTZ_F1_CLEFT of the
+    # traced depth, HOLTZ_F1_CLEFT_HALF_DEG wide each side) - the rest
+    # keeps its shape, scaled to make room.
     s = numpy.minimum(t, 1.0 - t) * 360.0
     table = numpy.asarray(HOLTZ_F1_PROFILE)
-    return numpy.interp(s, numpy.linspace(0.0, 180.0, len(table)), table)
+    traced = numpy.interp(s, numpy.linspace(0.0, 180.0, len(table)), table)
+    # squared, so it fades out level into the lobes (no corner there)
+    cleft = numpy.clip(1.0 - s / HOLTZ_F1_CLEFT_HALF_DEG, 0.0, 1.0) ** 2
+    return (traced + HOLTZ_F1_CLEFT * cleft) / (1.0 + HOLTZ_F1_CLEFT)
 
 
 def _holtz_f(t, repeats, count):
