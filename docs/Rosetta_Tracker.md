@@ -183,12 +183,15 @@ from Rich's own machines, never from other rosette software:
   a modern 3D simulation on the left, a paper drawing on the right;
   Rich says the paper drawings can be used (a clear single-pattern
   reference for each letter);
-  p19 effects of pumping and phasing (A10, C10, D10, F3); p20-21 "The
+  p19 effects of pumping and phasing (A10, C10, D10, F3) - **don't use
+  p19** (see below); p20-21 "The
   Rosette Designing Instrument" (de la Condamine, 1733, via Paul
   Ferraglio, SOT Bulletin 52; Jerry Decker's modern build). p1-14 are
   the old Holtzapffel guide; p15-21 are a modern write-up - its paper
-  drawings (right-hand side of p15-18) can be used (Rich); keep its
-  3D simulations and text as reference. Start with D, and C with it:
+  drawings (right-hand side of p15-18) can be used (Rich). **Don't use
+  the 3D simulations on the left of p15-18 or any of p19** (Rich, 16
+  November 2026): p15 says those were made with Bill Ooms' program, so
+  they come under his request below. Start with D, and C with it:
   **C is the inverse of D** (Rich, 15 November 2026). Invert already
   turns any rosette over, for pumping as well as rocking (on a rose
   engine only rocking can swap sides - near side / far side - which is
@@ -198,7 +201,8 @@ from Rich's own machines, never from other rosette software:
   shape.
   **Bill Ooms' program:** Bill asked (16 November 2026) that his
   software not be used - don't look at it; see Provenance above. Work
-  the profiles out from the PDF's drawings instead.
+  the profiles out from the old guide's pages (p5-14) and the paper
+  drawings on the right of p15-18 instead.
   **From p20-21, for stage 3/4** (Rich: de la Condamine's approach is
   still used today): the instrument works backwards - the pattern
   wanted at a small radius is traced, with a rubber on one side of a
