@@ -86,6 +86,9 @@
 #         Lobes steps by a group), so the Shape lists are narrower
 #   1.10 - 16 November 2026 - F with 1 lobe is the F-1 heart (_f1_heart,
 #         from the MDF Rose Engine's F-1), not one Cupid's bow
+#   1.11 - 16 November 2026 - F-1 traced from the MDF Rose Engine's
+#         near-side cut (HOLTZ_F1_PROFILE) - the formula's point was
+#         too blunt on the paper chuck
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -238,16 +241,27 @@ HOLTZ_F_NOTCH_DEPTH = 0.35
 HOLTZ_F_NOTCH_HALF_WIDTH = 0.05
 
 # F-1 (F with 1 lobe) is a single heart, not one Cupid's bow - the MDF
-# Rose Engine's F-1 rosette (colvintools.com, MDF-RE-Rosette-F-1: the
-# rosette itself and John Moe's near-side cut, measured off the
-# picture, 16 November 2026, after Rich's F-1 paper chuck didn't look
-# like a heart). Round from the centre of turning, the cut is: a notch
-# (deepest, t = 0) rising to round shoulders HOLTZ_F1_SHOULDER of the
-# turn either side, then sides hollowing gently - the most,
-# HOLTZ_F1_SIDES of the amplitude, about three quarters of the way
-# down - to a sharp point (t = 0.5) as far out as the shoulders.
-HOLTZ_F1_SHOULDER = 0.11
-HOLTZ_F1_SIDES = 0.47
+# Rose Engine's F-1 rosette (colvintools.com, MDF-RE-Rosette-F-1). The
+# first version (16 November 2026) was a formula and Rich's paper chuck
+# showed its point too blunt: a heart's point is sharp only because its
+# sides fall away steeply right beside it. So the profile is traced
+# from John Moe's near-side cut on that page: the heart's edge, from
+# the centre of its rings, every 2.5 degrees from the notch (0) round
+# the right-hand side (the left shows the piece's side) to the point
+# (180), as deflection 0..1 - the last 20 degrees each end straight
+# lines fitted to the sides, so the notch and point are sharp (the photo
+# rounds them a little). The cut there has amplitude about 0.47 of its
+# outside radius; other ratios give fatter or thinner hearts, as a
+# physical rosette does at different radii (Rich, 16 November 2026).
+HOLTZ_F1_PROFILE = (
+    1.0, 0.973, 0.942, 0.904, 0.862, 0.816, 0.761, 0.702, 0.64, 0.577,
+    0.512, 0.447, 0.387, 0.332, 0.283, 0.238, 0.201, 0.173, 0.153, 0.14,
+    0.132, 0.126, 0.121, 0.119, 0.117, 0.117, 0.118, 0.12, 0.124, 0.128,
+    0.133, 0.14, 0.153, 0.173, 0.199, 0.228, 0.259, 0.291, 0.324, 0.355,
+    0.385, 0.413, 0.439, 0.464, 0.486, 0.507, 0.526, 0.543, 0.557, 0.568,
+    0.578, 0.584, 0.589, 0.591, 0.591, 0.589, 0.584, 0.577, 0.567, 0.555,
+    0.541, 0.523, 0.502, 0.475, 0.445, 0.413, 0.374, 0.329, 0.278, 0.221,
+    0.157, 0.083, 0.0)
 
 # Holtzapffel J (pages 11-12, J24-J36; Rich, 15 November 2026: "arcs of
 # eccentric circles with each arch having on it a superimposed arc of
@@ -358,15 +372,10 @@ def _holtz_c(t, repeats, count):
 
 
 def _f1_heart(t):
-    # The notch side a quarter sine, level at the shoulder; then
-    # u sin(pi u) along the side - level at the shoulder, deepest about
-    # two thirds of the way, and reaching the point sloping, so it is sharp.
-    s = numpy.minimum(t, 1.0 - t)
-    k = HOLTZ_F1_SHOULDER
-    notch = 1.0 - numpy.sin(0.5 * math.pi * numpy.minimum(s, k) / k)
-    u = (numpy.maximum(s, k) - k) / (0.5 - k)
-    side = HOLTZ_F1_SIDES * u * numpy.sin(math.pi * u)
-    return numpy.where(s < k, notch, side)
+    # The traced profile, the same both sides of the notch-point line.
+    s = numpy.minimum(t, 1.0 - t) * 360.0
+    table = numpy.asarray(HOLTZ_F1_PROFILE)
+    return numpy.interp(s, numpy.linspace(0.0, 180.0, len(table)), table)
 
 
 def _holtz_f(t, repeats, count):
