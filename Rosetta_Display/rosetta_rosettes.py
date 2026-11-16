@@ -251,7 +251,7 @@ HOLTZ_F_NOTCH_HALF_WIDTH = 0.05
 # first version (16 November 2026) was a formula and Rich's paper chuck
 # showed its point too blunt: a heart's point is sharp only because its
 # sides fall away steeply right beside it. So the profile is traced
-# from John Moe's near-side cut on that page: the heart's edge, from
+# from the near-side cut pictured on that page: the heart's edge, from
 # the centre of its rings, every 2.5 degrees from the notch (0) round
 # the right-hand side (the left shows the piece's side) to the point
 # (180), as deflection 0..1 - the last 20 degrees each end straight
