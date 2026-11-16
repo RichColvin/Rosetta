@@ -67,6 +67,9 @@
 #         pass counter
 #   1.9 - 15 November 2026 - Invert explained as the cutter on the
 #         opposite side of the spindle's axis (far side cutting)
+#   1.10 - 16 November 2026 - Holtzapffel shapes: lobes step by a
+#         whole group for shapes made of groups, the phase is a
+#         fraction of a repeat, notes on the Holtzapffel letters
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -164,13 +167,19 @@ NOTES = (
      "C slows down there; the note under the drawings says so.",
      "Movement"),
     ("Rosette",
-     "Lobes is how many times the shape repeats in one turn of the work.\n\n"
+     "Shape: the Holtzapffel letters are the patterns in Holtzapffel & Co.'s old guide to their "
+     "rose cutting frame - A is a plain sine, C and D points and petals, F a Cupid's bow, J and Q "
+     "waves on arcs, K a waved polygon, M and N scallops on lobes, O and P groups of waves, S a "
+     "heart. Plain polygon, Lotus and Tudor are not Holtzapffel letters.\n\n"
+     "Lobes is counted the way the guide numbers its rosettes - the small waves round the edge, so "
+     "J24 has 24 waves on 4 arcs of 6. Shapes made of groups (J, M, N, O, P, Q) only take whole "
+     "groups, and Lobes steps by a group.\n\n"
      "Amplitude is how far the cutter moves, from the rosette's highest point to its lowest, measured "
      "at the object being cut.\n\n"
      "There is no phase setting: put the pattern where you want it on the work by indexing on the "
      "Rosetta panel before running the program. With Both, the pumping rosette's Phase "
-     "turns it relative to the rocking rosette: as a fraction of a lobe (0.5 is half a lobe) or in "
-     "degrees.\n\n"
+     "turns it relative to the rocking rosette: as a fraction of one repeat of its shape - a lobe, or "
+     "a whole group (0.5 is half way) - or in degrees.\n\n"
      "Invert turns points into hollows. It is the same as running the rosette with the cutter on the "
      "opposite side of the spindle's axis of rotation - far side cutting instead of near side.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
@@ -253,14 +262,16 @@ class RosetteControls:
         self.shape = Gtk.ComboBoxText()
         for shape_id in rr.SHAPE_IDS:
             self.shape.append(shape_id, rr.SHAPES[shape_id][0])
-        self.shape.set_tooltip_text("The shape of each lobe.")
+        self.shape.set_tooltip_text("The rosette's shape. The Holtzapffel letters are the patterns "
+                                    "in Holtzapffel & Co.'s guide to their rose cutting frame.")
         self.shape.connect("changed", lambda w: window._changed())
         self._place(grid, self.shape, column, row)
         row += 1
 
         self.lobes = window._spin(1, 360, 1, 0)
-        self.lobes.set_tooltip_text("How many times the shape repeats around the rosette "
-                                    "(e.g. 24 for a Sine 24).")
+        self.lobes.set_tooltip_text("How many lobes round the rosette, counted as the Holtzapffel "
+                                    "guide numbers them (e.g. 24 for an A24). Shapes made of groups "
+                                    "(J, M, N, O, P, Q) step by a whole group.")
         self._place(grid, self.lobes, column, row)
         row += 1
 
@@ -283,13 +294,14 @@ class RosetteControls:
             self.phase = window._spin(0.0, 1.0, 0.05, 3)
             self.phase.set_width_chars(7)
             self.phase_unit = Gtk.ComboBoxText()
-            self.phase_unit.append("lobe", "of a lobe")
+            self.phase_unit.append("lobe", "of a repeat")
             self.phase_unit.append("deg", "degrees")
             self.phase_unit.connect("changed", self._on_phase_unit)
             box.pack_start(self.phase, True, True, 0)
             box.pack_start(self.phase_unit, False, False, 0)
             box.set_tooltip_text("Turns the pumping rosette relative to the rocking rosette: a "
-                                 "fraction of one lobe (0.5 = half a lobe), or degrees of the "
+                                 "fraction of one repeat of its shape - a lobe, or a whole group "
+                                 "for J, M, N, O, P, Q (0.5 = half way) - or degrees of the "
                                  "spindle.")
             self._place(grid, box, column, row)
         row += 1
@@ -317,10 +329,28 @@ class RosetteControls:
     def key(self, name):
         return self.prefix + name
 
+    def _repeats(self):
+        return rr.repeats({"shape": self.shape.get_active_id() or "sine",
+                           "lobes": int(self.lobes.get_value())})
+
+    def _fit_lobes(self):
+        # A shape made of groups only takes whole groups: step by one and
+        # snap the count to the nearest.
+        shape = self.shape.get_active_id() or "sine"
+        lobes = int(self.lobes.get_value())
+        per = rr.count_per_repeat(shape, lobes)
+        step = 1 if shape == "holtz_s" else per
+        self.lobes.set_increments(step, step * 2)
+        fitted = rr.fit_lobes(shape, lobes)
+        if fitted != lobes:
+            loading, self.window.loading = self.window.loading, True
+            self.lobes.set_value(fitted)
+            self.window.loading = loading
+        return fitted
+
     def _set_phase_range(self):
         if self.phase_unit.get_active_id() == "deg":
-            lobe_deg = 360.0 / max(int(self.lobes.get_value()), 1)
-            self.phase.set_range(0.0, lobe_deg)
+            self.phase.set_range(0.0, 360.0 / self._repeats())
             self.phase.set_increments(0.5, 5.0)
             self.phase.set_digits(2)
         else:
@@ -340,13 +370,13 @@ class RosetteControls:
         self.invert.set_active(ros["invert"])
 
     def read(self):
-        lobes = int(self.lobes.get_value())
+        lobes = self._fit_lobes()
         unit, phase = "lobe", 0.0
         if self.has_phase:
             unit = self.phase_unit.get_active_id() or "lobe"
             phase = self.phase.get_value()
             if unit == "deg":
-                phase = phase * lobes / 360.0
+                phase = phase * self._repeats() / 360.0
                 self._set_phase_range()     # the degrees range follows the lobes
         return {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
                 self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
