@@ -68,6 +68,19 @@ be used for this. **Nothing from COrnLathe - code, documentation or
 design - is used or consulted for the Rosette Designer, now or in later
 stages.** Rosetta is MIT-licensed and the Designer is a clean-room
 implementation (see Provenance below).
+Bill's reason (his email to Rich, 16 November 2026): there's no settled
+law on whether an AI trained on GPL code is a derivative work of it, and
+AI output that is an exact or near copy of GPL code could bring
+copyright or copyleft obligations to software that includes it - he
+suggested avoiding the possibility altogether. Two things recorded for
+completeness: before stage 1 this tracker described COrnLathe's rosette
+model from its public description (a lobe's shape on a 0..1 scale,
+amplitude, phase, invert, mask, symmetry - ordinary rosette terms going
+back to Holtzapffel) - its code was never read; and Claude can't rule
+out that COrnLathe's public GitHub code was in its training data. Nothing
+in the Designer is translated from it, and each shape can be checked
+against the source listed under Provenance. Rich decided no legal advice
+is needed (16 November 2026).
 
 **Decided by Rich, 15 November 2026:**
 
