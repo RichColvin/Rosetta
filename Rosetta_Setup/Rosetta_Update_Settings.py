@@ -63,6 +63,9 @@
 #         (channel_types, signal_tower_active_low, spindles' pid_vel) #
 #   1.8 - 15 November 2026 - runs the Rosette Designer menu entry     #
 #         one-time step                                               #
+#   1.9 - 16 November 2026 - refreshes the installer's copy of the    #
+#         update script in the home folder (~/Rosetta_Update.sh),     #
+#         which git pull never changes                                #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -317,11 +320,47 @@ def main():
     # Runs every update (not a one-time step) - after the serial-number
     # step above, so a number set just now is included in this report.
     Rosetta_Report_Version.report_version()
+    refresh_home_update_copy()
     # Last: a machine built before the Rosetta renaming (02 November
     # 2026) is moved over to the new names - this renames the repo
     # folder itself, so nothing after it may use REPO_DIR.
     Rosetta_Renaming.finish(REPO_DIR)
     return result
+
+
+# The installer copies Rosetta_Update.sh into the home folder, and a
+# launcher may run that copy - which git pull never changes, so it would
+# keep its old steps for ever (e.g. the check that Rosetta's programs
+# are closed, 16 November 2026). Brought up to date every update.
+HOME_UPDATE_COPY = os.path.expanduser("~/Rosetta_Update.sh")
+
+
+def refresh_home_update_copy():
+    '''
+    Makes ~/Rosetta_Update.sh the same as the repo's, if it is a plain
+    file (not a link or missing) and differs. It may be the script
+    running right now: bash reads a script as it goes, so it's replaced
+    by renaming a new file over it (the running copy keeps the old file)
+    rather than written in place.
+    '''
+    source = os.path.join(REPO_DIR, "Rosetta_Update.sh")
+    target = HOME_UPDATE_COPY
+    if not os.path.isfile(target) or os.path.islink(target) or not os.path.isfile(source):
+        return
+    try:
+        with open(source, "rb") as f:
+            new = f.read()
+        with open(target, "rb") as f:
+            if f.read() == new:
+                return
+        temp = target + ".new"
+        with open(temp, "wb") as f:
+            f.write(new)
+        os.chmod(temp, 0o755)
+        os.replace(temp, target)
+        print("Brought " + target + " up to date")
+    except OSError as e:
+        print("WARNING: could not bring " + target + " up to date: " + str(e))
 
 
 def update_settings():

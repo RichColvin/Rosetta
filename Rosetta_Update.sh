@@ -48,6 +48,14 @@
 #   1.6 - 02 November 2026 - Renamed from REB_Update.sh (Rosetta);
 #             finds the repo itself instead of a fixed
 #             /home/reuben path.
+#   1.7 - 16 November 2026 - Before anything changes, asks the user
+#             to close Rosetta (LinuxCNC), Rosetta Settings, the
+#             Rosette Designer, Back Up / Restore and Checkout, and
+#             waits until they are (Rich): otherwise they'd keep
+#             running the old program, and apt could replace
+#             LinuxCNC's files under it. It asks rather than closing
+#             them - LinuxCNC may be cutting, Settings may have
+#             unsaved tuning, a backup may be copying.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -104,6 +112,46 @@ echo -e "${TITLE}as it applies to the Rosetta system.                           
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 echo -e "${TITLE}Update the system                                                     ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Check that Rosetta's programs are closed                               ${NOCOLOR}"
+
+# Rosetta's programs that are open now, one name per line (this user's
+# processes only). Python programs are matched by the script they run,
+# so an editor with the file open doesn't count.
+rosetta_programs_open() {
+    local me
+    me=$(id -u)
+    pgrep -u "$me" -x linuxcncsvr >/dev/null && echo "Rosetta (LinuxCNC)"
+    pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Settings\.py" >/dev/null && echo "Rosetta Settings"
+    pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Rosette_Designer\.py" >/dev/null && echo "Rosette Designer"
+    pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Backup\.py" >/dev/null && echo "Back Up to USB / Restore from USB"
+    pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Checkout\.py" >/dev/null && echo "Checkout"
+    return 0
+}
+
+while true; do
+    still_open=$(rosetta_programs_open)
+    if [ -z "$still_open" ]; then
+        break
+    fi
+    echo -e "${KEYNOTE}Please close these programs before updating - they would keep running ${NOCOLOR}"
+    echo -e "${KEYNOTE}the old version until restarted:                                     ${NOCOLOR}"
+    while IFS= read -r name; do
+        echo "    $name"
+    done <<< "$still_open"
+    if [ ! -t 0 ]; then
+        echo -e "${KEYNOTE}PROGRAM TERMINATED PREMATURELY - close them and run the update again.${NOCOLOR}"
+        exit 1
+    fi
+    read -r -p "Press Enter once they are closed, or type Q and Enter to cancel: " answer
+    case "$answer" in
+        [qQ]*)
+            echo -e "${KEYNOTE}Update cancelled - nothing was changed.                              ${NOCOLOR}"
+            exit 1
+            ;;
+    esac
+done
+echo -e "${TITLE}Rosetta's programs are closed                                          ${NOCOLOR}"
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Pull latest files from GitHub                                          ${NOCOLOR}"
 # The repo: this script's own folder, or - for the copy the installer
@@ -219,3 +267,4 @@ if [ $? != 0 ]; then
 fi
 echo -e "${TITLE}System Updated                                                         ${NOCOLOR}"
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Update finished - Rosetta and its programs can be opened again.        ${NOCOLOR}"
