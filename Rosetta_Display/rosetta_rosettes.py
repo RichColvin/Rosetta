@@ -79,6 +79,9 @@
 #         over the whole repeat, not the angles asked for (F, J, N, O,
 #         P, Q and S jumped the whole amplitude on the first move);
 #         Holtzapffel F turned over
+#   1.8 - 16 November 2026 - advance and retract: the cutter can start
+#         clear of the work, move in on X and/or Z (advance_x/_z and
+#         their directions) before cutting and back out at the end
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -537,6 +540,14 @@ DEFAULT_DESIGN = {
     "preview_radius": 1.0,      # machine units - the drawing and Straight sides only
     "radius_at": "outside",     # preview_radius is the cut's "outside" (largest) or "inside"
     "units": "inch",            # "inch" or "mm"
+    # Advance and retract (Rich, 16 November 2026): the cutter starts
+    # clear of the work, moves in this far before cutting and back out
+    # at the end - once for the whole program. 0 = none. X towards the
+    # centre is minus, Z towards the headstock is minus.
+    "advance_x": 0.0,
+    "advance_x_dir": "centre",  # "centre" or "away"
+    "advance_z": 0.0,
+    "advance_z_dir": "headstock",   # "headstock" or "away"
 }
 
 # Largest straight-line error allowed between the program's points and
@@ -575,7 +586,9 @@ def clean_design(design):
     for key, choices in (("motion", ("rock", "pump", "both")),
                          ("surface", ("face", "side")), ("rubber", ("point",)),
                          ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm")),
-                         ("radius_at", ("outside", "inside"))):
+                         ("radius_at", ("outside", "inside")),
+                         ("advance_x_dir", ("centre", "away")),
+                         ("advance_z_dir", ("headstock", "away"))):
         if d[key] not in choices:
             d[key] = DEFAULT_DESIGN[key]
     d["c_direction"] = -1 if d["c_direction"] < 0 else 1
@@ -583,7 +596,28 @@ def clean_design(design):
     d["turns"] = min(max(d["turns"], 1), 100)
     d["finish_pct"] = min(max(d["finish_pct"], 1.0), 100.0)
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
+    for axis in ("x", "z"):
+        d["advance_" + axis] = max(d["advance_" + axis], 0.0)
     return d
+
+
+def advance(design, axis):
+    '''
+    How far the cutter moves on axis ("X" or "Z") before cutting, signed
+    as a machine move (towards the centre / headstock is minus); 0 if none.
+    '''
+    key = "advance_" + axis.lower()
+    away = design[key + "_dir"] == "away"
+    return design[key] * (1.0 if away else -1.0)
+
+
+def advance_order(design):
+    '''The axes that advance, in the order they move in: the depth axis
+    last, so the cutter enters the work along the depth direction (and
+    retracts in the reverse order).'''
+    depth = depth_axis(design)
+    axes = [axis for axis in ("X", "Z") if axis != depth] + [depth]
+    return [axis for axis in axes if abs(advance(design, axis)) > 1e-12]
 
 
 def pass_speeds(design):
@@ -675,6 +709,12 @@ def start_radius(design):
     marks = ((numpy.arange(n)[:, None] + where[None, :] - ros["phase"]) % n).ravel() * 360.0 / n
     y = offset(ros, numpy.concatenate((numpy.linspace(0.0, 360.0, 4000), marks)))
     return radius - (y.max() if design["radius_at"] == "outside" else y.min())
+
+
+def cutter_start_radius(design):
+    '''Where to put the cutter before running: start_radius, less the
+    X advance (an advance towards the centre starts it further out).'''
+    return start_radius(design) - advance(design, "X")
 
 
 #######################################################################
@@ -878,10 +918,18 @@ def gcode(design):
     speeds = pass_speeds(d)
     count = len(speeds)
 
+    advancing = advance_order(d)
+    if advancing:
+        where = ["(Runs from where the cutter is: put it clear of the work - it moves in)",
+                 "(%s first, cuts, then moves back out to where it started. Then run.)"
+                 % " and ".join("%s %s" % (axis, _num(advance(d, axis))) for axis in advancing)]
+    else:
+        where = ["(Runs from where the cutter is: put it where the pattern should be cut,)",
+                 "(then run.)"]
     lines = [
         "(Rosette Designer - %s - %s)" % (describe(d), time.strftime("%d %B %Y")),
-        "(Runs from where the cutter is: put it where the pattern should be cut,)",
-        "(then run. C turns %d time%s. Made by Rosetta's Rosette Designer -)"
+    ] + where + [
+        "(C turns %d time%s. Made by Rosetta's Rosette Designer -)"
         % (count, "" if count == 1 else "s"),
         "(open it there to change it.)",
     ] + [DESIGN_PREFIX + "%s %s)" % (key, json.dumps(d[key])) for key in sorted(d)] + [
@@ -893,6 +941,17 @@ def gcode(design):
         "#<_rd_c0> = #5425",
         "M68 E0 Q0  (pass counter for Rosetta's progress bar: this run's start)",
         "",
+    ]
+    if advancing:
+        lines.append("(Advance: move in from where the cutter was put; the pattern is cut from here)")
+        for axis in ("X", "Z"):
+            lines.append("#<_rd_%s_back> = #<_rd_%s0>" % (axis.lower(), axis.lower()))
+        for axis in advancing:
+            var = "#<_rd_%s0>" % axis.lower()
+            lines.append("%s = [%s%s]" % (var, var, _signed(advance(d, axis))))
+            lines.append("G94 G1 %s[%s] F%s" % (axis, var, _num(d["plunge_feed"])))
+        lines.append("")
+    lines += [
         "(One turn of the rosette. #1 = depth from the start, #2 = C at the start,)",
         "(#3 = speed factor: 1 at the set C speed, less for a slower finishing pass)",
         "o100 sub",
@@ -935,13 +994,17 @@ def gcode(design):
                 lines.append("G94 G1 %s[%s%s] F%s" % (depth, depth_var, _signed(depth_now),
                                                      _num(d["plunge_feed"])))
             lines.append("o100 call [%s] %s [%s]" % (_num(depth_now), c_start, _num(factor)))
-        lines += ["(Back out to where the cutter started)",
+        lines += ["(Back out of the cut)" if advancing else "(Back out to where the cutter started)",
                   "G0 %s[%s]" % (depth, depth_var)]
     else:
         for k in range(1, d["turns"] + 1):
             lines.append("(Turn %d of %d)" % (k, d["turns"]))
             lines.append(_pass_status("turn", k, d["turns"]))
             lines.append("o100 call [0] [#<_rd_c0>%s] [1]" % _signed(d["c_direction"] * 360.0 * (k - 1)))
+    if advancing:
+        lines.append("(Retract: back out to where the cutter was put)")
+        for axis in reversed(advancing):
+            lines.append("G0 %s[#<_rd_%s_back>]" % (axis, axis.lower()))
     lines += [
         "",
         "G94",

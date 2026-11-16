@@ -70,6 +70,8 @@
 #   1.10 - 16 November 2026 - Holtzapffel shapes: lobes step by a
 #         whole group for shapes made of groups, the phase is a
 #         fraction of a repeat, notes on the Holtzapffel letters
+#   1.11 - 16 November 2026 - Advance and Retract section (X and Z
+#         distances, towards centre/headstock or away)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -144,15 +146,18 @@ LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
 
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
-LENGTH_KEYS = ("amplitude", "pump_amplitude", "depth_per_pass", "preview_radius")
+LENGTH_KEYS = ("amplitude", "pump_amplitude", "depth_per_pass", "preview_radius",
+               "advance_x", "advance_z")
 FEED_KEYS = ("plunge_feed",)
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
 RANGES = {
     "inch": {"amplitude": (0.0001, 1.0, 0.001, 4), "depth_per_pass": (0.0001, 0.1, 0.001, 4),
-             "plunge_feed": (0.1, 20.0, 0.1, 1), "preview_radius": (0.05, 10.0, 0.05, 3)},
+             "plunge_feed": (0.1, 20.0, 0.1, 1), "preview_radius": (0.05, 10.0, 0.05, 3),
+             "advance": (0.0, 2.0, 0.01, 3)},
     "mm": {"amplitude": (0.002, 25.0, 0.02, 3), "depth_per_pass": (0.002, 2.5, 0.02, 3),
-           "plunge_feed": (2.0, 500.0, 1.0, 0), "preview_radius": (1.0, 250.0, 1.0, 1)},
+           "plunge_feed": (2.0, 500.0, 1.0, 0), "preview_radius": (1.0, 250.0, 1.0, 1),
+           "advance": (0.0, 50.0, 0.5, 2)},
 }
 
 # The notes column on the right: (heading, text, User Manual anchor),
@@ -195,6 +200,16 @@ NOTES = (
      "Turns at one depth: the cutter stays at one depth, as with a physical rosette. To go deeper, move "
      "the cutter in yourself and run the program again.",
      "Depth"),
+    ("Advance and Retract",
+     "To start the cutter clear of the work: set how far it moves in on X, Z or both before cutting, "
+     "and which way. It moves in at the Plunge feed - the depth axis last (Z on the face, X on the "
+     "side), so it enters the work along the depth direction - then cuts, then moves back out to "
+     "exactly where it was put, the depth axis first. 0 = no advance.\n\n"
+     "Put the cutter that far clear before running. The passes' depth is measured from where the "
+     "advance ends.\n\n"
+     "If the program is stopped part way, the cutter is left where it stopped - it backs out only at "
+     "the normal end.",
+     "Advance"),
     ("Object Size",
      "Radius is the radius on the object being made - the piece you are cutting.\n\n"
      "If you are making a rosette for later use on a rose engine, the object is that rosette: enter "
@@ -609,6 +624,20 @@ class DesignerWindow(Gtk.Window):
         grid.attach(self.deeper_plus, 0, row, 3, 1)
         row += 1
 
+        row = self._section(grid, row, "Advance and Retract")
+        self.advance = {}
+        self.advance_dir = {}
+        for axis, choices in (("x", (("centre", "Towards centre"), ("away", "Away"))),
+                              ("z", (("headstock", "Towards headstock"), ("away", "Away")))):
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            self.advance[axis] = self._spin(*ranges["advance"])
+            radios_box, self.advance_dir[axis] = self._radios(choices)
+            box.pack_start(self.advance[axis], False, False, 0)
+            box.pack_start(radios_box, False, False, 0)
+            row = self._row(grid, row, "%s advance (%s)" % (axis.upper(), unit), box,
+                            "How far the cutter moves in on %s before cutting, and back out at the "
+                            "end. 0 = none." % axis.upper())
+
         row = self._section(grid, row, "Object Size")
         self.preview_radius = self._spin(*ranges["preview_radius"])
         row = self._row(grid, row, "Radius (%s)" % unit, self.preview_radius,
@@ -732,6 +761,9 @@ class DesignerWindow(Gtk.Window):
         self.deeper_plus.set_active(d["deeper_plus"])
         self.preview_radius.set_value(d["preview_radius"])
         self.radius_at[d["radius_at"]].set_active(True)
+        for axis in ("x", "z"):
+            self.advance[axis].set_value(d["advance_" + axis])
+            self.advance_dir[axis][d["advance_%s_dir" % axis]].set_active(True)
         self.loading = False
 
     @staticmethod
@@ -758,6 +790,9 @@ class DesignerWindow(Gtk.Window):
             "radius_at": self._chosen(self.radius_at),
             "units": self.units,
         }
+        for axis in ("x", "z"):
+            values["advance_" + axis] = self.advance[axis].get_value()
+            values["advance_%s_dir" % axis] = self._chosen(self.advance_dir[axis])
         self.loading = True
         for controls in self.rosette_controls:
             values.update(controls.read())
@@ -829,9 +864,20 @@ class DesignerWindow(Gtk.Window):
         if d["depth_mode"] == "passes":
             text += "  Final depth %s %s." % (self._number(d["passes"] * d["depth_per_pass"]), unit)
         if d["surface"] == "face" and "X" in offsets:
-            text += ("\nFor the cut's %s to be at radius %s %s, start the cutter at radius %s %s."
+            text += ("\nFor the cut's %s to be at radius %s %s, start the cutter at radius %s %s"
                      % (d["radius_at"], self._number(d["preview_radius"]), unit,
-                        self._number(rr.start_radius(d)), unit))
+                        self._number(rr.cutter_start_radius(d)), unit))
+            if rr.advance(d, "X"):
+                text += " (it cuts from %s %s, after the X advance)." % (
+                    self._number(rr.start_radius(d)), unit)
+            else:
+                text += "."
+        advancing = rr.advance_order(d)
+        if advancing:
+            text += ("\nPut the cutter clear of the work: it moves in %s before cutting, and back "
+                     "out at the end." % " then ".join(
+                         "%s %s %s" % (axis, self._number(abs(rr.advance(d, axis))), unit)
+                         for axis in advancing))
 
         warnings = []
         roles = self._assigned_roles()
