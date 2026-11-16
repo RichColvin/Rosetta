@@ -24,15 +24,19 @@
 #   rubbers follow physical rosettes on a rose engine
 #   (https://otbok.info/index.php?n=Main.Rosette).
 #
-#   A shape is one lobe's deflection, f(u) for u = 0..1 across the
-#   lobe: 0 = no deflection, 1 = the full amplitude. Deflection moves
-#   the cutter in the minus direction of the motion axis (towards the
-#   centre when rocking), so a polygon's points point outward. Each
-#   shape is drawn to match the paper-chuck pictures of the MDF Rose
-#   Engine's rosettes (https://www.colvintools.com/MDF-RE%20-%20Rosettes.html,
-#   near side) - what the work moves through with that engine's rubber,
-#   not the outline of the rosette itself. Written from the shapes' geometry - none of
-#   Bill Ooms' COrnLathe code (GPL-3) is used.
+#   A shape is one repeat's deflection, profile(t) for t = 0..1 across
+#   the repeat (a lobe, or a group of lobes for some Holtzapffel
+#   letters): 0 = no deflection, 1 = the full amplitude. Deflection
+#   moves the cutter in the minus direction of the motion axis (towards
+#   the centre when rocking), so a polygon's points point outward.
+#
+#   Clean room (16 November 2026 - see docs/Rosetta_Tracker.md,
+#   "Provenance"): the shapes and the deflection maths were rewritten
+#   that day from plain geometry, the Holtzapffel & Co. guide's
+#   drawings and the MDF Rose Engine's paper-chuck pictures
+#   (https://www.colvintools.com/MDF-RE%20-%20Rosettes.html), each
+#   source given with its shape. No other rosette software is used or
+#   consulted.
 #
 #   The cutter is where the operator put it: the program reads X, Z and
 #   C as it starts and every move is relative to them, and the offset
@@ -64,6 +68,13 @@
 #   1.5 - 15 November 2026 - Lotus and Tudor redrawn from the MDF Rose
 #         Engine's paper-chuck pictures (Rich); sharp_points;
 #         suggested file names start "Rosette-"
+#   1.6 - 16 November 2026 - shapes rewritten clean room; Holtzapffel
+#         C, D, F, J, K, M, N, O, P, Q and S added from the guide's
+#         drawings; lobes counted as the guide numbers them, so a
+#         shape made of groups (J, M, N, O, P, Q) repeats lobes / its
+#         group size times (count_per_repeat, fit_lobes, repeats);
+#         phase is a fraction of a repeat; "Plain polygon" is no longer
+#         called Holtzapffel P (the guide's P is groups of waves)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -110,79 +121,349 @@ import numpy
 #######################################################################
 # Shapes
 #######################################################################
+#
+# Rewritten 16 November 2026 (clean room - see docs/Rosetta_Tracker.md,
+# "Provenance"): every shape below is worked out here from plain
+# geometry or measured off a cited picture, and the source is given
+# with each one.
+#
+# How a shape is described. A rosette's pattern repeats round the turn;
+# one repeat is described by profile(t) for t = 0..1 across it, giving
+# how far in the rubber is pushed at that point as a fraction of the
+# amplitude: 0 = not at all (the cutter at its outermost), 1 = the most.
+# The rosette's "lobes" are counted the way the Holtzapffel guide numbers
+# its rosettes (P18 = 18, the small waves you count round the edge), so
+# a shape whose repeat carries several of them says so in COUNT_PER_REPEAT
+# and the number of repeats in a turn is lobes / that. Most shapes have
+# one per repeat.
+#
+# The Holtzapffel letters are from "Patterns of Rosettes for the
+# Holtzapffel Rose Cutting Frame" (Holtzapffel & Co., about the 1880s),
+# pages 5-14 of Rich's scan: each letter's pattern drawn at several
+# counts, cut on a flat face, so the outer rings show the profile
+# itself. They are first versions read off those drawings, to be checked
+# on a paper chuck.
 
-# Lotus (MDF Rose Engine Lotus-8's paper chuck, 15 November 2026): a
-# polygon's straight sides from point to point, with a narrow V notch
-# in the middle of each - where the rubber can't follow the lotus
-# rosette's pointed trough. The notch's depth (of the amplitude) and
-# half width (of a lobe) are measured off the pictures.
+
+def _cosine(t):
+    # One smooth wave: 0 at t = 0 and 1, the most (1) at t = 0.5.
+    return 0.5 - 0.5 * numpy.cos(2.0 * math.pi * t)
+
+
+def _chord(t, sides):
+    # A straight side of a regular polygon, corners at t = 0 and 1 on a
+    # circle of radius 1. The side lies cos(h) from the centre (h = half
+    # the angle a side takes up); along a ray x from the side's middle it
+    # is cos(h) / cos(x) out, so it is 1 - cos(h) / cos(x) in from the
+    # circle - the most, 1 - cos(h), at the middle.
+    h = math.pi / max(sides, 3)
+    x = (2.0 * t - 1.0) * h
+    return (1.0 - math.cos(h) / numpy.cos(x)) / (1.0 - math.cos(h))
+
+
+def _arc(t, sag):
+    # A round-topped lobe: a circular arc from one sharp inward cusp
+    # (t = 0) to the next (t = 1). Measured across the chord between the
+    # cusps (half length 1), the arc rises sag at its middle; a circle
+    # through both cusps and that top has radius (1 + sag^2) / (2 sag).
+    # 0 at the arc's top, 1 at the cusps. sag 1 = a half circle.
+    x = 2.0 * t - 1.0
+    radius = (1.0 + sag * sag) / (2.0 * sag)
+    height = numpy.sqrt(numpy.maximum(radius * radius - x * x, 0.0)) - (radius - sag)
+    return 1.0 - height / sag
+
+
+def _notch(t, half_width):
+    # A narrow V, 1 at t = 0 (and 1), falling straight to 0 half_width away.
+    d = numpy.minimum(t, 1.0 - t)
+    return numpy.clip(1.0 - d / half_width, 0.0, 1.0)
+
+
+def _scaled(f):
+    # Stretch a profile to run exactly 0..1.
+    low, high = numpy.min(f), numpy.max(f)
+    return (f - low) / max(high - low, 1e-12)
+
+
+# Lotus (MDF Rose Engine Lotus-8's paper chuck, colvintools.com,
+# 15 November 2026): a polygon's straight sides from point to point,
+# with a narrow V notch in the middle of each - where the rubber can't
+# follow the lotus rosette's pointed trough. Notch depth (of the
+# amplitude) and half width (of a lobe), measured off the picture.
 LOTUS_NOTCH_DEPTH = 0.25
 LOTUS_NOTCH_HALF_WIDTH = 0.08
 
-# Tudor (Tudor-5 and Tudor-8's paper chucks): a rounded petal per lobe
-# - a polygon turned over - and at each join between petals a small
-# sharp barb pointing outward (the Tudor rose's sepals: its "inner
-# pattern rotated one half lobe"). Barb height (of the amplitude) and
-# half width (of a lobe), measured off the pictures.
+# Tudor (Tudor-5 and Tudor-8's paper chucks, the same page): a rounded
+# petal per lobe - a polygon turned over - and at each join between
+# petals a small sharp barb pointing outward (the Tudor rose's sepals).
+# Barb height (of the amplitude) and half width (of a lobe), measured
+# off the pictures.
 TUDOR_BARB_HEIGHT = 0.6
 TUDOR_BARB_HALF_WIDTH = 0.04
 
+# Holtzapffel D (guide pages 7-8, D6-D36): round petals meeting in sharp
+# inward cusps. How full each petal is (the arc's sag, _arc), read off
+# D6 and D8. C (pages 6-7) is D turned over: sharp points outward,
+# hollow sides.
+HOLTZ_D_SAG = 0.5
 
-def _sine(u, lobes):
-    # Holtzapffel A: a plain sine wave.
-    return 0.5 - 0.5 * numpy.cos(2.0 * math.pi * u)
+# Holtzapffel F (page 9, F3-F8): groups of three smooth waves, the
+# middle one with a small V notch at its top - a Cupid's bow (F3's
+# centre is a 9-point star, F4's 12). The guide numbers F by its
+# groups (F3 = 3). The notch's depth (of the amplitude) and half width
+# (of a group), read off F3 and F4.
+HOLTZ_F_WAVES = 3
+HOLTZ_F_NOTCH_DEPTH = 0.35
+HOLTZ_F_NOTCH_HALF_WIDTH = 0.05
+
+# Holtzapffel J (pages 11-12, J24-J36; Rich, 15 November 2026: "arcs of
+# eccentric circles with each arch having on it a superimposed arc of
+# sine waves"): shallow round arcs, 6 small waves on each - J24 has 4
+# arcs, J30 5, J36 6.
+HOLTZ_J_PER_ARC = 6
+HOLTZ_J_ARC_SAG = 0.5
+HOLTZ_J_WAVES = 0.2         # the small waves' share of the amplitude
+
+# Holtzapffel K (page 11, K3 K4 K6): a polygon of that many sides with
+# round waves along each side - an odd number, so the middle of each
+# side is a dip, which K3 shows as a Cupid's-bow notch (about 5 a side).
+HOLTZ_K_WAVES_PER_SIDE = 5
+HOLTZ_K_WAVES = 0.35
+
+# Holtzapffel M (page 12, M24): three long, deep round lobes, each
+# carrying 8 small round scallops.
+HOLTZ_M_PER_LOBE = 8
+HOLTZ_M_LOBE_SAG = 0.7
+HOLTZ_M_SCALLOP_SAG = 0.6
+HOLTZ_M_SCALLOPS = 0.15
+
+# Holtzapffel N (page 12, N15 N20): broad round lobes of 5 round
+# scallops each - N15 has 3 lobes, N20 4.
+HOLTZ_N_PER_LOBE = 5
+HOLTZ_N_LOBE_SAG = 0.4
+HOLTZ_N_SCALLOP_SAG = 0.6
+HOLTZ_N_SCALLOPS = 0.35
+
+# Holtzapffel O and P (page 13, O12-O24, P12-P36): broad round arcs
+# of 6 waves each, the waves largest mid-arc - O12 and P12 show 2 arcs
+# (their centres a bar), P18 3, P24 4. P's waves are smooth (sine),
+# O's are round scallops with sharp cusps. HOLTZ_OP_SWELL is how much
+# smaller the smallest wave of an arc is than the largest (a fraction).
+HOLTZ_OP_PER_GROUP = 6
+HOLTZ_OP_ARC_SAG = 0.5
+HOLTZ_O_WAVES = 0.3         # the waves' share of the amplitude
+HOLTZ_P_WAVES = 0.2
+HOLTZ_OP_SWELL = 0.6
+HOLTZ_O_SCALLOP_SAG = 0.6
+
+# Holtzapffel Q (page 14, Q16-Q32): shallow round arcs, each carrying
+# 4 round scallops - Q16 has 4 arcs.
+HOLTZ_Q_PER_ARC = 4
+HOLTZ_Q_ARC_SAG = 0.35
+HOLTZ_Q_SCALLOP_SAG = 0.6
+HOLTZ_Q_SCALLOPS = 0.2
+
+# Holtzapffel S (page 14, S32): one heart round the turn - a V notch at
+# its top, two round shoulders, a point at the bottom - carrying the
+# count of small round scallops. Where the shoulders are (fraction of a
+# turn from the notch), how far in the point is, and the scallops' share.
+HOLTZ_S_SHOULDER = 0.17
+HOLTZ_S_POINT = 0.4
+HOLTZ_S_SCALLOP_SAG = 0.6
+HOLTZ_S_SCALLOPS = 0.15
 
 
-def _polygon(u, lobes):
-    # Holtzapffel P: straight sides between points. The distance in from
-    # the points' circle to a straight side, as a fraction of the most
-    # (at the side's middle): 0 at the points, 1 mid-side.
-    half = math.pi / max(lobes, 3)
-    return (1.0 - math.cos(half) / numpy.cos(half * (2.0 * u - 1.0))) / (1.0 - math.cos(half))
+def _sine(t, repeats, count):
+    # Holtzapffel A (page 5, A8-A36): one plain smooth wave per lobe.
+    return _cosine(t)
 
 
-def _lotus(u, lobes):
-    # Points at the lobe's ends, a V notch at its middle.
-    notch = numpy.clip(1.0 - numpy.abs(u - 0.5) / LOTUS_NOTCH_HALF_WIDTH, 0.0, 1.0)
-    return (1.0 - LOTUS_NOTCH_DEPTH) * _polygon(u, lobes) + LOTUS_NOTCH_DEPTH * notch
+def _polygon(t, repeats, count):
+    # A plain polygon: straight sides between points. (What a puffy-
+    # sided rosette cuts on work much smaller than itself - de la
+    # Condamine's point, guide pages 20-21 - so it is useful on its own.)
+    return _chord(t, repeats)
 
 
-def _tudor_barb(u):
-    d = numpy.minimum(u, 1.0 - u)
-    return TUDOR_BARB_HEIGHT * numpy.clip(1.0 - d / TUDOR_BARB_HALF_WIDTH, 0.0, 1.0)
+def _lotus(t, repeats, count):
+    notch = _notch((t + 0.5) % 1.0, LOTUS_NOTCH_HALF_WIDTH)     # mid-lobe
+    return (1.0 - LOTUS_NOTCH_DEPTH) * _chord(t, repeats) + LOTUS_NOTCH_DEPTH * notch
 
 
-def _tudor(u, lobes):
-    # A petal (highest mid-lobe) with the barb at the lobe's ends,
-    # scaled so the notches beside the barb - its deepest points - are
-    # the full amplitude.
-    height = 1.0 - numpy.maximum(_polygon(u, lobes), _tudor_barb(u))
-    meet = numpy.array([_tudor_barb_meets_petal(lobes)])
-    return height / (1.0 - _tudor_barb(meet)[0])
+def _tudor_barb(t):
+    return TUDOR_BARB_HEIGHT * _notch(t, TUDOR_BARB_HALF_WIDTH)
 
 
-def _tudor_barb_meets_petal(lobes):
+def _tudor_barb_meets_petal(repeats):
     '''How far from the lobe's end (a fraction of a lobe) the barb's
     side meets the petal - a sharp notch.'''
     low, high = 0.0, TUDOR_BARB_HALF_WIDTH
     for _ in range(60):
         mid = 0.5 * (low + high)
-        if _tudor_barb(numpy.array([mid]))[0] > _polygon(numpy.array([mid]), lobes)[0]:
+        if _tudor_barb(numpy.array([mid]))[0] > _chord(numpy.array([mid]), repeats)[0]:
             low = mid
         else:
             high = mid
     return 0.5 * (low + high)
 
 
-# id -> (name on screen, function)
+def _tudor(t, repeats, count):
+    # A petal (highest mid-lobe) with the barb at the lobe's ends,
+    # scaled so the notches beside the barb - its deepest points - are
+    # the full amplitude.
+    height = 1.0 - numpy.maximum(_chord(t, repeats), _tudor_barb(t))
+    meet = numpy.array([_tudor_barb_meets_petal(repeats)])
+    return height / (1.0 - _tudor_barb(meet)[0])
+
+
+def _holtz_d(t, repeats, count):
+    return _arc(t, HOLTZ_D_SAG)
+
+
+def _holtz_c(t, repeats, count):
+    return 1.0 - _arc(t, HOLTZ_D_SAG)
+
+
+def _holtz_f(t, repeats, count):
+    # Wave tops at 1/6, 1/2 and 5/6 of the group; the notch at 1/2.
+    waves = _cosine((t * HOLTZ_F_WAVES + 0.5) % 1.0)
+    return _scaled((1.0 - HOLTZ_F_NOTCH_DEPTH) * waves
+                   + HOLTZ_F_NOTCH_DEPTH * _notch((t + 0.5) % 1.0, HOLTZ_F_NOTCH_HALF_WIDTH))
+
+
+def _on_arcs(t, arc_sag, small, per_arc, share):
+    # Small waves riding on round arcs: the arc's own profile plus the
+    # small waves, each its share of the amplitude.
+    return _scaled((1.0 - share) * _arc(t, arc_sag) + share * small((t * per_arc) % 1.0))
+
+
+def _holtz_j(t, repeats, count):
+    return _on_arcs(t, HOLTZ_J_ARC_SAG, _cosine, HOLTZ_J_PER_ARC, HOLTZ_J_WAVES)
+
+
+def _holtz_k(t, repeats, count):
+    return _scaled((1.0 - HOLTZ_K_WAVES) * _chord(t, repeats)
+                   + HOLTZ_K_WAVES * _cosine((t * HOLTZ_K_WAVES_PER_SIDE) % 1.0))
+
+
+def _holtz_m(t, repeats, count):
+    return _on_arcs(t, HOLTZ_M_LOBE_SAG, lambda s: _arc(s, HOLTZ_M_SCALLOP_SAG),
+                    HOLTZ_M_PER_LOBE, HOLTZ_M_SCALLOPS)
+
+
+def _holtz_n(t, repeats, count):
+    return _on_arcs(t, HOLTZ_N_LOBE_SAG, lambda s: _arc(s, HOLTZ_N_SCALLOP_SAG),
+                    HOLTZ_N_PER_LOBE, HOLTZ_N_SCALLOPS)
+
+
+def _swelling(t, small, share):
+    # Waves on an arc, largest mid-arc, smallest at its ends.
+    size = 1.0 - HOLTZ_OP_SWELL * _cosine((t + 0.5) % 1.0)
+    return _scaled((1.0 - share) * _arc(t, HOLTZ_OP_ARC_SAG)
+                   + share * size * small((t * HOLTZ_OP_PER_GROUP) % 1.0))
+
+
+def _holtz_o(t, repeats, count):
+    return _swelling(t, lambda s: _arc(s, HOLTZ_O_SCALLOP_SAG), HOLTZ_O_WAVES)
+
+
+def _holtz_p(t, repeats, count):
+    return _swelling(t, _cosine, HOLTZ_P_WAVES)
+
+
+def _holtz_q(t, repeats, count):
+    return _on_arcs(t, HOLTZ_Q_ARC_SAG, lambda s: _arc(s, HOLTZ_Q_SCALLOP_SAG),
+                    HOLTZ_Q_PER_ARC, HOLTZ_Q_SCALLOPS)
+
+
+def _heart(t):
+    # One heart round the turn, t = 0 at the notch: down the notch's
+    # straight sides to round shoulders (a quarter sine, level at the
+    # shoulder), then curving in to the point at t = 0.5, which is sharp
+    # because both sides arrive at it sloping.
+    s = numpy.minimum(t, 1.0 - t)
+    k = HOLTZ_S_SHOULDER
+    notch = 1.0 - numpy.sin(0.5 * math.pi * numpy.minimum(s, k) / k)
+    lower = HOLTZ_S_POINT * ((numpy.maximum(s, k) - k) / (0.5 - k)) ** 2
+    return numpy.where(s < k, notch, lower)
+
+
+def _holtz_s(t, repeats, count):
+    return _scaled((1.0 - HOLTZ_S_SCALLOPS) * _heart(t)
+                   + HOLTZ_S_SCALLOPS * _arc((t * count) % 1.0, HOLTZ_S_SCALLOP_SAG))
+
+
+# id -> (name on screen, short name for file names, function,
+#        count per repeat (0 = the whole turn is one repeat))
 SHAPES = {
-    "sine": ("Sine (Holtzapffel A)", _sine),
-    "polygon": ("Plain polygon (Holtzapffel P)", _polygon),
-    "lotus": ("Lotus", _lotus),
-    "tudor": ("Tudor", _tudor),
+    "sine": ("Holtzapffel A - sine", "HoltzA", _sine, 1),
+    "holtz_c": ("Holtzapffel C - points, hollow sides", "HoltzC", _holtz_c, 1),
+    "holtz_d": ("Holtzapffel D - round petals", "HoltzD", _holtz_d, 1),
+    "holtz_f": ("Holtzapffel F - Cupid's bow", "HoltzF", _holtz_f, 1),
+    "holtz_j": ("Holtzapffel J - waves on arcs (6 a arc)", "HoltzJ", _holtz_j, HOLTZ_J_PER_ARC),
+    "holtz_k": ("Holtzapffel K - waved polygon", "HoltzK", _holtz_k, 1),
+    "holtz_m": ("Holtzapffel M - scallops on long lobes (8 a lobe)", "HoltzM", _holtz_m, HOLTZ_M_PER_LOBE),
+    "holtz_n": ("Holtzapffel N - scallops on lobes (5 a lobe)", "HoltzN", _holtz_n, HOLTZ_N_PER_LOBE),
+    "holtz_o": ("Holtzapffel O - swelling scallops (6 a group)", "HoltzO", _holtz_o, HOLTZ_OP_PER_GROUP),
+    "holtz_p": ("Holtzapffel P - swelling waves (6 a group)", "HoltzP", _holtz_p, HOLTZ_OP_PER_GROUP),
+    "holtz_q": ("Holtzapffel Q - scallops on arcs (4 a arc)", "HoltzQ", _holtz_q, HOLTZ_Q_PER_ARC),
+    "holtz_s": ("Holtzapffel S - heart", "HoltzS", _holtz_s, 0),
+    "polygon": ("Plain polygon", "Polygon", _polygon, 1),
+    "lotus": ("Lotus", "Lotus", _lotus, 1),
+    "tudor": ("Tudor", "Tudor", _tudor, 1),
 }
-SHAPE_IDS = ("sine", "polygon", "lotus", "tudor")
-SHAPE_SHORT = {"sine": "Sine", "polygon": "Polygon", "lotus": "Lotus", "tudor": "Tudor"}
+SHAPE_IDS = tuple(SHAPES)
+SHAPE_SHORT = {key: value[1] for key, value in SHAPES.items()}
+
+
+def count_per_repeat(shape, lobes):
+    '''How many of the rosette's counted lobes one repeat holds.'''
+    per = SHAPES[shape][3]
+    return lobes if per == 0 else per
+
+
+def fit_lobes(shape, lobes):
+    '''The nearest allowed lobe count: a whole number of repeats.'''
+    per = count_per_repeat(shape, lobes)
+    return max(per, int(round(lobes / float(per))) * per)
+
+
+def repeats(ros):
+    '''How many times the shape's repeat goes round in one turn.'''
+    return max(ros["lobes"] // count_per_repeat(ros["shape"], ros["lobes"]), 1)
+
+
+def profile(ros, t):
+    '''The shape over one repeat, t = 0..1 (numpy array), 0..1.'''
+    return SHAPES[ros["shape"]][2](numpy.asarray(t, dtype=float), repeats(ros), ros["lobes"])
+
+
+def sharp_points(ros):
+    '''Where a shape has sharp points, as fractions of a repeat.'''
+    shape, n = ros["shape"], repeats(ros)
+    if shape == "polygon":
+        return (0.0,)
+    if shape == "lotus":
+        return (0.0, 0.5 - LOTUS_NOTCH_HALF_WIDTH, 0.5, 0.5 + LOTUS_NOTCH_HALF_WIDTH)
+    if shape == "tudor":
+        meet = _tudor_barb_meets_petal(n)
+        return (0.0, meet, 1.0 - meet)
+    if shape in ("holtz_c", "holtz_d"):
+        return (0.0,)
+    if shape == "holtz_f":
+        return (0.5 - HOLTZ_F_NOTCH_HALF_WIDTH, 0.5, 0.5 + HOLTZ_F_NOTCH_HALF_WIDTH)
+    if shape == "holtz_j":
+        return (0.0,)
+    if shape == "holtz_k":
+        return (0.0,)
+    per = {"holtz_m": HOLTZ_M_PER_LOBE, "holtz_n": HOLTZ_N_PER_LOBE, "holtz_o": HOLTZ_OP_PER_GROUP,
+           "holtz_q": HOLTZ_Q_PER_ARC, "holtz_s": ros["lobes"]}.get(shape)
+    if per:
+        points = list(numpy.arange(per) / float(per))
+        if shape == "holtz_s":
+            points += [0.5]
+        return tuple(points)
+    return ()
 
 
 #######################################################################
@@ -209,7 +490,7 @@ DEFAULT_DESIGN = {
     "shape": "sine",
     "lobes": 12,
     "amplitude": 0.05,          # peak to peak, machine units
-    "phase": 0.0,               # fraction of a lobe - always 0 (see above)
+    "phase": 0.0,               # fraction of a repeat - always 0 (see above)
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
     "pump_shape": "sine",       # the pumping rosette, when motion is "both"
@@ -265,7 +546,7 @@ def clean_design(design):
     for prefix in ("", SECOND):
         if d[prefix + "shape"] not in SHAPES:
             d[prefix + "shape"] = DEFAULT_DESIGN[prefix + "shape"]
-        d[prefix + "lobes"] = min(max(d[prefix + "lobes"], 1), 360)
+        d[prefix + "lobes"] = fit_lobes(d[prefix + "shape"], min(max(d[prefix + "lobes"], 1), 360))
         d[prefix + "phase"] = d[prefix + "phase"] % 1.0
         if d[prefix + "phase_unit"] not in ("lobe", "deg"):
             d[prefix + "phase_unit"] = "lobe"
@@ -318,9 +599,8 @@ def deflection(ros, theta_deg):
     A rosette's deflection (0..1) at spindle angles theta_deg (numpy
     array, degrees from the program's start).
     '''
-    lobes = ros["lobes"]
-    u = numpy.mod(lobes * numpy.asarray(theta_deg, dtype=float) / 360.0 + ros["phase"], 1.0)
-    f = SHAPES[ros["shape"]][1](u, lobes)
+    t = numpy.mod(repeats(ros) * numpy.asarray(theta_deg, dtype=float) / 360.0 + ros["phase"], 1.0)
+    f = profile(ros, t)
     if ros["invert"]:
         f = 1.0 - f
     return f
@@ -337,8 +617,9 @@ def offset(ros, theta_deg):
 
 
 def phase_degrees(ros):
-    '''A rosette's phase as spindle degrees (a whole lobe = 360 / lobes).'''
-    return ros["phase"] * 360.0 / ros["lobes"]
+    '''A rosette's phase as spindle degrees (phase is a fraction of one
+    repeat - a lobe for most shapes; a whole repeat = 360 / repeats).'''
+    return ros["phase"] * 360.0 / repeats(ros)
 
 
 def straight_sides_amplitude(ros, radius, radius_at="outside"):
@@ -368,9 +649,9 @@ def start_radius(design):
     # Every shape's highest and lowest points are at a quarter, half or
     # whole lobe or at one of its sharp points - sampled exactly (a
     # sharp point is too narrow to find by even sampling alone).
-    lobes = ros["lobes"]
-    where = numpy.concatenate((numpy.arange(4) / 4.0, sharp_points(ros["shape"], lobes)))
-    marks = ((numpy.arange(lobes)[:, None] + where[None, :] - ros["phase"]) % lobes).ravel() * 360.0 / lobes
+    n = repeats(ros)
+    where = numpy.concatenate((numpy.arange(4) / 4.0, sharp_points(ros)))
+    marks = ((numpy.arange(n)[:, None] + where[None, :] - ros["phase"]) % n).ravel() * 360.0 / n
     y = offset(ros, numpy.concatenate((numpy.linspace(0.0, 360.0, 4000), marks)))
     return radius - (y.max() if design["radius_at"] == "outside" else y.min())
 
@@ -379,33 +660,18 @@ def start_radius(design):
 # Points for one turn
 #######################################################################
 
-# Where each shape has sharp points, as fractions of a lobe - sampled
-# exactly, with more samples close by, so the program's straight lines
-# don't cut across a point.
-def sharp_points(shape, lobes):
-    '''Where a shape has sharp points, as fractions of a lobe.'''
-    if shape == "polygon":
-        return (0.0,)
-    if shape == "lotus":
-        return (0.0, 0.5 - LOTUS_NOTCH_HALF_WIDTH, 0.5, 0.5 + LOTUS_NOTCH_HALF_WIDTH)
-    if shape == "tudor":
-        meet = _tudor_barb_meets_petal(lobes)
-        return (0.0, meet, 1.0 - meet)
-    return ()
-
-
 def _sample_angles(design):
     ros_list = list(rosettes(design).values())
     most_lobes = max(r["lobes"] for r in ros_list)
     samples = int(min(max(3600, most_lobes * 600), 200000))
     theta = [numpy.linspace(0.0, 360.0, samples + 1)]
     for ros in ros_list:
-        lobes = ros["lobes"]
-        lobe_deg = 360.0 / lobes
-        near = numpy.geomspace(1e-7, 0.05, 60) * lobe_deg
-        for u in sharp_points(ros["shape"], lobes):
+        n = repeats(ros)
+        repeat_deg = 360.0 / n
+        near = numpy.geomspace(1e-7, 0.05, 60) * 360.0 / ros["lobes"]
+        for u in sharp_points(ros):
             # The invert of a sharp point is still sharp.
-            centres = (numpy.arange(lobes) + u - ros["phase"]) * lobe_deg
+            centres = (numpy.arange(n) + u - ros["phase"]) * repeat_deg
             centres = numpy.mod(centres, 360.0)
             centres = numpy.concatenate([centres, centres + 360.0])   # a point at 0 is also at 360
             theta.append(centres)
@@ -689,6 +955,11 @@ def design_from_file(path):
 # Samples (python3 rosetta_rosettes.py <folder>)
 #######################################################################
 
+# The sample programs' lobes: the guide's own counts for the letters.
+SAMPLE_LOBES = {"sine": 12, "holtz_j": 24, "holtz_k": 4, "holtz_m": 24, "holtz_n": 15,
+                "holtz_o": 12, "holtz_p": 18, "holtz_q": 16, "holtz_s": 32}
+
+
 def write_samples(folder):
     os.makedirs(folder, exist_ok=True)
     written = []
@@ -699,7 +970,7 @@ def write_samples(folder):
                 for surface in ("face", "side"):
                     for mode in ("passes", "turns"):
                         d = clean_design({
-                            "shape": shape, "lobes": 8 if shape != "sine" else 12,
+                            "shape": shape, "lobes": SAMPLE_LOBES.get(shape, 8),
                             "amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
                             "plunge_feed": 1.0 * scale, "preview_radius": 1.0 * scale,
                             "motion": motion, "surface": surface, "depth_mode": mode,
