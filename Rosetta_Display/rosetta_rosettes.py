@@ -82,6 +82,8 @@
 #   1.8 - 16 November 2026 - advance and retract: the cutter can start
 #         clear of the work, move in on X and/or Z (advance_x/_z and
 #         their directions) before cutting and back out at the end
+#   1.9 - 16 November 2026 - shorter shape names (the group sizes are
+#         in the notes), so the Shape lists are narrower
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -424,13 +426,13 @@ SHAPES = {
     "holtz_c": ("Holtzapffel C - points, hollow sides", "HoltzC", _holtz_c, 1),
     "holtz_d": ("Holtzapffel D - round petals", "HoltzD", _holtz_d, 1),
     "holtz_f": ("Holtzapffel F - Cupid's bow", "HoltzF", _holtz_f, 1),
-    "holtz_j": ("Holtzapffel J - waves on arcs (6 a arc)", "HoltzJ", _holtz_j, HOLTZ_J_PER_ARC),
+    "holtz_j": ("Holtzapffel J - waves on arcs", "HoltzJ", _holtz_j, HOLTZ_J_PER_ARC),
     "holtz_k": ("Holtzapffel K - waved polygon", "HoltzK", _holtz_k, 1),
-    "holtz_m": ("Holtzapffel M - scallops on long lobes (8 a lobe)", "HoltzM", _holtz_m, HOLTZ_M_PER_LOBE),
-    "holtz_n": ("Holtzapffel N - scallops on lobes (5 a lobe)", "HoltzN", _holtz_n, HOLTZ_N_PER_LOBE),
-    "holtz_o": ("Holtzapffel O - swelling scallops (6 a group)", "HoltzO", _holtz_o, HOLTZ_OP_PER_GROUP),
-    "holtz_p": ("Holtzapffel P - swelling waves (6 a group)", "HoltzP", _holtz_p, HOLTZ_OP_PER_GROUP),
-    "holtz_q": ("Holtzapffel Q - scallops on arcs (4 a arc)", "HoltzQ", _holtz_q, HOLTZ_Q_PER_ARC),
+    "holtz_m": ("Holtzapffel M - scallops on long lobes", "HoltzM", _holtz_m, HOLTZ_M_PER_LOBE),
+    "holtz_n": ("Holtzapffel N - scallops on lobes", "HoltzN", _holtz_n, HOLTZ_N_PER_LOBE),
+    "holtz_o": ("Holtzapffel O - swelling scallops", "HoltzO", _holtz_o, HOLTZ_OP_PER_GROUP),
+    "holtz_p": ("Holtzapffel P - swelling waves", "HoltzP", _holtz_p, HOLTZ_OP_PER_GROUP),
+    "holtz_q": ("Holtzapffel Q - scallops on arcs", "HoltzQ", _holtz_q, HOLTZ_Q_PER_ARC),
     "holtz_s": ("Holtzapffel S - heart", "HoltzS", _holtz_s, 0),
     "polygon": ("Plain polygon", "Polygon", _polygon, 1),
     "lotus": ("Lotus", "Lotus", _lotus, 1),

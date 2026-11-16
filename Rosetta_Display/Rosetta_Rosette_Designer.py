@@ -72,6 +72,9 @@
 #         fraction of a repeat, notes on the Holtzapffel letters
 #   1.11 - 16 November 2026 - Advance and Retract section (X and Z
 #         distances, towards centre/headstock or away)
+#   1.12 - 16 November 2026 - the form fits a 1080-line screen: number
+#         boxes only as wide as a number, Depth beside Advance and
+#         Retract and Object Size (Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -519,7 +522,11 @@ class DesignerWindow(Gtk.Window):
         spin = Gtk.SpinButton.new_with_range(lower, upper, step)
         spin.set_digits(digits)
         spin.set_numeric(True)
-        spin.set_width_chars(9)
+        spin.set_width_chars(8)
+        # Only as wide as a number needs, not the whole column (Rich,
+        # 16 November 2026: the boxes were needlessly wide).
+        spin.set_halign(Gtk.Align.START)
+        spin.set_hexpand(False)
         spin.connect("value-changed", lambda w: self._changed())
         return spin
 
@@ -574,11 +581,20 @@ class DesignerWindow(Gtk.Window):
         self.rubber = Gtk.ComboBoxText()
         self.rubber.append("point", "Point")
         self.rubber.connect("changed", lambda w: self._changed())
+        self.rubber.set_halign(Gtk.Align.START)
         row = self._row(grid, row, "Rubber", self.rubber,
                         "The rubber that follows the rosette. Only a point for now - it follows the "
                         "shape exactly.")
 
-        row = self._section(grid, row, "Depth")
+        # Below the rosettes, two columns - Depth on the left, Advance and
+        # Retract and Object Size on the right - so the form fits a
+        # 1080-line screen without scrolling (Rich, 16 November 2026).
+        top = grid
+        lower = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=32)
+        lower.set_margin_top(8)
+        grid = Gtk.Grid(column_spacing=8, row_spacing=4)
+        lower.pack_start(grid, False, False, 0)
+        row = self._section(grid, 0, "Depth")
         self.mode_passes = Gtk.RadioButton.new_with_label_from_widget(None, "Passes, deeper each time")
         self.mode_turns = Gtk.RadioButton.new_with_label_from_widget(self.mode_passes, "Turns at one depth")
         for button in (self.mode_passes, self.mode_turns):
@@ -604,7 +620,7 @@ class DesignerWindow(Gtk.Window):
         self.finish_pct = self._spin(1, 100, 1, 0)
         self.finish_pct.set_width_chars(5)
         finish_box.pack_start(self.finish_pass, False, False, 0)
-        finish_box.pack_start(self.finish_pct, True, True, 0)
+        finish_box.pack_start(self.finish_pct, False, False, 0)
         finish_box.pack_start(Gtk.Label(label="% of C speed"), False, False, 0)
         row = self._row(grid, row, "    Finishing pass", finish_box,
                         "Tick to run the last pass slower than the others, for a better finish: "
@@ -624,7 +640,9 @@ class DesignerWindow(Gtk.Window):
         grid.attach(self.deeper_plus, 0, row, 3, 1)
         row += 1
 
-        row = self._section(grid, row, "Advance and Retract")
+        grid = Gtk.Grid(column_spacing=8, row_spacing=4)
+        lower.pack_start(grid, False, False, 0)
+        row = self._section(grid, 0, "Advance and Retract")
         self.advance = {}
         self.advance_dir = {}
         for axis, choices in (("x", (("centre", "Towards centre"), ("away", "Away"))),
@@ -655,7 +673,10 @@ class DesignerWindow(Gtk.Window):
         scroll.set_min_content_width(560)
         # Ask for the whole form's height (scrolls only on a small screen).
         scroll.set_propagate_natural_height(True)
-        scroll.add(grid)
+        form = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        form.pack_start(top, False, False, 0)
+        form.pack_start(lower, False, False, 0)
+        scroll.add(form)
         return scroll
 
     def _build_header(self):
