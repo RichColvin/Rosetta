@@ -62,15 +62,12 @@ for **rocking**, Z for **pumping**. Purpose: try a rosette before buying
 or making a physical one; also to use one that would be needed too
 rarely to be worth making.
 
-Prior art: Bill Ooms' COrnLathe (https://github.com/billooms/COrnLathe,
-Java 8, last changed 2019). Its rosette model: a pattern is one lobe's
-shape as 0..1 across the lobe; a rosette = pattern x repeats, with
-peak-to-peak amplitude, phase (fraction of a lobe), invert, mask (skip
-lobes), symmetry (lobes of different width/height) and compound
-rosettes; built-in shapes plus the Holtzapffel A-S series. **It is
-GPL-3 and Rosetta is MIT - don't copy or translate its code**; write our
-own from the definitions (the shapes are plain maths). Worth contacting
-Bill.
+Other software: Bill Ooms' COrnLathe (GPL-3) also models rosettes.
+Bill was contacted on 16 November 2026 and asked that his software not
+be used for this. **Nothing from COrnLathe - code, documentation or
+design - is used or consulted for the Rosette Designer, now or in later
+stages.** Rosetta is MIT-licensed and the Designer is a clean-room
+implementation (see Provenance below).
 
 **Decided by Rich, 15 November 2026:**
 
@@ -100,6 +97,21 @@ Bill.
    Z on the face, X on the side (rocking is always X, pumping always Z).
 8. **C is not unwound** at the end (it reads e.g. 1080 deg after 3
    turns - same place); the program works from wherever C is.
+
+**Provenance (clean room, 16 November 2026):** every shape and setting
+in the Rosette Designer comes from public ornamental-turning sources or
+from Rich's own machines, never from other rosette software:
+
+- Rosette, rubber, rocking, pumping, lobes, amplitude, phasing, invert
+  (far-side cutting): standard rose-engine practice, as described in
+  Holtzapffel and on OTBoK (https://otbok.info/index.php?n=Main.Rosette).
+- Sine (Holtzapffel A) and plain polygon (Holtzapffel P): written from
+  the geometry - a cosine curve, and the chord of a regular polygon.
+- Lotus and Tudor: measured off the paper-chuck pictures of the MDF
+  Rose Engine's rosettes (https://www.colvintools.com/MDF-RE%20-%20Rosettes.html).
+- Later stages (more Holtzapffel shapes, rubber simulation, etc.): work
+  only from published references and Rich's own rosettes, and cite the
+  source here when each shape or feature is added.
 
 **Proposed (not yet agreed):**
 
@@ -171,14 +183,9 @@ Bill.
   (D turned over) so it can be found by its Holtzapffel letter. Check
   each letter for being another one turned over before writing a new
   shape.
-  **Bill Ooms' program** (Rich, 15 November 2026 - the PDF's p15 says
-  its simulations came from it; it's on his GitHub) may define the
-  Holtzapffel profiles exactly. Rich is asking Bill whether he has any
-  issues. Until he answers, don't look at it. His COrnLathe code is
-  GPL-3 and Rosetta is MIT, and rosetta_rosettes.py's header says none
-  of it is used: reading it to understand a profile is fine once Bill
-  agrees, but copying code needs his permission to use it under
-  Rosetta's MIT licence - ask that specifically.
+  **Bill Ooms' program:** Bill asked (16 November 2026) that his
+  software not be used - don't look at it; see Provenance above. Work
+  the profiles out from the PDF's drawings instead.
   **From p20-21, for stage 3/4** (Rich: de la Condamine's approach is
   still used today): the instrument works backwards - the pattern
   wanted at a small radius is traced, with a rubber on one side of a
