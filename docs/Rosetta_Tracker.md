@@ -318,6 +318,34 @@ from Rich's own machines, never from other rosette software:
   ridges as the face rises and falls. Tell them (1) to set the
   printer for the smallest layer height it can print, and (2) to use a rubber that rides over what
   ridges remain, e.g. one with a roller bearing on its nose.
+  **STEP export** (Rich, 16 November 2026): as well as STL, for any
+  rosette designed. STEP needs a CAD kernel - FreeCAD 1.0 is in
+  Debian 13's packages but is a large install - or a hand-written STEP
+  file (more work, and needs checking in a real CAD program). The file
+  is the rosette itself, so it needs the same rubber compensation as
+  the STL.
+  **Mandala Rose Engine rosettes** (Rich, 16 November 2026 - talking
+  with Wade of Mandala Rose Engine; may or may not happen; **no action
+  until Rich says**): Wade's rosette designs as shapes named
+  "Mandala - xxx". Wade would supply DXFs; they are given to Claude to
+  encode as profile data and are never shipped or shown to users. Two
+  points for Wade, raised with Rich: (1) the Rosetta repo is public on
+  GitHub (checked 16 November 2026), so the encoded profile data would
+  be readable there even without the DXFs - keeping it private means a
+  separate private file or repository installed only by the update,
+  and even then it ends up on each Pi (and a saved G-code program
+  traces the shape); (2) Rosetta is MIT-licensed, so Wade's encoded
+  designs need a file of their own with his own copyright/licence
+  notice (for use with Rosetta only), not the MIT one - whether public
+  or private.
+  **Wade's machining website** (Rich, 16 November 2026): Wade plans a
+  site where people upload a STEP file and he machines the rosette;
+  his system works out the machining from the STEP. On our side: a
+  button that saves the STEP and opens his upload page in the browser
+  (needs only the page's address), or one that sends the file straight
+  to his site, like the version report (needs an upload address and
+  how orders are matched to payment from Wade). Either way the user
+  chooses to send it.
 - Later: a main-panel tab that runs a saved rosette with phase/depth
   set on the panel, like Sync Move.
 - Later, for depth option (b): LinuxCNC's external offsets (`eoffset`,
