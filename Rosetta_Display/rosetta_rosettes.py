@@ -84,6 +84,8 @@
 #         their directions) before cutting and back out at the end
 #   1.9 - 16 November 2026 - shorter shape names (no group sizes -
 #         Lobes steps by a group), so the Shape lists are narrower
+#   1.10 - 16 November 2026 - F with 1 lobe is the F-1 heart (_f1_heart,
+#         from the MDF Rose Engine's F-1), not one Cupid's bow
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -235,6 +237,18 @@ HOLTZ_F_WAVES = 3
 HOLTZ_F_NOTCH_DEPTH = 0.35
 HOLTZ_F_NOTCH_HALF_WIDTH = 0.05
 
+# F-1 (F with 1 lobe) is a single heart, not one Cupid's bow - the MDF
+# Rose Engine's F-1 rosette (colvintools.com, MDF-RE-Rosette-F-1: the
+# rosette itself and John Moe's near-side cut, measured off the
+# picture, 16 November 2026, after Rich's F-1 paper chuck didn't look
+# like a heart). Round from the centre of turning, the cut is: a notch
+# (deepest, t = 0) rising to round shoulders HOLTZ_F1_SHOULDER of the
+# turn either side, then sides hollowing gently - the most,
+# HOLTZ_F1_SIDES of the amplitude, about three quarters of the way
+# down - to a sharp point (t = 0.5) as far out as the shoulders.
+HOLTZ_F1_SHOULDER = 0.11
+HOLTZ_F1_SIDES = 0.47
+
 # Holtzapffel J (pages 11-12, J24-J36; Rich, 15 November 2026: "arcs of
 # eccentric circles with each arch having on it a superimposed arc of
 # sine waves"): shallow round arcs, 6 small waves on each - J24 has 4
@@ -343,7 +357,21 @@ def _holtz_c(t, repeats, count):
     return 1.0 - _arc(t, HOLTZ_D_SAG)
 
 
+def _f1_heart(t):
+    # The notch side a quarter sine, level at the shoulder; then
+    # u sin(pi u) along the side - level at the shoulder, deepest about
+    # two thirds of the way, and reaching the point sloping, so it is sharp.
+    s = numpy.minimum(t, 1.0 - t)
+    k = HOLTZ_F1_SHOULDER
+    notch = 1.0 - numpy.sin(0.5 * math.pi * numpy.minimum(s, k) / k)
+    u = (numpy.maximum(s, k) - k) / (0.5 - k)
+    side = HOLTZ_F1_SIDES * u * numpy.sin(math.pi * u)
+    return numpy.where(s < k, notch, side)
+
+
 def _holtz_f(t, repeats, count):
+    if repeats == 1:
+        return _f1_heart(t)
     # Wave tops at 1/6, 1/2 and 5/6 of the group; the notch at 1/2.
     # Turned over (1 - ...) since the paper chuck, 16 November 2026: Rich
     # had to tick Invert to get the guide's shape.
@@ -477,6 +505,8 @@ def sharp_points(ros):
     if shape in ("holtz_c", "holtz_d"):
         return (0.0,)
     if shape == "holtz_f":
+        if n == 1:
+            return (0.0, 0.5)       # F-1: the heart's notch and point
         return (0.5 - HOLTZ_F_NOTCH_HALF_WIDTH, 0.5, 0.5 + HOLTZ_F_NOTCH_HALF_WIDTH)
     if shape == "holtz_j":
         return (0.0,)

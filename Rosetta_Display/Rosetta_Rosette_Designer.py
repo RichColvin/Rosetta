@@ -77,6 +77,7 @@
 #         Retract and Object Size (Rich)
 #   1.13 - 16 November 2026 - the advance directions under their
 #         distances, Outside/Inside stacked (Rich)
+#   1.14 - 16 November 2026 - notes: F with 1 lobe is the F-1 heart
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -178,9 +179,9 @@ NOTES = (
      "Movement"),
     ("Rosette",
      "Shape: the Holtzapffel letters are the patterns in Holtzapffel & Co.'s old guide to their "
-     "rose cutting frame - A is a plain sine, C and D points and petals, F a Cupid's bow, J and Q "
-     "waves on arcs, K a waved polygon, M and N scallops on lobes, O and P groups of waves, S a "
-     "heart. Plain polygon, Lotus and Tudor are not Holtzapffel letters.\n\n"
+     "rose cutting frame - A is a plain sine, C and D points and petals, F a Cupid's bow (F with 1 "
+     "lobe, F-1, is a single heart), J and Q waves on arcs, K a waved polygon, M and N scallops on "
+     "lobes, O and P groups of waves, S a scalloped heart. Plain polygon, Lotus and Tudor are not Holtzapffel letters.\n\n"
      "Lobes is counted the way the guide numbers its rosettes - the small waves round the edge, so "
      "J24 has 24 waves on 4 arcs of 6. Shapes made of groups (J, M, N, O, P, Q) only take whole "
      "groups, and Lobes steps by a group.\n\n"
