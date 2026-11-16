@@ -75,6 +75,8 @@
 #   1.12 - 16 November 2026 - the form fits a 1080-line screen: number
 #         boxes only as wide as a number, Depth beside Advance and
 #         Retract and Object Size (Rich)
+#   1.13 - 16 November 2026 - the advance directions under their
+#         distances, Outside/Inside stacked (Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -530,8 +532,9 @@ class DesignerWindow(Gtk.Window):
         spin.connect("value-changed", lambda w: self._changed())
         return spin
 
-    def _radios(self, choices):
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+    def _radios(self, choices, stacked=False):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL if stacked else Gtk.Orientation.HORIZONTAL,
+                      spacing=2 if stacked else 8)
         buttons = {}
         group = None
         for value, text in choices:
@@ -647,14 +650,15 @@ class DesignerWindow(Gtk.Window):
         self.advance_dir = {}
         for axis, choices in (("x", (("centre", "Towards centre"), ("away", "Away"))),
                               ("z", (("headstock", "Towards headstock"), ("away", "Away")))):
-            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            # The direction under the distance (Rich, 16 November 2026).
             self.advance[axis] = self._spin(*ranges["advance"])
             radios_box, self.advance_dir[axis] = self._radios(choices)
-            box.pack_start(self.advance[axis], False, False, 0)
-            box.pack_start(radios_box, False, False, 0)
-            row = self._row(grid, row, "%s advance (%s)" % (axis.upper(), unit), box,
-                            "How far the cutter moves in on %s before cutting, and back out at the "
-                            "end. 0 = none." % axis.upper())
+            tip = ("How far the cutter moves in on %s before cutting, and back out at the end, "
+                   "and which way. 0 = none." % axis.upper())
+            row = self._row(grid, row, "%s advance (%s)" % (axis.upper(), unit), self.advance[axis], tip)
+            radios_box.set_tooltip_text(tip)
+            grid.attach(radios_box, 1, row, 2, 1)
+            row += 1
 
         row = self._section(grid, row, "Object Size")
         self.preview_radius = self._spin(*ranges["preview_radius"])
@@ -663,7 +667,7 @@ class DesignerWindow(Gtk.Window):
                         "rosette's radius. For the drawing and Straight sides only: the program cuts "
                         "wherever the cutter is.")
         radius_box, self.radius_at = self._radios((("outside", "Outside (largest)"),
-                                                   ("inside", "Inside (smallest)")))
+                                                   ("inside", "Inside (smallest)")), stacked=True)
         row = self._row(grid, row, "Radius is the", radius_box,
                         "Whether Radius is where the cut comes furthest out or closest in. The note "
                         "under the drawings says where to start the cutter for it.")
