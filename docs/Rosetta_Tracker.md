@@ -74,13 +74,22 @@ AI output that is an exact or near copy of GPL code could bring
 copyright or copyleft obligations to software that includes it - he
 suggested avoiding the possibility altogether. Two things recorded for
 completeness: before stage 1 this tracker described COrnLathe's rosette
-model from its public description (a lobe's shape on a 0..1 scale,
-amplitude, phase, invert, mask, symmetry - ordinary rosette terms going
-back to Holtzapffel) - its code was never read; and Claude can't rule
-out that COrnLathe's public GitHub code was in its training data. Nothing
-in the Designer is translated from it, and each shape can be checked
-against the source listed under Provenance. Rich decided no legal advice
-is needed (16 November 2026).
+model (a lobe's shape on a 0..1 scale, amplitude, phase, invert, mask,
+symmetry - ordinary rosette terms going back to Holtzapffel); and Claude
+can't rule out that COrnLathe's public GitHub code was in its training
+data. Rich decided no legal advice is needed (16 November 2026).
+**Correction, 16 November 2026:** an earlier version of this paragraph
+said COrnLathe's code was never read. That was wrong. On 15 November
+2026 (about 17:39 UTC, before Bill was asked and before stage 1 was
+written) a Claude session downloaded four of its source files
+(`Rosette.java`, `Pattern.java`, `HoltzA.java`, `PatternLOTUS.java`)
+into its scratch folder and printed parts of `Rosette.java` (the
+amplitude calculation) and `HoltzA.java`; `rosetta_rosettes.py` was
+written about 17 minutes later. Found by Claude while starting the
+Holtzapffel shapes; told to Rich the same day. Since then: Lotus and
+Tudor were redrawn from the MDF paper-chuck photos; sine is a plain
+cosine. What to do about the rest (and what to tell Bill) is Rich's
+decision - the Holtzapffel shape work is stopped until he decides.
 
 **Decided by Rich, 15 November 2026:**
 
