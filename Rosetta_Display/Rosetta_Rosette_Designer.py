@@ -78,6 +78,10 @@
 #   1.13 - 16 November 2026 - the advance directions under their
 #         distances, Outside/Inside stacked (Rich)
 #   1.14 - 16 November 2026 - notes: F with 1 lobe is the F-1 heart
+#   1.15 - 16 November 2026 - Ellipse: a Width / length row (shown only
+#         for an Ellipse), the Straight sides button becomes True
+#         ellipse, and the note under the drawings gives its size and
+#         foci
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -195,6 +199,11 @@ NOTES = (
      "opposite side of the spindle's axis of rotation - far side cutting instead of near side.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
      "straight at the Object Size radius.\n\n"
+     "Ellipse: Width / length sets its shape (0.5 = half as wide as long). True ellipse (rocking on "
+     "the face) sets the amplitude that makes the cut an exact ellipse at the Object Size radius; "
+     "the note under the drawings gives its length, width and the distance between its foci. At a "
+     "smaller radius the same rosette cuts a sharper-ended shape, pinching to a peanut and then a "
+     "figure 8; at a larger one, a rounder shape - as a physical ellipse rosette does.\n\n"
      "Rubber: only a point for now, which follows the shape exactly.",
      "Rosette"),
     ("Depth",
@@ -302,9 +311,22 @@ class RosetteControls:
         self._place(grid, self.amplitude, column, row)
         row += 1
 
+        # Ellipse only: width / length (shown only when a rosette is an
+        # Ellipse - DesignerWindow._changed).
+        self.ratio = window._spin(rr.ELLIPSE_RATIO_RANGE[0], rr.ELLIPSE_RATIO_RANGE[1], 0.01, 2)
+        self.ratio.set_tooltip_text("The ellipse's width divided by its length (0.5 = half as wide "
+                                    "as long). The note under the drawings gives its size and the "
+                                    "distance between its foci.")
+        self._place(grid, self.ratio, column, row)
+        row += 1
+
+        # "Straight sides" for a plain polygon, "True ellipse" for an
+        # Ellipse - the amplitude that gives that at the Object Size radius.
         self.straight = Gtk.Button(label="Straight sides")
-        self.straight.set_tooltip_text("Sets the amplitude that makes a plain polygon's sides "
-                                       "straight at the Object Size radius (rocking on the face).")
+        self.straight.set_tooltip_text("Plain polygon: sets the amplitude that makes the sides "
+                                       "straight at the Object Size radius. Ellipse: sets the "
+                                       "amplitude that makes the cut an exact ellipse there. "
+                                       "Rocking on the face.")
         self.straight.connect("clicked", self._on_straight_sides)
         self._place(grid, self.straight, column, row)
         row += 1
@@ -384,6 +406,7 @@ class RosetteControls:
         self.shape.set_active_id(ros["shape"])
         self.lobes.set_value(ros["lobes"])
         self.amplitude.set_value(ros["amplitude"])
+        self.ratio.set_value(ros["ratio"])
         if self.has_phase:
             self.phase_unit.set_active_id(ros["phase_unit"])
             self._set_phase_range()
@@ -401,7 +424,8 @@ class RosetteControls:
                 self._set_phase_range()     # the degrees range follows the lobes
         return {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
                 self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
-                self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active()}
+                self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active(),
+                self.key("ratio"): self.ratio.get_value()}
 
     def _on_phase_unit(self, widget):
         # Keep the same phase, shown in the other unit.
@@ -416,13 +440,21 @@ class RosetteControls:
 
     def _on_straight_sides(self, widget):
         d = self.window.design
-        self.amplitude.set_value(rr.straight_sides_amplitude(rr.rosette(d, self.prefix),
-                                                             d["preview_radius"], d["radius_at"]))
+        ros = rr.rosette(d, self.prefix)
+        if ros["shape"] == "ellipse":
+            self.amplitude.set_value(rr.ellipse_amplitude(ros, d["preview_radius"], d["radius_at"]))
+        else:
+            self.amplitude.set_value(rr.straight_sides_amplitude(ros, d["preview_radius"],
+                                                                 d["radius_at"]))
 
     def update_sensitivity(self, axis, design):
         ros = rr.rosette(design, self.prefix)
-        self.straight.set_sensitive(ros["shape"] == "polygon" and not ros["invert"]
+        ellipse = ros["shape"] == "ellipse"
+        self.straight.set_label("True ellipse" if ellipse else "Straight sides")
+        self.straight.set_sensitive(ros["shape"] in ("polygon", "ellipse") and not ros["invert"]
                                     and axis == "X" and design["surface"] == "face")
+        self.lobes.set_sensitive(not ellipse)       # always 2
+        self.ratio.set_sensitive(ellipse)
 
 
 class DesignerWindow(Gtk.Window):
@@ -573,11 +605,14 @@ class DesignerWindow(Gtk.Window):
 
         # The rosettes: one column each, sharing the row labels.
         row = self._section(grid, row, "Rosette")
-        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "", "Phase", "")):
+        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "Width / length",
+                                  "", "Phase", "")):
             label = Gtk.Label(label=text, xalign=0)
             grid.attach(label, 0, row + i, 1, 1)
             if text == "Phase":
                 self.phase_label = label    # only the pumping rosette in Both has one
+            if text == "Width / length":
+                self.ratio_label = label    # only when a rosette is an Ellipse
         self.rosette_controls = [RosetteControls(self, grid, 1, row, ""),
                                  RosetteControls(self, grid, 2, row, rr.SECOND)]
         row = self.rosette_controls[0].last_row + 1
@@ -845,6 +880,14 @@ class DesignerWindow(Gtk.Window):
             controls.heading.set_markup("<i>%s</i>" % heading)
             axis = "Z" if (d["motion"] == "pump" or column == 1) else "X"
             controls.update_sensitivity(axis, d)
+        # The Ellipse's Width / length row only when a rosette in use is one.
+        shown = [""] + ([rr.SECOND] if both else [])
+        ellipse = any(d[prefix + "shape"] == "ellipse" for prefix in shown)
+        for widget, show in ((self.ratio_label, ellipse),
+                             (self.rosette_controls[0].ratio, ellipse),
+                             (self.rosette_controls[1].ratio, ellipse and both)):
+            widget.set_no_show_all(not show)
+            widget.set_visible(show)
         self._update_info()
         self.profile_area.queue_draw()
         self.cut_area.queue_draw()
@@ -898,6 +941,18 @@ class DesignerWindow(Gtk.Window):
                     self._number(rr.start_radius(d)), unit)
             else:
                 text += "."
+        x_ros = rr.rosettes(d).get("X")
+        if d["surface"] == "face" and x_ros is not None and x_ros["shape"] == "ellipse":
+            exact = rr.ellipse_amplitude(x_ros, d["preview_radius"], d["radius_at"])
+            length, width, foci = rr.ellipse_axes(x_ros, d["preview_radius"], d["radius_at"])
+            if abs(x_ros["amplitude"] - exact) <= 0.5 * 10 ** -(4 if self.units == "inch" else 3):
+                text += "\nAn exact ellipse"
+            else:
+                text += ("\nFor an exact ellipse at this radius, set the amplitude to %s %s (True "
+                         "ellipse); it would be" % (self._number(exact), unit))
+            text += (" %s %s long and %s %s wide, its foci %s %s apart."
+                     % (self._number(length), unit, self._number(width), unit,
+                        self._number(foci), unit))
         advancing = rr.advance_order(d)
         if advancing:
             text += ("\nPut the cutter clear of the work: it moves in %s before cutting, and back "

@@ -91,6 +91,10 @@
 #         too blunt on the paper chuck
 #   1.12 - 16 November 2026 - F-1's cleft deepened (HOLTZ_F1_CLEFT), so
 #         the upper lobes stand out more (Rich)
+#   1.13 - 16 November 2026 - Ellipse: a width / length ratio ("ratio",
+#         "pump_ratio"), always 2 lobes; ellipse_amplitude makes the cut
+#         an exact ellipse at a radius, ellipse_axes gives its size and
+#         foci
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -362,6 +366,27 @@ def _tudor_barb_meets_petal(repeats):
     return 0.5 * (low + high)
 
 
+# Ellipse (16 November 2026, Rich; the geometry of an ellipse, as on the
+# MDF Rose Engine's Ellipse page, colvintools.com - a smooth rosette made
+# for one target size, sharper at the ends on smaller work and flatter
+# on larger, pinching to a peanut and a figure 8 as the radius shrinks).
+# Two repeats a turn, each half a turn from one end of the long axis to
+# the other. The shape is set by the ratio of width to length (b / a);
+# at the Object Size radius the cut is an exact ellipse when the
+# amplitude is ellipse_amplitude's (the "True ellipse" button).
+ELLIPSE_RATIO_RANGE = (0.2, 0.98)
+
+
+def _ellipse(t, ratio):
+    # Distance from the centre of an ellipse with a = 1, b = ratio, at
+    # angle pi t from the long axis: r = a b / sqrt((b cos)^2 + (a sin)^2);
+    # as deflection, 0 at the ends of the long axis, 1 across the short.
+    theta = math.pi * numpy.asarray(t, dtype=float)
+    k = ratio
+    r = k / numpy.sqrt((k * numpy.cos(theta)) ** 2 + numpy.sin(theta) ** 2)
+    return (1.0 - r) / (1.0 - k)
+
+
 def _tudor(t, repeats, count):
     # A petal (highest mid-lobe) with the barb at the lobe's ends,
     # scaled so the notches beside the barb - its deepest points - are
@@ -488,6 +513,9 @@ SHAPES = {
     "polygon": ("Plain polygon", "Polygon", _polygon, 1),
     "lotus": ("Lotus", "Lotus", _lotus, 1),
     "tudor": ("Tudor", "Tudor", _tudor, 1),
+    # The function is a stand-in - profile() calls _ellipse with the
+    # rosette's ratio. Always 2 lobes (fit_lobes).
+    "ellipse": ("Ellipse", "Ellipse", None, 1),
 }
 SHAPE_IDS = tuple(SHAPES)
 SHAPE_SHORT = {key: value[1] for key, value in SHAPES.items()}
@@ -501,6 +529,8 @@ def count_per_repeat(shape, lobes):
 
 def fit_lobes(shape, lobes):
     '''The nearest allowed lobe count: a whole number of repeats.'''
+    if shape == "ellipse":
+        return 2            # an ellipse is two lobes, its two ends
     per = count_per_repeat(shape, lobes)
     return max(per, int(round(lobes / float(per))) * per)
 
@@ -512,6 +542,8 @@ def repeats(ros):
 
 def profile(ros, t):
     '''The shape over one repeat, t = 0..1 (numpy array), 0..1.'''
+    if ros["shape"] == "ellipse":
+        return _ellipse(t, ros.get("ratio", DEFAULT_DESIGN["ratio"]))
     return SHAPES[ros["shape"]][2](numpy.asarray(t, dtype=float), repeats(ros), ros["lobes"])
 
 
@@ -562,7 +594,7 @@ def sharp_points(ros):
 # Rosetta panel before running the program. The pumping rosette's phase,
 # used with "both", is how far it's turned relative to the rocking
 # rosette - something indexing can't do, since it turns both together.
-ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert")
+ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert", "ratio")
 SECOND = "pump_"
 
 DEFAULT_DESIGN = {
@@ -572,12 +604,14 @@ DEFAULT_DESIGN = {
     "phase": 0.0,               # fraction of a repeat - always 0 (see above)
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
+    "ratio": 0.75,              # Ellipse only: width / length
     "pump_shape": "sine",       # the pumping rosette, when motion is "both"
     "pump_lobes": 12,
     "pump_amplitude": 0.02,
     "pump_phase": 0.0,
     "pump_phase_unit": "lobe",
     "pump_invert": False,
+    "pump_ratio": 0.75,
     "motion": "rock",           # "rock" (X), "pump" (Z) or "both"
     "surface": "face",          # "face" or "side"
     "rubber": "point",          # only a point so far (stage 3: round, flat)
@@ -650,6 +684,8 @@ def clean_design(design):
     d["passes"] = min(max(d["passes"], 1), 100)
     d["turns"] = min(max(d["turns"], 1), 100)
     d["finish_pct"] = min(max(d["finish_pct"], 1.0), 100.0)
+    for prefix in ("", SECOND):
+        d[prefix + "ratio"] = min(max(d[prefix + "ratio"], ELLIPSE_RATIO_RANGE[0]), ELLIPSE_RATIO_RANGE[1])
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
@@ -742,6 +778,25 @@ def straight_sides_amplitude(ros, radius, radius_at="outside"):
     '''
     k = 1.0 - math.cos(math.pi / max(ros["lobes"], 3))
     return radius * k if radius_at == "outside" else radius * k / (1.0 - k)
+
+
+def ellipse_amplitude(ros, radius, radius_at="outside"):
+    '''
+    The amplitude that makes the cut an exact ellipse when its outside
+    (the ends of the long axis, a) or inside (the sides, b) is at this
+    radius: amplitude = a - b, with b = ratio x a.
+    '''
+    k = ros["ratio"]
+    return radius * (1.0 - k) if radius_at == "outside" else radius * (1.0 / k - 1.0)
+
+
+def ellipse_axes(ros, radius, radius_at="outside"):
+    '''(length, width, distance between the foci) of the exact ellipse
+    at this radius - the cut, when the amplitude is ellipse_amplitude.'''
+    k = ros["ratio"]
+    a = radius if radius_at == "outside" else radius / k
+    b = a * k
+    return 2.0 * a, 2.0 * b, 2.0 * math.sqrt(a * a - b * b)
 
 
 def start_radius(design):
@@ -899,6 +954,8 @@ def name_is_reserved(file_name):
 
 
 def _short(ros):
+    if ros["shape"] == "ellipse":
+        return "Ellipse%02d" % int(round(ros["ratio"] * 100))     # e.g. Ellipse75
     return "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
 
 
