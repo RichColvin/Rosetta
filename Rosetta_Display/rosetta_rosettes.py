@@ -101,6 +101,10 @@
 #         ride on an ellipse ("on_ellipse"), its lobes spaced evenly
 #         along the ellipse's outline (Rich). "ratio"/"pump_ratio" and
 #         ellipse_amplitude are gone; the Ellipse is for rocking only
+#   1.15 - 17 November 2026 - the rosette on an ellipse is a second
+#         rocking rosette of its own ("wrap_" keys, with a phase along
+#         the outline; "none" = the plain ellipse), in place of
+#         on_ellipse (Rich: two columns)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -377,12 +381,13 @@ def _tudor_barb_meets_petal(repeats):
 # an ellipse, r = a b / sqrt((b cos)^2 + (a sin)^2) at spindle angle
 # theta, a = half its length (along the start, theta 0), b = half its
 # width. Rocking only: X follows r exactly, so with the cutter started
-# at radius a the cut is that ellipse, at any size. The Ellipse shape is
-# the plain ellipse; any other shape can ride on one ("on_ellipse"),
-# its waves added to r (towards the centre), and its lobes spaced
-# evenly along the ellipse's outline rather than by spindle angle
-# (Rich, 17 November 2026) - on a long ellipse, even angles would crowd
-# them along the sides.
+# at radius a the cut is that ellipse, at any size. A second rocking
+# rosette rides on it ("wrap_" keys - two rosettes both rocking, Rich,
+# 17 November 2026; "none" leaves the plain ellipse): its waves added to
+# r (towards the centre), its lobes spaced evenly along the ellipse's
+# outline rather than by spindle angle (Rich) - on a long ellipse, even
+# angles would crowd them along the sides - and its phase sliding the
+# pattern along the outline (half a lobe moves a cleft off the end).
 _OUTLINE_GRID = numpy.linspace(0.0, 360.0, 7201)
 
 
@@ -558,6 +563,8 @@ SHAPES = {
     "holtz_o": ("Holtzapffel O - swelling scallops", "HoltzO", _holtz_o, HOLTZ_OP_PER_GROUP),
     "holtz_p": ("Holtzapffel P - swelling waves", "HoltzP", _holtz_p, HOLTZ_OP_PER_GROUP),
     "holtz_q": ("Holtzapffel Q - scallops on arcs", "HoltzQ", _holtz_q, HOLTZ_Q_PER_ARC),
+    # The rosette on an ellipse only: no waves - the plain ellipse.
+    "none": ("None - the plain ellipse", "", None, 1),
     "holtz_s": ("Holtzapffel S - heart", "HoltzS", _holtz_s, 0),
     "polygon": ("Plain polygon", "Polygon", _polygon, 1),
     "lotus": ("Lotus", "Lotus", _lotus, 1),
@@ -591,7 +598,7 @@ def repeats(ros):
 
 def profile(ros, t):
     '''The shape over one repeat, t = 0..1 (numpy array), 0..1.'''
-    if ros["shape"] == "ellipse":
+    if ros["shape"] in ("ellipse", "none"):
         return numpy.zeros_like(numpy.asarray(t, dtype=float))
     return SHAPES[ros["shape"]][2](numpy.asarray(t, dtype=float), repeats(ros), ros["lobes"])
 
@@ -645,6 +652,7 @@ def sharp_points(ros):
 # rosette - something indexing can't do, since it turns both together.
 ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert")
 SECOND = "pump_"
+WRAP = "wrap_"      # the rocking rosette on the Ellipse (see the Ellipse above)
 
 DEFAULT_DESIGN = {
     "shape": "sine",
@@ -653,9 +661,14 @@ DEFAULT_DESIGN = {
     "phase": 0.0,               # fraction of a repeat - always 0 (see above)
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
-    "on_ellipse": False,        # the first rosette's waves ride on an ellipse (rocking only)
-    "ellipse_a": 1.0,           # the Ellipse / on_ellipse: half its length (machine units)
+    "ellipse_a": 1.0,           # the Ellipse: half its length (machine units)
     "ellipse_b": 0.75,          # half its width
+    "wrap_shape": "sine",       # the rocking rosette on the Ellipse ("none" = plain)
+    "wrap_lobes": 12,
+    "wrap_amplitude": 0.02,
+    "wrap_phase": 0.0,          # fraction of a repeat, along the ellipse's outline
+    "wrap_phase_unit": "lobe",
+    "wrap_invert": False,
     "pump_shape": "sine",       # the pumping rosette, when motion is "both"
     "pump_lobes": 12,
     "pump_amplitude": 0.02,
@@ -708,6 +721,13 @@ def clean_design(design):
             design["ellipse_a"], design["ellipse_b"] = a, a * float(design["ratio"])
         except (TypeError, ValueError):
             pass
+    if design.get("on_ellipse") and design.get("shape") != "ellipse":
+        # Saved 17 November 2026 with On an ellipse ticked: that shape
+        # becomes the rosette on the Ellipse.
+        for key in ROSETTE_KEYS:
+            if key in design:
+                design[WRAP + key] = design[key]
+        design["shape"] = "ellipse"
     d = dict(DEFAULT_DESIGN)
     for key, default in DEFAULT_DESIGN.items():
         value = (design or {}).get(key, default)
@@ -723,8 +743,12 @@ def clean_design(design):
         except (TypeError, ValueError):
             value = default
         d[key] = value
-    for prefix in ("", SECOND):
-        if d[prefix + "shape"] not in SHAPES:
+    for prefix in ("", SECOND, WRAP):
+        # An Ellipse only rocks, and only it carries a rosette ("none" is
+        # only for that one).
+        allowed = set(SHAPES) - set({"": ["none"], SECOND: ["none", "ellipse"],
+                                     WRAP: ["ellipse"]}[prefix])
+        if d[prefix + "shape"] not in allowed:
             d[prefix + "shape"] = DEFAULT_DESIGN[prefix + "shape"]
         d[prefix + "lobes"] = fit_lobes(d[prefix + "shape"], min(max(d[prefix + "lobes"], 1), 360))
         d[prefix + "phase"] = d[prefix + "phase"] % 1.0
@@ -743,11 +767,6 @@ def clean_design(design):
     d["passes"] = min(max(d["passes"], 1), 100)
     d["turns"] = min(max(d["turns"], 1), 100)
     d["finish_pct"] = min(max(d["finish_pct"], 1.0), 100.0)
-    if d[SECOND + "shape"] == "ellipse":
-        d[SECOND + "shape"] = DEFAULT_DESIGN[SECOND + "shape"]     # an Ellipse only rocks
-        d[SECOND + "lobes"] = fit_lobes(d[SECOND + "shape"], d[SECOND + "lobes"])
-    if d["shape"] == "ellipse":
-        d["on_ellipse"] = False     # it is the ellipse
     for key in ("ellipse_a", "ellipse_b"):
         d[key] = max(d[key], 1e-4)
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
@@ -796,33 +815,34 @@ def rosette(design, prefix=""):
 
 
 def ellipse_base(design):
-    '''(a, b) of the ellipse the rocking rosette is on - the Ellipse
-    shape, or another shape with on_ellipse - or None. Rocking only.'''
-    if design["motion"] == "pump":
+    '''(a, b) when the first rosette is an Ellipse, rocking, or None.'''
+    if design["motion"] == "pump" or design["shape"] != "ellipse":
         return None
-    if design["shape"] == "ellipse" or design["on_ellipse"]:
-        return (design["ellipse_a"], design["ellipse_b"])
-    return None
+    return (design["ellipse_a"], design["ellipse_b"])
 
 
 def rosettes(design):
     '''
-    {axis: rosette} - the rosette each moving axis follows. On an
-    ellipse, X's rosette carries it ("ellipse") and every rosette is
-    spaced along its outline ("outline"), so a pumping rosette's waves
-    stay in step with the rocking one's.
+    {axis: rosette} - the rosette each moving axis follows. With an
+    Ellipse, X follows the rosette on it, carrying the ellipse
+    ("ellipse"), and every rosette is spaced along its outline
+    ("outline"), so a pumping rosette's waves stay in step.
     '''
+    base = ellipse_base(design)
+    if base:
+        found = {"X": rosette(design, WRAP)}
+        if design["motion"] == "both":
+            found["Z"] = rosette(design, SECOND)
+        found["X"]["ellipse"] = base
+        for ros in found.values():
+            ros["outline"] = base
+        return found
     if design["motion"] == "rock":
         found = {"X": rosette(design)}
     elif design["motion"] == "pump":
         found = {"Z": rosette(design)}
     else:
         found = {"X": rosette(design), "Z": rosette(design, SECOND)}
-    base = ellipse_base(design)
-    if base:
-        found["X"]["ellipse"] = base
-        for ros in found.values():
-            ros["outline"] = base
     return found
 
 
@@ -1044,7 +1064,8 @@ def name_is_reserved(file_name):
 
 def _short(ros):
     ellipse = ros.get("ellipse")
-    name = "" if ros["shape"] == "ellipse" else "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
+    plain = ros["shape"] in ("ellipse", "none")
+    name = "" if plain else "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
     if ellipse:
         # e.g. Ellipse50 (b half of a), or HoltzD12-Ellipse50 on one
         name += ("-" if name else "") + "Ellipse%02d" % int(round(100.0 * ellipse[1] / ellipse[0]))
@@ -1256,6 +1277,8 @@ def write_samples(folder):
     for units in ("inch", "mm"):
         scale = 1.0 if units == "inch" else 25.4
         for shape in SHAPE_IDS:
+            if shape == "none":
+                continue        # only the rosette on an Ellipse (below)
             for motion in ("rock", "pump", "both"):
                 for surface in ("face", "side"):
                     for mode in ("passes", "turns"):
@@ -1278,9 +1301,10 @@ def write_samples(folder):
             for motion in ("rock", "both"):
                 for surface in ("face", "side"):
                     d = clean_design({
-                        "shape": shape, "lobes": SAMPLE_LOBES.get(shape, 8), "on_ellipse": True,
+                        "shape": "ellipse", "wrap_shape": shape,
+                        "wrap_lobes": SAMPLE_LOBES.get(shape, 8), "wrap_phase": 0.5,
                         "ellipse_a": 1.0 * scale, "ellipse_b": 0.5 * scale,
-                        "amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
+                        "wrap_amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
                         "plunge_feed": 1.0 * scale, "motion": motion, "surface": surface,
                         "units": units, "pump_shape": "sine", "pump_lobes": 6,
                         "pump_amplitude": 0.02 * scale, "pump_phase": 0.1,

@@ -88,6 +88,9 @@
 #         its outline. Width / length and True ellipse are gone
 #   1.17 - 17 November 2026 - an Ellipse Parameters sub heading over
 #         A and B (Rich)
+#   1.18 - 17 November 2026 - the rosette on an Ellipse is a column of
+#         its own beside it (both rocking - Rich), with a Phase that
+#         slides it along the outline; On an ellipse is gone
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -162,7 +165,7 @@ LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
 
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
-LENGTH_KEYS = ("amplitude", "pump_amplitude", "depth_per_pass", "preview_radius",
+LENGTH_KEYS = ("amplitude", "pump_amplitude", "wrap_amplitude", "depth_per_pass", "preview_radius",
                "advance_x", "advance_z", "ellipse_a", "ellipse_b")
 FEED_KEYS = ("plunge_feed",)
 
@@ -209,10 +212,12 @@ NOTES = (
      "ellipse 4 long and 2 wide has A = 2, B = 1. Start the cutter at radius A from the centre and the cut is that ellipse "
      "exactly, its length along the line the cutter starts on. The note under the drawings gives "
      "its length, width and the distance between its foci.\n\n"
-     "On an ellipse (rocking only): any other shape's waves ride on an A by B ellipse, cut in from "
-     "it by the Amplitude. The lobes are spaced evenly along the ellipse's outline, so on a long "
-     "ellipse they don't crowd together along its sides. With Both, the pumping rosette's lobes are "
-     "spaced along the outline too, so the two stay in step.\n\n"
+     "With an Ellipse, a second rocking rosette rides on it, in the column beside it (None leaves "
+     "the plain ellipse): its waves are cut in from the ellipse by its Amplitude, and its lobes are "
+     "spaced evenly along the ellipse's outline, so on a long ellipse they don't crowd together "
+     "along its sides. Its Phase slides the pattern along the outline - half a lobe moves a cleft "
+     "off the end of the ellipse. With Both, the pumping rosette is a third column, its lobes "
+     "spaced along the outline too, so they stay in step.\n\n"
      "Rubber: only a point for now, which follows the shape exactly.",
      "Rosette"),
     ("Depth",
@@ -265,9 +270,14 @@ GUIDE = (0.70, 0.70, 0.75)
 BACKGROUND = (1.0, 1.0, 1.0)
 WOOD = (0.93, 0.85, 0.70)
 
-# Column headings for the rosette controls: (motion, column) -> heading.
-ROSETTE_HEADINGS = {("rock", 0): "Rocking rosette (X)", ("pump", 0): "Pumping rosette (Z)",
-                    ("both", 0): "Rocking rosette (X)", ("both", 1): "Pumping rosette (Z)"}
+# Column headings for the rosette controls: the first rosette (by
+# motion; an Ellipse has its own), the rosette on the Ellipse, and the
+# pumping rosette in Both.
+FIRST_HEADINGS = {"rock": "Rocking rosette (X)", "pump": "Pumping rosette (Z)",
+                  "both": "Rocking rosette (X)"}
+ELLIPSE_HEADING = "Ellipse (X)"
+WRAP_HEADING = "Rocking rosette on the ellipse (X)"
+PUMP_HEADING = "Pumping rosette (Z)"
 
 
 def _linuxcnc_running():
@@ -283,14 +293,16 @@ class RosetteControls:
     the pumping rosette in Both its phase relative to the rocking one -
     in one column of the form's grid. prefix is "" for the first rosette
     (rocking, or pumping alone; no phase - the work is phased by
-    indexing on the Rosetta panel) and rr.SECOND for the pumping
-    rosette when both are used.
+    indexing on the Rosetta panel; or the Ellipse), rr.WRAP for the
+    rocking rosette on the Ellipse (phase along its outline) and
+    rr.SECOND for the pumping rosette when both are used.
     '''
 
     def __init__(self, window, grid, column, first_row, prefix):
         self.window = window
         self.prefix = prefix
         self.widgets = []
+        self.shown = True
         ranges = RANGES[window.units]
         row = first_row
 
@@ -299,10 +311,12 @@ class RosetteControls:
         row += 1
 
         self.shape = Gtk.ComboBoxText()
-        for shape_id in rr.SHAPE_IDS:
-            if prefix and shape_id == "ellipse":
-                continue        # the pumping rosette: an Ellipse only rocks
-            self.shape.append(shape_id, rr.SHAPES[shape_id][0])
+        # An Ellipse only rocks and is only the first rosette; None
+        # (the plain ellipse) only for the rosette on it.
+        left_out = {"": ("none",), rr.SECOND: ("none", "ellipse"), rr.WRAP: ("ellipse",)}[prefix]
+        for shape_id in sorted(rr.SHAPE_IDS, key=lambda shape_id: shape_id != "none"):
+            if shape_id not in left_out:
+                self.shape.append(shape_id, rr.SHAPES[shape_id][0])
         self.shape.set_tooltip_text("The rosette's shape. The Holtzapffel letters are the patterns "
                                     "in Holtzapffel & Co.'s guide to their rose cutting frame.")
         self.shape.connect("changed", lambda w: window._changed())
@@ -322,27 +336,20 @@ class RosetteControls:
         self._place(grid, self.amplitude, column, row)
         row += 1
 
-        # The ellipse - the first rosette only (an Ellipse only rocks):
-        # On an ellipse for any other shape, then a and b, shown only
-        # when an ellipse is in use (DesignerWindow._changed). The
-        # pumping rosette's column leaves these rows empty.
-        self.on_ellipse = self.ellipse_a = self.ellipse_b = None
+        # The Ellipse's A and B - the first rosette only, under the
+        # Ellipse Parameters sub heading (row, DesignerWindow), shown only
+        # when it is an Ellipse (DesignerWindow._changed). The other
+        # columns leave these rows empty.
+        self.ellipse_a = self.ellipse_b = None
         if not prefix:
-            self.on_ellipse = Gtk.CheckButton(label="On an ellipse")
-            self.on_ellipse.set_tooltip_text("Puts this shape's waves on an A by B ellipse, its "
-                                             "lobes spaced evenly along the ellipse's outline. "
-                                             "Rocking only.")
-            self.on_ellipse.connect("toggled", lambda w: window._changed())
-            self._place(grid, self.on_ellipse, column, row)
-            # row + 1: the Ellipse Parameters sub heading (DesignerWindow)
             self.ellipse_a = window._spin(*ranges["ellipse"])
             self.ellipse_a.set_tooltip_text("Half the ellipse's length: from its centre to the end "
                                             "of its length. Start the cutter at this radius.")
-            self._place(grid, self.ellipse_a, column, row + 2)
+            self._place(grid, self.ellipse_a, column, row + 1)
             self.ellipse_b = window._spin(*ranges["ellipse"])
             self.ellipse_b.set_tooltip_text("Half the ellipse's width: from its centre to its side.")
-            self._place(grid, self.ellipse_b, column, row + 3)
-        row += 4
+            self._place(grid, self.ellipse_b, column, row + 2)
+        row += 3
 
         # Straight sides: the plain polygon amplitude that gives straight
         # sides at the Object Size radius.
@@ -364,10 +371,16 @@ class RosetteControls:
             self.phase_unit.connect("changed", self._on_phase_unit)
             box.pack_start(self.phase, True, True, 0)
             box.pack_start(self.phase_unit, False, False, 0)
-            box.set_tooltip_text("Turns the pumping rosette relative to the rocking rosette: a "
-                                 "fraction of one repeat of its shape - a lobe, or a whole group "
-                                 "for J, M, N, O, P, Q (0.5 = half way) - or degrees of the "
-                                 "spindle.")
+            if prefix == rr.WRAP:
+                box.set_tooltip_text("Slides the pattern along the ellipse's outline: a fraction "
+                                     "of one repeat of its shape - a lobe, or a whole group for "
+                                     "J, M, N, O, P, Q (0.5 = half way, e.g. a cleft moved off "
+                                     "the end) - or degrees, 360 being the whole outline.")
+            else:
+                box.set_tooltip_text("Turns the pumping rosette relative to the rocking rosette: a "
+                                     "fraction of one repeat of its shape - a lobe, or a whole "
+                                     "group for J, M, N, O, P, Q (0.5 = half way) - or degrees of "
+                                     "the spindle.")
             self._place(grid, box, column, row)
         row += 1
 
@@ -384,6 +397,7 @@ class RosetteControls:
         self.widgets.append(widget)
 
     def set_shown(self, shown):
+        self.shown = shown
         for widget in self.widgets:
             widget.set_no_show_all(not shown)
             if shown:
@@ -428,8 +442,7 @@ class RosetteControls:
         self.shape.set_active_id(ros["shape"])
         self.lobes.set_value(ros["lobes"])
         self.amplitude.set_value(ros["amplitude"])
-        if self.on_ellipse is not None:
-            self.on_ellipse.set_active(design["on_ellipse"])
+        if self.ellipse_a is not None:
             self.ellipse_a.set_value(design["ellipse_a"])
             self.ellipse_b.set_value(design["ellipse_b"])
         if self.has_phase:
@@ -450,9 +463,8 @@ class RosetteControls:
         values = {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
                   self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
                   self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active()}
-        if self.on_ellipse is not None:
-            values.update({"on_ellipse": self.on_ellipse.get_active(),
-                           "ellipse_a": self.ellipse_a.get_value(),
+        if self.ellipse_a is not None:
+            values.update({"ellipse_a": self.ellipse_a.get_value(),
                            "ellipse_b": self.ellipse_b.get_value()})
         return values
 
@@ -474,12 +486,19 @@ class RosetteControls:
 
     def update_sensitivity(self, axis, design):
         ros = rr.rosette(design, self.prefix)
-        plain_ellipse = ros["shape"] == "ellipse"       # no waves of its own
-        on_ellipse = not self.prefix and rr.ellipse_base(design) is not None
-        self.straight.set_sensitive(ros["shape"] == "polygon" and not ros["invert"] and not on_ellipse
-                                    and axis == "X" and design["surface"] == "face")
-        for widget in (self.lobes, self.amplitude, self.invert):
-            widget.set_sensitive(not plain_ellipse)
+        self.straight.set_sensitive(ros["shape"] == "polygon" and not ros["invert"]
+                                    and self.prefix != rr.WRAP and axis == "X"
+                                    and design["surface"] == "face")
+        # The Ellipse column shows only A and B (DesignerWindow); a rosette
+        # of None on it has nothing to set.
+        show = self.shown and ros["shape"] != "ellipse"
+        for widget in (self.lobes, self.amplitude, self.straight, self.invert):
+            visible = show and not (widget is self.straight and self.prefix == rr.WRAP)
+            widget.set_no_show_all(not visible)
+            widget.set_visible(visible)
+        waves = ros["shape"] != "none"
+        for widget in (self.lobes, self.amplitude, self.invert) + ((self.phase,) if self.has_phase else ()):
+            widget.set_sensitive(waves)
 
 
 class DesignerWindow(Gtk.Window):
@@ -633,7 +652,7 @@ class DesignerWindow(Gtk.Window):
         self.ellipse_labels = []
         # The ellipse's rows: a sub heading over A and B (Rich, 17 November 2026).
         ellipse_rows = ("Ellipse Parameters", "A (%s)" % unit, "B (%s)" % unit)
-        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "")
+        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit)
                                  + ellipse_rows + ("", "Phase", "")):
             label = Gtk.Label(label=text, xalign=0)
             if text == ellipse_rows[0]:
@@ -641,11 +660,14 @@ class DesignerWindow(Gtk.Window):
                 label.set_margin_top(4)
             grid.attach(label, 0, row + i, 1, 1)
             if text == "Phase":
-                self.phase_label = label    # only the pumping rosette in Both has one
+                self.phase_label = label    # only the rosette on an Ellipse and the pumping one have one
             if text in ellipse_rows:
                 self.ellipse_labels.append(label)   # only when an ellipse is in use
+        # The first rosette (or the Ellipse), the rocking rosette on the
+        # Ellipse (shown only with one), the pumping rosette (Both only).
         self.rosette_controls = [RosetteControls(self, grid, 1, row, ""),
-                                 RosetteControls(self, grid, 2, row, rr.SECOND)]
+                                 RosetteControls(self, grid, 2, row, rr.WRAP),
+                                 RosetteControls(self, grid, 3, row, rr.SECOND)]
         row = self.rosette_controls[0].last_row + 1
 
         self.rubber = Gtk.ComboBoxText()
@@ -903,24 +925,23 @@ class DesignerWindow(Gtk.Window):
         self.finish_pct.set_sensitive(passes and d["finish_pass"])
         self.turns.set_sensitive(not passes)
         both = d["motion"] == "both"
-        self.rosette_controls[1].set_shown(both)
-        self.phase_label.set_no_show_all(not both)
-        self.phase_label.set_visible(both)
-        for column, controls in enumerate(self.rosette_controls):
-            heading = ROSETTE_HEADINGS.get((d["motion"], column), "")
-            controls.heading.set_markup("<i>%s</i>" % heading)
-            axis = "Z" if (d["motion"] == "pump" or column == 1) else "X"
-            controls.update_sensitivity(axis, d)
-        # The ellipse's rows: On an ellipse while rocking with any other
-        # shape, a and b while an ellipse is in use.
-        first = self.rosette_controls[0]
-        rocking = d["motion"] != "pump"
         ellipse = rr.ellipse_base(d) is not None
-        for widget, show in ([(first.on_ellipse, rocking and d["shape"] != "ellipse"),
-                              (first.ellipse_a, ellipse), (first.ellipse_b, ellipse)]
-                             + [(label, ellipse) for label in self.ellipse_labels]):
-            widget.set_no_show_all(not show)
-            widget.set_visible(show)
+        first, wrap, pump = self.rosette_controls
+        wrap.set_shown(ellipse)
+        pump.set_shown(both)
+        self.phase_label.set_no_show_all(not (both or ellipse))
+        self.phase_label.set_visible(both or ellipse)
+        first.heading.set_markup("<i>%s</i>" % (ELLIPSE_HEADING if d["shape"] == "ellipse"
+                                                 else FIRST_HEADINGS[d["motion"]]))
+        wrap.heading.set_markup("<i>%s</i>" % WRAP_HEADING)
+        pump.heading.set_markup("<i>%s</i>" % PUMP_HEADING)
+        first.update_sensitivity("Z" if d["motion"] == "pump" else "X", d)
+        wrap.update_sensitivity("X", d)
+        pump.update_sensitivity("Z", d)
+        # The Ellipse's A and B rows only while it is one.
+        for widget in [first.ellipse_a, first.ellipse_b] + self.ellipse_labels:
+            widget.set_no_show_all(not ellipse)
+            widget.set_visible(ellipse)
         # On an ellipse, a and b set the size on the face - Object Size
         # is not used there.
         sized = not (ellipse and d["surface"] == "face")
@@ -978,7 +999,7 @@ class DesignerWindow(Gtk.Window):
                      "its foci %s %s apart%s."
                      % (self._number(base[0]), unit, self._number(length), unit,
                         self._number(width), unit, self._number(foci), unit,
-                        ", with the waves cut in from it" if d["shape"] != "ellipse" else ""))
+                        ", with the waves cut in from it" if d["wrap_shape"] != "none" else ""))
             if rr.advance(d, "X"):
                 text += " Allow for the X advance: put it at radius %s %s." % (
                     self._number(rr.cutter_start_radius(d)), unit)
