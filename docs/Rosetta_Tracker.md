@@ -335,6 +335,52 @@ from Rich's own machines, never from other rosette software:
   panel buttons) while a program runs - the rosette could turn
   continuously while the operator feeds in, as on a physical rose
   engine. Needs Rosetta.ini/HAL changes.
+- **Rosette on an ellipse** (Rich, 16 November 2026, Mac conversation;
+  being built 17 November 2026): a rosette's waves added to a true
+  ellipse, r(θ) = ellipse(θ) + A·cos(Nθ), in the Rosette Designer. The
+  Mac session's stand-alone `ellipse_gcode.py` and its output
+  `ellipse.ngc` (a = 2, b = 1, C + X polar moves at 0.5° steps, G93)
+  are in `~/Downloads/Claude last night/` on Rich's Pi, kept to
+  cross-check the Designer's ellipse. Same session, worked out in
+  Desmos: a 2-lobe sine rosette stays oval only up to length/width
+  1.5 - beyond that its sides dent in (a peanut) - so a long oval needs
+  the true-ellipse formula.
+
+### Geometric chuck calculator (since 17 November 2026)
+
+Rich, 16 November 2026 (Mac conversation; files in
+`~/Downloads/Claude last night/` on Rich's Pi). Reference:
+https://otbok.info/index.php?n=Main.GeometricChuck.
+
+- **Calculator, plot + G-code**: stages 1-5, each an offset r, a speed
+  k relative to the mandrel (whole, negative or a fraction like 7/3 -
+  Rich: enter k for now, tooth counts later once a chuck's gearing is
+  described) and a phase; the cut is z(t) = Σ r·e^(i(k·t + φ)) (Farris,
+  "Wheels on Wheels on Wheels", 1996). Shows symmetry (|k - 1|-fold for
+  two stages; gcd of the frequency differences in general), turns
+  until it closes (lcm of the k denominators), smallest/largest radius
+  and path length. k = 1 and -1 give an exact ellipse
+  (a = r1 + r2, b = |r1 - r2|). G-code as C + X (the radial axis crosses
+  centre rather than C jumping 180°; loops need C to reverse) or X/Y.
+  A first version, `geochuck.py` (maths, CLI) and `geochuck_gui.py`
+  (Tkinter - never opened, Tk hung on the Mac), was written there and
+  tested off the machine. For Rosetta it would be rewritten in GTK as a
+  sibling of the Rosette Designer, with its G-code conventions (G7/G8,
+  start where the cutter was put, reserved names, pass reporting).
+- **Bazley index** (Rich, 16 November 2026): T. S. Bazley, *Index to
+  the Geometric Chuck* (1875, public domain;
+  https://archive.org/details/indextogeometri00bazlgoog) - pick a
+  figure number and get the design. His two-part chuck settings (V,
+  in/out, Ex, S.R., in hundredths of an inch; `bazley_stages()` in
+  geochuck.py) were modelled and checked: the simple-chuck rules, all
+  10 footnotes on table page 71, and figures 668-675 against his plate
+  (incl. companions = Part I turned half a turn). Chapter III has over
+  3,000 figures (~60 table pages, book pp. 59-118); the archive's OCR
+  of the tables is unusable, so they're copied from the page images.
+  Proposed pilot: figures 666-716 (one table page), checked against his
+  plates; then the rest in batches. Chapters VI-VII (epicycloidal
+  cutting frame, 3- and 4-part figures) need an extra stage - a later
+  phase.
 
 ### Rebranding: Rose Engine Butler -> Rosetta (since 02 November 2026)
 
