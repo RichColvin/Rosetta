@@ -29,6 +29,8 @@
 #   1.0 - 21 July 2026
 #   1.1 - 15 November 2026 - phone alerts (ntfy app): finished,
 #         paused, fault siren, Pi too hot, box lost contact
+#   1.2 - 17 November 2026 - the pass counter also shows for
+#         Geometric Chuck Designer programs
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -405,8 +407,10 @@ THREAD_KIND_DONE = 9
 # rosetta_rosettes.py's PASS_STATUS_BASE / PASS_KIND.
 ROSETTE_PASS_BASE = 1000000
 ROSETTE_PASS_WORDS = {1: "pass", 2: "finishing pass", 3: "spring pass", 4: "turn"}
-# A Rosette Designer program's first line starts with this.
-ROSETTE_PROGRAM_MARK = "(Rosette Designer - "
+# A Rosette Designer program's first line starts with one of these -
+# the Geometric Chuck Designer's (added 17 November 2026) use the same
+# pass codes (rosetta_geochuck.PROGRAM_MARK).
+ROSETTE_PROGRAM_MARK = ("(Rosette Designer - ", "(Geometric Chuck Designer - ")
 
 # How long a Cut Thread's "Done"/"Stopped" message stays up before the
 # Threading tab's instructions come back.

@@ -68,6 +68,8 @@
 #         which git pull never changes                                #
 #   1.10 - 17 November 2026 - runs the Shut Down one-time step (menu  #
 #         entry and bottom-bar launcher)                              #
+#   1.11 - 17 November 2026 - runs the Geometric Chuck Designer menu  #
+#         entry one-time step                                         #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -96,6 +98,7 @@ ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Set_Serial_Number.sh"),   # 23 October 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Rosette_Designer.sh"),  # 15 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shut_Down.sh"),          # 17 November 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_GeoChuck_Designer.sh"),  # 17 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 

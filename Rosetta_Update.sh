@@ -56,6 +56,8 @@
 #             LinuxCNC's files under it. It asks rather than closing
 #             them - LinuxCNC may be cutting, Settings may have
 #             unsaved tuning, a backup may be copying.
+#   1.8 - 17 November 2026 - also asks for the Geometric Chuck
+#             Designer to be closed.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -124,6 +126,7 @@ rosetta_programs_open() {
     pgrep -u "$me" -x linuxcncsvr >/dev/null && echo "Rosetta (LinuxCNC)"
     pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Settings\.py" >/dev/null && echo "Rosetta Settings"
     pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Rosette_Designer\.py" >/dev/null && echo "Rosette Designer"
+    pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_GeoChuck_Designer\.py" >/dev/null && echo "Geometric Chuck Designer"
     pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Backup\.py" >/dev/null && echo "Back Up to USB / Restore from USB"
     pgrep -u "$me" -f "python[0-9.]* [^ ]*Rosetta_Checkout\.py" >/dev/null && echo "Checkout"
     return 0

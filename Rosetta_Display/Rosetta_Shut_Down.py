@@ -44,6 +44,7 @@
 #
 # Version
 #   1.0 - 17 November 2026
+#   1.1 - 17 November 2026 - also checks the Geometric Chuck Designer
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -94,6 +95,7 @@ OPEN_CHECKS = (
     (["-x", "linuxcncsvr"], "Rosetta (LinuxCNC)"),
     (["-f", r"python[0-9.]* [^ ]*Rosetta_Settings\.py"], "Rosetta Settings"),
     (["-f", r"python[0-9.]* [^ ]*Rosetta_Rosette_Designer\.py"], "Rosette Designer"),
+    (["-f", r"python[0-9.]* [^ ]*Rosetta_GeoChuck_Designer\.py"], "Geometric Chuck Designer"),
     (["-f", r"python[0-9.]* [^ ]*Rosetta_Backup\.py"], "Back Up to USB / Restore from USB"),
     (["-f", r"python[0-9.]* [^ ]*Rosetta_Checkout\.py"], "Checkout"),
     (["-f", r"Rosetta_Update\.sh"], "Rosetta Update"),
