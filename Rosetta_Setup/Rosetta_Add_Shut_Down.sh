@@ -21,12 +21,16 @@
 #   are closed, then powers the Pi off properly; icon
 #   Rosetta_Setup/Images/Rosetta_Shut_Down.png), once per machine, in
 #   two places:
-#     - the Applications menu's Rosetta submenu: writes
-#       ~/.local/share/applications/rosetta-shut-down.desktop and lists
-#       it in the submenu's <Menu> (menulibre-rose-engine-butler) in
-#       ~/.config/menus/xfce-applications.menu, as
-#       Rosetta_Add_Rosette_Designer.sh does (backup:
-#       xfce-applications.menu.before-shut-down);
+#     - the bottom of the Applications menu itself (Rich, 17 November
+#       2026 - easier to find there than in the Rosetta submenu): writes
+#       ~/.local/share/applications/rosetta-shut-down.desktop (category
+#       X-Xfce-Toplevel) and, where ~/.config/menus/xfce-applications.menu
+#       lists the menu's top level item by item (MenuLibre writes it
+#       that way - and leaves out the desktop's own Log Out, which is
+#       why Shut Down was hard to find), adds a separator and it at the
+#       end of that list (backup: xfce-applications.menu.before-shut-down).
+#       Version 1.0 put it in the Rosetta submenu; that entry is taken
+#       out;
 #     - the bottom bar (the Xfce panel holding the File Manager
 #       launcher): a launcher after the Gcode folder launcher
 #       (Rosetta_Add_Shortcuts.sh), or after File Manager if that isn't
@@ -53,6 +57,9 @@
 #
 # Version
 #   1.0 - 17 November 2026
+#   1.1 - 17 November 2026 - at the bottom of the Applications menu,
+#         not in the Rosetta submenu (Rich); new marker, so a machine
+#         that ran 1.0 moves it
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -60,7 +67,9 @@
 #######################################################################
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-MARKER="$HOME/.config/Rosetta/shut-down-added"
+# 1.0's marker was shut-down-added; a new name makes machines that ran
+# it run again and move the menu entry.
+MARKER="$HOME/.config/Rosetta/shut-down-added-2"
 ENTRY="$HOME/.local/share/applications/rosetta-shut-down.desktop"
 MENU="$HOME/.config/menus/xfce-applications.menu"
 PANEL_DIR="$HOME/.config/xfce4/panel"
@@ -72,7 +81,7 @@ if [ -f "$MARKER" ] && [ "$1" != "--force" ]; then
     exit 0
 fi
 
-# --- The Rosetta submenu ---------------------------------------------
+# --- The bottom of the Applications menu ----------------------------
 menu_done=false
 mkdir -p "$(dirname "$ENTRY")" "$(dirname "$MARKER")" || exit 1
 cat > "$ENTRY" <<DESKTOP_ENTRY || exit 1
@@ -85,40 +94,42 @@ Icon=$ICON
 Exec=bash $LAUNCH
 Path=$REPO_DIR/
 Terminal=false
-Categories=X-XFCE;menulibre-rose-engine-butler;
+Categories=X-Xfce-Toplevel;
 DESKTOP_ENTRY
 
 python3 - "$MENU" <<'ADD_TO_MENU'
-import re, shutil, sys
+import os, re, shutil, sys
 path = sys.argv[1]
 entry = "rosetta-shut-down.desktop"
-try:
-    text = open(path).read()
-except OSError:
-    print("Shut Down menu entry: no " + path + " - Rosetta submenu not found.")
-    sys.exit(2)
-block = re.search(r"<Menu>\s*<Name>menulibre-rose-engine-butler</Name>.*?</Menu>", text, re.S)
-if not block:
-    print("Shut Down menu entry: the Rosetta submenu isn't in " + path + ".")
-    sys.exit(2)
-if entry in block.group(0):
-    sys.exit(0)
-last = block.group(0).rfind("</Include>")
-if last < 0:
-    print("Shut Down menu entry: the Rosetta submenu has no entries to add beside.")
-    sys.exit(2)
-cut = block.start() + last + len("</Include>")
-line_start = text.rfind("\n", 0, text.rfind("<Include>", 0, cut)) + 1
-indent = text[line_start:text.find("<Include>", line_start)]
-addition = "\n%s<Include>\n%s\t<Filename>%s</Filename>\n%s</Include>" % (indent, indent, entry, indent)
-shutil.copy2(path, path + ".before-shut-down")
-open(path, "w").write(text[:cut] + addition + text[cut:])
+if not os.path.exists(path):
+    sys.exit(0)     # the standard menu: X-Xfce-Toplevel puts it in the top level
+text = original = open(path).read()
+# 1.0 listed it in the Rosetta submenu - take that out.
+submenu = re.search(r"<Menu>\s*<Name>menulibre-rose-engine-butler</Name>.*?</Menu>", text, re.S)
+if submenu and entry in submenu.group(0):
+    cleaned = re.sub(r"\n[ \t]*<Include>\s*<Filename>" + re.escape(entry) + r"</Filename>\s*</Include>",
+                     "", submenu.group(0))
+    cleaned = re.sub(r"\n[ \t]*<Filename>" + re.escape(entry) + r"</Filename>", "", cleaned)
+    text = text[:submenu.start()] + cleaned + text[submenu.end():]
+# The top level's own item list: the last <Layout> before the file's
+# closing </Menu> (the submenus' layouts each end inside their <Menu>).
+top = re.search(r"<Layout>((?:(?!<Menu>|<Layout>).)*?)(\n([ \t]*))</Layout>\s*</Menu>\s*$", text, re.S)
+if top and entry not in top.group(1):
+    items = top.group(1)
+    item_indent = re.search(r"\n([ \t]*)<", items)
+    indent = item_indent.group(1) if item_indent else top.group(3) + "\t"
+    addition = "\n%s<Separator />\n%s<Filename>%s</Filename>" % (indent, indent, entry)
+    cut = top.start(2)
+    text = text[:cut] + addition + text[cut:]
+if text != original:
+    shutil.copy2(path, path + ".before-shut-down")
+    open(path, "w").write(text)
 ADD_TO_MENU
 if [ $? = 0 ]; then
-    echo "Shut Down: in the menu (Applications > Rosetta)."
+    echo "Shut Down: at the bottom of the Applications menu."
     menu_done=true
 else
-    echo "Shut Down: menu entry written, but not listed in the Rosetta submenu - will try again next update."
+    echo "Shut Down: menu entry written, but the menu couldn't be changed - will try again next update."
 fi
 
 # --- The bottom bar --------------------------------------------------
