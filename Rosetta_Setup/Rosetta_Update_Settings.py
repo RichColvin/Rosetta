@@ -66,6 +66,8 @@
 #   1.9 - 16 November 2026 - refreshes the installer's copy of the    #
 #         update script in the home folder (~/Rosetta_Update.sh),     #
 #         which git pull never changes                                #
+#   1.10 - 17 November 2026 - runs the Shut Down one-time step (menu  #
+#         entry and bottom-bar launcher)                              #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -93,6 +95,7 @@ ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shortcuts.sh"),       # 20 October 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Set_Serial_Number.sh"),   # 23 October 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Rosette_Designer.sh"),  # 15 November 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shut_Down.sh"),          # 17 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 

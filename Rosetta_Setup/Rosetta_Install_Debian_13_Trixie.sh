@@ -53,6 +53,8 @@
 #         a fixed /home/reuben, so it suits any login (rosetta).
 #   2.1 - 15 November 2026 - Step 12: adds the Rosette Designer to the
 #         Applications menu (Rosetta_Add_Rosette_Designer.sh).
+#   2.2 - 17 November 2026 - Step 13: adds Shut Down to the Rosetta
+#         submenu and the bottom bar (Rosetta_Add_Shut_Down.sh).
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -334,6 +336,13 @@ echo -e "${TITLE}                                                               
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh
+
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Step 13 - Add Shut Down to the menu and the bottom bar                 ${NOCOLOR}"
+echo -e "${TITLE}                                                                       ${NOCOLOR}"
+# Machines installed before this step get it from
+# Rosetta_Update_Settings.py on their next update.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Shut_Down.sh
 
 # ********************************************************************
 # Success
