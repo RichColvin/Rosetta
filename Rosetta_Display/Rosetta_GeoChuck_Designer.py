@@ -50,6 +50,10 @@
 #   1.2 - 17 November 2026 - Bazley figure: fills in the stages for a
 #         figure from Bazley's Index to the Geometric Chuck (the pilot,
 #         figures 666-716)
+#   1.3 - 17 November 2026 - Roy Lindley's chuck settings (L1 L2 L3,
+#         V1 V2, G3, Rotation) as the main way to set a pattern, the r/k
+#         stages as the other; every Bazley figure from his catalogue,
+#         filled in at a chosen size; credit to him in the notes
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -118,23 +122,23 @@ VERSION_COLOUR = "#c01c28"
 LAST_DESIGN_PATH = os.path.expanduser("~/.config/Rosetta/geochuck_designer.json")
 # The check circle (_on_check_circle).
 MADE_BY = "Geometric Chuck Designer"
-NO_CHECK_CIRCLE = "Every stage's r is 0 - there is no pattern, so no start radius to check."
+NO_CHECK_CIRCLE = "Every circle's radius is 0 - there is no pattern, so no start radius to check."
 # Held (flock) by the copy that's open, with its process id - see
 # _take_single_instance_lock.
 LOCK_PATH = os.path.expanduser("~/.config/Rosetta/GeoChuck_Designer.lock")
 
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
-LENGTH_KEYS = tuple("r%d" % n for n in range(1, gc.STAGES + 1)) + ("depth_per_pass", "advance_x",
-                                                                    "advance_z")
+LENGTH_KEYS = tuple("r%d" % n for n in range(1, gc.STAGES + 1)) + gc.CHUCK_LENGTH_KEYS + (
+    "bazley_size", "depth_per_pass", "advance_x", "advance_z")
 FEED_KEYS = ("cutting_speed", "plunge_feed")
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
 RANGES = {
-    "inch": {"r": (0.0, 10.0, 0.05, 4), "cutting_speed": (0.1, 100.0, 0.5, 1),
+    "inch": {"r": (0.0, 10.0, 0.05, 4), "bazley_size": (0.1, 20.0, 0.25), "cutting_speed": (0.1, 100.0, 0.5, 1),
              "depth_per_pass": (0.0001, 0.1, 0.001, 4), "plunge_feed": (0.1, 20.0, 0.1, 1),
              "advance": (0.0, 2.0, 0.01, 3)},
-    "mm": {"r": (0.0, 250.0, 1.0, 3), "cutting_speed": (2.0, 2500.0, 10.0, 0),
+    "mm": {"r": (0.0, 250.0, 1.0, 3), "bazley_size": (2.0, 500.0, 5.0), "cutting_speed": (2.0, 2500.0, 10.0, 0),
            "depth_per_pass": (0.002, 2.5, 0.02, 3), "plunge_feed": (2.0, 500.0, 1.0, 0),
            "advance": (0.0, 50.0, 0.5, 2)},
 }
@@ -144,17 +148,25 @@ MANUAL_PAGE = "https://rosetta.colvintools.com/UserManual/index.php?n=Main.Geome
 # The notes column on the right: (heading, text, User Manual anchor),
 # one per section of the form.
 NOTES = (
-    ("Stages",
-     "A geometric chuck stacks circular motions - wheels on wheels. Each stage turns a circle of "
-     "radius r, k times for each turn of the work, set at its phase to start. The pattern is "
-     "where they all add up.\n\n"
-     "Stage 1 is normally the cutter's own distance from the centre, with k 1. Each stage after "
-     "it adds a circle: k 6 gives 5 broad lobes with small loops, k -4 a 5-point star - a pattern "
-     "with two stages has |k - 1|-fold symmetry. k -1 gives an exact ellipse.\n\n"
-     "k can be a fraction, such as 7/3: the pattern then takes 3 turns of the work to close.\n\n"
-     "Leave r at 0 for a stage you don't use. Presets fill in some classic patterns to start "
-     "from.",
-     "Stages"),
+    ("Chuck Settings",
+     "A geometric chuck stacks circular motions - wheels on wheels. The pattern is set as the chuck "
+     "is set:\n"
+     "  L1, L2, L3 - the radii of its three circles (L3 0 for a one-stage figure).\n"
+     "  V1, V2 - its two ratios: how fast the second and third circles turn. A whole number or a "
+     "fraction such as 7/3; negative turns them the other way.\n"
+     "  G3 - where the third circle starts, in degrees.\n"
+     "  Rotation - turns the whole figure.\n\n"
+     "Presets fill in some classic patterns to start from. For patterns a two-part chuck can't "
+     "make, choose Stages instead: up to five circles, each of radius r turning k times, set at "
+     "its phase. The two ways give the same result where both can.",
+     "ChuckSettings"),
+    ("Bazley's Figures",
+     "Type a figure's number from T. S. Bazley's Index to the Geometric Chuck (1875) - 1 to 3454 - "
+     "and its size (the largest diameter), and press Fill in. Numbers 3501 to 3554 are simple rose "
+     "patterns. A figure and its companion (the next or previous number) differ only by G3 - half a "
+     "turn.\n\n"
+     + gc.BAZLEY_CREDIT,
+     "Bazley"),
     ("Movement",
      "Cutting speed is how fast the cutter moves along the pattern. C slows down where it, or X, "
      "can't keep up - most where the pattern passes close to the centre, where C has to turn "
@@ -344,10 +356,47 @@ class DesignerWindow(Gtk.Window):
         unit = "in" if self.units == "inch" else "mm"
         ranges = RANGES[self.units]
 
-        row = self._section(grid, 0, "Stages")
+        row = self._section(grid, 0, "Chuck Settings")
+        entry_box, self.entry = self._radios((("chuck", "Chuck settings (L, V)"), ("stages", "Stages (r, k)")))
+        for button in self.entry.values():
+            button.disconnect_by_func(self._radio_toggled)
+            button.connect("toggled", self._on_entry_toggled)
+        row = self._row(grid, row, "Set by", entry_box,
+                        "Chuck settings: L1 L2 L3, V1 V2, G3, as a two-part geometric chuck is set. "
+                        "Stages: up to five circles, r and k - for patterns a two-part chuck can't make.")
+
+        # Chuck settings (Roy Lindley's): L1 L2 L3, V1 V2, G3, Rotation.
+        chuck = Gtk.Grid(column_spacing=8, row_spacing=4)
+        self.chuck_l, self.chuck_v = {}, {}
+        crow = 0
+        for n, tip in ((1, "The first circle's radius."), (2, "The second circle's radius."),
+                       (3, "The third circle's radius - 0 for a one-stage figure.")):
+            self.chuck_l[n] = self._spin(*ranges["r"])
+            crow = self._row(chuck, crow, "L%d (%s)" % (n, unit), self.chuck_l[n], tip)
+        for n, tip in ((1, "The first ratio: the second circle turns 1 - V1 times for each turn of "
+                           "the first. A whole number or a fraction such as 7/3."),
+                       (2, "The second ratio: the third circle turns (1 - V1) + V1 x V2 times. "
+                           "0 when L3 is 0.")):
+            entry = Gtk.Entry()
+            entry.set_width_chars(8)
+            entry.set_halign(Gtk.Align.START)
+            entry.connect("changed", lambda w: self._changed())
+            self.chuck_v[n] = entry
+            crow = self._row(chuck, crow, "V%d" % n, entry, tip)
+        self.chuck_g3 = self._spin(0.0, 359.9, 5.0, 1)
+        crow = self._row(chuck, crow, "G3 (deg)", self.chuck_g3,
+                         "Where the third circle starts. A figure and its companion differ by 180.")
+        self.chuck_rotation = self._spin(0.0, 359.9, 5.0, 1)
+        crow = self._row(chuck, crow, "Rotation (deg)", self.chuck_rotation,
+                         "Turns the whole figure on the work.")
+        self.chuck_grid = chuck
+
+        # Stages: r, k, phase.
+        stages_grid = Gtk.Grid(column_spacing=8, row_spacing=4)
+        srow = 0
         for column, text, tip in ((0, "", None),
                                   (1, "r (%s)" % unit, "The stage's offset - the radius of its circle."),
-                                  (2, "k", "How many times the stage turns for each turn of the work: "
+                                  (2, "k", "How many times the stage turns for each turn of the first: "
                                            "a whole number, negative for the other way, or a "
                                            "fraction such as 7/3."),
                                   (3, "Phase (deg)", "Where the stage is set at the start.")):
@@ -355,26 +404,33 @@ class DesignerWindow(Gtk.Window):
             label.set_markup("<i>%s</i>" % text)
             if tip:
                 label.set_tooltip_text(tip)
-            grid.attach(label, column, row, 1, 1)
-        row += 1
+            stages_grid.attach(label, column, srow, 1, 1)
+        srow += 1
         self.stage_r, self.stage_k, self.stage_phase = {}, {}, {}
         for n in range(1, gc.STAGES + 1):
-            grid.attach(Gtk.Label(label="Stage %d" % n, xalign=0), 0, row, 1, 1)
+            stages_grid.attach(Gtk.Label(label="Stage %d" % n, xalign=0), 0, srow, 1, 1)
             self.stage_r[n] = self._spin(*ranges["r"])
             self.stage_r[n].set_tooltip_text("Stage %d's offset - the radius of its circle. "
                                              "0 = not used." % n)
-            grid.attach(self.stage_r[n], 1, row, 1, 1)
+            stages_grid.attach(self.stage_r[n], 1, srow, 1, 1)
             entry = Gtk.Entry()
             entry.set_width_chars(6)
-            entry.set_tooltip_text("Stage %d's speed: turns for each turn of the work - e.g. 6, -4 "
+            entry.set_tooltip_text("Stage %d's speed: turns for each turn of the first - e.g. 6, -4 "
                                    "or 7/3." % n)
             entry.connect("changed", lambda w: self._changed())
             self.stage_k[n] = entry
-            grid.attach(entry, 2, row, 1, 1)
+            stages_grid.attach(entry, 2, srow, 1, 1)
             self.stage_phase[n] = self._spin(0.0, 359.9, 5.0, 1)
             self.stage_phase[n].set_width_chars(6)
             self.stage_phase[n].set_tooltip_text("Where stage %d is set at the start, in degrees." % n)
-            grid.attach(self.stage_phase[n], 3, row, 1, 1)
+            stages_grid.attach(self.stage_phase[n], 3, srow, 1, 1)
+            srow += 1
+        self.stages_grid = stages_grid
+        # Only one of the two shows; show_all() leaves them alone.
+        for part in (chuck, stages_grid):
+            part.show_all()
+            part.set_no_show_all(True)
+            grid.attach(part, 0, row, 4, 1)
             row += 1
         self.preset = Gtk.ComboBoxText()
         self.preset.append("", "Choose a preset...")
@@ -384,9 +440,10 @@ class DesignerWindow(Gtk.Window):
         self.preset.connect("changed", self._on_preset)
         self.preset.set_halign(Gtk.Align.START)
         row = self._row(grid, row, "Presets", self.preset,
-                        "Fills in the stages for a classic pattern (in inches: scaled for mm).")
-        # Bazley's figures (rosetta_geochuck.bazley_design): a number and
-        # a button, so typing a number doesn't change the stages by itself.
+                        "Fills in a classic pattern (in inches: scaled for mm).")
+        # Bazley's figures (rosetta_geochuck.bazley_design): a number, a
+        # size and a button, so typing a number doesn't change the pattern
+        # by itself.
         figures = sorted(gc.bazley_index())
         bazley_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.bazley_figure = Gtk.SpinButton.new_with_range(figures[0] if figures else 1,
@@ -395,15 +452,24 @@ class DesignerWindow(Gtk.Window):
         self.bazley_figure.set_numeric(True)
         self.bazley_figure.set_width_chars(6)
         self.bazley_figure.connect("activate", self._on_bazley)
+        self.bazley_size = Gtk.SpinButton.new_with_range(*ranges["bazley_size"])
+        self.bazley_size.set_digits(3 if self.units == "inch" else 1)
+        self.bazley_size.set_numeric(True)
+        self.bazley_size.set_width_chars(7)
+        self.bazley_size.set_tooltip_text("The figure's largest diameter (%s)." % unit)
+        self.bazley_size.connect("activate", self._on_bazley)
         fill = Gtk.Button(label="Fill in")
         fill.connect("clicked", self._on_bazley)
         bazley_box.pack_start(self.bazley_figure, False, False, 0)
+        bazley_box.pack_start(Gtk.Label(label="size"), False, False, 0)
+        bazley_box.pack_start(self.bazley_size, False, False, 0)
+        bazley_box.pack_start(Gtk.Label(label=unit), False, False, 0)
         bazley_box.pack_start(fill, False, False, 0)
-        bazley_box.pack_start(Gtk.Label(label="figures %d-%d so far" % (figures[0], figures[-1])
-                                        if figures else "none yet"), False, False, 0)
         row = self._row(grid, row, "Bazley figure", bazley_box,
-                        "Fills in the stages for a numbered figure from T. S. Bazley's Index to the "
-                        "Geometric Chuck (1875), at his size.")
+                        "Fills in the chuck settings for a numbered figure from T. S. Bazley's Index "
+                        "to the Geometric Chuck (1875) - 1 to 3454; 3501 to 3554 are simple rose "
+                        "patterns - at the size given (its largest diameter). Settings from Roy "
+                        "Lindley's catalogue.")
 
         row = self._section(grid, row, "Movement")
         self.cutting_speed = self._spin(*ranges["cutting_speed"])
@@ -576,6 +642,16 @@ class DesignerWindow(Gtk.Window):
     def _put_design_in_form(self):
         d = self.design
         self.loading = True
+        self.entry[d["entry"]].set_active(True)
+        self.chuck_grid.set_visible(d["entry"] == "chuck")
+        self.stages_grid.set_visible(d["entry"] == "stages")
+        for n in (1, 2, 3):
+            self.chuck_l[n].set_value(d["l%d" % n])
+        for n in (1, 2):
+            self.chuck_v[n].set_text(d["v%d" % n])
+        self.chuck_g3.set_value(d["g3"])
+        self.chuck_rotation.set_value(d["rotation"])
+        self.bazley_size.set_value(d["bazley_size"])
         for n in range(1, gc.STAGES + 1):
             self.stage_r[n].set_value(d["r%d" % n])
             self.stage_k[n].set_text(d["k%d" % n])
@@ -616,12 +692,31 @@ class DesignerWindow(Gtk.Window):
             "turns": int(self.turns.get_value()),
             "deeper_plus": self.deeper_plus.get_active(),
             "units": self.units,
-            "bazley_figure": self.design["bazley_figure"],   # dropped by clean_design if the stages changed
+            "bazley_figure": self.design["bazley_figure"],   # dropped by clean_design if the settings changed
+            "bazley_size": self.bazley_size.get_value(),
+            "entry": self._chosen(self.entry),
+            "l1": self.chuck_l[1].get_value(), "l2": self.chuck_l[2].get_value(),
+            "l3": self.chuck_l[3].get_value(),
+            "g3": self.chuck_g3.get_value(), "rotation": self.chuck_rotation.get_value(),
         }
+        self.bad_v = []
+        for n in (1, 2):
+            text = self.chuck_v[n].get_text().strip()
+            v = gc.parse_k(text)
+            style = self.chuck_v[n].get_style_context()
+            if v is None:
+                self.bad_v.append(n)
+                text = self.design["v%d" % n]      # the last good value while typing
+                style.add_class("error")
+            else:
+                style.remove_class("error")
+            values["v%d" % n] = text
         self.bad_k = []
         for n in range(1, gc.STAGES + 1):
             text = self.stage_k[n].get_text().strip()
             k = gc.parse_k(text)
+            if values["entry"] == "chuck":
+                k = k if k is not None else 0       # set from the chuck settings - not read
             if k is None:
                 # Keep the last good value while this one is being typed.
                 self.bad_k.append(n)
@@ -655,15 +750,42 @@ class DesignerWindow(Gtk.Window):
         self.axes_area.queue_draw()
         self._save_last_design()
 
+    def _on_entry_toggled(self, widget):
+        """Chuck settings <-> stages: the pattern stays the same where it can."""
+        if self.loading or not widget.get_active():
+            return
+        entry = self._chosen(self.entry)
+        design = dict(self.design)
+        if entry == "chuck":
+            chuck = gc.stages_to_chuck(design)
+            if chuck is None:
+                answer = self._message(
+                    Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL,
+                    "A two-part chuck can't make these stages",
+                    "They need more than three circles, a first circle not at k 1, or the first two "
+                    "set at different phases. The chuck settings shown will replace them.")
+                if answer != Gtk.ResponseType.OK:
+                    self.loading = True
+                    self.entry["stages"].set_active(True)
+                    self.loading = False
+                    return
+            else:
+                design.update(chuck)
+        design["entry"] = entry
+        self.design = gc.clean_design(design)
+        self._put_design_in_form()
+        self._changed()
+
     def _on_bazley(self, widget):
-        """Fills in the stages for the Bazley figure in the number box."""
+        """Fills in the chuck settings for the Bazley figure in the number box."""
         self.bazley_figure.update()
+        self.bazley_size.update()
         figure = int(self.bazley_figure.get_value())
-        values = gc.bazley_design(figure, self.units)
+        values = gc.bazley_design(figure, self.bazley_size.get_value())
         if values is None:
-            self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Figure %d isn't in the index yet" % figure,
-                          "Bazley's figures are being added a table page at a time; so far the index has "
-                          "figures %d to %d." % (min(gc.bazley_index()), max(gc.bazley_index())))
+            self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "There is no figure %d" % figure,
+                          "Roy Lindley's catalogue has Bazley's figures 1 to 200 and 220 to 3454, and "
+                          "simple rose patterns 3501 to 3554.")
             return
         self.design = gc.clean_design(dict(self.design, **values))
         self._put_design_in_form()
@@ -673,14 +795,8 @@ class DesignerWindow(Gtk.Window):
         chosen = widget.get_active_id()
         if not chosen:
             return
-        _, preset = gc.PRESETS[int(chosen)]
         scale = 1.0 if self.units == "inch" else 25.4
-        design = dict(self.design)
-        for n in range(1, gc.STAGES + 1):
-            design["r%d" % n], design["k%d" % n], design["phase%d" % n] = 0.0, "0", 0.0
-        for key, value in preset.items():
-            design[key] = value * scale if key[0] == "r" else value
-        self.design = gc.clean_design(design)
+        self.design = gc.apply_preset(self.design, int(chosen), scale)
         self._put_design_in_form()
         self.loading = True
         widget.set_active_id("")        # back to "Choose a preset..."
@@ -706,7 +822,7 @@ class DesignerWindow(Gtk.Window):
         unit = "in" if self.units == "inch" else "mm"
         warnings = []
         if len(gc.stages(d)) == 0:
-            self.info.set_markup('<span foreground="#c06000"><b>Note:</b> every stage\'s r is 0 - '
+            self.info.set_markup('<span foreground="#c06000"><b>Note:</b> every circle\'s radius is 0 - '
                                  'there is no pattern.</span>')
             return
         path = self._path()
@@ -717,10 +833,10 @@ class DesignerWindow(Gtk.Window):
             total += gc.pattern_time(d, speed, x_limit, c_limit, path)[0]
         seconds, nominal = gc.pattern_time(d, None, x_limit, c_limit, path)
         sym = info["symmetry"]
-        text = ("%s symmetry; closes after %d turn%s of the work.  Largest radius %s %s, smallest %s %s.  "
+        text = ("%s symmetry; one pattern turns C %d time%s.  Largest radius %s %s, smallest %s %s.  "
                 "%d points.  One pattern takes about %s; the whole program about %s."
-                % ("%d-fold" % sym if sym > 1 else "No rotational", info["turns"],
-                   "" if info["turns"] == 1 else "s",
+                % ("%d-fold" % sym if sym > 1 else "No rotational", info["c_turns"],
+                   "" if info["c_turns"] == 1 else "s",
                    self._number(info["largest"]), unit, self._number(info["smallest"]), unit,
                    info["points"], self._duration(seconds / 60.0), self._duration(total / 60.0)))
         if d["depth_mode"] == "passes":
@@ -741,7 +857,10 @@ class DesignerWindow(Gtk.Window):
                          "%s %s %s" % (axis, self._number(abs(gc.rr.advance(d, axis))), unit)
                          for axis in advancing))
 
-        if self.bad_k:
+        if self.bad_v:
+            warnings.append("V%s isn't a number (e.g. -5 or 7/3) - the last good value is used."
+                            % " and V".join(str(n) for n in self.bad_v))
+        if self.bad_k and d["entry"] == "stages":
             warnings.append("Stage %s's k isn't a number (e.g. 6, -4 or 7/3) - the last good value is used."
                             % " and ".join(str(n) for n in self.bad_k))
         if info["past_centre"] > 1e-9:
