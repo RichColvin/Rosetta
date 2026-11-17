@@ -47,6 +47,9 @@
 #   1.0 - 17 November 2026
 #   1.1 - 17 November 2026 - Check Circle button: saves a program that
 #         draws a circle round C's axis, to set the start radius (Rich)
+#   1.2 - 17 November 2026 - Bazley figure: fills in the stages for a
+#         figure from Bazley's Index to the Geometric Chuck (the pilot,
+#         figures 666-716)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -382,6 +385,25 @@ class DesignerWindow(Gtk.Window):
         self.preset.set_halign(Gtk.Align.START)
         row = self._row(grid, row, "Presets", self.preset,
                         "Fills in the stages for a classic pattern (in inches: scaled for mm).")
+        # Bazley's figures (rosetta_geochuck.bazley_design): a number and
+        # a button, so typing a number doesn't change the stages by itself.
+        figures = sorted(gc.bazley_index())
+        bazley_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.bazley_figure = Gtk.SpinButton.new_with_range(figures[0] if figures else 1,
+                                                            figures[-1] if figures else 1, 1)
+        self.bazley_figure.set_digits(0)
+        self.bazley_figure.set_numeric(True)
+        self.bazley_figure.set_width_chars(6)
+        self.bazley_figure.connect("activate", self._on_bazley)
+        fill = Gtk.Button(label="Fill in")
+        fill.connect("clicked", self._on_bazley)
+        bazley_box.pack_start(self.bazley_figure, False, False, 0)
+        bazley_box.pack_start(fill, False, False, 0)
+        bazley_box.pack_start(Gtk.Label(label="figures %d-%d so far" % (figures[0], figures[-1])
+                                        if figures else "none yet"), False, False, 0)
+        row = self._row(grid, row, "Bazley figure", bazley_box,
+                        "Fills in the stages for a numbered figure from T. S. Bazley's Index to the "
+                        "Geometric Chuck (1875), at his size.")
 
         row = self._section(grid, row, "Movement")
         self.cutting_speed = self._spin(*ranges["cutting_speed"])
@@ -558,6 +580,8 @@ class DesignerWindow(Gtk.Window):
             self.stage_r[n].set_value(d["r%d" % n])
             self.stage_k[n].set_text(d["k%d" % n])
             self.stage_phase[n].set_value(d["phase%d" % n])
+        if d["bazley_figure"]:
+            self.bazley_figure.set_value(d["bazley_figure"])
         self.cutting_speed.set_value(d["cutting_speed"])
         self.c_direction[d["c_direction"]].set_active(True)
         (self.mode_passes if d["depth_mode"] == "passes" else self.mode_turns).set_active(True)
@@ -592,6 +616,7 @@ class DesignerWindow(Gtk.Window):
             "turns": int(self.turns.get_value()),
             "deeper_plus": self.deeper_plus.get_active(),
             "units": self.units,
+            "bazley_figure": self.design["bazley_figure"],   # dropped by clean_design if the stages changed
         }
         self.bad_k = []
         for n in range(1, gc.STAGES + 1):
@@ -629,6 +654,20 @@ class DesignerWindow(Gtk.Window):
         self.pattern_area.queue_draw()
         self.axes_area.queue_draw()
         self._save_last_design()
+
+    def _on_bazley(self, widget):
+        """Fills in the stages for the Bazley figure in the number box."""
+        self.bazley_figure.update()
+        figure = int(self.bazley_figure.get_value())
+        values = gc.bazley_design(figure, self.units)
+        if values is None:
+            self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Figure %d isn't in the index yet" % figure,
+                          "Bazley's figures are being added a table page at a time; so far the index has "
+                          "figures %d to %d." % (min(gc.bazley_index()), max(gc.bazley_index())))
+            return
+        self.design = gc.clean_design(dict(self.design, **values))
+        self._put_design_in_form()
+        self._changed()
 
     def _on_preset(self, widget):
         chosen = widget.get_active_id()
@@ -686,6 +725,9 @@ class DesignerWindow(Gtk.Window):
                    info["points"], self._duration(seconds / 60.0), self._duration(total / 60.0)))
         if d["depth_mode"] == "passes":
             text += "  Final depth %s %s." % (self._number(d["passes"] * d["depth_per_pass"]), unit)
+        if d["bazley_figure"]:
+            text += "\n<b>Bazley's figure %d</b>: %s." % (d["bazley_figure"], GLib.markup_escape_text(
+                gc.bazley_settings_text(d["bazley_figure"])))
         text += ("\nStart the cutter at radius %s %s from the centre of C - the dot on the drawing; "
                  "index C first to turn the pattern on the work." % (self._number(info["start_radius"]), unit))
         x_advance = gc.rr.advance(d, "X")

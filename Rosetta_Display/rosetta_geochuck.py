@@ -60,6 +60,9 @@
 #
 # Version
 #   1.0 - 17 November 2026
+#   1.1 - 17 November 2026 - Bazley's figures: bazley_design fills in
+#         the stages for a figure in Bazley_Index.csv (the pilot, table
+#         page 71, figures 666-716)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -140,6 +143,7 @@ DEFAULT_DESIGN = {
     "advance_z_dir": "headstock",
     "surface": "face",          # always - for the shared advance helpers
     "units": "inch",
+    "bazley_figure": 0,         # the Bazley figure the stages came from (0 = none)
 }
 
 # Presets: (name, {stage settings}) - each a classic figure.
@@ -205,6 +209,8 @@ def clean_design(design):
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
+    if d["bazley_figure"] and not bazley_matches(d):
+        d["bazley_figure"] = 0      # the stages have been changed since
     return d
 
 
@@ -390,7 +396,115 @@ PROGRAM_MARK = "(Geometric Chuck Designer - "
 name_is_reserved = rr.name_is_reserved
 
 
+#######################################################################
+# Bazley's figures (17 November 2026, Rich): T. S. Bazley, "Index to the
+# Geometric Chuck" (1875, public domain) gives, for over 3,000 numbered
+# figures, the settings of a two-part geometric chuck that cut them.
+# Bazley_Index.csv holds those transcribed so far (see its header); this
+# turns a figure's settings into the Designer's stages.
+#
+# The chuck, in Bazley's terms (worked out from his Chapters I-III in
+# the Mac session of 16 November 2026): Part I's train value V1 (a gear
+# ratio), "in" (an odd number of arbors, s = +1) or "out" (even, s = -1),
+# makes its front wheel turn w1 = 1 + s1/V1 times per turn of the mandrel;
+# Part II on top of it turns w2 = w1 + s1 s2 / (V1 V2). In the work's
+# frame the point cut is
+#     SR e^(-i w2 t) - Ex1 e^(i(1 - w2) t) - Ex2 e^(i(w1 - w2) t)
+# with SR the tool's distance from the axis and Ex1, Ex2 the two
+# eccentric slides, all in hundredths of an inch - three stages. A pair
+# of companion figures differs by Part I set half a turn apart (Ex1's
+# phase 180 or 0); which is which is in the file, matched to the plates.
+# Checked against his plates for figures 666-716.
+#######################################################################
+BAZLEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Bazley_Index.csv")
+_bazley = None
+
+
+def bazley_index():
+    """{figure: row} from Bazley_Index.csv (empty if it can't be read)."""
+    global _bazley
+    if _bazley is None:
+        _bazley = {}
+        try:
+            with open(BAZLEY_PATH) as f:
+                lines = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+            header = lines[0].split(",")
+            for line in lines[1:]:
+                row = dict(zip(header, line.split(",")))
+                _bazley[int(row["figure"])] = row
+        except (OSError, IndexError, KeyError, ValueError) as e:
+            print("Could not read %s: %s" % (BAZLEY_PATH, e))
+    return _bazley
+
+
+def _train(text):
+    """"2in" -> (2, +1), "9out" -> (9, -1)."""
+    text = text.strip().lower()
+    if text.endswith("in"):
+        return Fraction(text[:-2]), 1
+    return Fraction(text[:-3]), -1
+
+
+def bazley_stage_values(row):
+    """[(r in hundredths of an inch, k, phase in degrees)] for a figure's row."""
+    v1, s1 = _train(row["v1"])
+    v2, s2 = _train(row["v2"])
+    w1 = 1 + Fraction(s1) / v1
+    w2 = w1 + Fraction(s1 * s2) / (v1 * v2)
+    found = [(float(row["sr"]), -w2, 0.0), (float(row["ex1"]), 1 - w2, float(row["ex1_phase"])),
+             (float(row["ex2"]), w1 - w2, 180.0)]
+    return [stage for stage in found if stage[0] > 0]
+
+
+def bazley_design(figure, units):
+    """The stage settings (r1..r5, k1..k5, phase1..phase5, bazley_figure)
+    for Bazley's figure, in units ("inch" or "mm"); None if not in the index."""
+    row = bazley_index().get(int(figure))
+    if row is None:
+        return None
+    scale = 0.01 if units == "inch" else 0.254       # hundredths of an inch
+    values = {"bazley_figure": int(figure)}
+    for n in range(1, STAGES + 1):
+        values.update({"r%d" % n: 0.0, "k%d" % n: "0", "phase%d" % n: 0.0})
+    for n, (r, k, phase) in enumerate(bazley_stage_values(row), 1):
+        values.update({"r%d" % n: r * scale, "k%d" % n: str(k), "phase%d" % n: phase})
+    return values
+
+
+def bazley_matches(design):
+    """True if the design's stages are still those of its Bazley figure."""
+    wanted = bazley_design(design["bazley_figure"], design["units"])
+    if wanted is None:
+        return False
+    for n in range(1, STAGES + 1):
+        if abs(design["r%d" % n] - wanted["r%d" % n]) > 1e-6 or \
+                abs((design["phase%d" % n] - wanted["phase%d" % n] + 180.0) % 360.0 - 180.0) > 1e-6 or \
+                (design["r%d" % n] > 0 and parse_k(design["k%d" % n]) != parse_k(wanted["k%d" % n])):
+            return False
+    return True
+
+
+def bazley_settings_text(figure):
+    """Bazley's own settings for a figure, for the note under the drawings."""
+    row = bazley_index().get(int(figure))
+    if row is None:
+        return ""
+    def train(text):
+        v, s = _train(text)
+        return "%s %s" % (v, "in" if s > 0 else "out")
+    # Its companion: a neighbouring figure with the same trains and slides.
+    same = ("v1", "v2", "ex1", "ex2")
+    companion = [n for n in (int(figure) - 1, int(figure) + 1)
+                 if n in bazley_index() and all(bazley_index()[n][key] == row[key] for key in same)]
+    return ("V1 %s, V2 %s, Ex1 %s, Ex2 %s, S.R. %s (hundredths of an inch)%s - settings on page %s "
+            "of his book"
+            % (train(row["v1"]), train(row["v2"]), row["ex1"], row["ex2"], row["sr"],
+               "; companion of figure %d" % companion[0] if companion else "", row["table_page"]))
+
+
 def describe(design):
+    if design.get("bazley_figure"):
+        return "Bazley figure %d" % design["bazley_figure"]
     found = stages(design)
     if len(found) < 2:
         return "a circle"
@@ -402,6 +516,8 @@ def describe(design):
 
 
 def default_file_name(design):
+    if design.get("bazley_figure"):
+        return FILE_NAME_PREFIX + "Bazley%d_face.ngc" % design["bazley_figure"]
     found = stages(design)
     sym = symmetry(design)
     parts = ["%dfold" % sym if sym > 1 else ("Circle" if len(found) < 2 else "Pattern")]
@@ -566,6 +682,15 @@ def write_samples(folder):
                     with open(os.path.join(folder, file_name), "w") as f:
                         f.write(gcode(d))
                     written.append(file_name)
+        # Some of Bazley's figures (8, 12 and 18 turns to close).
+        for figure in (666, 694, 714, 716):
+            d = dict(DEFAULT_DESIGN, units=units, cutting_speed=2.0 * scale,
+                     depth_per_pass=0.005 * scale, plunge_feed=1.0 * scale)
+            d.update(bazley_design(figure, units))
+            file_name = "bazley%d_%s.ngc" % (figure, units)
+            with open(os.path.join(folder, file_name), "w") as f:
+                f.write(gcode(d))
+            written.append(file_name)
     return written
 
 

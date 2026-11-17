@@ -1,0 +1,70 @@
+# Bazley figure index for Rosetta's Geometric Chuck Designer (rosetta_geochuck.py).
+#
+# Source: T. S. Bazley, "Index to the Geometric Chuck" (London, 1875; public
+# domain), Chapter III's table of settings for the two-part geometric chuck,
+# read from the page images at https://archive.org/details/indextogeometri00bazlgoog.
+#
+# figure  - Bazley's figure number
+# v1, v2  - Part I's and Part II's train values: number, then in (odd number of
+#           arbors) or out (even) - e.g. 2in, 4out
+# ex1, ex2 - Part I's and Part II's eccentric slides, hundredths of an inch
+# sr      - the slide rest: the tool's distance from the mandrel axis, hundredths
+# ex1_phase - 180 or 0: which of a pair of companion figures (Part I set a half
+#           turn apart). Bazley doesn't say which he lists first, so each was
+#           matched to his plate (the plate measured against both, 17 November
+#           2026; 693 and 709, whose plates are damaged, by eye).
+# table_page - the book page of the settings; plate - the PDF page of the drawing
+#
+# Pilot, 17 November 2026: table page 71, figures 666-716.
+figure,v1,v2,ex1,ex2,sr,ex1_phase,table_page,plate
+666,2in,4out,10,50,9,0,71,302
+667,2in,4out,10,50,9,180,71,302
+668,2in,4out,20,40,9,180,71,303
+669,2in,4out,20,40,9,0,71,303
+670,2in,4out,30,30,8,0,71,303
+671,2in,4out,30,30,8,180,71,303
+672,2in,4out,30,30,15,0,71,303
+673,2in,4out,30,30,15,180,71,303
+674,2in,4out,40,20,15,0,71,303
+675,2in,4out,40,20,15,180,71,303
+676,2in,4out,50,10,15,180,71,304
+677,2in,4out,50,10,15,0,71,304
+678,2in,4in,10,50,10,0,71,304
+679,2in,4in,10,50,12,180,71,304
+680,2in,4in,20,40,12,180,71,304
+681,2in,4in,20,40,12,0,71,304
+682,2in,4in,30,30,12,180,71,304
+683,2in,4in,30,30,10,0,71,304
+684,2in,4in,40,20,15,0,71,305
+685,2in,4in,40,20,15,180,71,305
+686,2in,4in,50,10,13,180,71,305
+687,2in,4in,50,10,13,0,71,305
+688,2in,6out,10,50,13,0,71,305
+689,2in,6out,10,50,13,180,71,305
+690,2in,6out,20,40,13,180,71,305
+691,2in,6out,20,40,13,0,71,305
+692,2in,6out,30,30,10,0,71,306
+693,2in,6out,30,30,10,180,71,306
+694,2in,6out,40,20,8,0,71,306
+695,2in,6out,40,20,10,180,71,306
+696,2in,6out,50,10,12,0,71,306
+697,2in,6out,50,10,12,180,71,306
+698,2in,6in,10,50,10,0,71,306
+699,2in,6in,10,50,10,180,71,306
+700,2in,6in,20,40,15,180,71,307
+701,2in,6in,20,40,15,0,71,307
+702,2in,6in,30,30,14,0,71,307
+703,2in,6in,30,30,16,180,71,307
+704,2in,6in,40,20,10,0,71,307
+705,2in,6in,40,20,10,180,71,307
+706,2in,6in,50,10,15,0,71,307
+707,2in,6in,50,10,15,180,71,307
+708,2in,9out,10,50,8,0,71,308
+709,2in,9out,10,50,8,180,71,308
+710,2in,9out,20,40,15,0,71,308
+711,2in,9out,20,40,15,180,71,308
+712,2in,9out,30,30,11,180,71,308
+713,2in,9out,30,30,11,0,71,308
+714,2in,9out,40,20,11,180,71,308
+715,2in,9out,50,10,15,0,71,308
+716,2in,9out,50,10,14,180,71,309
