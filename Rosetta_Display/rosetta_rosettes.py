@@ -108,6 +108,9 @@
 #   1.16 - 17 November 2026 - start_radius on an ellipse allows for
 #         the waves' depth at the start, so they're cut in from the
 #         ellipse (they went out past it - Rich's paper chuck)
+#   1.17 - 17 November 2026 - check_circle_gcode: a program that turns
+#         C once to draw a circle round the axis, for setting the start
+#         radius (Rich - used by both Designers)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1248,6 +1251,72 @@ def gcode(design):
         "o200 if [#<_rd_diameter> EQ 1]",
         "  G7",
         "o200 endif",
+        "M2",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+#######################################################################
+# Check circle (17 November 2026, Rich): the programs move the cutter
+# from wherever it is put, so the start radius - measured from C's
+# axis - sets the pattern's size and shape. That's hard to measure on
+# a machine whose headstock moves, so this program turns C once with X
+# and Z still: the cutter draws a circle round the true axis, whose
+# diameter is twice the cutter's radius. Shared by the Rosette
+# Designer and the Geometric Chuck Designer.
+#######################################################################
+CHECK_CIRCLE_PREFIX = "Check-Circle_"
+
+
+def check_circle_file_name(radius, units):
+    """e.g. Check-Circle_3.000in.ngc - named by the diameter it should be."""
+    if units == "inch":
+        return "%s%.3fin.ngc" % (CHECK_CIRCLE_PREFIX, 2.0 * radius)
+    return "%s%.1fmm.ngc" % (CHECK_CIRCLE_PREFIX, 2.0 * radius)
+
+
+def check_circle_size(radius, units):
+    """The circle's diameter as text, e.g. "3.000 in"."""
+    return ("%.3f in" if units == "inch" else "%.2f mm") % (2.0 * radius)
+
+
+def check_circle_advance_text(x_advance, units):
+    """What to do after the circle when there's an X advance, or ""."""
+    if abs(x_advance) < 1e-12:
+        return ""
+    return ("Then move X %s by %s - the X advance - before running the pattern."
+            % ("out" if x_advance < 0 else "in",
+               ("%.3f in" if units == "inch" else "%.2f mm") % abs(x_advance)))
+
+
+def check_circle_gcode(radius, units, c_deg_per_min, made_by, x_advance=0.0, c_direction=1):
+    """
+    The check circle program for a start radius (machine units): turns
+    C once from where it is, at c_deg_per_min, nothing else moving.
+    x_advance (signed, as advance()): the cutter is put clear by that
+    much after the circle is right, so the program says so.
+    """
+    size = check_circle_size(radius, units)
+    then = check_circle_advance_text(x_advance, units)
+    message = ("Check circle: it should be %s across. Smaller - move X out by half the "
+               "difference; bigger - move X in. Draw it again to check." % size)
+    lines = [
+        "(Check circle - %s - %s)" % (made_by, time.strftime("%d %B %Y")),
+        "(Turns C once with X and Z still, so the cutter draws a circle round C's axis.)",
+        "(Put the cutter just touching the work where the pattern's cut will start.)",
+        "(The circle should be %s across - twice the start radius, %s.)"
+        % (size, ("%.4f in" if units == "inch" else "%.3f mm") % radius),
+        "(Smaller - move X out by half the difference; bigger - move X in. Draw it again.)",
+    ]
+    if then:
+        lines.append("(%s)" % then)
+    lines += [
+        "",
+        "(MSG,%s)" % (message + (" " + then if then else "")),
+        "G90 G94",
+        "G1 C[#5425%s] F%s" % (_signed(360.0 * (1 if c_direction >= 0 else -1)),
+                               _num(max(min(c_deg_per_min, 7200.0), 36.0))),
         "M2",
         "",
     ]

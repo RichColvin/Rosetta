@@ -99,6 +99,9 @@
 #   1.21 - 17 November 2026 - notes: the ellipse is cut relative to
 #         where the cutter starts, like a physical rosette (Rich chose
 #         to keep it so)
+#   1.22 - 17 November 2026 - Check Circle button: saves a program
+#         that draws a circle round C's axis, to set the start radius
+#         (Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -167,6 +170,11 @@ SERIAL_PATH = os.path.expanduser("~/.config/Rosetta/serial")
 TITLE_COLOUR = "#1a5fb4"
 VERSION_COLOUR = "#c01c28"
 LAST_DESIGN_PATH = os.path.expanduser("~/.config/Rosetta/rosette_designer.json")
+# The check circle (_on_check_circle).
+MADE_BY = "Rosette Designer"
+NO_CHECK_CIRCLE = ("The check circle sets where the cutter starts for a rocking rosette (X) on the face. "
+                   "With pumping alone, or cutting on the side, the start radius doesn't change the "
+                   "pattern, so there's nothing to check.")
 # Held (flock) by the copy that's open, with its process id - see
 # _take_single_instance_lock.
 LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
@@ -562,7 +570,10 @@ class DesignerWindow(Gtk.Window):
         for label, handler, tip in (
                 ("New", self._on_new, "Start again from the standard design."),
                 ("Open...", self._on_open, "Open a program saved by the Rosette Designer, to change it."),
-                ("Save G-code...", self._on_save, "Save this rosette as a G-code program in the gcode folder.")):
+                ("Save G-code...", self._on_save, "Save this rosette as a G-code program in the gcode folder."),
+                ("Check Circle...", self._on_check_circle,
+                 "Save a program that turns C once, so the cutter draws a circle round C's axis - "
+                 "its diameter shows whether the cutter is at the start radius.")):
             button = Gtk.Button(label=label)
             button.set_tooltip_text(tip)
             button.connect("clicked", handler)
@@ -1361,6 +1372,53 @@ class DesignerWindow(Gtk.Window):
             self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Program saved",
                           "Saved as %s in the gcode folder. Open it in Rosetta, put the cutter where "
                           "the pattern should be cut, then run it." % os.path.basename(path))
+
+    def _on_check_circle(self, widget):
+        """Saves (and offers to open) a program that turns C once to draw
+        a circle round C's axis, for setting the start radius - see
+        rosetta_rosettes.check_circle_gcode (Rich, 17 November 2026)."""
+        self._commit_typing()
+        self._changed()
+        radius, x_advance, deg_per_min = self._check_circle_values()
+        if radius is None or radius <= 0:
+            self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "No check circle for this design",
+                          NO_CHECK_CIRCLE)
+            return
+        units = self.design["units"]
+        name = rr.check_circle_file_name(radius, units)
+        path = os.path.join(GCODE_DIR, name)
+        try:
+            os.makedirs(GCODE_DIR, exist_ok=True)
+            with open(path, "w") as f:
+                f.write(rr.check_circle_gcode(radius, units, deg_per_min, MADE_BY, x_advance,
+                                              self.design["c_direction"]))
+        except OSError as e:
+            self._message(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, "Could not save the check circle", str(e))
+            return
+        then = rr.check_circle_advance_text(x_advance, units)
+        detail = ("Saved as %s in the gcode folder. Put the cutter just touching the work where the "
+                  "cut will start and run it: C turns once and the cutter draws a circle round C's "
+                  "axis. It should be %s across. If it's smaller, move X out by half the difference; "
+                  "if bigger, move X in - then draw it again to check.%s"
+                  % (name, rr.check_circle_size(radius, units), (" " + then) if then else ""))
+        if _linuxcnc_running():
+            if self._message(Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, "Check circle saved",
+                             detail + "\n\nOpen it in Rosetta now?") == Gtk.ResponseType.YES:
+                try:
+                    subprocess.run(["axis-remote", path], timeout=10, capture_output=True)
+                except (OSError, subprocess.SubprocessError) as e:
+                    print("axis-remote failed: " + str(e))
+        else:
+            self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Check circle saved",
+                          detail + " Open it in Rosetta with File > Open.")
+
+    def _check_circle_values(self):
+        """(start radius, X advance, C deg/min) - radius None unless X
+        rocks on the face, where the start radius matters."""
+        d = self.design
+        if d["surface"] != "face" or "X" not in rr.rosettes(d):
+            return None, 0.0, 0.0
+        return rr.start_radius(d), rr.advance(d, "X"), d["c_rpm"] * 360.0
 
     def _on_close(self, widget, event):
         self._commit_typing()
