@@ -96,6 +96,9 @@
 #         Cutter"
 #   1.20 - 17 November 2026 - on an ellipse, the start radius allows
 #         for the waves' depth at the start (Rich's paper chuck)
+#   1.21 - 17 November 2026 - notes: the ellipse is cut relative to
+#         where the cutter starts, like a physical rosette (Rich chose
+#         to keep it so)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -218,6 +221,10 @@ NOTES = (
      "ellipse 4 long and 2 wide has A = 2, B = 1. Start the cutter at radius A from the centre and the "
      "cut is that ellipse exactly, its length along the line the cutter starts on. The note under "
      "the drawings gives its length, width and the distance between its foci.\n\n"
+     "The program moves the cutter from wherever it is put, by the same amounts at any radius - as "
+     "a physical ellipse rosette does - so the length always comes out 2 x (A - B) more than the "
+     "width. Started further out, the cut is rounder; further in, longer and narrower, and then a "
+     "peanut and a figure 8. Only started where the note says is it exactly A by B.\n\n"
      "With an Ellipse, a second rocking rosette rides on it, in the column beside it (None leaves "
      "the plain ellipse): its waves are cut in from the ellipse by its Amplitude - start the cutter "
      "where the note under the drawings says, which is A less the waves' depth where the cut starts "
@@ -1023,6 +1030,8 @@ class DesignerWindow(Gtk.Window):
                      % (where, self._number(length), unit,
                         self._number(width), unit, self._number(foci), unit,
                         ", with the waves cut in from it" if d["wrap_shape"] != "none" else ""))
+            text += (" Started elsewhere, its length is still %s %s more than its width - "
+                     "rounder further out, narrower further in." % (self._number(length - width), unit))
             if rr.advance(d, "X"):
                 text += " Allow for the X advance: put it at radius %s %s." % (
                     self._number(rr.cutter_start_radius(d)), unit)
