@@ -95,6 +95,12 @@
 #         "pump_ratio"), always 2 lobes; ellipse_amplitude makes the cut
 #         an exact ellipse at a radius, ellipse_axes gives its size and
 #         foci
+#   1.14 - 17 November 2026 - Ellipse set by its half-length a and
+#         half-width b (Rich, from his Desmos graph), always an exact
+#         ellipse with the cutter started at radius a; any shape can
+#         ride on an ellipse ("on_ellipse"), its lobes spaced evenly
+#         along the ellipse's outline (Rich). "ratio"/"pump_ratio" and
+#         ellipse_amplitude are gone; the Ellipse is for rocking only
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -366,25 +372,68 @@ def _tudor_barb_meets_petal(repeats):
     return 0.5 * (low + high)
 
 
-# Ellipse (16 November 2026, Rich; the geometry of an ellipse, as on the
-# MDF Rose Engine's Ellipse page, colvintools.com - a smooth rosette made
-# for one target size, sharper at the ends on smaller work and flatter
-# on larger, pinching to a peanut and a figure 8 as the radius shrinks).
-# Two repeats a turn, each half a turn from one end of the long axis to
-# the other. The shape is set by the ratio of width to length (b / a);
-# at the Object Size radius the cut is an exact ellipse when the
-# amplitude is ellipse_amplitude's (the "True ellipse" button).
-ELLIPSE_RATIO_RANGE = (0.2, 0.98)
+# Ellipse (16 November 2026; set by a and b since 17 November 2026 -
+# Rich, from his Desmos graph of x^2/a^2 + y^2/b^2 = 1): the geometry of
+# an ellipse, r = a b / sqrt((b cos)^2 + (a sin)^2) at spindle angle
+# theta, a = half its length (along the start, theta 0), b = half its
+# width. Rocking only: X follows r exactly, so with the cutter started
+# at radius a the cut is that ellipse, at any size. The Ellipse shape is
+# the plain ellipse; any other shape can ride on one ("on_ellipse"),
+# its waves added to r (towards the centre), and its lobes spaced
+# evenly along the ellipse's outline rather than by spindle angle
+# (Rich, 17 November 2026) - on a long ellipse, even angles would crowd
+# them along the sides.
+_OUTLINE_GRID = numpy.linspace(0.0, 360.0, 7201)
 
 
-def _ellipse(t, ratio):
-    # Distance from the centre of an ellipse with a = 1, b = ratio, at
-    # angle pi t from the long axis: r = a b / sqrt((b cos)^2 + (a sin)^2);
-    # as deflection, 0 at the ends of the long axis, 1 across the short.
-    theta = math.pi * numpy.asarray(t, dtype=float)
-    k = ratio
-    r = k / numpy.sqrt((k * numpy.cos(theta)) ** 2 + numpy.sin(theta) ** 2)
-    return (1.0 - r) / (1.0 - k)
+def ellipse_radius(base, theta_deg):
+    '''The ellipse base = (a, b)'s distance from its centre at spindle
+    angles theta_deg (degrees from the end of a).'''
+    a, b = base
+    theta = numpy.radians(numpy.asarray(theta_deg, dtype=float))
+    return a * b / numpy.sqrt((b * numpy.cos(theta)) ** 2 + (a * numpy.sin(theta)) ** 2)
+
+
+_outline_tables = {}
+
+
+def _outline_table(base):
+    # The fraction of the outline's length from theta 0 to each angle of
+    # _OUTLINE_GRID (straight pieces 0.05 degrees long - far closer than
+    # the chord tolerance).
+    table = _outline_tables.get(base)
+    if table is None:
+        r = ellipse_radius(base, _OUTLINE_GRID)
+        angles = numpy.radians(_OUTLINE_GRID)
+        x, y = r * numpy.cos(angles), r * numpy.sin(angles)
+        length = numpy.concatenate(([0.0], numpy.cumsum(numpy.hypot(numpy.diff(x), numpy.diff(y)))))
+        table = length / length[-1]
+        if len(_outline_tables) > 50:
+            _outline_tables.clear()
+        _outline_tables[base] = table
+    return table
+
+
+def outline_fraction(base, theta_deg):
+    '''How far round the ellipse's outline (turns, 1 = the whole
+    outline) the cutter is at spindle angles theta_deg.'''
+    theta = numpy.asarray(theta_deg, dtype=float)
+    turns = numpy.floor(theta / 360.0)
+    return turns + numpy.interp(theta - 360.0 * turns, _OUTLINE_GRID, _outline_table(base))
+
+
+def outline_angle(base, fraction):
+    '''The spindle angle (degrees) that far round the outline - the
+    reverse of outline_fraction.'''
+    fraction = numpy.asarray(fraction, dtype=float)
+    turns = numpy.floor(fraction)
+    return 360.0 * turns + numpy.interp(fraction - turns, _outline_table(base), _OUTLINE_GRID)
+
+
+def ellipse_axes(base):
+    '''(length, width, distance between the foci) of the ellipse.'''
+    a, b = base
+    return 2.0 * a, 2.0 * b, 2.0 * math.sqrt(abs(a * a - b * b))
 
 
 def _tudor(t, repeats, count):
@@ -513,8 +562,8 @@ SHAPES = {
     "polygon": ("Plain polygon", "Polygon", _polygon, 1),
     "lotus": ("Lotus", "Lotus", _lotus, 1),
     "tudor": ("Tudor", "Tudor", _tudor, 1),
-    # The function is a stand-in - profile() calls _ellipse with the
-    # rosette's ratio. Always 2 lobes (fit_lobes).
+    # The plain ellipse: no waves of its own (profile() gives 0) - the
+    # ellipse itself is added in offset(). Always 2 lobes (fit_lobes).
     "ellipse": ("Ellipse", "Ellipse", None, 1),
 }
 SHAPE_IDS = tuple(SHAPES)
@@ -543,7 +592,7 @@ def repeats(ros):
 def profile(ros, t):
     '''The shape over one repeat, t = 0..1 (numpy array), 0..1.'''
     if ros["shape"] == "ellipse":
-        return _ellipse(t, ros.get("ratio", DEFAULT_DESIGN["ratio"]))
+        return numpy.zeros_like(numpy.asarray(t, dtype=float))
     return SHAPES[ros["shape"]][2](numpy.asarray(t, dtype=float), repeats(ros), ros["lobes"])
 
 
@@ -594,7 +643,7 @@ def sharp_points(ros):
 # Rosetta panel before running the program. The pumping rosette's phase,
 # used with "both", is how far it's turned relative to the rocking
 # rosette - something indexing can't do, since it turns both together.
-ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert", "ratio")
+ROSETTE_KEYS = ("shape", "lobes", "amplitude", "phase", "phase_unit", "invert")
 SECOND = "pump_"
 
 DEFAULT_DESIGN = {
@@ -604,14 +653,15 @@ DEFAULT_DESIGN = {
     "phase": 0.0,               # fraction of a repeat - always 0 (see above)
     "phase_unit": "lobe",       # how the window shows it: "lobe" or "deg"
     "invert": False,
-    "ratio": 0.75,              # Ellipse only: width / length
+    "on_ellipse": False,        # the first rosette's waves ride on an ellipse (rocking only)
+    "ellipse_a": 1.0,           # the Ellipse / on_ellipse: half its length (machine units)
+    "ellipse_b": 0.75,          # half its width
     "pump_shape": "sine",       # the pumping rosette, when motion is "both"
     "pump_lobes": 12,
     "pump_amplitude": 0.02,
     "pump_phase": 0.0,
     "pump_phase_unit": "lobe",
     "pump_invert": False,
-    "pump_ratio": 0.75,
     "motion": "rock",           # "rock" (X), "pump" (Z) or "both"
     "surface": "face",          # "face" or "side"
     "rubber": "point",          # only a point so far (stage 3: round, flat)
@@ -649,6 +699,15 @@ MAX_SEGMENT_DEG = 2.0
 
 def clean_design(design):
     '''A complete design: DEFAULT_DESIGN's keys, each of the right kind.'''
+    design = dict(design or {})
+    if "ratio" in design and "ellipse_a" not in design:
+        # Saved 16 November 2026, before a and b: the exact ellipse at
+        # the Object Size radius (as its outside).
+        try:
+            a = float(design.get("preview_radius", DEFAULT_DESIGN["preview_radius"]))
+            design["ellipse_a"], design["ellipse_b"] = a, a * float(design["ratio"])
+        except (TypeError, ValueError):
+            pass
     d = dict(DEFAULT_DESIGN)
     for key, default in DEFAULT_DESIGN.items():
         value = (design or {}).get(key, default)
@@ -684,8 +743,13 @@ def clean_design(design):
     d["passes"] = min(max(d["passes"], 1), 100)
     d["turns"] = min(max(d["turns"], 1), 100)
     d["finish_pct"] = min(max(d["finish_pct"], 1.0), 100.0)
-    for prefix in ("", SECOND):
-        d[prefix + "ratio"] = min(max(d[prefix + "ratio"], ELLIPSE_RATIO_RANGE[0]), ELLIPSE_RATIO_RANGE[1])
+    if d[SECOND + "shape"] == "ellipse":
+        d[SECOND + "shape"] = DEFAULT_DESIGN[SECOND + "shape"]     # an Ellipse only rocks
+        d[SECOND + "lobes"] = fit_lobes(d[SECOND + "shape"], d[SECOND + "lobes"])
+    if d["shape"] == "ellipse":
+        d["on_ellipse"] = False     # it is the ellipse
+    for key in ("ellipse_a", "ellipse_b"):
+        d[key] = max(d[key], 1e-4)
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
@@ -731,13 +795,50 @@ def rosette(design, prefix=""):
     return {key: design[prefix + key] for key in ROSETTE_KEYS}
 
 
-def rosettes(design):
-    '''{axis: rosette} - the rosette each moving axis follows.'''
-    if design["motion"] == "rock":
-        return {"X": rosette(design)}
+def ellipse_base(design):
+    '''(a, b) of the ellipse the rocking rosette is on - the Ellipse
+    shape, or another shape with on_ellipse - or None. Rocking only.'''
     if design["motion"] == "pump":
-        return {"Z": rosette(design)}
-    return {"X": rosette(design), "Z": rosette(design, SECOND)}
+        return None
+    if design["shape"] == "ellipse" or design["on_ellipse"]:
+        return (design["ellipse_a"], design["ellipse_b"])
+    return None
+
+
+def rosettes(design):
+    '''
+    {axis: rosette} - the rosette each moving axis follows. On an
+    ellipse, X's rosette carries it ("ellipse") and every rosette is
+    spaced along its outline ("outline"), so a pumping rosette's waves
+    stay in step with the rocking one's.
+    '''
+    if design["motion"] == "rock":
+        found = {"X": rosette(design)}
+    elif design["motion"] == "pump":
+        found = {"Z": rosette(design)}
+    else:
+        found = {"X": rosette(design), "Z": rosette(design, SECOND)}
+    base = ellipse_base(design)
+    if base:
+        found["X"]["ellipse"] = base
+        for ros in found.values():
+            ros["outline"] = base
+    return found
+
+
+def _turns(ros, theta_deg):
+    '''Spindle angles as turns of the rosette: by angle, or on an
+    ellipse by how far round its outline.'''
+    if ros.get("outline"):
+        return outline_fraction(ros["outline"], theta_deg)
+    return numpy.asarray(theta_deg, dtype=float) / 360.0
+
+
+def _angles(ros, turns):
+    '''The reverse of _turns: spindle angles (degrees).'''
+    if ros.get("outline"):
+        return outline_angle(ros["outline"], turns)
+    return numpy.asarray(turns, dtype=float) * 360.0
 
 
 def deflection(ros, theta_deg):
@@ -745,7 +846,7 @@ def deflection(ros, theta_deg):
     A rosette's deflection (0..1) at spindle angles theta_deg (numpy
     array, degrees from the program's start).
     '''
-    t = numpy.mod(repeats(ros) * numpy.asarray(theta_deg, dtype=float) / 360.0 + ros["phase"], 1.0)
+    t = numpy.mod(repeats(ros) * _turns(ros, theta_deg) + ros["phase"], 1.0)
     f = profile(ros, t)
     if ros["invert"]:
         f = 1.0 - f
@@ -757,9 +858,14 @@ def offset(ros, theta_deg):
     How far a rosette moves the cutter along its axis at theta_deg,
     from where it was at the start: minus = deflection (towards the
     centre when rocking). 0 at theta 0, and again after each whole turn.
+    On an ellipse, X also follows it: r - a, so a cutter started at
+    radius a cuts the ellipse exactly, with the waves on it.
     '''
     start = deflection(ros, numpy.array([0.0]))[0]
-    return -ros["amplitude"] * (deflection(ros, theta_deg) - start)
+    y = -ros["amplitude"] * (deflection(ros, theta_deg) - start)
+    if ros.get("ellipse"):
+        y = y + ellipse_radius(ros["ellipse"], theta_deg) - ros["ellipse"][0]
+    return y
 
 
 def phase_degrees(ros):
@@ -780,25 +886,6 @@ def straight_sides_amplitude(ros, radius, radius_at="outside"):
     return radius * k if radius_at == "outside" else radius * k / (1.0 - k)
 
 
-def ellipse_amplitude(ros, radius, radius_at="outside"):
-    '''
-    The amplitude that makes the cut an exact ellipse when its outside
-    (the ends of the long axis, a) or inside (the sides, b) is at this
-    radius: amplitude = a - b, with b = ratio x a.
-    '''
-    k = ros["ratio"]
-    return radius * (1.0 - k) if radius_at == "outside" else radius * (1.0 / k - 1.0)
-
-
-def ellipse_axes(ros, radius, radius_at="outside"):
-    '''(length, width, distance between the foci) of the exact ellipse
-    at this radius - the cut, when the amplitude is ellipse_amplitude.'''
-    k = ros["ratio"]
-    a = radius if radius_at == "outside" else radius / k
-    b = a * k
-    return 2.0 * a, 2.0 * b, 2.0 * math.sqrt(a * a - b * b)
-
-
 def start_radius(design):
     '''
     The radius the cutter starts at, so that the cut's outside (largest
@@ -811,6 +898,8 @@ def start_radius(design):
     ros = rosettes(design).get("X")
     if ros is None:
         return radius
+    if ros.get("ellipse"):
+        return ros["ellipse"][0]    # radius a, the end of its length
     # Every shape's highest and lowest points are at a quarter, half or
     # whole lobe or at one of its sharp points - sampled exactly (a
     # sharp point is too narrow to find by even sampling alone).
@@ -838,16 +927,16 @@ def _sample_angles(design):
     theta = [numpy.linspace(0.0, 360.0, samples + 1)]
     for ros in ros_list:
         n = repeats(ros)
-        repeat_deg = 360.0 / n
-        near = numpy.geomspace(1e-7, 0.05, 60) * 360.0 / ros["lobes"]
+        near = numpy.geomspace(1e-7, 0.05, 60) / ros["lobes"]
         for u in sharp_points(ros):
-            # The invert of a sharp point is still sharp.
-            centres = (numpy.arange(n) + u - ros["phase"]) * repeat_deg
-            centres = numpy.mod(centres, 360.0)
-            centres = numpy.concatenate([centres, centres + 360.0])   # a point at 0 is also at 360
-            theta.append(centres)
-            theta.append((centres[:, None] + near[None, :]).ravel())
-            theta.append((centres[:, None] - near[None, :]).ravel())
+            # The invert of a sharp point is still sharp. Worked out in
+            # turns of the rosette, then as spindle angles (the same,
+            # except on an ellipse).
+            centres = numpy.mod((numpy.arange(n) + u - ros["phase"]) / n, 1.0)
+            centres = numpy.concatenate([centres, centres + 1.0])   # a point at 0 is also at 360
+            for turns in (centres, (centres[:, None] + near[None, :]).ravel(),
+                          (centres[:, None] - near[None, :]).ravel()):
+                theta.append(_angles(ros, turns))
     theta = numpy.concatenate(theta)
     return numpy.unique(numpy.clip(theta, 0.0, 360.0))
 
@@ -954,9 +1043,12 @@ def name_is_reserved(file_name):
 
 
 def _short(ros):
-    if ros["shape"] == "ellipse":
-        return "Ellipse%02d" % int(round(ros["ratio"] * 100))     # e.g. Ellipse75
-    return "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
+    ellipse = ros.get("ellipse")
+    name = "" if ros["shape"] == "ellipse" else "%s%d" % (SHAPE_SHORT[ros["shape"]], ros["lobes"])
+    if ellipse:
+        # e.g. Ellipse50 (b half of a), or HoltzD12-Ellipse50 on one
+        name += ("-" if name else "") + "Ellipse%02d" % int(round(100.0 * ellipse[1] / ellipse[0]))
+    return name or "Ellipse"        # an Ellipse that isn't rocking
 
 
 # Every suggested name starts with this, so the Designer's programs sort
@@ -967,19 +1059,21 @@ FILE_NAME_PREFIX = "Rosette-"
 
 def default_file_name(design):
     if design["motion"] == "both":
-        name = "%s_rock_%s_pump_%s.ngc" % (_short(rosette(design)), _short(rosette(design, SECOND)),
-                                           design["surface"])
+        found = rosettes(design)
+        name = "%s_rock_%s_pump_%s.ngc" % (_short(found["X"]), _short(found["Z"]), design["surface"])
     else:
-        name = "%s_%s_%s.ngc" % (_short(rosette(design)), design["motion"], design["surface"])
+        name = "%s_%s_%s.ngc" % (_short(list(rosettes(design).values())[0]), design["motion"],
+                                 design["surface"])
     return FILE_NAME_PREFIX + name
 
 
 def describe(design):
     d = design
+    found = rosettes(d)
     if d["motion"] == "both":
-        what = "%s rocking, %s pumping" % (_short(rosette(d)), _short(rosette(d, SECOND)))
+        what = "%s rocking, %s pumping" % (_short(found["X"]), _short(found["Z"]))
     else:
-        what = "%s %s" % (_short(rosette(d)), "rocking" if d["motion"] == "rock" else "pumping")
+        what = "%s %s" % (_short(list(found.values())[0]), "rocking" if d["motion"] == "rock" else "pumping")
     return "%s, %s" % (what, "face" if d["surface"] == "face" else "side")
 
 
@@ -1179,6 +1273,22 @@ def write_samples(folder):
                         with open(os.path.join(folder, name), "w") as f:
                             f.write(gcode(d))
                         written.append(name)
+        # Waves on an ellipse (a 2:1 ellipse), rocking and both.
+        for shape in ("sine", "holtz_d", "lotus"):
+            for motion in ("rock", "both"):
+                for surface in ("face", "side"):
+                    d = clean_design({
+                        "shape": shape, "lobes": SAMPLE_LOBES.get(shape, 8), "on_ellipse": True,
+                        "ellipse_a": 1.0 * scale, "ellipse_b": 0.5 * scale,
+                        "amplitude": 0.05 * scale, "depth_per_pass": 0.005 * scale,
+                        "plunge_feed": 1.0 * scale, "motion": motion, "surface": surface,
+                        "units": units, "pump_shape": "sine", "pump_lobes": 6,
+                        "pump_amplitude": 0.02 * scale, "pump_phase": 0.1,
+                    })
+                    name = "%s_on_ellipse_%s_%s_%s.ngc" % (shape, motion, surface, units)
+                    with open(os.path.join(folder, name), "w") as f:
+                        f.write(gcode(d))
+                    written.append(name)
     return written
 
 
