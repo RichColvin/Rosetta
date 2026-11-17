@@ -105,6 +105,9 @@
 #         rocking rosette of its own ("wrap_" keys, with a phase along
 #         the outline; "none" = the plain ellipse), in place of
 #         on_ellipse (Rich: two columns)
+#   1.16 - 17 November 2026 - start_radius on an ellipse allows for
+#         the waves' depth at the start, so they're cut in from the
+#         ellipse (they went out past it - Rich's paper chuck)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -919,7 +922,14 @@ def start_radius(design):
     if ros is None:
         return radius
     if ros.get("ellipse"):
-        return ros["ellipse"][0]    # radius a, the end of its length
+        # Radius a (the end of its length), less how deep the waves on it
+        # are at the start: the cut moves from where the cutter is put,
+        # so a start on a wave's deepest point (D's cusp at phase 0) put
+        # at a pushed the petals out past the ellipse - Rich's paper
+        # chuck, 17 November 2026 (2.25 x 1.25 for A 1, B 0.5,
+        # amplitude 0.125). Started here, the ellipse is the outside
+        # of the waves.
+        return ros["ellipse"][0] - ros["amplitude"] * deflection(ros, numpy.array([0.0]))[0]
     # Every shape's highest and lowest points are at a quarter, half or
     # whole lobe or at one of its sharp points - sampled exactly (a
     # sharp point is too narrow to find by even sampling alone).

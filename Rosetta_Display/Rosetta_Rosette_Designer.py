@@ -94,6 +94,8 @@
 #   1.19 - 17 November 2026 - Phase as a percentage of a lobe (Rich;
 #         over 100% moves through a group); "Advance and Retract
 #         Cutter"
+#   1.20 - 17 November 2026 - on an ellipse, the start radius allows
+#         for the waves' depth at the start (Rich's paper chuck)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -213,11 +215,13 @@ NOTES = (
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
      "straight at the Object Size radius.\n\n"
      "Ellipse (rocking only): under Ellipse Parameters, A is half its length, B half its width - an "
-     "ellipse 4 long and 2 wide has A = 2, B = 1. Start the cutter at radius A from the centre and the cut is that ellipse "
-     "exactly, its length along the line the cutter starts on. The note under the drawings gives "
-     "its length, width and the distance between its foci.\n\n"
+     "ellipse 4 long and 2 wide has A = 2, B = 1. Start the cutter at radius A from the centre and the "
+     "cut is that ellipse exactly, its length along the line the cutter starts on. The note under "
+     "the drawings gives its length, width and the distance between its foci.\n\n"
      "With an Ellipse, a second rocking rosette rides on it, in the column beside it (None leaves "
-     "the plain ellipse): its waves are cut in from the ellipse by its Amplitude, and its lobes are "
+     "the plain ellipse): its waves are cut in from the ellipse by its Amplitude - start the cutter "
+     "where the note under the drawings says, which is A less the waves' depth where the cut starts "
+     "(at Phase 0, D starts on a cusp, so the cutter goes in by the whole Amplitude). Its lobes are "
      "spaced evenly along the ellipse's outline, so on a long ellipse they don't crowd together "
      "along its sides. Its Phase slides the pattern along the outline - half a lobe moves a cleft "
      "off the end of the ellipse. With Both, the pumping rosette is a third column, its lobes "
@@ -1010,10 +1014,13 @@ class DesignerWindow(Gtk.Window):
         base = rr.ellipse_base(d)
         if base:
             length, width, foci = rr.ellipse_axes(base)
-            text += ("\nStart the cutter at radius A = %s %s from the centre, on the line the "
+            start = rr.start_radius(d)
+            where = ("A = %s %s" % (self._number(base[0]), unit) if abs(start - base[0]) < 1e-9
+                     else "%s %s (A less the waves' depth at the start)" % (self._number(start), unit))
+            text += ("\nStart the cutter at radius %s from the centre, on the line the "
                      "ellipse's length is to lie along: it cuts an ellipse %s %s long and %s %s wide, "
                      "its foci %s %s apart%s."
-                     % (self._number(base[0]), unit, self._number(length), unit,
+                     % (where, self._number(length), unit,
                         self._number(width), unit, self._number(foci), unit,
                         ", with the waves cut in from it" if d["wrap_shape"] != "none" else ""))
             if rr.advance(d, "X"):
