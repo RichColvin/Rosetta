@@ -86,6 +86,8 @@
 #         and width, as in Rich's Desmos graph), always exact; On an
 #         ellipse puts any shape's waves on one, spaced evenly along
 #         its outline. Width / length and True ellipse are gone
+#   1.17 - 17 November 2026 - an Ellipse Parameters sub heading over
+#         A and B (Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -203,11 +205,11 @@ NOTES = (
      "opposite side of the spindle's axis of rotation - far side cutting instead of near side.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
      "straight at the Object Size radius.\n\n"
-     "Ellipse (rocking only): a is half its length, b half its width - an ellipse 4 long and 2 wide "
-     "has a = 2, b = 1. Start the cutter at radius a from the centre and the cut is that ellipse "
+     "Ellipse (rocking only): under Ellipse Parameters, A is half its length, B half its width - an "
+     "ellipse 4 long and 2 wide has A = 2, B = 1. Start the cutter at radius A from the centre and the cut is that ellipse "
      "exactly, its length along the line the cutter starts on. The note under the drawings gives "
      "its length, width and the distance between its foci.\n\n"
-     "On an ellipse (rocking only): any other shape's waves ride on an a by b ellipse, cut in from "
+     "On an ellipse (rocking only): any other shape's waves ride on an A by B ellipse, cut in from "
      "it by the Amplitude. The lobes are spaced evenly along the ellipse's outline, so on a long "
      "ellipse they don't crowd together along its sides. With Both, the pumping rosette's lobes are "
      "spaced along the outline too, so the two stay in step.\n\n"
@@ -327,19 +329,20 @@ class RosetteControls:
         self.on_ellipse = self.ellipse_a = self.ellipse_b = None
         if not prefix:
             self.on_ellipse = Gtk.CheckButton(label="On an ellipse")
-            self.on_ellipse.set_tooltip_text("Puts this shape's waves on an a by b ellipse, its "
+            self.on_ellipse.set_tooltip_text("Puts this shape's waves on an A by B ellipse, its "
                                              "lobes spaced evenly along the ellipse's outline. "
                                              "Rocking only.")
             self.on_ellipse.connect("toggled", lambda w: window._changed())
             self._place(grid, self.on_ellipse, column, row)
+            # row + 1: the Ellipse Parameters sub heading (DesignerWindow)
             self.ellipse_a = window._spin(*ranges["ellipse"])
             self.ellipse_a.set_tooltip_text("Half the ellipse's length: from its centre to the end "
                                             "of its length. Start the cutter at this radius.")
-            self._place(grid, self.ellipse_a, column, row + 1)
+            self._place(grid, self.ellipse_a, column, row + 2)
             self.ellipse_b = window._spin(*ranges["ellipse"])
             self.ellipse_b.set_tooltip_text("Half the ellipse's width: from its centre to its side.")
-            self._place(grid, self.ellipse_b, column, row + 2)
-        row += 3
+            self._place(grid, self.ellipse_b, column, row + 3)
+        row += 4
 
         # Straight sides: the plain polygon amplitude that gives straight
         # sides at the Object Size radius.
@@ -628,14 +631,18 @@ class DesignerWindow(Gtk.Window):
         # The rosettes: one column each, sharing the row labels.
         row = self._section(grid, row, "Rosette")
         self.ellipse_labels = []
-        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "",
-                                  "Ellipse a (%s)" % unit, "Ellipse b (%s)" % unit,
-                                  "", "Phase", "")):
+        # The ellipse's rows: a sub heading over A and B (Rich, 17 November 2026).
+        ellipse_rows = ("Ellipse Parameters", "A (%s)" % unit, "B (%s)" % unit)
+        for i, text in enumerate(("", "Shape", "Lobes", "Amplitude (%s)" % unit, "")
+                                 + ellipse_rows + ("", "Phase", "")):
             label = Gtk.Label(label=text, xalign=0)
+            if text == ellipse_rows[0]:
+                label.set_markup("<i>%s</i>" % text)
+                label.set_margin_top(4)
             grid.attach(label, 0, row + i, 1, 1)
             if text == "Phase":
                 self.phase_label = label    # only the pumping rosette in Both has one
-            if text.startswith("Ellipse"):
+            if text in ellipse_rows:
                 self.ellipse_labels.append(label)   # only when an ellipse is in use
         self.rosette_controls = [RosetteControls(self, grid, 1, row, ""),
                                  RosetteControls(self, grid, 2, row, rr.SECOND)]
@@ -966,7 +973,7 @@ class DesignerWindow(Gtk.Window):
         base = rr.ellipse_base(d)
         if base:
             length, width, foci = rr.ellipse_axes(base)
-            text += ("\nStart the cutter at radius a = %s %s from the centre, on the line the "
+            text += ("\nStart the cutter at radius A = %s %s from the centre, on the line the "
                      "ellipse's length is to lie along: it cuts an ellipse %s %s long and %s %s wide, "
                      "its foci %s %s apart%s."
                      % (self._number(base[0]), unit, self._number(length), unit,
