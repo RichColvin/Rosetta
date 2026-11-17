@@ -70,6 +70,8 @@
 #         entry and bottom-bar launcher)                              #
 #   1.11 - 17 November 2026 - runs the Geometric Chuck Designer menu  #
 #         entry one-time step                                         #
+#   1.12 - 17 November 2026 - takes Backup and Update off the desktop #
+#         (one-time step; they stay in the menu)                      #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -99,6 +101,7 @@ ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Rosette_Designer.sh"),  # 15 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shut_Down.sh"),          # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_GeoChuck_Designer.sh"),  # 17 November 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Remove_Desktop_Icons.sh"),   # 17 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 
