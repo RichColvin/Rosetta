@@ -91,6 +91,9 @@
 #   1.18 - 17 November 2026 - the rosette on an Ellipse is a column of
 #         its own beside it (both rocking - Rich), with a Phase that
 #         slides it along the outline; On an ellipse is gone
+#   1.19 - 17 November 2026 - Phase as a percentage of a lobe (Rich;
+#         over 100% moves through a group); "Advance and Retract
+#         Cutter"
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -202,8 +205,9 @@ NOTES = (
      "at the object being cut.\n\n"
      "There is no phase setting: put the pattern where you want it on the work by indexing on the "
      "Rosetta panel before running the program. With Both, the pumping rosette's Phase "
-     "turns it relative to the rocking rosette: as a fraction of one repeat of its shape - a lobe, or "
-     "a whole group (0.5 is half way) - or in degrees.\n\n"
+     "turns it relative to the rocking rosette: as a percentage of a lobe (50% is half a lobe) - "
+     "for shapes made of groups (J, M, N, O, P, Q, S) it can go past 100%, moving through the "
+     "group, e.g. up to 600% for J's groups of 6 - or in degrees.\n\n"
      "Invert turns points into hollows. It is the same as running the rosette with the cutter on the "
      "opposite side of the spindle's axis of rotation - far side cutting instead of near side.\n\n"
      "Straight sides (a plain polygon rocking on the face) sets the amplitude that makes the sides "
@@ -229,7 +233,7 @@ NOTES = (
      "Turns at one depth: the cutter stays at one depth, as with a physical rosette. To go deeper, move "
      "the cutter in yourself and run the program again.",
      "Depth"),
-    ("Advance and Retract",
+    ("Advance and Retract Cutter",
      "To start the cutter clear of the work: set how far it moves in on X, Z or both before cutting, "
      "and which way. It moves in at the Plunge feed - the depth axis last (Z on the face, X on the "
      "side), so it enters the work along the depth direction - then cuts, then moves back out to "
@@ -363,23 +367,23 @@ class RosetteControls:
         self.has_phase = bool(prefix)
         if self.has_phase:
             box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
-            self.phase = window._spin(0.0, 1.0, 0.05, 3)
+            self.phase = window._spin(0.0, 100.0, 5.0, 1)
             self.phase.set_width_chars(7)
             self.phase_unit = Gtk.ComboBoxText()
-            self.phase_unit.append("lobe", "of a repeat")
+            self.phase_unit.append("lobe", "% of a lobe")
             self.phase_unit.append("deg", "degrees")
             self.phase_unit.connect("changed", self._on_phase_unit)
             box.pack_start(self.phase, True, True, 0)
             box.pack_start(self.phase_unit, False, False, 0)
             if prefix == rr.WRAP:
-                box.set_tooltip_text("Slides the pattern along the ellipse's outline: a fraction "
-                                     "of one repeat of its shape - a lobe, or a whole group for "
-                                     "J, M, N, O, P, Q (0.5 = half way, e.g. a cleft moved off "
-                                     "the end) - or degrees, 360 being the whole outline.")
+                box.set_tooltip_text("Slides the pattern along the ellipse's outline: a "
+                                     "percentage of a lobe (50% = half a lobe, e.g. a cleft moved "
+                                     "off the end; past 100% moves through a group for J, M, N, "
+                                     "O, P, Q, S) - or degrees, 360 being the whole outline.")
             else:
                 box.set_tooltip_text("Turns the pumping rosette relative to the rocking rosette: a "
-                                     "fraction of one repeat of its shape - a lobe, or a whole "
-                                     "group for J, M, N, O, P, Q (0.5 = half way) - or degrees of "
+                                     "percentage of a lobe (50% = half a lobe; past 100% moves "
+                                     "through a group for J, M, N, O, P, Q, S) - or degrees of "
                                      "the spindle.")
             self._place(grid, box, column, row)
         row += 1
@@ -427,15 +431,25 @@ class RosetteControls:
             self.window.loading = loading
         return fitted
 
+    def _lobe_percent(self):
+        # A whole repeat as a percentage of a lobe: 100, or more for a
+        # shape made of groups (the phase is kept as a fraction of a repeat).
+        shape = self.shape.get_active_id() or "sine"
+        return 100.0 * rr.count_per_repeat(shape, int(self.lobes.get_value()))
+
+    def _shown_phase(self, ros):
+        return (ros["phase"] * self._lobe_percent() if ros["phase_unit"] == "lobe"
+                else rr.phase_degrees(ros))
+
     def _set_phase_range(self):
         if self.phase_unit.get_active_id() == "deg":
             self.phase.set_range(0.0, 360.0 / self._repeats())
             self.phase.set_increments(0.5, 5.0)
             self.phase.set_digits(2)
         else:
-            self.phase.set_range(0.0, 1.0)
-            self.phase.set_increments(0.05, 0.25)
-            self.phase.set_digits(3)
+            self.phase.set_range(0.0, self._lobe_percent())
+            self.phase.set_increments(5.0, 25.0)
+            self.phase.set_digits(1)
 
     def put(self, design):
         ros = rr.rosette(design, self.prefix)
@@ -448,7 +462,7 @@ class RosetteControls:
         if self.has_phase:
             self.phase_unit.set_active_id(ros["phase_unit"])
             self._set_phase_range()
-            self.phase.set_value(ros["phase"] if ros["phase_unit"] == "lobe" else rr.phase_degrees(ros))
+            self.phase.set_value(self._shown_phase(ros))
         self.invert.set_active(ros["invert"])
 
     def read(self):
@@ -459,7 +473,9 @@ class RosetteControls:
             phase = self.phase.get_value()
             if unit == "deg":
                 phase = phase * self._repeats() / 360.0
-                self._set_phase_range()     # the degrees range follows the lobes
+            else:
+                phase = phase / self._lobe_percent()
+            self._set_phase_range()     # the range follows the lobes
         values = {self.key("shape"): self.shape.get_active_id(), self.key("lobes"): lobes,
                   self.key("amplitude"): self.amplitude.get_value(), self.key("phase"): phase,
                   self.key("phase_unit"): unit, self.key("invert"): self.invert.get_active()}
@@ -475,7 +491,7 @@ class RosetteControls:
         ros = rr.rosette(self.window.design, self.prefix)
         self.window.loading = True
         self._set_phase_range()
-        self.phase.set_value(ros["phase"] if widget.get_active_id() == "lobe" else rr.phase_degrees(ros))
+        self.phase.set_value(self._shown_phase(dict(ros, phase_unit=widget.get_active_id())))
         self.window.loading = False
         self.window._changed()
 
@@ -734,7 +750,7 @@ class DesignerWindow(Gtk.Window):
 
         grid = Gtk.Grid(column_spacing=8, row_spacing=4)
         lower.pack_start(grid, False, False, 0)
-        row = self._section(grid, 0, "Advance and Retract")
+        row = self._section(grid, 0, "Advance and Retract Cutter")
         self.advance = {}
         self.advance_dir = {}
         for axis, choices in (("x", (("centre", "Towards centre"), ("away", "Away"))),
