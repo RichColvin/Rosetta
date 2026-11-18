@@ -713,11 +713,19 @@ DEFAULT_DESIGN = {
     "print_diameter": 7.0,      # the rosette's diameter ...
     "print_diameter_at": "smallest",    # ... at its "largest" or "smallest"
     "print_ratio": 1.0,         # rosette amplitude = amplitude x this
-    "print_thickness": 0.375,
-    "print_bore": 1.0,          # centre bore diameter
-    "print_holes": 12,          # phasing holes (0 = none) ...
-    "print_hole_radius": 1.5,   # ... on this radius ...
-    "print_hole_diameter": 0.25,    # ... this size
+    # The mounting starts as the MDF Rose Engine's (its drawing A-08 -
+    # rosetta_rosette_3d.MACHINES).
+    "print_thickness": 0.5,
+    "print_bore": 1.002,        # centre bore diameter
+    "print_hole_layout": "quarter",     # phasing holes "quarter" lobe apart, or "even"
+    "print_holes": 9,           # phasing holes (0 = none) ...
+    "print_hole_circle": 6.0,   # ... on a circle this diameter ...
+    "print_hole_diameter": 0.1285,  # ... this size (#30 drill)
+    "print_slots": 2,           # arced slots for the drive gear's screws (0 = none) ...
+    "print_slot_circle": 5.0,   # ... on a circle this diameter ...
+    "print_slot_span": 90.0,    # ... degrees between their ends' centres ...
+    "print_slot_width": 0.266,  # ... this wide (1/4-20, free fit)
+    "print_hole_allowance": 0.008,  # added to holes, slots and bore in the STL (printed holes come out small)
     "print_rim_width": 0.375,   # a pumping rosette's patterned rim
     "print_stl": True,
     "print_step": True,
@@ -784,6 +792,7 @@ def clean_design(design):
                          ("advance_z_dir", ("headstock", "away")),
                          ("print_axis", ("X", "Z")),
                          ("print_machine", ("mdf", "armbruster", "lindow", "other")),
+                         ("print_hole_layout", ("quarter", "even")),
                          ("print_diameter_at", ("largest", "smallest"))):
         if d[key] not in choices:
             d[key] = DEFAULT_DESIGN[key]
@@ -796,10 +805,13 @@ def clean_design(design):
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
-    for key in ("print_diameter", "print_ratio", "print_thickness", "print_bore",
-                "print_hole_radius", "print_hole_diameter", "print_rim_width"):
+    for key in ("print_diameter", "print_ratio", "print_thickness", "print_bore", "print_hole_circle",
+                "print_hole_diameter", "print_slot_circle", "print_slot_width", "print_hole_allowance",
+                "print_rim_width"):
         d[key] = max(d[key], 0.0)
     d["print_holes"] = min(max(d["print_holes"], 0), 360)
+    d["print_slots"] = min(max(d["print_slots"], 0), 12)
+    d["print_slot_span"] = min(max(d["print_slot_span"], 0.0), 330.0)
     return d
 
 

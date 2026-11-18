@@ -104,6 +104,9 @@
 #         (Rich)
 #   1.23 - 18 November 2026 - Save for 3D Printing: the rosette itself
 #         as STL and STEP files (rosetta_rosette_3d.py - Rich)
+#   1.24 - 18 November 2026 - the MDF Rose Engine's mounting (drawing
+#         A-08): phasing holes a quarter lobe apart, mounting slots, a
+#         printed hole allowance; Machine fills in all of it
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -186,7 +189,8 @@ LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
 # system differs from the one a design was made in.
 LENGTH_KEYS = ("amplitude", "pump_amplitude", "wrap_amplitude", "depth_per_pass", "preview_radius",
                "advance_x", "advance_z", "ellipse_a", "ellipse_b", "print_diameter", "print_thickness",
-               "print_bore", "print_hole_radius", "print_hole_diameter", "print_rim_width")
+               "print_bore", "print_hole_circle", "print_hole_diameter", "print_slot_circle",
+               "print_slot_width", "print_hole_allowance", "print_rim_width")
 FEED_KEYS = ("plunge_feed",)
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
@@ -204,11 +208,15 @@ RANGES = {
 ROSETTES_DIR = os.path.expanduser("~/Documents/Rosettes")
 PRINT_RANGES = {
     "inch": {"print_diameter": (0.5, 20.0, 0.125, 3), "print_thickness": (0.04, 2.0, 0.0625, 4),
-             "print_bore": (0.04, 6.0, 0.0625, 4), "print_hole_radius": (0.1, 10.0, 0.0625, 4),
-             "print_hole_diameter": (0.02, 1.0, 0.03125, 5), "print_rim_width": (0.04, 3.0, 0.0625, 4)},
+             "print_bore": (0.04, 6.0, 0.0625, 4), "print_hole_circle": (0.2, 20.0, 0.125, 3),
+             "print_hole_diameter": (0.02, 1.0, 0.0005, 4), "print_slot_circle": (0.2, 20.0, 0.125, 3),
+             "print_slot_width": (0.02, 1.0, 0.001, 4), "print_hole_allowance": (0.0, 0.04, 0.001, 4),
+             "print_rim_width": (0.04, 3.0, 0.0625, 4)},
     "mm": {"print_diameter": (10.0, 500.0, 1.0, 1), "print_thickness": (1.0, 50.0, 0.5, 1),
-           "print_bore": (1.0, 150.0, 0.5, 1), "print_hole_radius": (2.0, 250.0, 0.5, 1),
-           "print_hole_diameter": (0.5, 25.0, 0.5, 1), "print_rim_width": (1.0, 75.0, 0.5, 1)},
+           "print_bore": (1.0, 150.0, 0.5, 1), "print_hole_circle": (4.0, 500.0, 1.0, 1),
+           "print_hole_diameter": (0.5, 25.0, 0.05, 2), "print_slot_circle": (4.0, 500.0, 1.0, 1),
+           "print_slot_width": (0.5, 25.0, 0.1, 2), "print_hole_allowance": (0.0, 1.0, 0.05, 2),
+           "print_rim_width": (1.0, 75.0, 0.5, 1)},
 }
 
 # The notes column on the right: (heading, text, User Manual anchor),
@@ -306,9 +314,16 @@ NOTES = (
      "folder in Documents. Both are in millimetres, whatever units the design uses.\n\n"
      "A rocking rosette is a disc whose edge follows the pattern; a pumping rosette is a disc with a "
      "raised rim whose top rises and falls with it. Set its diameter - measured at its largest or "
-     "smallest, as your rose engine's rosettes are (Machine fills in the usual size) - its "
-     "thickness, the centre bore and the phasing holes. The first phasing hole is where the pattern "
-     "starts.\n\n"
+     "smallest, as your rose engine's rosettes are - its thickness, the centre bore, the phasing "
+     "holes and the slots for the screws that hold it to its drive gear. Machine fills in your rose "
+     "engine's usual values (the MDF Rose Engine's from its rosette drawing).\n\n"
+     "Phasing holes a quarter lobe apart each turn the pattern a quarter lobe on from the last - 0, "
+     "1/4, 1/2, 3/4, 1 lobe... - so how far apart they are depends on the rosette's lobes: 11.25 "
+     "degrees on an 8-lobe rosette, 22.5 on a 4-lobe one. On rosettes with many lobes they go 1 1/4 "
+     "lobes apart instead, which phases the same.\n\n"
+     "Printed holes come out smaller than drawn: Printed hole allowance is added to the bore, the "
+     "phasing holes and the slots in the STL, so they print the right size. The STEP file keeps "
+     "their true sizes, for machining.\n\n"
      "Machine ratio: the rosette's wave is the Amplitude times this. On most rose engines the "
      "rosette's wave and the cut's differ, set by the machine's levers - measure yours by cutting "
      "with a rosette you know.\n\n"
@@ -1550,11 +1565,11 @@ class PrintDialog(Gtk.Dialog):
             add("Rosette", box, "With Both, each rosette is saved on its own - choose which.")
 
         self.machine = Gtk.ComboBoxText()
-        for key, (name, _, _) in r3d.MACHINES.items():
+        for key, (name, _) in r3d.MACHINES.items():
             self.machine.append(key, name)
         self.machine.set_halign(Gtk.Align.START)
         self.machine.connect("changed", lambda w: self._changed("print_machine"))
-        add("Machine", self.machine, "Fills in the usual rosette size for this rose engine. Other keeps "
+        add("Machine", self.machine, "Fills in this rose engine's usual rosette size and mounting. Other keeps "
                                       "whatever you enter.")
         self.spins = {}
         self.spins["print_diameter"] = spin("print_diameter", *ranges["print_diameter"])
@@ -1584,20 +1599,63 @@ class PrintDialog(Gtk.Dialog):
             label = add(text, self.spins[key], tip)
             if key == "print_rim_width":
                 self.rim_label = label
-        section = Gtk.Label(xalign=0)
-        section.set_markup("<i>Phasing holes</i>")
-        section.set_margin_top(4)
-        grid.attach(section, 0, row, 2, 1)
-        row += 1
+        def heading(text):
+            nonlocal row
+            label = Gtk.Label(xalign=0)
+            label.set_markup("<i>%s</i>" % text)
+            label.set_margin_top(4)
+            grid.attach(label, 0, row, 2, 1)
+            row += 1
+
+        heading("Phasing holes")
+        layout_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self.layout = {}
+        group = None
+        for value, text in (("quarter", "A quarter lobe apart"), ("even", "Evenly round")):
+            button = Gtk.RadioButton.new_with_label_from_widget(group, text)
+            group = group or button
+            button.connect("toggled", lambda w: w.get_active() and self._changed("print_hole_layout"))
+            layout_box.pack_start(button, False, False, 0)
+            self.layout[value] = button
+        add("    Spacing", layout_box,
+            "A quarter lobe apart (the MDF Rose Engine's way): each hole phases the pattern a quarter "
+            "lobe on from the last - 0, 1/4, 1/2, 3/4, 1 lobe... - so the spacing depends on the "
+            "rosette's lobes. When holes that close would touch, they go 1 1/4 lobes apart (or 2 1/4...), "
+            "which phases the same. Evenly round: Number holes spaced equally.")
         self.holes = spin("print_holes", 0, 72, 1, 0)
-        add("    Number", self.holes, "How many phasing holes, evenly spaced (0 = none). The first is "
-                                      "where the pattern starts.")
+        add("    Number", self.holes, "How many phasing holes (0 = none). Nine a quarter lobe apart "
+                                      "phase the pattern from 0 to 2 lobes.")
         for key, text, tip in (
-                ("print_hole_radius", "    On radius (%s)" % unit, "How far the holes' centres are from "
-                                                                    "the rosette's centre."),
-                ("print_hole_diameter", "    Hole diameter (%s)" % unit, "Each hole's size.")):
+                ("print_hole_circle", "    On circle (%s across)" % unit,
+                 "The diameter of the circle the holes' centres are on."),
+                ("print_hole_diameter", "    Hole diameter (%s)" % unit,
+                 "Each hole's true size (#30 drill = 0.1285\" on the MDF Rose Engine).")):
             self.spins[key] = spin(key, *ranges[key])
             add(text, self.spins[key], tip)
+        heading("Mounting slots")
+        self.slots = spin("print_slots", 0, 12, 1, 0)
+        add("    Number", self.slots, "Arced slots for the screws that hold the rosette to its drive "
+                                      "gear, evenly round from the top (0 = none). The MDF Rose Engine "
+                                      "has two, top and bottom.")
+        for key, text, tip in (
+                ("print_slot_circle", "    On circle (%s across)" % unit,
+                 "The diameter of the circle along the slots' middles."),
+                ("print_slot_span", "    Span (degrees)", "How far round each slot goes, from the "
+                                                         "centre of one rounded end to the other."),
+                ("print_slot_width", "    Width (%s)" % unit,
+                 "How wide each slot is - 0.266\" lets a 1/4-20 screw through.")):
+            if key == "print_slot_span":
+                self.spins[key] = spin(key, 1.0, 330.0, 5.0, 1)
+            else:
+                self.spins[key] = spin(key, *ranges[key])
+            add(text, self.spins[key], tip)
+        self.spins["print_hole_allowance"] = spin("print_hole_allowance", *ranges["print_hole_allowance"])
+        allowance_label = add("Printed hole allowance (%s)" % unit, self.spins["print_hole_allowance"],
+                              "Printed holes come out smaller than drawn. This much is added to the "
+                              "diameter of the bore, the phasing holes and the slots' width in the STL, "
+                              "so they print the right size - adjust it to suit your printer. The STEP "
+                              "file keeps their true sizes.")
+        allowance_label.set_margin_top(6)
         files = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         self.stl = Gtk.CheckButton(label="STL (3D printing)")
         self.step = Gtk.CheckButton(label="STEP (CAD, machining)")
@@ -1636,6 +1694,8 @@ class PrintDialog(Gtk.Dialog):
         self.at[d["print_diameter_at"]].set_active(True)
         self.ratio.set_value(d["print_ratio"])
         self.holes.set_value(d["print_holes"])
+        self.slots.set_value(d["print_slots"])
+        self.layout[d["print_hole_layout"]].set_active(True)
         self.stl.set_active(d["print_stl"])
         self.step.set_active(d["print_step"])
         self.loading = False
@@ -1646,35 +1706,34 @@ class PrintDialog(Gtk.Dialog):
         d = self.design
         if key == "print_machine":
             d["print_machine"] = self.machine.get_active_id() or "other"
-            values = r3d.machine_values(d, d["print_machine"])
-            if values:
-                self.loading = True
-                self.spins["print_diameter"].set_value(values[0])
-                self.at[values[1]].set_active(True)
-                self.loading = False
-        elif key in ("print_diameter", "print_diameter_at"):
-            # A size of one's own: no longer the machine's usual one.
-            values = r3d.machine_values(d, d["print_machine"])
-            at = "largest" if self.at["largest"].get_active() else "smallest"
-            if values and (abs(values[0] - self.spins["print_diameter"].get_value()) > 1e-6 or values[1] != at):
-                self.loading = True
-                self.machine.set_active_id("other")
-                self.loading = False
-                d["print_machine"] = "other"
+            d.update(r3d.machine_values(d, d["print_machine"]))
+            self._put()
         if self.axis:
             d["print_axis"] = "X" if self.axis["X"].get_active() else "Z"
         for name, box in self.spins.items():
             d[name] = box.get_value()
         d["print_diameter_at"] = "largest" if self.at["largest"].get_active() else "smallest"
+        d["print_hole_layout"] = "quarter" if self.layout["quarter"].get_active() else "even"
         d["print_ratio"] = self.ratio.get_value()
         d["print_holes"] = int(self.holes.get_value())
+        d["print_slots"] = int(self.slots.get_value())
+        if key not in (None, "print_machine", "print_axis"):
+            # A value of one's own: no longer the machine's usual one.
+            values = r3d.machine_values(d, d["print_machine"])
+            if key in values and not self._same(values[key], d[key]):
+                d["print_machine"] = "other"
+                self.loading = True
+                self.machine.set_active_id("other")
+                self.loading = False
         d["print_stl"] = self.stl.get_active()
         d["print_step"] = self.step.get_active()
         self.design = rr.clean_design(d)
         try:
             self.geo = r3d.Rosette3D(self.design)
+            # The checks are on the printed sizes (the larger holes).
+            self.printed = r3d.Rosette3D(self.design, printed=True)
         except Exception as e:      # never leave the dialog unusable
-            self.geo = None
+            self.geo = self.printed = None
             print("Rosette Designer: 3D shape failed: %r" % (e,))
         pump = self.geo is not None and self.geo.kind == "pump"
         for widget in self.at.values():
@@ -1686,8 +1745,14 @@ class PrintDialog(Gtk.Dialog):
         self._update_message()
         self.area.queue_draw()
 
+    @staticmethod
+    def _same(a, b):
+        if isinstance(a, str) or isinstance(b, str):
+            return a == b
+        return abs(float(a) - float(b)) < 1e-6
+
     def _update_message(self):
-        geo = self.geo
+        geo = self.printed
         lines = []
         ok = geo is not None and not geo.problems and (self.design["print_stl"] or self.design["print_step"])
         if geo is None:
@@ -1702,6 +1767,9 @@ class PrintDialog(Gtk.Dialog):
                 lines.append("Pumping rosette: %s across, the rim %s wide rising and falling %s." %
                              (to(2 * geo.outer_radius), to(geo.outer_radius - geo.inner_radius),
                               to(geo.wave_mm())))
+            if self.design["print_stl"] and geo.allowance > 0:
+                lines.append("In the STL the bore, phasing holes and slots are %s larger, to print the "
+                             "right size; the STEP file has them at their true sizes." % to(geo.allowance))
             for text in geo.problems:
                 lines.append('<span foreground="#c01c28">%s</span>' % GLib.markup_escape_text(text))
             for text in geo.warnings:
@@ -1758,6 +1826,16 @@ class PrintDialog(Gtk.Dialog):
         for hx, hy in (geo.hole_centres() if geo.holes else []):
             cr.arc(cx + hx * scale, cy - hy * scale, max(geo.hole_size * scale, 1.0), 0, 2 * math.pi)
             cr.fill()
+        # The slots: a thick line along each, with round ends.
+        if geo.slots and geo.slot_half_width > 0:
+            cr.set_line_width(2.0 * geo.slot_half_width * scale)
+            cr.set_line_cap(1)      # round
+            for k in range(geo.slots):
+                e0, e1 = r3d._slot_ends(geo, k)
+                cr.new_path()
+                cr.arc_negative(cx, cy, geo.slot_radius * scale, -math.radians(e0), -math.radians(e1))
+                cr.stroke()
+            cr.set_line_cap(0)
         # Where the pattern starts (0 degrees): a mark outside the edge.
         edge = (geo.radius(numpy.array([0.0]))[0] if geo.kind == "rock" else geo.outer_radius) * scale
         cr.set_source_rgb(*INK)
