@@ -60,6 +60,15 @@ Built and committed, but not yet seen working on real hardware.
 
 Ideas and designs not yet being built. Nothing here has code yet.
 
+### Geometric Chuck Designer as a web page (since 18 November 2026)
+
+Rich: some turners use Roy Lindley's technique without Rosetta, so a web version for the User Manual (linked from the Designer's manual page and OTBoK). Agreed 18 November 2026:
+- **Draw only - no G-code download** (Rich): the settings (Roy's L1 L2 L3, V1 V2, G3, Rotation, maybe the r/k stages), the drawing redrawn as you type, size, turns to close, symmetry, and Bazley's figures by number from Roy's catalogue (`Bazley_Index.csv`, ~130 KB, inside the page). Roy's credit on the page, in the Designer's words.
+- One self-contained HTML/JavaScript file uploaded beside the manual - nothing installed, nothing run on the server; shown inside the manual page if PmWiki allows, otherwise linked.
+- Checked against `rosetta_geochuck.py` figure by figure (points compared), as Roy's table was.
+- **Waiting on:** Rich to confirm with Roy that his catalogue may be published openly this way.
+- The Rosette Designer as a web page maybe later (about twice the work; smaller audience) - only if asked for.
+
 ### Software-defined rosettes - Rosette Designer (since 15 November 2026)
 
 **Stage 1 built 15 November 2026 on branch `rosette-designer`, merged into `dev-rich` the same day** - see
