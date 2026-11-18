@@ -1914,8 +1914,19 @@ class PrintDialog(Gtk.Dialog):
         if window:
             window.set_cursor(None)
         print("Rosette Designer: saved " + ", ".join(paths))
-        detail = ("Saved %s in %s. Both files are in millimetres." %
-                  (" and ".join(os.path.basename(p) for p in paths), folder))
+        # Say what "in millimetres" means for this rosette, and what to
+        # do about it (Rich, 18 November 2026: the bare note was unclear).
+        across = 2.0 * (geo.largest if geo.kind == "rock" else geo.outer_radius)
+        if self.units == "inch":
+            size = "this rosette is %s\" (%.1f mm) across" % (
+                ("%.3f" % (across / r3d.MM_PER_INCH)).rstrip("0").rstrip("."), across)
+        else:
+            size = "this rosette is %.1f mm across" % across
+        detail = ("Saved %s in %s.\n\n%s in millimetres - %s." %
+                  (" and ".join(os.path.basename(p) for p in paths), folder,
+                   "Both files are" if len(paths) > 1 else "The file is", size))
+        if any(p.endswith(".stl") for p in paths):
+            detail += " If your slicer asks what units the STL is in, choose millimetres."
         if geo.kind == "pump":
             detail += ("\n\nPumping rosette: print it at the smallest layer height your printer can, and "
                        "use a rubber that rides over the ridges left (e.g. one with a roller bearing on "
