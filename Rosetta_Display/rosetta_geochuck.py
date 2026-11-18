@@ -34,12 +34,27 @@
 #   start, degrees). Stage 1 is normally the cutter's own distance
 #   from the centre, k = 1. A stage with r = 0 is unused.
 #
+#   Chuck settings (17 November 2026): the Designer's main way in is
+#   Roy Lindley's - the settings of a two-part geometric chuck, as he
+#   uses them in his "Single and two-stage geometric chuck, Bazley math
+#   and parameters" spreadsheet (shared with the Rosetta project 17
+#   November 2026, used with his permission and credited to him):
+#       L1, L2, L3 - the three circles' radii (L3 = 0 for one stage)
+#       V1, V2     - the chuck's two ratios
+#       G3         - where the third circle starts (degrees)
+#       Rotation   - turns the whole figure (degrees)
+#   which are three stages:
+#       L1 at k 1;  L2 at k 1 - V1;  L3 at k (1 - V1) + V1 V2, phase G3
+#   (all phases plus Rotation) - chuck_stage_values. The r/k stages stay
+#   for patterns a two-part chuck can't make ("entry" = "stages").
+#
 #   Clean room (17 November 2026): written from Frank A. Farris,
 #   "Wheels on Wheels on Wheels - Surprising Symmetry" (Mathematics
 #   Magazine, 1996), T. S. Bazley, "Index to the Geometric Chuck"
 #   (1875, public domain), and the Ornamental Turning Book of
 #   Knowledge's Geometric Chuck page; first worked out in a Claude
-#   session on Rich's Mac (16 November 2026, geochuck.py). See
+#   session on Rich's Mac (16 November 2026, geochuck.py). Chuck
+#   settings and the Bazley figures from Roy Lindley (above). See
 #   docs/Rosetta_Tracker.md, "Provenance". No other software consulted.
 #
 #   C and X: each point is turned into an angle (C) and a radius (X).
@@ -63,6 +78,10 @@
 #   1.1 - 17 November 2026 - Bazley's figures: bazley_design fills in
 #         the stages for a figure in Bazley_Index.csv (the pilot, table
 #         page 71, figures 666-716)
+#   1.2 - 17 November 2026 - Roy Lindley's chuck settings (L1 L2 L3, V1
+#         V2, G3, Rotation) as the main way in; Bazley_Index.csv is now
+#         his catalogue of every figure (1-3454, and his rose patterns
+#         3501-3554), filled in at a chosen size
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -118,6 +137,12 @@ import rosetta_rosettes as rr    # shared G-code pieces (numbers, pass codes, ad
 STAGES = 5          # enough for all of Bazley's figures, incl. his 3- and 4-part ones
 
 DEFAULT_DESIGN = {
+    # How the pattern is set: "chuck" (Roy Lindley's L1 L2 L3, V1 V2,
+    # G3, Rotation - these then set stages 1-3) or "stages" (r, k, phase).
+    "entry": "chuck",
+    "l1": 1.0, "l2": 0.25, "l3": 0.0,     # machine units
+    "v1": "-5", "v2": "0",                # ratios, text such as "-5" or "7/3"
+    "g3": 0.0, "rotation": 0.0,           # degrees
     # Stage n: rn (offset), kn (speed, text such as "6", "-4" or "7/3"),
     # phasen (degrees). Stage 1 is normally the cutter's distance from
     # the centre, k 1.
@@ -143,8 +168,12 @@ DEFAULT_DESIGN = {
     "advance_z_dir": "headstock",
     "surface": "face",          # always - for the shared advance helpers
     "units": "inch",
-    "bazley_figure": 0,         # the Bazley figure the stages came from (0 = none)
+    "bazley_figure": 0,         # the Bazley figure the settings came from (0 = none)
+    "bazley_size": 2.0,         # its largest diameter when filled in (machine units)
 }
+
+ENTRIES = ("chuck", "stages")
+CHUCK_LENGTH_KEYS = ("l1", "l2", "l3")
 
 # Presets: (name, {stage settings}) - each a classic figure.
 PRESETS = (
@@ -175,9 +204,12 @@ def parse_k(text):
 
 def clean_design(design):
     '''A complete design: DEFAULT_DESIGN's keys, each of the right kind.'''
+    design = dict(design or {})
+    if "entry" not in design and any(key in design for key in ("r1", "k2")):
+        design["entry"] = "stages"      # saved before chuck settings existed
     d = dict(DEFAULT_DESIGN)
     for key, default in DEFAULT_DESIGN.items():
-        value = (design or {}).get(key, default)
+        value = design.get(key, default)
         try:
             if isinstance(default, bool):
                 value = bool(value)
@@ -195,7 +227,16 @@ def clean_design(design):
         d["k%d" % n] = str(k) if k is not None else "0"
         d["r%d" % n] = max(d["r%d" % n], 0.0)
         d["phase%d" % n] = d["phase%d" % n] % 360.0
+    for key in ("v1", "v2"):
+        v = parse_k(d[key])
+        d[key] = str(v) if v is not None else DEFAULT_DESIGN[key]
+    for key in CHUCK_LENGTH_KEYS:
+        d[key] = max(d[key], 0.0)
+    d["g3"] = d["g3"] % 360.0
+    d["rotation"] = d["rotation"] % 360.0
+    d["bazley_size"] = max(d["bazley_size"], 1e-3)
     for key, choices in (("depth_mode", ("passes", "turns")), ("units", ("inch", "mm")),
+                         ("entry", ENTRIES),
                          ("advance_x_dir", ("centre", "away")),
                          ("advance_z_dir", ("headstock", "away"))):
         if d[key] not in choices:
@@ -209,9 +250,67 @@ def clean_design(design):
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
+    if d["entry"] == "chuck":
+        for n in range(1, STAGES + 1):
+            d.update({"r%d" % n: 0.0, "k%d" % n: "0", "phase%d" % n: 0.0})
+        for n, (r, k, phase) in enumerate(chuck_stage_values(d), 1):
+            d.update({"r%d" % n: r, "k%d" % n: str(k), "phase%d" % n: phase})
     if d["bazley_figure"] and not bazley_matches(d):
-        d["bazley_figure"] = 0      # the stages have been changed since
+        d["bazley_figure"] = 0      # the settings have been changed since
     return d
+
+
+def chuck_stage_values(d):
+    '''[(r, k as Fraction, phase in degrees)] - stages 1-3 for the chuck
+    settings (Roy Lindley's formula): L1 at k 1, L2 at 1 - V1, L3 at
+    (1 - V1) + V1 V2 starting at G3; Rotation added to every phase.'''
+    v1, v2 = parse_k(d["v1"]) or Fraction(0), parse_k(d["v2"]) or Fraction(0)
+    k2 = 1 - v1
+    rot = d["rotation"]
+    return [(d["l1"], Fraction(1), rot % 360.0), (d["l2"], k2, rot % 360.0),
+            (d["l3"], k2 + v1 * v2, (d["g3"] + rot) % 360.0)]
+
+
+def stages_to_chuck(d):
+    '''The chuck settings giving the same pattern as d's stages, or None
+    when a two-part chuck can't make it (more than 3 stages, stage 1 not
+    at k 1, or stages 1 and 2 set at different phases).'''
+    found = [(d["r%d" % n], parse_k(d["k%d" % n]), d["phase%d" % n]) for n in range(1, STAGES + 1)]
+    if any(r > 0 for r, _, _ in found[3:]):
+        return None
+    (r1, k1, p1), (r2, k2, p2), (r3, k3, p3) = found[:3]
+    if r1 > 0 and k1 != 1:
+        return None
+    if r2 > 0 and r1 > 0 and abs((p2 - p1 + 180.0) % 360.0 - 180.0) > 1e-6:
+        return None
+    rotation = p1 if r1 > 0 else p2
+    v1 = 1 - (k2 if r2 > 0 else Fraction(1))
+    if r3 > 0:
+        if v1 == 0:
+            return None
+        v2 = (k3 - (1 - v1)) / v1
+    else:
+        v2 = Fraction(0)
+    return {"l1": r1, "l2": r2, "l3": r3, "v1": str(v1), "v2": str(v2),
+            "g3": (p3 - rotation) % 360.0 if r3 > 0 else 0.0, "rotation": rotation % 360.0}
+
+
+def apply_preset(design, index, scale=1.0):
+    '''design with PRESETS[index] filled in (lengths x scale), in the
+    design's own way of entry.'''
+    _, preset = PRESETS[index]
+    d = dict(design, bazley_figure=0)
+    for n in range(1, STAGES + 1):
+        d["r%d" % n], d["k%d" % n], d["phase%d" % n] = 0.0, "0", 0.0
+    for key, value in preset.items():
+        d[key] = value * scale if key[0] == "r" else value
+    if d.get("entry") == "chuck":
+        chuck = stages_to_chuck(clean_design(dict(d, entry="stages")))
+        if chuck is None:
+            d["entry"] = "stages"
+        else:
+            d.update(chuck)
+    return clean_design(d)
 
 
 def stages(design):
@@ -351,6 +450,7 @@ def pattern_info(design, path=None):
         "past_centre": float(max(-numpy.min(radii), 0.0)),     # how far X goes past the centre
         "length": length,
         "c_turned": float(angles[-1]),          # C's net turn over one pattern (degrees)
+        "c_turns": int(round(abs(float(angles[-1])) / 360.0)),
         "flipped": bool(flipped),               # ends on the other side of the centre
         "points": len(angles) - 1,
         "capped": capped,
@@ -398,25 +498,18 @@ name_is_reserved = rr.name_is_reserved
 
 #######################################################################
 # Bazley's figures (17 November 2026, Rich): T. S. Bazley, "Index to the
-# Geometric Chuck" (1875, public domain) gives, for over 3,000 numbered
-# figures, the settings of a two-part geometric chuck that cut them.
-# Bazley_Index.csv holds those transcribed so far (see its header); this
-# turns a figure's settings into the Designer's stages.
-#
-# The chuck, in Bazley's terms (worked out from his Chapters I-III in
-# the Mac session of 16 November 2026): Part I's train value V1 (a gear
-# ratio), "in" (an odd number of arbors, s = +1) or "out" (even, s = -1),
-# makes its front wheel turn w1 = 1 + s1/V1 times per turn of the mandrel;
-# Part II on top of it turns w2 = w1 + s1 s2 / (V1 V2). In the work's
-# frame the point cut is
-#     SR e^(-i w2 t) - Ex1 e^(i(1 - w2) t) - Ex2 e^(i(w1 - w2) t)
-# with SR the tool's distance from the axis and Ex1, Ex2 the two
-# eccentric slides, all in hundredths of an inch - three stages. A pair
-# of companion figures differs by Part I set half a turn apart (Ex1's
-# phase 180 or 0); which is which is in the file, matched to the plates.
-# Checked against his plates for figures 666-716.
+# Geometric Chuck" (1875, public domain) gives the settings of a
+# geometric chuck for over 3,000 numbered figures. Bazley_Index.csv is
+# Roy Lindley's catalogue of them, in his chuck settings (see its
+# header) - used with his permission and credited to him. A figure is
+# filled in as chuck settings, scaled so its largest diameter is the
+# size asked for.
 #######################################################################
 BAZLEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Bazley_Index.csv")
+BAZLEY_CREDIT = ("The chuck settings and the settings for Bazley's figures come from Roy Lindley, "
+                 "who has studied the geometric chuck for more than 15 years and generously shared "
+                 "his work with the Rosetta project.")
+ROSE_FIGURES = (3501, 3554)     # Roy's own simple rose patterns, after Bazley's
 _bazley = None
 
 
@@ -437,74 +530,89 @@ def bazley_index():
     return _bazley
 
 
-def _train(text):
-    """"2in" -> (2, +1), "9out" -> (9, -1)."""
-    text = text.strip().lower()
-    if text.endswith("in"):
-        return Fraction(text[:-2]), 1
-    return Fraction(text[:-3]), -1
+def _largest_radius(settings):
+    """The largest radius of the pattern the chuck settings make."""
+    d = dict(DEFAULT_DESIGN, entry="chuck", **settings)
+    found = [(r, parse_k(str(k)), math.radians(p)) for r, k, p in chuck_stage_values(d) if r > 0]
+    turns = reduce(lambda a, b: a * b // math.gcd(a, b), (k.denominator for _, k, _ in found), 1)
+    t = numpy.linspace(0.0, 2.0 * math.pi * turns, 4000 * turns, endpoint=False)
+    z = sum(r * numpy.exp(1j * (float(k) * t + p)) for r, k, p in found)
+    return float(numpy.max(numpy.abs(z)))
 
 
-def bazley_stage_values(row):
-    """[(r in hundredths of an inch, k, phase in degrees)] for a figure's row."""
-    v1, s1 = _train(row["v1"])
-    v2, s2 = _train(row["v2"])
-    w1 = 1 + Fraction(s1) / v1
-    w2 = w1 + Fraction(s1 * s2) / (v1 * v2)
-    found = [(float(row["sr"]), -w2, 0.0), (float(row["ex1"]), 1 - w2, float(row["ex1_phase"])),
-             (float(row["ex2"]), w1 - w2, 180.0)]
-    return [stage for stage in found if stage[0] > 0]
-
-
-def bazley_design(figure, units):
-    """The stage settings (r1..r5, k1..k5, phase1..phase5, bazley_figure)
-    for Bazley's figure, in units ("inch" or "mm"); None if not in the index."""
+def bazley_design(figure, size):
+    """The chuck settings (entry, l1-l3, v1, v2, g3, rotation, bazley_figure,
+    bazley_size) for a figure, scaled so its largest diameter is size;
+    None if it isn't in the index."""
     row = bazley_index().get(int(figure))
     if row is None:
         return None
-    scale = 0.01 if units == "inch" else 0.254       # hundredths of an inch
-    values = {"bazley_figure": int(figure)}
-    for n in range(1, STAGES + 1):
-        values.update({"r%d" % n: 0.0, "k%d" % n: "0", "phase%d" % n: 0.0})
-    for n, (r, k, phase) in enumerate(bazley_stage_values(row), 1):
-        values.update({"r%d" % n: r * scale, "k%d" % n: str(k), "phase%d" % n: phase})
-    return values
+    settings = {"l1": float(row["l1"]), "l2": float(row["l2"]), "l3": float(row["l3"]),
+                "v1": row["v1"], "v2": row["v2"], "g3": float(row["g3"]), "rotation": 0.0}
+    scale = size / (2.0 * _largest_radius(settings))
+    for key in CHUCK_LENGTH_KEYS:
+        settings[key] *= scale
+    settings.update({"entry": "chuck", "bazley_figure": int(figure), "bazley_size": float(size)})
+    return settings
 
 
 def bazley_matches(design):
-    """True if the design's stages are still those of its Bazley figure."""
-    wanted = bazley_design(design["bazley_figure"], design["units"])
-    if wanted is None:
+    """True if the design's chuck settings (or stages) are still those of
+    its figure (any size or rotation)."""
+    row = bazley_index().get(int(design["bazley_figure"]))
+    if row is None:
         return False
-    for n in range(1, STAGES + 1):
-        if abs(design["r%d" % n] - wanted["r%d" % n]) > 1e-6 or \
-                abs((design["phase%d" % n] - wanted["phase%d" % n] + 180.0) % 360.0 - 180.0) > 1e-6 or \
-                (design["r%d" % n] > 0 and parse_k(design["k%d" % n]) != parse_k(wanted["k%d" % n])):
+    if design["entry"] != "chuck":
+        chuck = stages_to_chuck(design)         # the same figure, as stages
+        if chuck is None:
             return False
-    return True
+        design = dict(design, **chuck)
+    wanted = [float(row[key]) for key in CHUCK_LENGTH_KEYS]
+    have = [design[key] for key in CHUCK_LENGTH_KEYS]
+    big = max(range(3), key=lambda i: wanted[i])
+    if wanted[big] <= 0 or have[big] <= 0:
+        return False
+    ratio = have[big] / wanted[big]
+    return (all(abs(h - w * ratio) <= 1e-6 * max(1.0, ratio) for h, w in zip(have, wanted))
+            and parse_k(design["v1"]) == parse_k(row["v1"]) and parse_k(design["v2"]) == parse_k(row["v2"])
+            and abs((design["g3"] - float(row["g3"]) + 180.0) % 360.0 - 180.0) < 1e-6)
+
+
+def bazley_companion(figure):
+    """The neighbouring figure with the same settings but the third
+    circle started half a turn round (Bazley's companion), or None."""
+    index = bazley_index()
+    row = index.get(int(figure))
+    if row is None:
+        return None
+    for n in (int(figure) - 1, int(figure) + 1):
+        other = index.get(n)
+        if other and all(other[key] == row[key] for key in ("l1", "l2", "l3", "v1", "v2")) \
+                and abs((float(other["g3"]) - float(row["g3"])) % 360.0 - 180.0) < 1e-6:
+            return n
+    return None
 
 
 def bazley_settings_text(figure):
-    """Bazley's own settings for a figure, for the note under the drawings."""
+    """What the note under the drawings says about a figure."""
     row = bazley_index().get(int(figure))
     if row is None:
         return ""
-    def train(text):
-        v, s = _train(text)
-        return "%s %s" % (v, "in" if s > 0 else "out")
-    # Its companion: a neighbouring figure with the same trains and slides.
-    same = ("v1", "v2", "ex1", "ex2")
-    companion = [n for n in (int(figure) - 1, int(figure) + 1)
-                 if n in bazley_index() and all(bazley_index()[n][key] == row[key] for key in same)]
-    return ("V1 %s, V2 %s, Ex1 %s, Ex2 %s, S.R. %s (hundredths of an inch)%s - settings on page %s "
-            "of his book"
-            % (train(row["v1"]), train(row["v2"]), row["ex1"], row["ex2"], row["sr"],
-               "; companion of figure %d" % companion[0] if companion else "", row["table_page"]))
+    lo, hi = ROSE_FIGURES
+    kind = ("one of Roy Lindley's rose patterns" if lo <= int(figure) <= hi
+            else "from Bazley's Index to the Geometric Chuck (1875)")
+    companion = bazley_companion(figure)
+    return ("%s; settings from Roy Lindley's catalogue%s"
+            % (kind, "; its companion is figure %d (G3 half a turn round)" % companion if companion else ""))
 
 
 def describe(design):
     if design.get("bazley_figure"):
         return "Bazley figure %d" % design["bazley_figure"]
+    if design.get("entry") == "chuck":
+        # No brackets: LinuxCNC refuses a comment inside a comment.
+        return "chuck - V1 %s, V2 %s - %s" % (design["v1"], design["v2"], (
+            "%d-fold" % symmetry(design) if symmetry(design) > 1 else "no rotational symmetry"))
     found = stages(design)
     if len(found) < 2:
         return "a circle"
@@ -668,7 +776,7 @@ def write_samples(folder):
         for n, (name, preset) in enumerate(PRESETS, 1):
             for mode in ("passes", "turns"):
                 for direction in (1, -1):
-                    d = dict(DEFAULT_DESIGN, **{"r2": 0.0, "k2": "0"})
+                    d = dict(DEFAULT_DESIGN, **{"r2": 0.0, "k2": "0", "entry": "stages"})
                     d.update(preset)
                     for key in list(d):
                         if key[0] == "r" and key[1:].isdigit():
@@ -682,11 +790,20 @@ def write_samples(folder):
                     with open(os.path.join(folder, file_name), "w") as f:
                         f.write(gcode(d))
                     written.append(file_name)
-        # Some of Bazley's figures (8, 12 and 18 turns to close).
-        for figure in (666, 694, 714, 716):
+        # The presets again, entered as chuck settings.
+        for n in range(len(PRESETS)):
+            d = apply_preset(dict(DEFAULT_DESIGN, units=units, cutting_speed=2.0 * scale,
+                                  depth_per_pass=0.005 * scale, plunge_feed=1.0 * scale), n, scale)
+            file_name = "chuck_preset%d_%s_%s.ngc" % (n + 1, d["entry"], units)
+            with open(os.path.join(folder, file_name), "w") as f:
+                f.write(gcode(d))
+            written.append(file_name)
+        # Bazley's figures (Roy Lindley's catalogue): single and two
+        # stage, fractions (up to 25 turns to close), G3 90, a rose.
+        for figure in (1, 50, 666, 694, 715, 716, 1020, 2439, 3187, 3517):
             d = dict(DEFAULT_DESIGN, units=units, cutting_speed=2.0 * scale,
                      depth_per_pass=0.005 * scale, plunge_feed=1.0 * scale)
-            d.update(bazley_design(figure, units))
+            d.update(bazley_design(figure, 1.5 * scale))
             file_name = "bazley%d_%s.ngc" % (figure, units)
             with open(os.path.join(folder, file_name), "w") as f:
                 f.write(gcode(d))
