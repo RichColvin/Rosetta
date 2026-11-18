@@ -835,7 +835,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.13 - 18 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.14 - 18 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -2366,7 +2366,7 @@ Without the expansion box, its channels and limit switch jacks are greyed out an
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.13 - 18 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.14 - 18 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -4057,7 +4057,7 @@ Anyone who knows the topic can read your alerts. To keep them private, add a wor
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.13 - 18 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.14 - 18 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
@@ -10048,7 +10048,7 @@ Anyone who knows the topic can read your alerts. To keep them private, add a wor
                                 <property name="can-focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <property name="label" translatable="yes">O/S 1.0 Beta 1.13 - 18 November 2026</property>
+                                <property name="label" translatable="yes">O/S 1.0 Beta 1.14 - 18 November 2026</property>
                                 <property name="justify">right</property>
                                 <property name="width-chars">9</property>
                                 <attributes>
