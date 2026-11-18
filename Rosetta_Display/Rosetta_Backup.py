@@ -72,6 +72,8 @@
 #   1.1 - 09 November 2026 - Restore from USB; both windows can open
 #         from Rosetta Settings' File menu; the repo is found from this
 #         file's own folder
+#   1.2 - 18 November 2026 - backs up ~/Documents/Rosettes (the Rosette
+#         Designer's 3D printing files)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -130,6 +132,8 @@ BACKUP_SOURCES = [
     ("Rosetta_Custom", os.path.join(REPO_DIR, "Rosetta_Custom"),
      ["Rosetta_Custom.hal", "Rosetta_Tool.tbl"], False),
     ("nc_files", os.path.join(HOME_DIR, "linuxcnc/nc_files"), ["*"], True),
+    # The Rosette Designer's 3D printing files (STL and STEP).
+    ("Rosettes", os.path.join(HOME_DIR, "Documents", "Rosettes"), ["*"], True),
 ]
 
 BACKUP_ROOT_NAME = "Rosetta_Backup"

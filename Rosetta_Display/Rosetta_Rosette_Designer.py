@@ -102,6 +102,8 @@
 #   1.22 - 17 November 2026 - Check Circle button: saves a program
 #         that draws a circle round C's axis, to set the start radius
 #         (Rich)
+#   1.23 - 18 November 2026 - Save for 3D Printing: the rosette itself
+#         as STL and STEP files (rosetta_rosette_3d.py - Rich)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -155,6 +157,7 @@ import numpy
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import rosetta_rosettes as rr
+import rosetta_rosette_3d as r3d
 import rosetta_settings_io
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -182,7 +185,8 @@ LOCK_PATH = os.path.expanduser("~/.config/Rosetta/Rosette_Designer.lock")
 # Settings measured in machine units: converted when the measurement
 # system differs from the one a design was made in.
 LENGTH_KEYS = ("amplitude", "pump_amplitude", "wrap_amplitude", "depth_per_pass", "preview_radius",
-               "advance_x", "advance_z", "ellipse_a", "ellipse_b")
+               "advance_x", "advance_z", "ellipse_a", "ellipse_b", "print_diameter", "print_thickness",
+               "print_bore", "print_hole_radius", "print_hole_diameter", "print_rim_width")
 FEED_KEYS = ("plunge_feed",)
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
@@ -193,6 +197,18 @@ RANGES = {
     "mm": {"amplitude": (0.002, 25.0, 0.02, 3), "depth_per_pass": (0.002, 2.5, 0.02, 3),
            "plunge_feed": (2.0, 500.0, 1.0, 0), "preview_radius": (1.0, 250.0, 1.0, 1),
            "advance": (0.0, 50.0, 0.5, 2), "ellipse": (0.2, 250.0, 0.2, 3)},
+}
+
+# Save for 3D Printing (PrintDialog): where the files go, and its
+# spin buttons' ranges per unit (lower, upper, step, digits).
+ROSETTES_DIR = os.path.expanduser("~/Documents/Rosettes")
+PRINT_RANGES = {
+    "inch": {"print_diameter": (0.5, 20.0, 0.125, 3), "print_thickness": (0.04, 2.0, 0.0625, 4),
+             "print_bore": (0.04, 6.0, 0.0625, 4), "print_hole_radius": (0.1, 10.0, 0.0625, 4),
+             "print_hole_diameter": (0.02, 1.0, 0.03125, 5), "print_rim_width": (0.04, 3.0, 0.0625, 4)},
+    "mm": {"print_diameter": (10.0, 500.0, 1.0, 1), "print_thickness": (1.0, 50.0, 0.5, 1),
+           "print_bore": (1.0, 150.0, 0.5, 1), "print_hole_radius": (2.0, 250.0, 0.5, 1),
+           "print_hole_diameter": (0.5, 25.0, 0.5, 1), "print_rim_width": (1.0, 75.0, 0.5, 1)},
 }
 
 # The notes column on the right: (heading, text, User Manual anchor),
@@ -268,8 +284,9 @@ NOTES = (
      "the radius of the rosette you want to make. Rose engines differ - some measure their rosettes "
      "across the points (Outside), others across the hollows (Inside).\n\n"
      "A physical rosette usually has phasing holes, which let it be turned relative to the work on "
-     "the rose engine. This program doesn't cut them - add them as you would for any rosette. "
-     "(Patterns cut with Rosetta itself don't need them: index on the Rosetta panel instead.)\n\n"
+     "the rose engine. The G-code program doesn't cut them - add them as you would for any rosette, "
+     "or use Save for 3D Printing, which puts them in. (Patterns cut with Rosetta itself don't need "
+     "them: index on the Rosetta panel instead.)\n\n"
      "Radius is used for the drawing, Straight sides and the note on where to start the cutter. The "
      "program itself cuts wherever the cutter is.",
      "ObjectSize"),
@@ -283,6 +300,29 @@ NOTES = (
      "\"Program 42% - pass 2 of 3\".\n\n"
      "C isn't turned back at the end - after three turns it reads 1080 degrees.",
      "Saving"),
+    ("3D Printing",
+     "Save for 3D Printing saves the rosette itself - to print, or to have made - as an STL file (for "
+     "a 3D printer's slicer) and a STEP file (for CAD programs and machine shops), in the Rosettes "
+     "folder in Documents. Both are in millimetres, whatever units the design uses.\n\n"
+     "A rocking rosette is a disc whose edge follows the pattern; a pumping rosette is a disc with a "
+     "raised rim whose top rises and falls with it. Set its diameter - measured at its largest or "
+     "smallest, as your rose engine's rosettes are (Machine fills in the usual size) - its "
+     "thickness, the centre bore and the phasing holes. The first phasing hole is where the pattern "
+     "starts.\n\n"
+     "Machine ratio: the rosette's wave is the Amplitude times this. On most rose engines the "
+     "rosette's wave and the cut's differ, set by the machine's levers - measure yours by cutting "
+     "with a rosette you know.\n\n"
+     "The edge is shaped for a point rubber: a real rubber's rounded nose cuts it a little softer "
+     "than designed. Seen from the top as printed, the rosette matches the drawing - for shapes that "
+     "aren't the same both ways round (the F-1 heart, S), check which face goes towards you on a "
+     "paper chuck first.\n\n"
+     "Printers hold about 0.1 mm (0.004\"), so very fine waves may not print, and plastic wears "
+     "against the rubber - a printed rosette suits trying a design before making it in metal or "
+     "wood.\n\n"
+     "Pumping rosettes are printed lying flat, so the patterned rim is built up in layers that leave "
+     "ridges: print at the smallest layer height your printer can, and use a rubber that rides over "
+     "what ridges remain, e.g. one with a roller bearing on its nose.",
+     "Print"),
 )
 NOTES_HEADING_COLOUR = "#1a5fb4"     # as Rosetta Settings' notes
 
@@ -573,7 +613,9 @@ class DesignerWindow(Gtk.Window):
                 ("Save G-code...", self._on_save, "Save this rosette as a G-code program in the gcode folder."),
                 ("Check Circle...", self._on_check_circle,
                  "Save a program that turns C once, so the cutter draws a circle round C's axis - "
-                 "its diameter shows whether the cutter is at the start radius.")):
+                 "its diameter shows whether the cutter is at the start radius."),
+                ("Save for 3D Printing...", self._on_print,
+                 "Save the rosette itself as STL and STEP files, to 3D print it or have it made.")):
             button = Gtk.Button(label=label)
             button.set_tooltip_text(tip)
             button.connect("clicked", handler)
@@ -942,6 +984,8 @@ class DesignerWindow(Gtk.Window):
             "radius_at": self._chosen(self.radius_at),
             "units": self.units,
         }
+        # The 3D printing settings are set in their own dialog (PrintDialog).
+        values.update({key: value for key, value in self.design.items() if key.startswith("print_")})
         for axis in ("x", "z"):
             values["advance_" + axis] = self.advance[axis].get_value()
             values["advance_%s_dir" % axis] = self._chosen(self.advance_dir[axis])
@@ -1412,6 +1456,16 @@ class DesignerWindow(Gtk.Window):
             self._message(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Check circle saved",
                           detail + " Open it in Rosetta with File > Open.")
 
+    def _on_print(self, widget):
+        """Save for 3D Printing: the rosette as STL and STEP files
+        (rosetta_rosette_3d.py - Rich, 18 November 2026)."""
+        self._commit_typing()
+        self._changed()
+        dialog = PrintDialog(self, self.design)
+        dialog.run_dialog()
+        self.design = dialog.design
+        self._save_last_design()
+
     def _check_circle_values(self):
         """(start radius, X advance, C deg/min) - radius None unless X
         rocks on the face, where the start radius matters."""
@@ -1437,6 +1491,353 @@ class DesignerWindow(Gtk.Window):
 # id for SIGUSR1.
 #######################################################################
 _single_instance_lock = None   # kept open (and so locked) until exit
+
+
+class PrintDialog(Gtk.Dialog):
+    """
+    Save for 3D Printing (Rich, 18 November 2026): the rosette's size,
+    machine ratio, thickness, bore and phasing holes, a drawing of it
+    seen from the top as printed, the checks, and Save. The settings
+    are the design's print_* keys, kept with the design.
+    """
+
+    def __init__(self, parent, design):
+        Gtk.Dialog.__init__(self, title="Save for 3D Printing", transient_for=parent, modal=True)
+        self.parent_window = parent
+        self.design = dict(design)
+        self.units = design["units"]
+        self.loading = False
+        self.geo = None
+        self.add_button("Close", Gtk.ResponseType.CLOSE)
+        self.save_button = self.add_button("Save...", Gtk.ResponseType.OK)
+        self.set_default_response(Gtk.ResponseType.OK)
+
+        unit = "in" if self.units == "inch" else "mm"
+        ranges = PRINT_RANGES[self.units]
+        grid = Gtk.Grid(column_spacing=8, row_spacing=4, border_width=10)
+        row = 0
+
+        def add(text, widget, tip):
+            nonlocal row
+            label = Gtk.Label(label=text, xalign=0)
+            label.set_tooltip_text(tip)
+            widget.set_tooltip_text(tip)
+            grid.attach(label, 0, row, 1, 1)
+            grid.attach(widget, 1, row, 1, 1)
+            row += 1
+            return label
+
+        def spin(key, lower, upper, step, digits):
+            box = Gtk.SpinButton.new_with_range(lower, upper, step)
+            box.set_digits(digits)
+            box.set_numeric(True)
+            box.set_width_chars(8)
+            box.set_halign(Gtk.Align.START)
+            box.connect("value-changed", lambda w: self._changed(key))
+            return box
+
+        axes = r3d.print_axes(self.design)
+        self.axis = {}
+        if len(axes) > 1:
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            group = None
+            for axis, text in (("X", "Rocking (X)"), ("Z", "Pumping (Z)")):
+                button = Gtk.RadioButton.new_with_label_from_widget(group, text)
+                group = group or button
+                button.connect("toggled", lambda w: w.get_active() and self._changed("print_axis"))
+                box.pack_start(button, False, False, 0)
+                self.axis[axis] = button
+            add("Rosette", box, "With Both, each rosette is saved on its own - choose which.")
+
+        self.machine = Gtk.ComboBoxText()
+        for key, (name, _, _) in r3d.MACHINES.items():
+            self.machine.append(key, name)
+        self.machine.set_halign(Gtk.Align.START)
+        self.machine.connect("changed", lambda w: self._changed("print_machine"))
+        add("Machine", self.machine, "Fills in the usual rosette size for this rose engine. Other keeps "
+                                      "whatever you enter.")
+        self.spins = {}
+        self.spins["print_diameter"] = spin("print_diameter", *ranges["print_diameter"])
+        add("Diameter (%s)" % unit, self.spins["print_diameter"],
+            "The rosette's diameter, measured where Measured at says.")
+        at_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self.at = {}
+        group = None
+        for value, text in (("largest", "Largest (across the points)"), ("smallest", "Smallest (across the hollows)")):
+            button = Gtk.RadioButton.new_with_label_from_widget(group, text)
+            group = group or button
+            button.connect("toggled", lambda w: w.get_active() and self._changed("print_diameter_at"))
+            at_box.pack_start(button, False, False, 0)
+            self.at[value] = button
+        self.at_label = add("Measured at", at_box, "Rose engines differ - some measure their rosettes "
+                                                   "across the points, others across the hollows.")
+        self.ratio = spin("print_ratio", 0.05, 20.0, 0.05, 2)
+        add("Machine ratio", self.ratio, "The rosette's wave is the Amplitude times this: the rosette's "
+                                         "movement against the cut's, set by the machine's levers.")
+        for key, text, tip in (
+                ("print_thickness", "Thickness (%s)" % unit, "How thick the disc is (a pumping rosette's "
+                                                              "rim stands at least 1 mm above it)."),
+                ("print_bore", "Centre bore (%s)" % unit, "The diameter of the hole in the middle."),
+                ("print_rim_width", "Rim width (%s)" % unit, "How wide the pumping rosette's patterned "
+                                                            "rim is, in from its edge.")):
+            self.spins[key] = spin(key, *ranges[key])
+            label = add(text, self.spins[key], tip)
+            if key == "print_rim_width":
+                self.rim_label = label
+        section = Gtk.Label(xalign=0)
+        section.set_markup("<i>Phasing holes</i>")
+        section.set_margin_top(4)
+        grid.attach(section, 0, row, 2, 1)
+        row += 1
+        self.holes = spin("print_holes", 0, 72, 1, 0)
+        add("    Number", self.holes, "How many phasing holes, evenly spaced (0 = none). The first is "
+                                      "where the pattern starts.")
+        for key, text, tip in (
+                ("print_hole_radius", "    On radius (%s)" % unit, "How far the holes' centres are from "
+                                                                    "the rosette's centre."),
+                ("print_hole_diameter", "    Hole diameter (%s)" % unit, "Each hole's size.")):
+            self.spins[key] = spin(key, *ranges[key])
+            add(text, self.spins[key], tip)
+        files = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        self.stl = Gtk.CheckButton(label="STL (3D printing)")
+        self.step = Gtk.CheckButton(label="STEP (CAD, machining)")
+        for button in (self.stl, self.step):
+            button.connect("toggled", lambda w: self._changed(None))
+            files.pack_start(button, False, False, 0)
+        files.set_margin_top(6)
+        add("Save as", files, "Which files to save - both are in millimetres.")
+
+        self.area = Gtk.DrawingArea()
+        self.area.set_size_request(380, 380)
+        self.area.connect("draw", self._draw)
+        self.message = Gtk.Label(xalign=0, wrap=True, max_width_chars=70)
+        self.message.set_use_markup(True)
+        self.message.set_margin_start(10)
+        self.message.set_margin_end(10)
+
+        top = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        top.pack_start(grid, False, False, 0)
+        top.pack_start(self.area, True, True, 0)
+        content = self.get_content_area()
+        content.pack_start(top, True, True, 0)
+        content.pack_start(self.message, False, False, 6)
+        self._put()
+        self._changed(None)
+        self.show_all()
+
+    def _put(self):
+        d = self.design
+        self.loading = True
+        if self.axis:
+            self.axis[r3d.chosen_axis(d)].set_active(True)
+        self.machine.set_active_id(d["print_machine"])
+        for key, box in self.spins.items():
+            box.set_value(d[key])
+        self.at[d["print_diameter_at"]].set_active(True)
+        self.ratio.set_value(d["print_ratio"])
+        self.holes.set_value(d["print_holes"])
+        self.stl.set_active(d["print_stl"])
+        self.step.set_active(d["print_step"])
+        self.loading = False
+
+    def _changed(self, key):
+        if self.loading:
+            return
+        d = self.design
+        if key == "print_machine":
+            d["print_machine"] = self.machine.get_active_id() or "other"
+            values = r3d.machine_values(d, d["print_machine"])
+            if values:
+                self.loading = True
+                self.spins["print_diameter"].set_value(values[0])
+                self.at[values[1]].set_active(True)
+                self.loading = False
+        elif key in ("print_diameter", "print_diameter_at"):
+            # A size of one's own: no longer the machine's usual one.
+            values = r3d.machine_values(d, d["print_machine"])
+            at = "largest" if self.at["largest"].get_active() else "smallest"
+            if values and (abs(values[0] - self.spins["print_diameter"].get_value()) > 1e-6 or values[1] != at):
+                self.loading = True
+                self.machine.set_active_id("other")
+                self.loading = False
+                d["print_machine"] = "other"
+        if self.axis:
+            d["print_axis"] = "X" if self.axis["X"].get_active() else "Z"
+        for name, box in self.spins.items():
+            d[name] = box.get_value()
+        d["print_diameter_at"] = "largest" if self.at["largest"].get_active() else "smallest"
+        d["print_ratio"] = self.ratio.get_value()
+        d["print_holes"] = int(self.holes.get_value())
+        d["print_stl"] = self.stl.get_active()
+        d["print_step"] = self.step.get_active()
+        self.design = rr.clean_design(d)
+        try:
+            self.geo = r3d.Rosette3D(self.design)
+        except Exception as e:      # never leave the dialog unusable
+            self.geo = None
+            print("Rosette Designer: 3D shape failed: %r" % (e,))
+        pump = self.geo is not None and self.geo.kind == "pump"
+        for widget in self.at.values():
+            widget.set_sensitive(not pump)      # a pumping rosette's diameter is its outside
+        if hasattr(self, "rim_label"):
+            for widget in (self.rim_label, self.spins["print_rim_width"]):
+                widget.set_no_show_all(not pump)    # only a pumping rosette has a rim
+                widget.set_visible(pump)
+        self._update_message()
+        self.area.queue_draw()
+
+    def _update_message(self):
+        geo = self.geo
+        lines = []
+        ok = geo is not None and not geo.problems and (self.design["print_stl"] or self.design["print_step"])
+        if geo is None:
+            lines.append('<span foreground="#c01c28">This rosette can\'t be made into a solid.</span>')
+        else:
+            unit = "\"" if self.units == "inch" else " mm"
+            to = lambda mm: ("%.3f" % r3d._from_mm(self.design, mm)).rstrip("0").rstrip(".") + unit
+            if geo.kind == "rock":
+                lines.append("Rocking rosette: %s across at its largest, %s at its smallest; the wave is "
+                             "%s deep." % (to(2 * geo.largest), to(2 * geo.smallest), to(geo.wave_mm())))
+            else:
+                lines.append("Pumping rosette: %s across, the rim %s wide rising and falling %s." %
+                             (to(2 * geo.outer_radius), to(geo.outer_radius - geo.inner_radius),
+                              to(geo.wave_mm())))
+            for text in geo.problems:
+                lines.append('<span foreground="#c01c28">%s</span>' % GLib.markup_escape_text(text))
+            for text in geo.warnings:
+                lines.append('<span foreground="#b5560b">%s</span>' % GLib.markup_escape_text(text))
+        if not (self.design["print_stl"] or self.design["print_step"]):
+            lines.append('<span foreground="#c01c28">Tick STL, STEP or both.</span>')
+        self.message.set_markup("\n".join(lines))
+        self.save_button.set_sensitive(ok)
+
+    def _draw(self, area, cr):
+        width, height = area.get_allocated_width(), area.get_allocated_height()
+        cr.set_source_rgb(*BACKGROUND)
+        cr.paint()
+        geo = self.geo
+        if geo is None or (geo.kind == "rock" and geo.smallest <= 0) or (geo.kind == "pump" and geo.inner_radius <= 0):
+            return
+        theta = numpy.linspace(0.0, 360.0, 3601)
+        rad = numpy.radians(theta)
+        outer = geo.largest if geo.kind == "rock" else geo.outer_radius
+        scale = 0.42 * min(width, height) / outer
+        cx, cy = width / 2.0, height / 2.0
+        cr.set_fill_rule(0)     # winding: the holes drawn the other way round
+        if geo.kind == "rock":
+            r = geo.radius(theta)
+            cr.set_source_rgb(*WOOD)
+            for i, (a, rr_) in enumerate(zip(rad, r)):
+                (cr.move_to if i == 0 else cr.line_to)(cx + rr_ * scale * math.cos(a), cy - rr_ * scale * math.sin(a))
+            cr.close_path()
+            cr.fill()
+        else:
+            # The rim shaded by its height (darker = higher), the flat part plain.
+            cr.set_source_rgb(*WOOD)
+            cr.arc(cx, cy, geo.outer_radius * scale, 0, 2 * math.pi)
+            cr.fill()
+            # Pieces a quarter degree wide - thinner ones blur into a
+            # moire pattern on screen.
+            ring = numpy.linspace(0.0, 360.0, 1441)
+            ring_rad = numpy.radians(ring)
+            top = geo.top((ring[:-1] + ring[1:]) / 2.0)
+            span = max(top.max() - top.min(), 1e-9)
+            ri, ro = geo.inner_radius * scale, geo.outer_radius * scale
+            for i in range(len(ring) - 1):
+                shade = (top[i] - top.min()) / span
+                cr.set_source_rgb(0.85 - 0.6 * shade, 0.70 - 0.5 * shade, 0.45 - 0.3 * shade)
+                a, b = ring_rad[i], ring_rad[i + 1] + 0.0005     # a hair of overlap, so no seams show
+                for k, (radius, angle) in enumerate(((ri, a), (ro, a), (ro, b), (ri, b))):
+                    (cr.move_to if k == 0 else cr.line_to)(cx + radius * math.cos(angle),
+                                                           cy - radius * math.sin(angle))
+                cr.close_path()
+                cr.fill()
+        cr.set_source_rgb(*BACKGROUND)
+        cr.arc(cx, cy, geo.bore_radius * scale, 0, 2 * math.pi)
+        cr.fill()
+        for hx, hy in (geo.hole_centres() if geo.holes else []):
+            cr.arc(cx + hx * scale, cy - hy * scale, max(geo.hole_size * scale, 1.0), 0, 2 * math.pi)
+            cr.fill()
+        # Where the pattern starts (0 degrees): a mark outside the edge.
+        edge = (geo.radius(numpy.array([0.0]))[0] if geo.kind == "rock" else geo.outer_radius) * scale
+        cr.set_source_rgb(*INK)
+        cr.move_to(cx + edge + 4, cy)
+        cr.line_to(cx + edge + 14, cy - 6)
+        cr.line_to(cx + edge + 14, cy + 6)
+        cr.close_path()
+        cr.fill()
+        cr.set_font_size(11)
+        extents = cr.text_extents("Start")
+        cr.move_to(min(cx + edge + 14 - extents.width, width - extents.width - 2), cy + 20)
+        cr.show_text("Start")
+
+    def run_dialog(self):
+        while True:
+            response = self.run()
+            if response != Gtk.ResponseType.OK:
+                break
+            if self._save():
+                break
+        self.destroy()
+
+    def _ask(self, message_type, buttons, text, detail):
+        dialog = Gtk.MessageDialog(transient_for=self, modal=True, message_type=message_type,
+                                   buttons=buttons, text=text)
+        dialog.format_secondary_text(detail)
+        response = dialog.run()
+        dialog.destroy()
+        return response
+
+    def _save(self):
+        """Asks for a name, writes the files; True when saved."""
+        d, geo = self.design, self.geo
+        if geo is None or geo.problems:
+            return False
+        os.makedirs(ROSETTES_DIR, exist_ok=True)
+        chooser = Gtk.FileChooserDialog(title="Save the rosette for 3D printing", transient_for=self,
+                                        action=Gtk.FileChooserAction.SAVE)
+        chooser.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
+        chooser.set_current_folder(ROSETTES_DIR)
+        chooser.set_current_name(r3d.default_name(d, geo.axis))
+        response = chooser.run()
+        path = chooser.get_filename()
+        chooser.destroy()
+        if response != Gtk.ResponseType.OK or not path:
+            return False
+        base, extension = os.path.splitext(path)
+        if extension.lower() not in (".stl", ".step", ".stp"):
+            base = path
+        folder, name = os.path.dirname(base), os.path.basename(base)
+        wanted = [ext for ext, on in ((".stl", d["print_stl"]), (".step", d["print_step"])) if on]
+        existing = [name + ext for ext in wanted if os.path.exists(os.path.join(folder, name + ext))]
+        if existing and self._ask(Gtk.MessageType.QUESTION, Gtk.ButtonsType.YES_NO, "Replace?",
+                                  "%s already there. Replace %s?" % (
+                                      " and ".join(existing) + (" are" if len(existing) > 1 else " is"),
+                                      "them" if len(existing) > 1 else "it")) != Gtk.ResponseType.YES:
+            return False
+        window = self.get_window()
+        if window:
+            window.set_cursor(Gdk.Cursor.new_from_name(window.get_display(), "wait"))
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+        try:
+            paths, geo = r3d.save(d, folder, name, geo.axis, d["print_stl"], d["print_step"])
+        except (OSError, ValueError) as e:
+            if window:
+                window.set_cursor(None)
+            self._ask(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, "Could not save the rosette", str(e))
+            return False
+        if window:
+            window.set_cursor(None)
+        print("Rosette Designer: saved " + ", ".join(paths))
+        detail = ("Saved %s in %s. Both files are in millimetres." %
+                  (" and ".join(os.path.basename(p) for p in paths), folder))
+        if geo.kind == "pump":
+            detail += ("\n\nPumping rosette: print it at the smallest layer height your printer can, and "
+                       "use a rubber that rides over the ridges left (e.g. one with a roller bearing on "
+                       "its nose).")
+        self._ask(Gtk.MessageType.INFO, Gtk.ButtonsType.OK, "Rosette saved", detail)
+        return True
 
 
 def _take_single_instance_lock():

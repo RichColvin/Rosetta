@@ -706,6 +706,21 @@ DEFAULT_DESIGN = {
     "advance_x_dir": "centre",  # "centre" or "away"
     "advance_z": 0.0,
     "advance_z_dir": "headstock",   # "headstock" or "away"
+    # Saving the rosette itself for 3D printing (rosetta_rosette_3d.py,
+    # Rich 18 November 2026). Lengths in machine units, as above.
+    "print_axis": "X",          # which rosette, when motion is "both"
+    "print_machine": "mdf",     # starting values: rosetta_rosette_3d.MACHINES
+    "print_diameter": 7.0,      # the rosette's diameter ...
+    "print_diameter_at": "smallest",    # ... at its "largest" or "smallest"
+    "print_ratio": 1.0,         # rosette amplitude = amplitude x this
+    "print_thickness": 0.375,
+    "print_bore": 1.0,          # centre bore diameter
+    "print_holes": 12,          # phasing holes (0 = none) ...
+    "print_hole_radius": 1.5,   # ... on this radius ...
+    "print_hole_diameter": 0.25,    # ... this size
+    "print_rim_width": 0.375,   # a pumping rosette's patterned rim
+    "print_stl": True,
+    "print_step": True,
 }
 
 # Largest straight-line error allowed between the program's points and
@@ -766,7 +781,10 @@ def clean_design(design):
                          ("depth_mode", ("passes", "turns")), ("units", ("inch", "mm")),
                          ("radius_at", ("outside", "inside")),
                          ("advance_x_dir", ("centre", "away")),
-                         ("advance_z_dir", ("headstock", "away"))):
+                         ("advance_z_dir", ("headstock", "away")),
+                         ("print_axis", ("X", "Z")),
+                         ("print_machine", ("mdf", "armbruster", "lindow", "other")),
+                         ("print_diameter_at", ("largest", "smallest"))):
         if d[key] not in choices:
             d[key] = DEFAULT_DESIGN[key]
     d["c_direction"] = -1 if d["c_direction"] < 0 else 1
@@ -778,6 +796,10 @@ def clean_design(design):
     d["spring_passes"] = min(max(d["spring_passes"], 0), 5)
     for axis in ("x", "z"):
         d["advance_" + axis] = max(d["advance_" + axis], 0.0)
+    for key in ("print_diameter", "print_ratio", "print_thickness", "print_bore",
+                "print_hole_radius", "print_hole_diameter", "print_rim_width"):
+        d[key] = max(d[key], 0.0)
+    d["print_holes"] = min(max(d["print_holes"], 0), 360)
     return d
 
 
