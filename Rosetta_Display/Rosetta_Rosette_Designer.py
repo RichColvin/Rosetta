@@ -320,7 +320,8 @@ NOTES = (
      "Phasing holes a quarter lobe apart each turn the pattern a quarter lobe on from the last - 0, "
      "1/4, 1/2, 3/4, 1 lobe... - so how far apart they are depends on the rosette's lobes: 11.25 "
      "degrees on an 8-lobe rosette, 22.5 on a 4-lobe one. On rosettes with many lobes they go 1 1/4 "
-     "lobes apart instead, which phases the same.\n\n"
+     "lobes apart instead, which phases the same. Centred at sets where round the rosette they "
+     "are grouped - the MDF Rose Engine's are at the start, midway between its slots.\n\n"
      "Printed holes come out smaller than drawn: Printed hole allowance is added to the bore, the "
      "phasing holes and the slots in the STL, so they print the right size. The STEP file keeps "
      "their true sizes, for machining.\n\n"
@@ -1632,6 +1633,11 @@ class PrintDialog(Gtk.Dialog):
                  "Each hole's true size (#30 drill = 0.1285\" on the MDF Rose Engine).")):
             self.spins[key] = spin(key, *ranges[key])
             add(text, self.spins[key], tip)
+        self.spins["print_hole_centre"] = spin("print_hole_centre", 0.0, 359.0, 15.0, 1)
+        add("    Centred at (degrees)", self.spins["print_hole_centre"],
+            "Where round the rosette the holes are grouped: 0 is where the pattern starts (to the right "
+            "on the drawing), 90 the top. The MDF Rose Engine's are at 0, midway between its slots. A "
+            "quarter lobe apart, they're moved to the nearest whole lobe, to keep the phasing.")
         heading("Mounting slots")
         self.slots = spin("print_slots", 0, 12, 1, 0)
         add("    Number", self.slots, "Arced slots for the screws that hold the rosette to its drive "

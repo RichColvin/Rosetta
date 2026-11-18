@@ -71,12 +71,15 @@ MM_PER_INCH = 25.4
 # on a 6" circle a quarter lobe apart from 0 to 2 lobes, and two arced
 # slots on a 5" circle spanning 90 degrees, top and bottom, for the
 # 1/4-20 screws that hold the rosette to its drive gear (0.266" = a
-# free fit). Others: only their usual size (Rich, 15 November 2026).
+# free fit). The holes centred at 0 degrees - the pattern's start, a
+# quarter turn from the slots, midway between them (Rich, 18 November
+# 2026: on the MDF Rose Engine they aren't over a slot). Others: only
+# their usual size (Rich, 15 November 2026).
 MACHINES = {
     "mdf": ("MDF Rose Engine", {
         "print_diameter": 7.0, "print_diameter_at": "smallest", "print_thickness": 0.5,
         "print_bore": 1.002, "print_hole_layout": "quarter", "print_holes": 9,
-        "print_hole_circle": 6.0, "print_hole_diameter": 0.1285, "print_slots": 2,
+        "print_hole_circle": 6.0, "print_hole_diameter": 0.1285, "print_hole_centre": 0.0, "print_slots": 2,
         "print_slot_circle": 5.0, "print_slot_span": 90.0, "print_slot_width": 0.266}),
     "armbruster": ("Armbruster Mark II", {"print_diameter": 7.0, "print_diameter_at": "largest"}),
     "lindow": ("Lindow", {"print_diameter": 5.0, "print_diameter_at": "largest"}),
@@ -86,9 +89,10 @@ MACHINES = {
 MACHINE_LENGTHS = ("print_diameter", "print_thickness", "print_bore", "print_hole_circle",
                    "print_hole_diameter", "print_slot_circle", "print_slot_width")
 
-# Where the phasing holes and slots are centred: the top, as on the
-# MDF drawing (0 degrees, where the pattern starts, is to the right).
-FEATURE_CENTRE_DEG = 90.0
+# Where the slots are centred (0 degrees, where the pattern starts, is
+# to the right): top and bottom, as on the MDF drawing. The phasing
+# holes' centre is a setting (print_hole_centre).
+SLOT_CENTRE_DEG = 90.0
 
 MESH_TOLERANCE_MM = 0.01        # STL: straight pieces within this of the true shape
 CURVE_TOLERANCE_MM = 0.002      # STEP: its curves within this of the true shape
@@ -227,8 +231,8 @@ class Rosette3D(object):
         round. "quarter" (the MDF drawing, Rich 18 November 2026): each
         a quarter lobe on from the last (hole_step_lobes) - the first at
         a whole lobe from the pattern's start, so the holes phase it by
-        0, 1/4, 1/2 ... lobe - centred as near the top as whole lobes
-        allow. Holes that would come round onto others are left out.
+        0, 1/4, 1/2 ... lobe - centred as near print_hole_centre as whole
+        lobes allow. Holes that would come round onto others are left out.
         '''
         n = self.holes
         if n <= 0:
@@ -238,7 +242,7 @@ class Rosette3D(object):
         lobes = max(self.ros["lobes"], 1)
         lobe_deg = 360.0 / lobes
         step = self.hole_step_lobes()
-        first = round((FEATURE_CENTRE_DEG - (n - 1) / 2.0 * step * lobe_deg) / lobe_deg)
+        first = round((self.design["print_hole_centre"] - (n - 1) / 2.0 * step * lobe_deg) / lobe_deg)
         turns = (first + numpy.arange(n) * step) / lobes
         angles = numpy.mod(rr._angles(self.ros, numpy.mod(turns, 1.0)), 360.0)
         keep, seen = [], set()
@@ -255,7 +259,7 @@ class Rosette3D(object):
 
     def slot_centres(self):
         '''Each slot's middle angle (degrees): evenly round from the top.'''
-        return [(FEATURE_CENTRE_DEG + k * 360.0 / self.slots) % 360.0 for k in range(self.slots)]
+        return [(SLOT_CENTRE_DEG + k * 360.0 / self.slots) % 360.0 for k in range(self.slots)]
 
     def slot_tip_deg(self):
         '''How far a slot's rounded end reaches past its end's centre, in
