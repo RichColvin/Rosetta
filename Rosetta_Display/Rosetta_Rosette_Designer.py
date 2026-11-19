@@ -109,6 +109,8 @@
 #         printed hole allowance; Machine fills in all of it
 #   1.25 - 19 November 2026 - 3D Printing note: other machines' holes
 #         and slots are sized in the MDF's proportion
+#   1.26 - 19 November 2026 - 3D Printing note: the Lindow's have no
+#         phasing holes or slots
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -318,9 +320,10 @@ NOTES = (
      "raised rim whose top rises and falls with it. Set its diameter - measured at its largest or "
      "smallest, as your rose engine's rosettes are - its thickness, the centre bore, the phasing "
      "holes and the slots for the screws that hold it to its drive gear. Machine fills in your rose "
-     "engine's usual values (the MDF Rose Engine's from its rosette drawing; for the others only "
-     "the size is known, so the phasing holes and slots are put on circles in the same proportion "
-     "as the MDF's - check them against your own rosettes).\n\n"
+     "engine's usual values (the MDF Rose Engine's from its rosette drawing; the Lindow's have no "
+     "phasing holes or slots; for the Armbruster only the size is known, so its phasing holes and "
+     "slots are put on circles in the same proportion as the MDF's - check them against your own "
+     "rosettes).\n\n"
      "Phasing holes a quarter lobe apart each turn the pattern a quarter lobe on from the last - 0, "
      "1/4, 1/2, 3/4, 1 lobe... - so how far apart they are depends on the rosette's lobes: 11.25 "
      "degrees on an 8-lobe rosette, 22.5 on a 4-lobe one. On rosettes with many lobes they go 1 1/4 "

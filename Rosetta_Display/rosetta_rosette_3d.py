@@ -49,6 +49,7 @@
 #         slots for the drive gear's screws, a printed-hole allowance
 #   1.2 - 19 November 2026 - Armbruster and Lindow: holes and slots
 #         sized to the rosette (the MDF's were outside a 5" Lindow)
+#   1.3 - 19 November 2026 - Lindow: no phasing holes or slots (Rich)
 #
 # Copyright (c) 2026 Colvin Tools / Brainwave Embedded - MIT License
 #######################################################################
@@ -84,7 +85,8 @@ MACHINES = {
         "print_hole_circle": 6.0, "print_hole_diameter": 0.1285, "print_hole_centre": 0.0, "print_slots": 2,
         "print_slot_circle": 5.0, "print_slot_span": 90.0, "print_slot_width": 0.266}),
     "armbruster": ("Armbruster Mark II", {"print_diameter": 7.0, "print_diameter_at": "largest"}),
-    "lindow": ("Lindow", {"print_diameter": 5.0, "print_diameter_at": "largest"}),
+    "lindow": ("Lindow", {"print_diameter": 5.0, "print_diameter_at": "largest",
+                          "print_holes": 0, "print_slots": 0}),   # Rich, 19 November 2026
     "other": ("Other", {}),
 }
 # MACHINES' lengths (inches, converted for a mm design).
