@@ -59,6 +59,8 @@
 #         turns to close is refused with a note, keeping the last one
 #         (a decimal V such as 0.371 locked the window up); typing in
 #         the V and k boxes is worked out once it pauses, not per key
+#   1.5 - 19 November 2026 - V1 and V2 are spin buttons like the
+#         others, keeping an exact fraction such as 7/3
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -94,6 +96,7 @@
 #######################################################################
 
 import fcntl
+from fractions import Fraction
 import json
 import math
 import os
@@ -142,6 +145,7 @@ FEED_KEYS = ("cutting_speed", "plunge_feed")
 PATTERN_KEYS = (("entry", "v1", "v2", "l1", "l2", "l3", "g3", "rotation")
                 + tuple("%s%d" % (key, n) for key in ("r", "k", "phase") for n in range(1, gc.STAGES + 1)))
 TYPING_PAUSE_MS = 500           # V and k boxes: worked out once typing pauses this long
+V_LIMIT = 1000                  # V1, V2: largest size either way
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
 RANGES = {
@@ -382,7 +386,7 @@ class DesignerWindow(Gtk.Window):
 
         # Chuck settings (Roy Lindley's): L1 L2 L3, V1 V2, G3, Rotation.
         chuck = Gtk.Grid(column_spacing=8, row_spacing=4)
-        self.chuck_l, self.chuck_v = {}, {}
+        self.chuck_l, self.chuck_v, self.v_exact = {}, {}, {}
         crow = 0
         for n, tip in ((1, "The first circle's radius."), (2, "The second circle's radius."),
                        (3, "The third circle's radius - 0 for a one-stage figure.")):
@@ -392,22 +396,8 @@ class DesignerWindow(Gtk.Window):
                            "the first. A whole number or a fraction such as 7/3."),
                        (2, "The second ratio: the third circle turns (1 - V1) + V1 x V2 times. "
                            "0 when L3 is 0.")):
-            entry = Gtk.Entry()
-            entry.set_width_chars(8)
-            entry.connect("changed", lambda w: self._changed_soon())
-            self.chuck_v[n] = entry
-            # - and + as on the other settings (Roy Lindley): a step of 1,
-            # through 0 to minus - the other way round (an idler).
-            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-            box.set_halign(Gtk.Align.START)
-            box.get_style_context().add_class("linked")
-            box.pack_start(entry, False, False, 0)
-            for sign, text in ((-1, "\u2212"), (1, "+")):
-                button = Gtk.Button(label=text)
-                button.set_tooltip_text("V%d %s 1" % (n, "minus" if sign < 0 else "plus"))
-                button.connect("clicked", self._on_v_step, n, sign)
-                box.pack_start(button, False, False, 0)
-            crow = self._row(chuck, crow, "V%d" % n, box, tip)
+            self.chuck_v[n] = self._fraction_spin(n)
+            crow = self._row(chuck, crow, "V%d" % n, self.chuck_v[n], tip)
         self.chuck_g3 = self._spin(0.0, 359.9, 5.0, 1)
         crow = self._row(chuck, crow, "G3 (deg)", self.chuck_g3,
                          "Where the third circle starts. A figure and its companion differ by 180.")
@@ -673,7 +663,7 @@ class DesignerWindow(Gtk.Window):
         for n in (1, 2, 3):
             self.chuck_l[n].set_value(d["l%d" % n])
         for n in (1, 2):
-            self.chuck_v[n].set_text(d["v%d" % n])
+            self._set_v(n, d["v%d" % n])
         self.chuck_g3.set_value(d["g3"])
         self.chuck_rotation.set_value(d["rotation"])
         self.bazley_size.set_value(d["bazley_size"])
@@ -781,10 +771,56 @@ class DesignerWindow(Gtk.Window):
         self._changed()
         return False
 
-    def _on_v_step(self, widget, n, sign):
-        v = gc.parse_k(self.chuck_v[n].get_text()) or 0
-        self.chuck_v[n].set_text(str(v + sign))
-        self._typing_paused()       # a click: at once
+    #################################################################
+    # V1 and V2: spin buttons holding exact fractions
+    #################################################################
+    # They look and step like the other settings' spin buttons (Roy
+    # Lindley, 19 November 2026: - and + by 1, through 0 to minus - the
+    # other way round, an idler), but show and keep an exact fraction
+    # such as 7/3, which a spin button's own number can't. As with the
+    # main panel's Sync Move distances: the box draws its own text
+    # ("output"), and what's typed is turned into a decimal GTK can read
+    # just before GTK reads it (_v_typed) - PyGObject can't answer GTK's
+    # "input" signal itself.
+    def _fraction_spin(self, n):
+        spin = Gtk.SpinButton.new_with_range(-V_LIMIT, V_LIMIT, 1.0)
+        spin.set_digits(9)              # the value must hold a fraction's decimal
+        spin.set_numeric(False)         # so "/" can be typed
+        spin.set_width_chars(8)
+        spin.set_halign(Gtk.Align.START)
+        spin.set_hexpand(False)
+        self.v_exact[n] = Fraction(0)
+        spin.connect("output", self._v_output, n)
+        for signal in ("activate", "focus-out-event", "button-press-event"):
+            spin.connect(signal, self._v_typed, n)
+        spin.connect("changed", lambda w: self._changed_soon())
+        spin.connect("value-changed", lambda w: self._changed())
+        return spin
+
+    def _v_typed(self, spin, *args):
+        n = args[-1]                    # (event,) n - or just n for activate
+        v = gc.parse_k(spin.get_text())
+        if v is not None and abs(v) <= V_LIMIT:
+            self.v_exact[n] = v
+        # What GTK reads next (not a number: the last good value), shown
+        # as the fraction again by _v_output.
+        spin.set_text(repr(float(self.v_exact[n])))
+        return False                    # let GTK go on to read the box as usual
+
+    def _v_output(self, spin, n):
+        value = spin.get_adjustment().get_value()
+        exact = self.v_exact[n]
+        if abs(value - float(exact)) > 1e-7:     # stepped by - or +
+            exact += Fraction(value - float(exact)).limit_denominator(1000)
+            self.v_exact[n] = exact
+        spin.set_text(str(exact))
+        return True
+
+    def _set_v(self, n, text):
+        exact = gc.parse_k(text) or Fraction(0)
+        self.v_exact[n] = exact
+        self.chuck_v[n].set_value(float(exact))
+        self.chuck_v[n].set_text(str(exact))
 
     def _changed(self):
         if self.loading:
