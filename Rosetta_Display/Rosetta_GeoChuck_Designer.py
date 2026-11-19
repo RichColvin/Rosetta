@@ -54,6 +54,11 @@
 #         V1 V2, G3, Rotation) as the main way to set a pattern, the r/k
 #         stages as the other; every Bazley figure from his catalogue,
 #         filled in at a chosen size; credit to him in the notes
+#   1.4 - 19 November 2026 - (Roy Lindley) V1 and V2 have - and +
+#         buttons; a pattern needing more than gc.MAX_CLOSING_TURNS
+#         turns to close is refused with a note, keeping the last one
+#         (a decimal V such as 0.371 locked the window up); typing in
+#         the V and k boxes is worked out once it pauses, not per key
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -132,6 +137,11 @@ LOCK_PATH = os.path.expanduser("~/.config/Rosetta/GeoChuck_Designer.lock")
 LENGTH_KEYS = tuple("r%d" % n for n in range(1, gc.STAGES + 1)) + gc.CHUCK_LENGTH_KEYS + (
     "bazley_size", "depth_per_pass", "advance_x", "advance_z")
 FEED_KEYS = ("cutting_speed", "plunge_feed")
+# What sets the pattern - kept from the last good design when new
+# settings would need too many turns to close.
+PATTERN_KEYS = (("entry", "v1", "v2", "l1", "l2", "l3", "g3", "rotation")
+                + tuple("%s%d" % (key, n) for key in ("r", "k", "phase") for n in range(1, gc.STAGES + 1)))
+TYPING_PAUSE_MS = 500           # V and k boxes: worked out once typing pauses this long
 
 # Spin button ranges, per unit: (lower, upper, step, digits).
 RANGES = {
@@ -230,6 +240,9 @@ class DesignerWindow(Gtk.Window):
         self.units = "mm" if settings.get("measurement_system") == "Metric" else "inch"
         self.loading = False
         self.design = self._load_last_design()
+        self._good = self.design        # the last design that could be worked out
+        self.too_many = 0               # turns a refused pattern needed (0 = none)
+        self._typing_timer = None
         self._path_cache = (None, None)
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, border_width=10)
@@ -274,6 +287,8 @@ class DesignerWindow(Gtk.Window):
                 design = gc.clean_design(json.load(f))
         except (OSError, ValueError):
             design = gc.clean_design({})        # the standard design, in inches
+        if gc.closing_turns(design) > gc.MAX_CLOSING_TURNS:
+            design = gc.clean_design({})
         return self._convert(design, self.units)
 
     @staticmethod
@@ -379,10 +394,20 @@ class DesignerWindow(Gtk.Window):
                            "0 when L3 is 0.")):
             entry = Gtk.Entry()
             entry.set_width_chars(8)
-            entry.set_halign(Gtk.Align.START)
-            entry.connect("changed", lambda w: self._changed())
+            entry.connect("changed", lambda w: self._changed_soon())
             self.chuck_v[n] = entry
-            crow = self._row(chuck, crow, "V%d" % n, entry, tip)
+            # - and + as on the other settings (Roy Lindley): a step of 1,
+            # through 0 to minus - the other way round (an idler).
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+            box.set_halign(Gtk.Align.START)
+            box.get_style_context().add_class("linked")
+            box.pack_start(entry, False, False, 0)
+            for sign, text in ((-1, "\u2212"), (1, "+")):
+                button = Gtk.Button(label=text)
+                button.set_tooltip_text("V%d %s 1" % (n, "minus" if sign < 0 else "plus"))
+                button.connect("clicked", self._on_v_step, n, sign)
+                box.pack_start(button, False, False, 0)
+            crow = self._row(chuck, crow, "V%d" % n, box, tip)
         self.chuck_g3 = self._spin(0.0, 359.9, 5.0, 1)
         crow = self._row(chuck, crow, "G3 (deg)", self.chuck_g3,
                          "Where the third circle starts. A figure and its companion differ by 180.")
@@ -417,7 +442,7 @@ class DesignerWindow(Gtk.Window):
             entry.set_width_chars(6)
             entry.set_tooltip_text("Stage %d's speed: turns for each turn of the first - e.g. 6, -4 "
                                    "or 7/3." % n)
-            entry.connect("changed", lambda w: self._changed())
+            entry.connect("changed", lambda w: self._changed_soon())
             self.stage_k[n] = entry
             stages_grid.attach(entry, 2, srow, 1, 1)
             self.stage_phase[n] = self._spin(0.0, 359.9, 5.0, 1)
@@ -732,12 +757,44 @@ class DesignerWindow(Gtk.Window):
         for axis in ("x", "z"):
             values["advance_" + axis] = self.advance[axis].get_value()
             values["advance_%s_dir" % axis] = self._chosen(self.advance_dir[axis])
-        return gc.clean_design(values)
+        design = gc.clean_design(values)
+        # A pattern needing too many turns to close would take minutes to
+        # work out (Roy Lindley, 19 November 2026): keep the last one.
+        self.too_many = gc.closing_turns(design)
+        if self.too_many <= gc.MAX_CLOSING_TURNS:
+            self.too_many = 0
+            return design
+        for key in PATTERN_KEYS:
+            design[key] = self._good[key]
+        return gc.clean_design(design)
+
+    def _changed_soon(self):
+        """Typing in a V or k box: work it out once the typing pauses."""
+        if self.loading:
+            return
+        if self._typing_timer:
+            GLib.source_remove(self._typing_timer)
+        self._typing_timer = GLib.timeout_add(TYPING_PAUSE_MS, self._typing_paused)
+
+    def _typing_paused(self):
+        self._typing_timer = None
+        self._changed()
+        return False
+
+    def _on_v_step(self, widget, n, sign):
+        v = gc.parse_k(self.chuck_v[n].get_text()) or 0
+        self.chuck_v[n].set_text(str(v + sign))
+        self._typing_paused()       # a click: at once
 
     def _changed(self):
         if self.loading:
             return
+        if self._typing_timer:
+            GLib.source_remove(self._typing_timer)
+            self._typing_timer = None
         self.design = self._read_form()
+        if not self.too_many:
+            self._good = self.design
         d = self.design
         passes = d["depth_mode"] == "passes"
         for widget in (self.passes, self.depth_per_pass, self.plunge_feed, self.finish_pass,
@@ -857,6 +914,11 @@ class DesignerWindow(Gtk.Window):
                          "%s %s %s" % (axis, self._number(abs(gc.rr.advance(d, axis))), unit)
                          for axis in advancing))
 
+        if self.too_many:
+            warnings.append("Those settings would need %d turns of the work before the pattern closes - "
+                            "more than %d, too many to work out (a decimal such as 0.371 is "
+                            "371/1000). Use a simpler fraction, such as 3/8; the last pattern is "
+                            "shown until then." % (self.too_many, gc.MAX_CLOSING_TURNS))
         if self.bad_v:
             warnings.append("V%s isn't a number (e.g. -5 or 7/3) - the last good value is used."
                             % " and V".join(str(n) for n in self.bad_v))
@@ -1028,6 +1090,12 @@ class DesignerWindow(Gtk.Window):
         if not gc.stages(self.design):
             self._message(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, "There is no pattern",
                           "Every stage's r is 0. Set at least one stage first.")
+            return
+        if self.too_many:
+            self._message(Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, "The pattern needs too many turns",
+                          "These settings would need %d turns of the work before the pattern closes - "
+                          "more than %d. Use a simpler fraction for V1, V2 or k."
+                          % (self.too_many, gc.MAX_CLOSING_TURNS))
             return
         os.makedirs(GCODE_DIR, exist_ok=True)
         dialog = Gtk.FileChooserDialog(title="Save the pattern as a G-code program", transient_for=self,

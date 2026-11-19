@@ -82,6 +82,9 @@
 #         V2, G3, Rotation) as the main way in; Bazley_Index.csv is now
 #         his catalogue of every figure (1-3454, and his rose patterns
 #         3501-3554), filled in at a chosen size
+#   1.3 - 19 November 2026 - MAX_CLOSING_TURNS: a pattern needing more
+#         turns to close is refused (a decimal V1 such as 0.371, read
+#         as 371/1000, locked up the window - Roy Lindley)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -192,6 +195,11 @@ CHORD_TOLERANCE = rr.CHORD_TOLERANCE
 MAX_SEGMENT_DEG = 2.0           # no move turns C more than this
 MAX_POINTS = 60000              # per pattern
 MAX_SAMPLES = 400000
+# The most turns of the work a pattern may need before it closes. Every
+# figure in Bazley_Index.csv closes within 25; a decimal V such as 0.371
+# (371/1000) would need 1000, minutes of working out (Roy Lindley,
+# 19 November 2026).
+MAX_CLOSING_TURNS = 50
 
 
 def parse_k(text):
@@ -636,6 +644,9 @@ def default_file_name(design):
 def gcode(design):
     '''The whole program, as text.'''
     d = clean_design(design)
+    if closing_turns(d) > MAX_CLOSING_TURNS:
+        raise ValueError("the pattern needs %d turns to close - more than %d"
+                         % (closing_turns(d), MAX_CLOSING_TURNS))
     path = pattern_path(d)
     angles, radii, z, _ = path
     info = pattern_info(d, path)
