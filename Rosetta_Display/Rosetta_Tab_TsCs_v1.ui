@@ -30,6 +30,9 @@
 #                                                                     #
 # Version                                                             #
 #   1.0 - 21 July 2026                                                #
+#   1.1 - 19 November 2026 - the MIT License covers Rosetta's own     #
+#         files; Built on (the software Rosetta runs on and its       #
+#         licenses), Source code, and Acknowledgements added          #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -152,18 +155,43 @@ Usage License</property>
                     <property name="valign">start</property>
                     <property name="margin-top">12</property>
                     <property name="vexpand">True</property>
-                    <property name="label" translatable="yes">The Rosetta system is copyright (c) 2026 Colvin Tools and Brainwave Embedded.
+                    <property name="label" translatable="yes">&lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Rosetta&lt;/span&gt;
+The Rosetta system is copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 
-The following MIT/X Consortium License applies to the Rosetta system. Use of this system constitutes consent to the terms outlined below.
+The MIT/X Consortium License below applies to Rosetta's own files - its panels, programs, settings, designers, G-code subroutines and installers. Rosetta runs on other software, listed under "Built on", which keeps its own copyright and license. Use of this system constitutes consent to the terms outlined below.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Except as contained in this notice, the name of COPYRIGHT HOLDERS shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization from COPYRIGHT HOLDERS.</property>
+Except as contained in this notice, the name of COPYRIGHT HOLDERS shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization from COPYRIGHT HOLDERS.
+
+&lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Built on&lt;/span&gt;
+Rosetta is built on, and installed alongside, this software. Each keeps its own copyright and license; nothing here changes them.
+
+  • &lt;b&gt;LinuxCNC&lt;/b&gt; - copyright the LinuxCNC developers; the motion control, AXIS, HAL and GladeVCP Rosetta runs on. GNU General Public License (GPL) version 2; some libraries GNU Lesser GPL (LGPL). Source: https://github.com/LinuxCNC/linuxcnc
+  • &lt;b&gt;Mesa Electronics 7i92 FPGA firmware (hostmot2)&lt;/b&gt; - copyright Peter C. Wallace, Mesa Electronics; Rosetta's pin layout is built from it. GPL version 2 or later, or the 3-clause BSD License. Source: Rosetta_Setup/MesaCard in Rosetta's files, and https://www.mesanet.com
+  • &lt;b&gt;mesaflash&lt;/b&gt; - copyright Mesa Electronics and contributors; writes the firmware to the card. GPL version 2 or later. Source: https://github.com/LinuxCNC/mesaflash
+  • &lt;b&gt;Linux kernel (real-time build)&lt;/b&gt; - copyright Linus Torvalds and others. GPL version 2. Source: https://github.com/raspberrypi/linux
+  • &lt;b&gt;Debian GNU/Linux and Raspberry Pi OS, with the Xfce desktop&lt;/b&gt; - copyright their many authors. Mostly GPL and LGPL; each package's terms are in /usr/share/doc/&amp;lt;package&amp;gt;/copyright. Source: https://sources.debian.org
+  • &lt;b&gt;Python 3&lt;/b&gt; - copyright the Python Software Foundation. Python Software Foundation License.
+  • &lt;b&gt;GTK 3 and PyGObject&lt;/b&gt; - copyright the GNOME Project and contributors. LGPL version 2.1 or later.
+  • &lt;b&gt;cairo and pycairo&lt;/b&gt; - copyright their authors. LGPL version 2.1, or the Mozilla Public License 1.1.
+  • &lt;b&gt;NumPy&lt;/b&gt; - copyright the NumPy developers. 3-clause BSD License.
+  • &lt;b&gt;DejaVu fonts&lt;/b&gt; - copyright the DejaVu authors and Bitstream, Inc. The free Bitstream Vera / DejaVu font license.
+
+&lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Source code&lt;/span&gt;
+Rosetta's own source code: https://github.com/RichColvin/Rosetta
+The GNU GPL gives everyone who receives GPL software the right to its source code. Rosetta uses these programs as their projects publish them, unchanged (apart from the 7i92 pin layout, whose source is in Rosetta_Setup/MesaCard); their source code is at the addresses above. Colvin Tools will also supply a copy on request.
+
+&lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Acknowledgements&lt;/span&gt;
+  • &lt;b&gt;Roy Lindley&lt;/b&gt; - the Geometric Chuck Designer's chuck settings and its index of every Bazley figure come from his spreadsheet "Single and two-stage geometric chuck, Bazley math and parameters", about fifteen years' work, used with his permission.
+  • &lt;b&gt;T. S. Bazley&lt;/b&gt;, &lt;i&gt;Index to the Geometric Chuck&lt;/i&gt; (1875) - the figures the index numbers.
+  • &lt;b&gt;Holtzapffel &amp;amp; Co.&lt;/b&gt; - the Rosette Designer's Holtzapffel shapes are drawn from the drawings in their rosette guide.
+  • &lt;b&gt;ntfy&lt;/b&gt; (https://ntfy.sh) - the free service Phone Alerts are sent through. None of its software is part of Rosetta.</property>
+                    <property name="use-markup">True</property>
                     <property name="wrap">True</property>
                   </object>
                   <packing>

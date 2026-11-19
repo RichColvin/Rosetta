@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 RoseEngineButler
+Copyright (c) 2026 Colvin Tools and Brainwave Embedded
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+This license covers Rosetta's own files. Rosetta runs on other software -
+LinuxCNC, the Mesa Electronics 7i92 firmware (Rosetta_Setup/MesaCard),
+mesaflash, Linux, Debian / Raspberry Pi OS, Python, GTK, NumPy and others -
+which keeps its own copyright and license (much of it the GNU GPL). They are
+listed on the License tab in Rosetta (Rosetta_Display/Rosetta_Tab_TsCs_v1.ui).
