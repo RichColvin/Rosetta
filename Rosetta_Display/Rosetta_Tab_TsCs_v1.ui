@@ -184,7 +184,7 @@ Rosetta is built on, and installed alongside, this software. Each keeps its own 
 
 &lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Source code&lt;/span&gt;
 Rosetta's own source code: https://github.com/RichColvin/Rosetta
-The GNU GPL gives everyone who receives GPL software the right to its source code. Rosetta uses these programs as their projects publish them, unchanged (apart from the 7i92 pin layout, whose source is in Rosetta_Setup/MesaCard); their source code is at the addresses above. Colvin Tools will also supply a copy on request.
+The GNU GPL gives everyone who receives GPL software the right to its source code. Rosetta uses these programs as their projects publish them, unchanged (apart from the 7i92 pin layout, whose source is in Rosetta_Setup/MesaCard); their source code is at the addresses above.
 
 &lt;span size="large" weight="bold" foreground="#1a5fb4"&gt;Acknowledgements&lt;/span&gt;
   • &lt;b&gt;Roy Lindley&lt;/b&gt; - the Geometric Chuck Designer's chuck settings and its index of every Bazley figure come from his spreadsheet "Single and two-stage geometric chuck, Bazley math and parameters", about fifteen years' work, used with his permission.
