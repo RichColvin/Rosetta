@@ -31,6 +31,10 @@
 #         paused, fault siren, Pi too hot, box lost contact
 #   1.2 - 17 November 2026 - the pass counter also shows for
 #         Geometric Chuck Designer programs
+#   1.3 - 19 November 2026 - Run Operation enables Sp0/Sp1 like the
+#         other move buttons; MDI mode checked by task_mode (was
+#         task_state); spindle speed changes wait for MDI mode and say
+#         so when they can't (two "Must be in MDI mode" messages)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -772,6 +776,25 @@ def _confirm_roles_enabled(widget, roles):
                          + ("button" if len(off) == 1 else "buttons") + " for " + names
                          + ", then try again.")
     return False
+
+def _ensure_mdi_mode():
+    '''
+    Added 19 November 2026 - puts LinuxCNC in MDI mode for a panel
+    command; True once it is. False when it can't be: a G-code program
+    is running (LinuxCNC won't change mode then), or the change didn't
+    happen. Sending an MDI command anyway is what gave Rich two "Must
+    be in MDI mode to issue MDI command" messages when he changed the
+    spindle speed, 19 November 2026.
+    '''
+    s.poll()
+    if s.task_mode == linuxcnc.MODE_MDI:
+        return True
+    if s.task_mode == linuxcnc.MODE_AUTO and s.interp_state != linuxcnc.INTERP_IDLE:
+        return False
+    c.mode(linuxcnc.MODE_MDI)
+    c.wait_complete()
+    s.poll()
+    return s.task_mode == linuxcnc.MODE_MDI
 
 def _show_settings_error(widget, message):
     dialog = Gtk.MessageDialog(
@@ -1691,6 +1714,14 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION Sp0_Move_Fwd")
 
+        # Like every other move button (Rich, 19 November 2026 - Run
+        # Operation was missed): spindles with ENA off are enabled, or
+        # the operator asked, per Axis Not Enabled. Only spindles on a
+        # channel (sp1-ena-and exists even without one).
+        if not _confirm_roles_enabled(widget, [sp for sp in ("Sp0", "Sp1")
+                                               if sp in _ACTIVE_ROLES_AT_STARTUP]):
+            return
+
         # Ensure the system is in MDI mode - only switch if not already
         # there (matches _axis_idx_move/B_Move_Idx_Fwd/Sp0_Move_Idx_Fwd
         # etc.). This used to call c.mode(MODE_MDI) unconditionally on
@@ -1704,7 +1735,7 @@ class HandlerClass:
         # fix (see Gcode0/Gcode1 below) alone didn't resolve the spindle
         # 0 direction flip found via live halcmd pin tracing.
         s.poll()
-        if s.task_state != linuxcnc.MODE_MDI:
+        if s.task_mode != linuxcnc.MODE_MDI:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete() # Wait for mode change to complete
 
@@ -1896,7 +1927,7 @@ class HandlerClass:
         try:
             # Ensure the system is in MDI mode
             s.poll()
-            if s.task_state != linuxcnc.MODE_MDI:
+            if s.task_mode != linuxcnc.MODE_MDI:
                     c.mode(linuxcnc.MODE_MDI)
                     c.wait_complete() # Wait for mode change to complete
 
@@ -2004,7 +2035,7 @@ class HandlerClass:
         try:
             # Ensure the system is in MDI mode
             s.poll()
-            if s.task_state != linuxcnc.MODE_MDI:
+            if s.task_mode != linuxcnc.MODE_MDI:
                     c.mode(linuxcnc.MODE_MDI)
                     c.wait_complete() # Wait for mode change to complete
 
@@ -2085,11 +2116,19 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION Sp0_Move_Rev")
 
+        # Like every other move button (Rich, 19 November 2026 - Run
+        # Operation was missed): spindles with ENA off are enabled, or
+        # the operator asked, per Axis Not Enabled. Only spindles on a
+        # channel (sp1-ena-and exists even without one).
+        if not _confirm_roles_enabled(widget, [sp for sp in ("Sp0", "Sp1")
+                                               if sp in _ACTIVE_ROLES_AT_STARTUP]):
+            return
+
         # Ensure the system is in MDI mode - only switch if not already
         # there. See Sp0_Move_Fwd for why the previous unconditional
         # c.mode(MODE_MDI) call was removed.
         s.poll()
-        if s.task_state != linuxcnc.MODE_MDI:
+        if s.task_mode != linuxcnc.MODE_MDI:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete() # Wait for mode change to complete
 
@@ -2141,7 +2180,7 @@ class HandlerClass:
 
         # Ensure the system is in MDI mode
         s.poll()
-        if s.task_state != linuxcnc.MODE_MDI:
+        if s.task_mode != linuxcnc.MODE_MDI:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete() # Wait for mode change to complete
 
@@ -2211,20 +2250,22 @@ class HandlerClass:
         Gcode0 = "S" + str(self.Sp0_Feed) + " $0"
         Gcode1 = "S" + str(Sp1_Feed) + " $1"
 
-        # Ensure the system is in MDI mode
-        s.poll()
-        if s.task_state != linuxcnc.MODE_MDI:
-                c.mode(linuxcnc.MODE_MDI)
-                c.wait_complete() # Wait for mode change to complete
+        # MDI mode, or tell the operator why the speed can't change now
+        # (19 November 2026 - see _ensure_mdi_mode).
+        if not _ensure_mdi_mode():
+            print("Spindle speed not sent - LinuxCNC is not in MDI mode")
+            c.text_msg("Spindle speed not changed: a program is running, or LinuxCNC couldn't "
+                       "switch to MDI mode.  It will be used the next time the spindles start.")
+            return False
 
-        # Send an MDI commands to set the spindle speeds.
+        # Send an MDI commands to set the spindle speeds, each finished
+        # before the next (as Sp0_Move_Fwd does).
         print(Gcode0)
         c.mdi(Gcode0)
+        c.wait_complete()
 
         print(Gcode1)
         c.mdi(Gcode1)
-
-        # Wait for the command to complete
         c.wait_complete()
 
         return False  # one-shot timeout, not a repeating GLib source
@@ -2528,11 +2569,11 @@ class HandlerClass:
         print("self.Sp1_Pct = " + str(self.Sp1_Pct))
         print("Sp1_Feed = " + str(Sp1_Feed))
 
-        # Ensure the system is in MDI mode
-        s.poll()
-        if s.task_state != linuxcnc.MODE_MDI:
-                c.mode(linuxcnc.MODE_MDI)
-                c.wait_complete() # Wait for mode change to complete
+        if not _ensure_mdi_mode():      # see _Sp0_Send_Feed
+            print("Spindle speed not sent - LinuxCNC is not in MDI mode")
+            c.text_msg("Spindle speed not changed: a program is running, or LinuxCNC couldn't "
+                       "switch to MDI mode.  It will be used the next time the spindles start.")
+            return False
 
         # Send an MDI command to set the spindle speed.
         print(Gcode1)
@@ -4833,7 +4874,7 @@ def _axis_idx_move(axis, handler_name, gcode_sign):
         _set_depressed(widget, True)
         try:
             s.poll()
-            if s.task_state != linuxcnc.MODE_MDI:
+            if s.task_mode != linuxcnc.MODE_MDI:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete()
 
