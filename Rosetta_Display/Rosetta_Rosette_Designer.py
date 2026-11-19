@@ -107,6 +107,8 @@
 #   1.24 - 18 November 2026 - the MDF Rose Engine's mounting (drawing
 #         A-08): phasing holes a quarter lobe apart, mounting slots, a
 #         printed hole allowance; Machine fills in all of it
+#   1.25 - 19 November 2026 - 3D Printing note: other machines' holes
+#         and slots are sized in the MDF's proportion
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -316,7 +318,9 @@ NOTES = (
      "raised rim whose top rises and falls with it. Set its diameter - measured at its largest or "
      "smallest, as your rose engine's rosettes are - its thickness, the centre bore, the phasing "
      "holes and the slots for the screws that hold it to its drive gear. Machine fills in your rose "
-     "engine's usual values (the MDF Rose Engine's from its rosette drawing).\n\n"
+     "engine's usual values (the MDF Rose Engine's from its rosette drawing; for the others only "
+     "the size is known, so the phasing holes and slots are put on circles in the same proportion "
+     "as the MDF's - check them against your own rosettes).\n\n"
      "Phasing holes a quarter lobe apart each turn the pattern a quarter lobe on from the last - 0, "
      "1/4, 1/2, 3/4, 1 lobe... - so how far apart they are depends on the rosette's lobes: 11.25 "
      "degrees on an 8-lobe rosette, 22.5 on a 4-lobe one. On rosettes with many lobes they go 1 1/4 "
@@ -1685,6 +1689,10 @@ class PrintDialog(Gtk.Dialog):
         content = self.get_content_area()
         content.pack_start(top, True, True, 0)
         content.pack_start(self.message, False, False, 6)
+        if self.design["print_machine"] != "other":
+            # A machine's own values (editing one switches to Other), so
+            # take them afresh - a design saved before they changed.
+            self.design.update(r3d.machine_values(self.design, self.design["print_machine"]))
         self._put()
         self._changed(None)
         self.show_all()

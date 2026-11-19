@@ -47,6 +47,8 @@
 #   1.1 - 18 November 2026 - the MDF Rose Engine's mounting (Rich's
 #         drawing A-08): phasing holes a quarter lobe apart, arced
 #         slots for the drive gear's screws, a printed-hole allowance
+#   1.2 - 19 November 2026 - Armbruster and Lindow: holes and slots
+#         sized to the rosette (the MDF's were outside a 5" Lindow)
 #
 # Copyright (c) 2026 Colvin Tools / Brainwave Embedded - MIT License
 #######################################################################
@@ -131,6 +133,19 @@ def machine_values(design, machine):
     for key in MACHINE_LENGTHS:
         if key in values:
             values[key] = _from_mm(design, values[key] * MM_PER_INCH)
+    if machine != "other" and "print_hole_circle" not in values:
+        # Mounting not known for this machine: the MDF's phasing-hole and
+        # slot circles in proportion to this rosette's smallest diameter
+        # (6" and 5" on the MDF's 7"), so they're always inside it - left
+        # as they were, a 5" Lindow rosette had the MDF's 6" holes outside
+        # it and couldn't be saved (Rich, 19 November 2026).
+        mdf = MACHINES["mdf"][1]
+        sized = dict(design, **values)
+        sized["print_machine"] = "other"
+        geo = Rosette3D(rr.clean_design(sized))
+        smallest = 2.0 * (geo.smallest if geo.kind == "rock" else geo.inner_radius)
+        for key in ("print_hole_circle", "print_slot_circle"):
+            values[key] = _from_mm(design, smallest * mdf[key] / mdf["print_diameter"])
     return values
 
 
