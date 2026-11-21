@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Axis and Stepper Motor Tuning – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -24,10 +26,10 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Basic-Settings">Basic Settings</a></li><li class="toc-l1"><a href="#Scale_">Scale</a></li><li class="toc-l2"><a href="#Microsteps-and-Max-Speed">Microsteps and Max Speed</a></li><li class="toc-l1"><a href="#Max-Speed">Max Speed</a></li><li class="toc-l1"><a href="#Max-Acceleration">Max Acceleration</a></li><li class="toc-l1"><a href="#Backlash_">Backlash</a></li><li class="toc-l1"><a href="#The-warnings-line">The warnings line</a></li><li class="toc-l0"><a href="#Advanced-Settings">Advanced Settings</a></li><li class="toc-l1"><a href="#Linear-and-Rotary-Angular-axes">Linear and Rotary/Angular axes</a></li><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Restore-Defaults">Restore Defaults</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
   <div class="content">
 
-<p><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
+<p class="note"><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
 </p>
 <hr/>
-<h1 id="Basic-Settings"><span style="color: #00008b;"> Basic Settings</span></h1>
+<h1 id="Basic-Settings">Basic Settings</h1>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-AxisStepperMotorTuning.png" width="325px"/><br/><span class="caption"><strong><em>Axis and Stepper Motor Tuning</em></strong></span></span></div>
 <p>This page has three groups:  <strong>Linear</strong> axes (X, Z, U, V, W), <strong>Rotary/Angular</strong> axes (A, B, C), and <strong>Spindles</strong> (Sp0, Sp1).  Each axis has its own column, and each setting has its own row.  The column to the right of each row explains that row.
 </p>
@@ -53,7 +55,7 @@
 </td><td valign="top"> Yes
 </td></tr></table>
 <p class="vspace"><a id="Scale"></a>
-</p><h2 id="Scale_"><span style="color: #00008b;"> Scale</span></h2>
+</p><h2 id="Scale_">Scale</h2>
 <p>This is the number of pulses Rosetta sends to the stepper drive to move the axis one unit:  one inch (or mm) for a linear axis, one degree for a rotary/angular axis, and one revolution for a spindle.  For example, in the screen to the right, 57,600 pulses are needed for the Sp0 spindle to turn 360°.
 </p>
 
@@ -63,7 +65,7 @@
 </p>
 <ul><li>If the axis moves the wrong way, change the sign of the Scale (+ to -, or - to +).
 </li></ul><p class="vspace"><a id="Microsteps"></a>
-</p><h3 id="Microsteps-and-Max-Speed"><span style="color: #00008b;"> Microsteps and Max Speed</span></h3>
+</p><h3 id="Microsteps-and-Max-Speed">Microsteps and Max Speed</h3>
 <p>Rosetta can send at most 200,000 pulses a second to each stepper drive (the pulse timing the drives need).  So the bigger the Scale, the slower the axis's fastest speed:
 </p>
 
@@ -86,31 +88,31 @@
 <p class="vspace">If an axis's <strong>Max Speed</strong> is more than this, the warnings line (see below) says <strong>Max Speed is more than the step timing allows at this Scale</strong>.  Either lower Max Speed, or set the drive to fewer microsteps (half the microsteps = half the Scale = twice the fastest speed) and change the Scale to match.
 </p>
 <ul><li><span style="color: red;">Do not change the microstep switches on a stepper drive without changing that axis's Scale to match.</span>  If you do, every move on that axis is the wrong size - half, or double, what you asked for.
-</li></ul><p class="vspace"><strong>Note:</strong> Fewer microsteps let an axis go faster, but it moves less smoothly at slow speeds.  For most rose engine work - slow, smooth movement - leave the drives at 6,400.  The motor itself can also run out of torque at high speed, before this limit is reached.  To understand why, and how to choose the microstep setting, see  <a class="online" href="https://otbok.info/index.php?n=Main.StepperMotor#Microstepping" rel="noopener" target="_blank" title="Opens on the Internet">Stepper Motor:  Microstepping and Speed</a> in the Ornamental Turning Book of Knowledge.
+</li></ul><p class="note"><strong>Note:</strong> Fewer microsteps let an axis go faster, but it moves less smoothly at slow speeds.  For most rose engine work - slow, smooth movement - leave the drives at 6,400.  The motor itself can also run out of torque at high speed, before this limit is reached.  To understand why, and how to choose the microstep setting, see  <a class="online" href="https://otbok.info/index.php?n=Main.StepperMotor#Microstepping" rel="noopener" target="_blank" title="Opens on the Internet">Stepper Motor:  Microstepping and Speed</a> in the Ornamental Turning Book of Knowledge.
 </p>
-<h2 id="Max-Speed"><span style="color: #00008b;"> Max Speed</span></h2>
+<h2 id="Max-Speed">Max Speed</h2>
 <p>This is the fastest the axis may move - in a program, an MDI command, or a jog.  It is measured in distance per second:  inches (or mm) per second for a linear axis, and degrees per second for a rotary/angular axis.  For example, 30 degrees / second = 5 revolutions per minute.
 </p>
 <ul><li>The Max Speed of a linear axis cannot be set above 1 inch / second (25.4 mm / second).
 </li><li>For the spindles, this row is called <strong>Max Vel</strong>, and it is measured in revolutions per second.  For example, 0.167 revolutions / second = 10 revolutions per minute.
-</li></ul><p class="vspace"><strong>Note:</strong> When you change Max Speed, the advanced settings worked out from it (<strong>Stepgen Max Vel</strong> and <strong>PID Max Output</strong> - see below) change with it, so you do not need to open the advanced settings.
+</li></ul><p class="note"><strong>Note:</strong> When you change Max Speed, the advanced settings worked out from it (<strong>Stepgen Max Vel</strong> and <strong>PID Max Output</strong> - see below) change with it, so you do not need to open the advanced settings.
 </p>
-<h2 id="Max-Acceleration"><span style="color: #00008b;"> Max Acceleration</span></h2>
+<h2 id="Max-Acceleration">Max Acceleration</h2>
 <p>This is how quickly the axis may speed up and slow down.  It is measured in distance per second<sup><span class="pmS2">2</span></sup>:  inches (or mm) per second<sup><span class="pmS2">2</span></sup> for a linear axis, and degrees per second<sup><span class="pmS2">2</span></sup> for a rotary/angular axis.  For the spindles, this row is called <strong>Max Accel</strong>, and it is measured in revolutions per second<sup><span class="pmS2">2</span></sup>.
 </p>
 <p class="vspace">A program made up of many short moves (such as a rosette pattern on C) finishes sooner with a higher Max Acceleration, because each short move spends most of its time speeding up and slowing down.
 </p>
-<p class="vspace"><strong>Note:</strong> When you change Max Acceleration, <strong>Stepgen Max Accel</strong> (see below) changes with it.
+<p class="note"><strong>Note:</strong> When you change Max Acceleration, <strong>Stepgen Max Accel</strong> (see below) changes with it.
 </p>
 <p class="vspace"><a id="Backlash"></a>
-</p><h2 id="Backlash_"><span style="color: #00008b;"> Backlash</span></h2>
+</p><h2 id="Backlash_">Backlash</h2>
 <p>Backlash is the slack in an axis's drive - play in the leadscrew, nut, gears or belt - which is taken up each time the axis changes direction, before the axis really moves.  Rosetta makes up for it:  each time the axis reverses, it first moves the motor this much further.
 </p>
 <p class="vspace">Enter the axis's lost motion, measured with a dial indicator (see <a href="RosetteDesigner.html#Backlash">Set the Backlash First</a> for how).  0 turns it off.  A little less than the measured value is better than too much, which makes the axis jump each time it reverses.
 </p>
-<p class="vspace"><strong>Note:</strong> Backlash is saved as soon as you change it.  For more on backlash, and what compensation can't fix, see  <a class="online" href="https://otbok.info/index.php?n=Main.Backlash#Compensation" rel="noopener" target="_blank" title="Opens on the Internet">Backlash</a> in the Ornamental Turning Book of Knowledge.
+<p class="note"><strong>Note:</strong> Backlash is saved as soon as you change it.  For more on backlash, and what compensation can't fix, see  <a class="online" href="https://otbok.info/index.php?n=Main.Backlash#Compensation" rel="noopener" target="_blank" title="Opens on the Internet">Backlash</a> in the Ornamental Turning Book of Knowledge.
 </p>
-<h2 id="The-warnings-line"><span style="color: #00008b;"> The warnings line</span></h2>
+<h2 id="The-warnings-line">The warnings line</h2>
 <p>Just under the Backlash row, each group has a line which is usually empty.  If a value does not fit with another, a warning appears there in orange, naming the axis - for example:
 </p>
 
@@ -120,16 +122,16 @@
 </p><ul><li><strong>Max Speed is more than the step timing allows at this Scale</strong> - the stepper drive cannot be sent pulses fast enough for that speed.  Lower Max Speed (or, for a spindle, Max Vel).
 </li><li><strong>Stepgen Max Vel is below Max Speed</strong>, <strong>Stepgen Max Accel is below 1.5 x Max Acceleration</strong>, or <strong>PID Max Output is below Max Speed</strong> - an advanced setting is too low.  The easiest fix is the axis's <strong>Restore Defaults</strong> button (see below).
 </li><li><strong>Indexing Max Output is above Max Vel</strong> (spindles only) - lower Indexing Max Output, or click the spindle's <strong>Restore Defaults</strong> button.
-</li></ul><p class="vspace"><strong>Note:</strong> A warning does not stop you saving.  It tells you that LinuxCNC may stop with an error, or that the axis may not reach its Max Speed.
+</li></ul><p class="note"><strong>Note:</strong> A warning does not stop you saving.  It tells you that LinuxCNC may stop with an error, or that the axis may not reach its Max Speed.
 </p>
 <hr/>
-<h1 id="Advanced-Settings"><span style="color: #00008b;"> Advanced Settings</span></h1>
+<h1 id="Advanced-Settings">Advanced Settings</h1>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-AxisStepperMotorTuning-2.png" width="350px"/><br/><span class="caption"><strong><em>Advanced Settings</em></strong></span></span></div>
 <p>Each group has an <strong>Advanced settings</strong> twistie below the warnings line.  It starts closed.  Click it to show the advanced settings, and click it again to hide them.  An example is shown to the right for the Linear axes.
 </p>
 <p class="vspace">Most people never need to change these.  Each is explained in the column to the right of its row.
 </p>
-<h2 id="Linear-and-Rotary-Angular-axes"><span style="color: #00008b;"> Linear and Rotary/Angular axes</span></h2>
+<h2 id="Linear-and-Rotary-Angular-axes">Linear and Rotary/Angular axes</h2>
 <table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Row</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>What it is</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Normally</strong></span>
@@ -149,7 +151,7 @@
 </td><td valign="top"> A button for each axis - see below.
 </td><td valign="top">  
 </td></tr></table>
-<h2 id="Spindles"><span style="color: #00008b;"> Spindles</span></h2>
+<h2 id="Spindles">Spindles</h2>
 <p>The spindles' advanced settings are for indexing (turning the spindle to a set angle):
 </p>
 
@@ -162,7 +164,7 @@
 </td></tr><tr><td valign="top"> Restore Defaults
 </td><td valign="top"> A button for each spindle - see below.
 </td></tr></table>
-<h2 id="Restore-Defaults"><span style="color: #00008b;"> Restore Defaults</span></h2>
+<h2 id="Restore-Defaults">Restore Defaults</h2>
 <p>Each axis and each spindle has a <strong>Restore Defaults</strong> button at the bottom of its column.  It puts that axis's advanced settings back to their normal values:  Stepgen Max Vel, Stepgen Max Accel and PID Max Output are worked out again from the axis's own Max Speed and Max Acceleration, and the PID gains go back to Rosetta's starting values.  (For a spindle:  Indexing Max Output and the indexing PID gains.)
 </p>
 <p class="vspace">Restore Defaults does not change <strong>Scale</strong>, <strong>Max Speed</strong>, <strong>Max Acceleration</strong> or <strong>Backlash</strong>.
@@ -178,14 +180,14 @@
 </li></ol>
 <table bgcolor="darkblue" border="0" width="100%"><tr><td valign="top" width="100%">
 </td></tr></table>
-<h1 id="Running-the-Rosetta-Settings-Program"><span style="color: #00008b;"> Running the Rosetta Settings Program</span></h1>
+<h1 id="Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</h1>
 <p>To access the Rosetta Settings program, there are 2 options:
 </p>
 
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-1-Use-the-icon-on-the-desktop"><span style="color: #00008b;"> Option 1:  Use the icon on the desktop</span></h2>
+<h2 id="Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</h2>
 <div class="img"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/> </span></div>
 <p>Double-click on the Rosetta Settings icon on the desktop (the big gear)
 </p>
@@ -193,7 +195,7 @@
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-2-Use-the-Applications-menu"><span style="color: #00008b;"> Option 2:  Use the Applications menu</span></h2>
+<h2 id="Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</h2>
 <ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
 </li><li>Click on the arrow to the right of Rosetta
 </li><li>Click on Rosetta Settings (the one with a gear)
@@ -216,6 +218,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="InputsOutputsSound.html"><span>Previous</span>Inputs, Outputs, and Sounds</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="ScaleSettingsForADevice.html"><span>Next</span>Scale Settings for a Device</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -226,6 +229,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

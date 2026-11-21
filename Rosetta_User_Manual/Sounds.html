@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sounds – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -27,7 +29,7 @@
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/SignalTower-Siren.png" width="100px"/></span></div>
 <p class="vspace">Rosetta is setup to make these sounds when certain conditions.
 </p>
-<h1 id="The-Sounds-and-What-Makes-Them-Happen"><span style="color: #00008b;"> The Sounds and What Makes Them Happen</span></h1>
+<h1 id="The-Sounds-and-What-Makes-Them-Happen">The Sounds and What Makes Them Happen</h1>
 <table border="1" style="margin-bottom: 24px; margin-top: 6px;" width="100%"><tr><td align="center" bgcolor="#00416a" rowspan="2" valign="bottom" width="24%"> <span style="color: white;"> <strong>Sound</strong></span>
 </td><td align="center" bgcolor="#00416a" rowspan="2" valign="bottom" width="33%"> <span style="color: white;"> <strong>Sounds when</strong></span>
 </td><td align="center" bgcolor="#00416a" rowspan="2" valign="bottom" width="33%"> <span style="color: white;"> <strong>Does not sound when</strong></span>
@@ -88,7 +90,7 @@
 </p></td><td style="padding-left: 5px; vertical-align: top; text-align: center;" valign="top"> ✅
 </td><td style="padding-left: 5px; vertical-align: top; text-align: center;" valign="top"> ❌
 </td></tr></table>
-<h1 id="Notes"><span style="color: #00008b;"> Notes</span></h1>
+<h1 id="Notes">Notes</h1>
 <ol><li value="1"> <a id="Note_01"></a>The default gcode directory which is checked is:
 </li></ol>
 <table border="0" style="width: calc(100% - 100px); margin-left: 50px;"><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/
@@ -96,7 +98,7 @@
 <ol><li value="2"> <a id="Note_02"></a>This is due to these conditions for sounding an error are identified before LinuxCNC has started up and loaded the HAL; thusly, there is no ability to send a sound to the signal tower.
 </li><li value="3"> <a id="Note_03"></a>The sound heard from the signal tower will typically be different from the sound heard on the monitor speaker.  This is because there are options for changing the tone and/or harmonics on the monitor’s speaker, and these are not available on the signal tower (which is either on or off).
 </li></ol><hr/>
-<h1 id="Configuring-Sounds"><span style="color: #00008b;"> Configuring Sounds</span></h1>
+<h1 id="Configuring-Sounds">Configuring Sounds</h1>
 <p>The use of sounds with Rosetta is setup on the <a href="InputsOutputsSound.html#Sounds">Inputs, Outputs, and Sounds</a> tab in the <strong>Rosetta Settings</strong> program.
 </p>
 <p class="vspace">The startup abort sound is different - it is set by the <strong>Startup File Check</strong> choice on the <a href="Other.html">Other</a> tab instead, since it can happen before Rosetta Settings' other sound choices are even running.
@@ -109,6 +111,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="SignalTower.html"><span>Previous</span>Signal Tower</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="Troubleshooting.html"><span>Next</span>Troubleshooting</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -119,6 +122,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

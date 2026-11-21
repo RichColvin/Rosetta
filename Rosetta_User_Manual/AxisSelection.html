@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Axis Selection – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -24,7 +26,7 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Base-Box-and-Expansion-Box">Base Box and Expansion Box</a></li><li class="toc-l0"><a href="#Impact-of-Any-Changes">Impact of Any Changes</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
   <div class="content">
 
-<p><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
+<p class="note"><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
 </p>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/Axes-2.png" width="200px"/><br/><span class="caption"><strong>Lathe Axes</strong></span></span></div>
 <p>On this screen, you select which axes you want to use for the configurable ones.  You must select from the standardized <sup><span class="pmS1">①</span></sup> options available in LinuxCNC:
@@ -54,7 +56,7 @@ The spindles are specialized rotary axes.
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-AxisSelection.png" width="375px"/><br/><span class="caption"><strong><em>Axis Selection Screen</em></strong></span></span></div>
 <p>Rosetta handles up to 10 channels - 6 on the base box and 4 more on the optional expansion box (see <a href="#ExpansionBox">Base Box and Expansion Box</a> below) - and any of the following can be assigned to them.
 </p>
-<h2 id="Spindles"><span style="color: #00008b;"> Spindles</span></h2>
+<h2 id="Spindles">Spindles</h2>
 <p>The two spindles, Sp0 and Sp1, are used when you use the options on the main panel:
 </p><ul><li>Run Operation (to run the spindles in forward or reverse), or
 </li><li>Indexing the spindles
@@ -62,7 +64,7 @@ The spindles are specialized rotary axes.
 </p><ol><li>This is done via a gCode program, and
 </li><li>The spindles will need to use one of the rotary/angular axes (A, B, or C) for their motion.
 </li></ol><p class="vspace"><a id="ExpansionBox"></a>
-</p><h2 id="Base-Box-and-Expansion-Box"><span style="color: #00008b;"> Base Box and Expansion Box</span></h2>
+</p><h2 id="Base-Box-and-Expansion-Box">Base Box and Expansion Box</h2>
 <table style="margin-left: 20px; margin-bottom: 10px; border-collapse: collapse; border: 1px solid black;"><tr><td style="width: 150px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: left;" valign="top"> <span style="color: white;"><strong>Item</strong></span>
 </td><td style="width: 110px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: center;" valign="top"> <span style="color: white;"><strong>Base Box</strong></span>
 </td><td style="width: 110px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: center;" valign="top"> <span style="color: white;"><strong>Expansion Box</strong></span>
@@ -88,7 +90,7 @@ The spindles are specialized rotary axes.
 </li></ul><p class="vspace"><strong>Without the expansion box</strong> its channels (and limit jacks 4 to 6) are greyed out, and the axes assigned to them can't be used.  They keep their assignments, ready for when an expansion box is connected.  To use one of those axes, choose it on a base box channel - the two swap, so the axis that was on that base box channel moves to the expansion box channel.  For example, if Sp0 is on channel 06 and W is on channel 04, choosing Sp0 for channel 04 puts W on channel 06.
 </p>
 <hr/>
-<h1 id="Impact-of-Any-Changes"><span style="color: #00008b;"> Impact of Any Changes</span></h1>
+<h1 id="Impact-of-Any-Changes">Impact of Any Changes</h1>
 <table style="margin-left: 10px; margin-bottom: 10px; width: 400px; float: right; border: 0px solid darkgray; "><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesBase.png"/> <br class="clearboth"/>
 <p><strong>Axis Assignments on Base Box</strong>
 </p></td></tr><tr><td style="border: 0px solid darkgray; " valign="top">  
@@ -103,14 +105,14 @@ The spindles are specialized rotary axes.
 </li></ol>
 <table bgcolor="darkblue" border="0" width="100%"><tr><td valign="top" width="100%">
 </td></tr></table>
-<h1 id="Running-the-Rosetta-Settings-Program"><span style="color: #00008b;"> Running the Rosetta Settings Program</span></h1>
+<h1 id="Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</h1>
 <p>To access the Rosetta Settings program, there are 2 options:
 </p>
 
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-1-Use-the-icon-on-the-desktop"><span style="color: #00008b;"> Option 1:  Use the icon on the desktop</span></h2>
+<h2 id="Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</h2>
 <div class="img"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/> </span></div>
 <p>Double-click on the Rosetta Settings icon on the desktop (the big gear)
 </p>
@@ -118,7 +120,7 @@ The spindles are specialized rotary axes.
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-2-Use-the-Applications-menu"><span style="color: #00008b;"> Option 2:  Use the Applications menu</span></h2>
+<h2 id="Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</h2>
 <ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
 </li><li>Click on the arrow to the right of Rosetta
 </li><li>Click on Rosetta Settings (the one with a gear)
@@ -141,6 +143,7 @@ The spindles are specialized rotary axes.
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="UpdateRosetta.html"><span>Previous</span>Updating the Rosetta System</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="InputsOutputsSound.html"><span>Next</span>Inputs, Outputs, and Sounds</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -151,6 +154,7 @@ The spindles are specialized rotary axes.
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

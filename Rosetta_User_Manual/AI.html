@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI - Artificial Intelligence – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -31,29 +33,29 @@
 <p class="vspace">To use Claude you need your own Claude account with a <strong>Claude Pro</strong> (or higher) subscription from <a class="online" href="https://claude.com/pricing" rel="noopener" target="_blank" title="Opens on the Internet">claude.com</a>. The subscription covers both Claude on the web and Claude Code on the Raspberry Pi; a license for Claude is not included with Rosetta.
 </p>
 <hr/>
-<h1 id="What-Claude-can-do-for-you"><span style="color: #00008b;"> What Claude can do for you</span></h1>
-<h2 id="Write-G-code"><span style="color: #00008b;"> Write G-code</span></h2>
+<h1 id="What-Claude-can-do-for-you">What Claude can do for you</h1>
+<h2 id="Write-G-code">Write G-code</h2>
 <p>Describe the pattern you want and Claude drafts the program. For example:
 </p>
 <div class="indent"><em>Write G-code to cut a 24-lobe rosette pattern on the face of a 3 inch blank, 0.020 inch deep, with the X axis moving in and out as C turns.</em>
 </div><p class="vspace">It can lay the program out with named parameters (#&lt;_Depth&gt;, #&lt;_Lobes&gt;, ...) at the top, so you can change the design without rewriting the moves, and it adds comments explaining each section.
 </p>
-<h2 id="Make-G-code-run-faster"><span style="color: #00008b;"> Make G-code run faster</span></h2>
+<h2 id="Make-G-code-run-faster">Make G-code run faster</h2>
 <p>Claude can review a program and explain where the time goes. A real example: one rosette program took about <strong>4 hours</strong> to run. Reviewing it with Claude showed that it was made of about 80,000 very short moves of the C axis, so its speed was limited by C's acceleration, not its top speed - and that each pass ended with a full 360° rapid back to the start. Raising C's acceleration and speed in the <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab brought the estimate down to about <strong>45 minutes</strong>, and Claude also suggested a change to the program itself to remove the rewinds.
 </p>
 <p class="vspace">Other things Claude looks for: needless rapid moves, many tiny moves where fewer, longer ones would do, feed rates set lower than they need to be, and repeated sections that could be a subroutine.
 </p>
-<h2 id="Explain-and-check-G-code"><span style="color: #00008b;"> Explain and check G-code</span></h2>
+<h2 id="Explain-and-check-G-code">Explain and check G-code</h2>
 <p>Paste in (or point Claude Code at) a program you were given and ask what it does, line by line. Claude can also check a program before you run it - for moves that go further than your machine can travel, a missing feed rate, units (G20/G21) that don't match your machine, or an axis letter your machine isn't set up to use.
 </p>
-<h2 id="Troubleshoot-errors-and-tune-the-machine"><span style="color: #00008b;"> Troubleshoot errors and tune the machine</span></h2>
+<h2 id="Troubleshoot-errors-and-tune-the-machine">Troubleshoot errors and tune the machine</h2>
 <p>When LinuxCNC stops with a message such as <em>"Joint 5 following error"</em>, tell Claude what you were doing and what the message said. It can explain the likely causes in plain terms - for example, that a following error right at the start of a program often just means that axis wasn't enabled - and walk you through the fix. It can also help you work out settings such as an axis's Scale from your motor, drive and leadscrew or gearing, and suggest sensible Max Speed and Max Acceleration values to try in the <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab.
 </p>
-<h2 id="Learn"><span style="color: #00008b;"> Learn</span></h2>
+<h2 id="Learn">Learn</h2>
 <p>Ask about anything: what G93 inverse-time mode is for, how the Indexing tab's Div setting works, or how a rose engine pumping pattern is built up. Claude answers at whatever level you ask for.
 </p>
 <hr/>
-<h1 id="Two-ways-to-use-Claude"><span style="color: #00008b;"> Two ways to use Claude</span></h1>
+<h1 id="Two-ways-to-use-Claude">Two ways to use Claude</h1>
 <table border="1" cellpadding="6" style="border-collapse: collapse; width: calc(100% - 60px); margin-left: 40px;"><tr><td bgcolor="e6e6e6" valign="top"> <strong> </strong>
 </td><td bgcolor="e6e6e6" valign="top"> <strong>Claude on the web</strong>
 </td><td bgcolor="e6e6e6" valign="top"> <strong>Claude Code on the Raspberry Pi</strong>
@@ -73,7 +75,7 @@
 <p class="vspace">Both use the same Claude account and subscription.
 </p>
 <hr/>
-<h1 id="Using-Claude-Code-on-the-Raspberry-Pi"><span style="color: #00008b;"> Using Claude Code on the Raspberry Pi</span></h1>
+<h1 id="Using-Claude-Code-on-the-Raspberry-Pi">Using Claude Code on the Raspberry Pi</h1>
 <ol><li>Open a Terminal Emulator.
 </li><li>Move to Rosetta's folder - or to its gcode folder if you are working on programs:
 </li></ol>
@@ -92,14 +94,14 @@
 </td></tr></table>
 <p class="vspace">For help with Claude Code itself, enter <em>/help</em>.
 </p>
-<h2 id="Things-to-try"><span style="color: #00008b;"> Things to try</span></h2>
+<h2 id="Things-to-try">Things to try</h2>
 <ul><li><em>"Explain what Pumping5Sides.ngc does, section by section."</em>
 </li><li><em>"This program takes 4 hours. Why, and how could it run faster without changing the pattern?"</em>
 </li><li><em>"Write a program that indexes the spindle 24 times, cutting a 0.010 inch flute on each division."</em>
 </li><li><em>"LinuxCNC stopped with 'Joint 2 following error' while jogging B. What should I check?"</em>
 </li><li><em>"My X axis moves 0.098 inch when I ask for 0.100. What should its Scale be?"</em>
 </li></ul><hr/>
-<h1 id="Using-Claude-safely"><span style="color: #00008b;"> Using Claude safely</span></h1>
+<h1 id="Using-Claude-safely">Using Claude safely</h1>
 <ul><li><strong>Check every new or changed program before cutting.</strong> Look at it in the preview, then run it with the cutter clear of the work (an "air cut"). Claude is very good, but it can make mistakes, and it can't see your machine.
 </li><li><strong>Don't change the machine while it is running a job.</strong> Ask Claude to look at files and logs freely, but only let it change settings or files when the machine is stopped.
 </li><li><strong>Use the Rosetta Settings program for settings</strong> - not Claude editing the settings file (RosettaSet_v1.ini) by hand.
@@ -114,6 +116,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="ReleaseNotes.html"><span>Previous</span>What&#x27;s New in Rosetta</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="3DPrintableFiles.html"><span>Next</span>3D Printable Parts</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -124,6 +127,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

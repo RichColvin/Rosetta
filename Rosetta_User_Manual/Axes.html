@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Axes – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -130,18 +132,18 @@
 </td></tr><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesExpansionBox.png"/> <br class="clearboth"/>
 <p><strong>Axis Assignments with Expansion Box</strong>
 </p></td></tr></table>
-<h2 id="Base-Box"><span style="color: #00008b;"> Base Box</span></h2>
+<h2 id="Base-Box">Base Box</h2>
 <p>On the Base Box, up to 6 of these spindles and axes can be <a href="AxisSelection.html">selected for use</a> at any time - one per channel (plug).  
 </p><ul><li>Sp1 can only be used when Sp0 is also selected for use.
 </li></ul><p class="vspace">The axes selected for use are shown at the bottom of the LinuxCNC screen on the right.  As depicted here, the selected axes are: U, V, W, C, X, &amp; Z.
 </p>
-<h2 id="Expansion-Box"><span style="color: #00008b;"> Expansion Box</span></h2>
+<h2 id="Expansion-Box">Expansion Box</h2>
 <p>With the addition of the Expansion Box, all 10 of these spindles and axes can be <a href="AxisSelection.html">selected for use</a> at any time - one per channel (plug).
 </p>
 <p class="vspace">The Rosetta user can move the axes around to be assigned to whichever channel they wish.
 </p>
 <hr/>
-<h1 id="Setting-the-axis-assignments"><span style="color: #00008b;"> Setting the axis assignments</span></h1>
+<h1 id="Setting-the-axis-assignments">Setting the axis assignments</h1>
 <div class="img imgonly"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/></span></div>
 <p>To update the assignment of axes to channels (= plugs on the front of the box), you need to use the <strong>Rosetta Settings</strong> program (the one with a gear as the icon).  
 </p>
@@ -156,7 +158,7 @@
 </li><li>Exit Rosetta Settings
 </li></ul></li><li>Restart <strong>Rosetta</strong>.
 </li></ol><hr/>
-<h1 id="Device-specific-axis-assignments"><span style="color: #00008b;"> Device-specific axis assignments</span></h1>
+<h1 id="Device-specific-axis-assignments">Device-specific axis assignments</h1>
 <p>Device-specific settings are a very useful feature.  You may find that your curvilinear slide's stepper motor runs differently than your cross slide.  And as they both will probably be setup using the Z axis, you don't have figure it out each time.
 </p>
 <p class="vspace">For example:
@@ -186,7 +188,7 @@
 <ul><li>Scale = 2,015.748 pulses/inch
 </li><li>Backlash = 0.005”
 </li></ul></td></tr></table>
-<h2 id="Device-specific-axis-scenario-Cross-slide"><span style="color: #00008b;"> Device-specific axis scenario - Cross slide</span></h2>
+<h2 id="Device-specific-axis-scenario-Cross-slide">Device-specific axis scenario - Cross slide</h2>
 <p>Using the <strong>Rosetta Settings</strong> program, enter the values you want for the Cross Slide. For this scenario that includes
 </p><ul><li>X axis
 </li><li>Z axis
@@ -203,7 +205,7 @@
 <p>Then, whenever you want to use your cross slide, you can load the settings for it.  The re-loaded file will only change the values for those axes (in this case, X &amp; Z) and all the others will stay the same.
 </p>
 <hr/>
-<h2 id="Device-specific-axis-scenario-Curvilinear-slide"><span style="color: #00008b;"> Device-specific axis scenario - Curvilinear slide</span></h2>
+<h2 id="Device-specific-axis-scenario-Curvilinear-slide">Device-specific axis scenario - Curvilinear slide</h2>
 <p>Using the <strong>Rosetta Settings</strong> program, you can enter the values you want for the Curvilinear Slide. For this scenario that includes
 </p><ul><li>Z axis
 </li></ul><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-SaveSubsetofSettingsAs.png" width="125px"/></span></div>
@@ -219,7 +221,7 @@
 <p>Then, whenever you want to use your curvilinear slide, you can re-load those settings for it.  The re-loaded file will only change the values for that axis (in this case, Z) and all the others will stay the same.
 </p>
 <hr/>
-<h2 id="Why-use-device-specific-files"><span style="color: #00008b;"> Why use device-specific files?</span></h2>
+<h2 id="Why-use-device-specific-files">Why use device-specific files?</h2>
 <p>There are a number of reasons for doing this:
 </p><ol><li>It makes it easy to switch devices and easily load the settings needed for that device
 </li><li>It allows you to save the values for your devices in case you accidentally over-write them
@@ -233,6 +235,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="StepperMotorCabling.html"><span>Previous</span>Cabling Stepper Motors to Rosetta</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="EnteringData.html"><span>Next</span>Entering Data</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -243,6 +246,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

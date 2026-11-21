@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Spindles – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -34,7 +36,7 @@
 </li><li>Sp1 = the rosette phaser/multiplier (also known as $1 with Gcode commands)
 </li></ul><p class="vspace">However, there are two modes of operation for the spindles, and this is a system-driven function.
 </p>
-<h2 id="Traditional-Usage"><span style="color: #00008b;"> Traditional Usage</span></h2>
+<h2 id="Traditional-Usage">Traditional Usage</h2>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/StepperConnections-1.png" width="350px"/><br/><span class="caption"><strong><em>Stepper Motor Connections</em></strong></span></span></div>
 <p>Using the configuration shown to the right, you can make a lot of things happen.  For example,
 </p>
@@ -100,11 +102,11 @@
 </p></td></tr><tr><td colspan="2" valign="top">
 <hr/>
 </td></tr></table>
-<h3 id="Connections"><span style="color: #00008b;"> Connections</span></h3>
+<h3 id="Connections">Connections</h3>
 <p>For this, the spindles are connected to whichever jacks are assigned to Sp0 (the main spindle) and Sp1 (the rosette phaser/multiplier) on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program.  By default, these are channels 04 and 05, the right-hand pair of plugs on the Base Box.
 </p>
 <hr/>
-<h2 id="Synchronized-Usage"><span style="color: #00008b;"> Synchronized Usage</span></h2>
+<h2 id="Synchronized-Usage">Synchronized Usage</h2>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/StepperConnections-2.png" width="350px"/><br/><span class="caption"><strong><em>Stepper Motor Connections</em></strong></span></span></div>
 <p>If the spindle(s) need to have their movement synchronized with another axis (or axes), the spindle motors are not connected as above.  Instead, each is run as a rotary axis (either A, B, or C).
 </p>
@@ -112,7 +114,7 @@
 </p>
 <p class="vspace">This synchronized movement is performed via gCode, or from the main screen's <a href="MainScreenSynchronizedMovement.html">Sync Move</a> and <a href="MainScreenThreading.html">Threading</a> tabs.  For threads, use the <strong>Threading</strong> tab.  (LinuxCNC's own threading commands, G33 and G76, cannot be used on Rosetta - they expect the work to be turned by the Sp0 spindle, not by an axis such as C.)
 </p>
-<h3 id="Connections_"><span style="color: #00008b;"> Connections</span></h3>
+<h3 id="Connections_">Connections</h3>
 <p>For this, the spindles are connected to the jacks on the panel which are configured for use as rotary axes.
 </p>
 
@@ -124,6 +126,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="EnteringData.html"><span>Previous</span>Entering Data</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="UpdateRosetta.html"><span>Next</span>Updating the Rosetta System</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -134,6 +137,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

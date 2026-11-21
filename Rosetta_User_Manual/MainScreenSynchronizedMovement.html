@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Synchronized Movement – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -24,7 +26,7 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#Synchronized-Movement-Tab">Synchronized Movement Tab</a></li><li class="toc-l1"><a href="#Linear-Axes">Linear Axes</a></li><li class="toc-l1"><a href="#Angular-Axes">Angular Axes</a></li><li class="toc-l1"><a href="#Using-the-Sync-Move-Tab">Using the Sync Move Tab</a></li><li class="toc-l1"><a href="#Pausing-a-Sync-Move">Pausing a Sync Move</a></li></ul></nav>
   <div class="content">
 
-<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<h1 id="Axes-Colors">Axes Colors</h1>
 <table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
@@ -73,15 +75,15 @@
 <table border="0" width="100%"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="Synchronized-Movement-Tab"><span style="color: #00008b;"> Synchronized Movement Tab</span></h1>
+<h1 id="Synchronized-Movement-Tab">Synchronized Movement Tab</h1>
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta-SyncMove.png" width="300px"/></span></div>
 <p>The <strong>Sync Move</strong> tab is used to drive synchronized movement of multiple axes.
 </p>
-<h2 id="Linear-Axes"><span style="color: #00008b;"> Linear Axes</span></h2>
+<h2 id="Linear-Axes">Linear Axes</h2>
 <p>For linear axes (X, Z, U, V, and W), this is a distance.  The UOM shown for these axes, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
 </p>
 <p class="vspace"><a id="AngularAxes"></a>
-</p><h2 id="Angular-Axes"><span style="color: #00008b;"> Angular Axes</span></h2>
+</p><h2 id="Angular-Axes">Angular Axes</h2>
 <p>For the angular axes (A, B, and C), this is a rotary indexing.  Beside each distance, choose its unit:
 </p><ul><li><strong>deg</strong> - degrees, with 2 decimal places, up to 99,999,999.00 degrees.
 </li><li><strong>rev</strong> - revolutions (full turns), with 3 decimal places, up to 999,999.999 revolutions.  One revolution is 360 degrees, so 40 revolutions can be entered as 40 instead of 14,400 degrees.
@@ -94,7 +96,7 @@
 </li></ol><p class="vspace"><strong><ins>Key Note</ins>:</strong> <br class="clearboth"/>
 With LinuxCNC, synchronized motion of the spindles cannot be achieved using Sp0 nor Sp1.  Those motors must be attached to an angular axis (A, B, or C).  It is a good idea to perform a "dry run" to ensure everything moves as expected.  You may need to change the setup for the axes (e.g., the <strong>Scale</strong>) to achieve your desired movements.
 </p>
-<h2 id="Using-the-Sync-Move-Tab"><span style="color: #00008b;"> Using the Sync Move Tab</span></h2>
+<h2 id="Using-the-Sync-Move-Tab">Using the Sync Move Tab</h2>
 <p>To drive synchronized movement on selected axes, follow these steps:
 </p>
 <table border="1" width="100%"><tr><td style="width: 20px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Step</span>
@@ -131,7 +133,7 @@ With LinuxCNC, synchronized motion of the spindles cannot be achieved using Sp0 
 <p class="vspace">In the table above, where <strong>Value Saved?</strong> is <span style="color: green;">Yes</span>, that value is saved when exiting Rosetta, and will be the same when Rosetta is restarted.  The <strong>deg</strong> / <strong>rev</strong> choice for each angular axis is saved too.
 </p>
 <p class="vspace"><a id="Pause"></a>
-</p><h2 id="Pausing-a-Sync-Move"><span style="color: #00008b;"> Pausing a Sync Move</span></h2>
+</p><h2 id="Pausing-a-Sync-Move">Pausing a Sync Move</h2>
 <p>The <strong>Pause</strong> button, between <strong>Sync Move</strong> and <strong>Return to Start</strong>, stops a Sync Move part way - for example, when the belt driving the cutter breaks, or when you see the cutter is going to hit the chuck.  The axes slow down and stop where they are.  The button then reads <strong>Continue</strong>, and you can either:
 </p><ul><li>click <strong>Continue</strong> to finish the move.  The axes carry on along the same path, at the same speed, as if the move had not been paused, or
 </li><li>click <strong>Return to Start</strong> to send the axes back to where the Sync Move started.
@@ -154,6 +156,7 @@ With LinuxCNC, synchronized motion of the spindles cannot be achieved using Sp0 
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="MainScreenIndexing.html"><span>Previous</span>Indexing</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="MainScreenThreading.html"><span>Next</span>Threading</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -164,6 +167,7 @@ With LinuxCNC, synchronized motion of the spindles cannot be achieved using Sp0 
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

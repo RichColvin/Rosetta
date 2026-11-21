@@ -27,7 +27,7 @@ body {
 /* Hyphenation, as in the Sharpening Handbook: on for running text
    (needs lang="en" on <html>), off for headings, navigation and code. */
 body { -webkit-hyphens: auto; hyphens: auto; }
-h1, h2, h3, h4, .site-header, .crumbs, .toc, .footer-links, code, pre, kbd, .content a {
+h1, h2, h3, h4, .site-header, .crumbs, .toc, .footer-links, code, pre, kbd, a {
   -webkit-hyphens: manual; hyphens: manual;
 }
 
@@ -36,6 +36,7 @@ a:hover { color: var(--navy); }
 
 /* ---------- header ---------- */
 .site-header {
+  position: sticky; top: 0; z-index: 50;     /* stays at the top while scrolling */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -56,6 +57,45 @@ a:hover { color: var(--navy); }
   border: 1px solid rgba(255,255,255,.35); font-size: 15px;
 }
 .site-nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+/* jumping to a heading leaves it below the sticky header, not under it */
+[id] { scroll-margin-top: 84px; }
+
+/* ---------- search (rosetta-docs.js) ---------- */
+.site-search { position: relative; flex: 1 1 260px; max-width: 420px; }
+.site-search input {
+  width: 100%; padding: 7px 12px; font: inherit; font-size: 15px;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 6px;
+  background: rgba(255,255,255,.12); color: #fff;
+}
+.site-search input::placeholder { color: rgba(255,255,255,.75); }
+.site-search input:focus { outline: none; background: #fff; color: var(--ink); }
+.search-results {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px);
+  max-height: 70vh; overflow-y: auto; min-width: 320px;
+  background: #fff; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25); -webkit-hyphens: manual; hyphens: manual;
+}
+.search-results a {
+  display: block; padding: 8px 12px; text-decoration: none; color: var(--ink);
+  border-bottom: 1px solid #eceef2;
+}
+.search-results a:hover, .search-results a.active { background: #eef1fa; color: var(--ink); }
+.search-title { display: block; font-weight: 600; color: var(--navy); }
+.search-head { font-weight: 400; }
+.search-where { display: block; font-size: 12px; color: var(--muted); }
+.search-snip { display: block; font-size: 13.5px; color: #3b4352; margin-top: 2px; }
+.search-results mark { background: #ffe58a; color: inherit; padding: 0 1px; }
+.search-none { margin: 0; padding: 10px 12px; color: var(--muted); }
+
+/* ---------- picture zoom (rosetta-docs.js) ---------- */
+img.zoomable { cursor: zoom-in; }
+.zoom-overlay {
+  position: fixed; inset: 0; z-index: 100; cursor: zoom-out;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(10, 12, 30, .82); padding: 2vh 2vw;
+}
+.zoom-overlay img { max-width: 96vw; max-height: 94vh; background: #fff; box-shadow: 0 4px 30px rgba(0,0,0,.5); }
 
 /* ---------- page ---------- */
 .page {
@@ -121,6 +161,37 @@ math { font-size: 1.1em; }
 .content table.equation td.eq-lhs { text-align: right; padding-right: .3em; }
 .content table.equation td.eq-rhs { text-align: left; }
 
+/* ---------- Previous / Next (docs/build_manuals.py) ---------- */
+.pager {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px;
+  margin-top: 32px; -webkit-hyphens: manual; hyphens: manual;
+}
+.pager a {
+  display: block; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 6px;
+  background: var(--panel); text-decoration: none; color: var(--navy); font-weight: 600;
+}
+.pager a:hover { border-color: var(--navy); }
+.pager a span { display: block; font-size: 12.5px; font-weight: 400; color: var(--muted); }
+.pager-prev { grid-column: 1; }
+.pager-prev span::before { content: "\2190  "; }
+.pager-contents { grid-column: 2; text-align: center; }
+.pager-next { grid-column: 3; text-align: right; }
+.pager-next span::after { content: "  \2192"; }
+
+/* ---------- Note boxes ---------- */
+.note {
+  margin: 1em 0; padding: 10px 14px; border-left: 5px solid #4a6fb5;
+  background: #f3f5fa; border-radius: 0 6px 6px 0;
+}
+.note > :first-child { margin-top: 0; } .note > :last-child { margin-bottom: 0; }
+
+/* ---------- G-code download button ---------- */
+a.download {
+  display: inline-block; margin: 4px 0; padding: 7px 14px; border-radius: 6px;
+  background: var(--navy); color: #fff; text-decoration: none; font-weight: 600;
+}
+a.download:hover { background: #2c2c9a; color: #fff; }
+
 /* ---------- footer ---------- */
 .site-footer {
   margin: 0; padding: 12px 32px 24px; border-top: 1px solid var(--rule);
@@ -141,6 +212,13 @@ math { font-size: 1.1em; }
   .page { padding: 16px; }
   .site-footer { padding: 12px 16px 20px; }
   .footer-links { grid-template-columns: 1fr; }
+  .site-search { order: 3; flex-basis: 100%; max-width: none; }
+  .search-results { min-width: 0; }
+  .pager { grid-template-columns: 1fr 1fr; }
+  .pager-next { grid-column: 2; }
+  .pager-contents { grid-column: 1 / -1; grid-row: 2; }
+  .site-header { position: static; }    /* on a phone it would take too much of the screen */
+  [id] { scroll-margin-top: 8px; }
   .footer-contact { text-align: left; }
   .rfloat, .lfloat, .content table[style*="float"] { float: none !important; width: auto !important; margin: 12px 0 !important; }
   .content table { display: block; overflow-x: auto; }
@@ -150,7 +228,7 @@ math { font-size: 1.1em; }
 
 @media print {
   html, body { background: #fff; }
-  .site-header, .site-nav, .toc, .site-footer { display: none; }
+  .site-header, .site-nav, .toc, .site-footer, .pager, .site-search { display: none; }
   .page { box-shadow: none; margin: 0; max-width: none; padding: 0; }
   a.online::after { content: none; }
 }

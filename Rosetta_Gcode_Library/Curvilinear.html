@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Curvilinear – Rosetta Gcode Library</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -29,24 +31,22 @@
 <p class="vspace">
 
 
-</p><h1 id="Purpose"><span style="color: navy;"> Purpose</span></h1>
+</p><h1 id="Purpose">Purpose</h1>
 <p>This program was developed to support experiments with a curvilinear slide. It is quite general. It moves the cutter over, retracts it, returns and then does it again. It is structured with variables to be easily reconfigured.
 </p><hr/>
-<h1 id="Program-Designer"><span style="color: navy;"> Program Designer</span></h1>
+<h1 id="Program-Designer">Program Designer</h1>
 <p>If you have any questions, contact Chuck Peplinski
 </p><hr/>
-<h1 id="Gcode"><span style="color: navy;"> Gcode</span></h1>
-<table border="0" style="margin-left: 15px; margin-right: 15px;"><tr><td rowspan="4" style="width: 50px;" valign="top"> <a href="Gcode/n_pass.ngc"><img alt="" src="Images/GcodeFileLogo.png"/></a>
-</td><td style="text-align: left; vertical-align: top; padding-left: 10px;" valign="top"> Right-click on the file icon shown to the left, and then select <strong>Save Link As...</strong> to save it in Rosetta&rsquo;s Gcode folder (in the Save window, click <strong>Gcode</strong> in the list on the left):
-</td></tr><tr><td style="font-family: Courier; font-size: large; padding-left: 50px;" valign="top"> ~/linuxcnc/configs/Rosetta/gcode
-</td></tr><tr><td style="text-align: left; vertical-align: top; padding-left: 10px;" valign="top"> The recommended file name is
-</td></tr><tr><td style="font-family: Courier; font-size: large; padding-left: 50px;" valign="top"> n_pass.ngc
-</td></tr></table>
+<h1 id="Gcode">Gcode</h1>
+<div class="gcode-download">
+<p><a class="download" href="Gcode/n_pass.ngc" download="n_pass.ngc">Download n_pass.ngc</a></p>
+<p>Save it in Rosetta&rsquo;s Gcode folder, <code>~/linuxcnc/configs/Rosetta/gcode</code>. If the browser asks where to save it, click <strong>Gcode</strong> in the list on the left; if it saves it straight to your <strong>Downloads</strong> folder, move it from there into the Gcode folder.</p>
+</div>
 <hr/>
 <p>
 
 
-</p><h1 id="How-it-Works"><span style="color: navy;"> How it Works</span></h1>
+</p><h1 id="How-it-Works">How it Works</h1>
 <p>I developed this using Claude AI to control my experiments with a curvilinear pattern. Variables at the head of the file make it easy to reconfigure. Starting from home, the cutter stays in place (dwells) for a full rotation, then we move along the Z axis to the end (z_stroke) where we stay in place (dwell) for a full rotation. Upon reaching the end we retract on the X axis. If n_pass is more than one we return to the start, reengage the X axis more deeply, and do it again.
 </p>
 <p class="vspace">Note that z_stroke can be negative to move right to left.
@@ -62,7 +62,7 @@ For curvilinear work it is advantageous to use a higher sp0_rpm (maybe 3 or 4) a
 <p>
 
 
-</p><h1 id="Axes-Movement-Notes"><span style="color: navy;"> Axes &amp; Movement Notes</span></h1>
+</p><h1 id="Axes-Movement-Notes">Axes &amp; Movement Notes</h1>
 <table style="width: calc(100% - 60px); margin-left: 30px; border-collapse: collapse; border: 0px solid black;"><tr><td style="width: 50px; background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Axis</strong></span>
 </td><td style="width: 30%; background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Usage</strong></span>
 </td><td style="background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Comments</strong></span>
@@ -76,7 +76,7 @@ For curvilinear work it is advantageous to use a higher sp0_rpm (maybe 3 or 4) a
 <p class="vspace">
 
 
-</p><h1 id="User-Data-to-be-Entered"><span style="color: navy;"> User Data to be Entered</span></h1>
+</p><h1 id="User-Data-to-be-Entered">User Data to be Entered</h1>
 <p>The user will need to set these data:
 </p>
 
@@ -96,6 +96,7 @@ For curvilinear work it is advantageous to use a higher sp0_rpm (maybe 3 or 4) a
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="BasketWeave.html"><span>Previous</span>Basket Weave</a><a class="pager-contents" href="index.html"><span>Gcode Library</span>Contents</a><a class="pager-next" href="Threading-SingleStart.html"><span>Next</span>Threading - Single Start</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -106,6 +107,7 @@ For curvilinear work it is advantageous to use a higher sp0_rpm (maybe 3 or 4) a
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

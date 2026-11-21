@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Indexing – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -24,7 +26,7 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#Indexing-Tab">Indexing Tab</a></li><li class="toc-l1"><a href="#Counter">Counter</a></li><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Linear-Axes">Linear Axes</a></li><li class="toc-l1"><a href="#Angular-Rotary-Axes">Angular (Rotary) Axes</a></li></ul></nav>
   <div class="content">
 
-<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<h1 id="Axes-Colors">Axes Colors</h1>
 <table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
@@ -73,7 +75,7 @@
 <table border="0" width="100%"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="Indexing-Tab"><span style="color: #00008b;"> Indexing Tab</span></h1>
+<h1 id="Indexing-Tab">Indexing Tab</h1>
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta-Indexing.png" width="300px"/></span></div>
 <p>The <strong>Indexing</strong> tab is used to drive motors on the selected axis, one at a time.
 </p>
@@ -102,7 +104,7 @@
 </td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> To initiate the movement, click on the button showing the direction for the desired movement.
 </td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: red;">No</span>
 </td></tr></table>
-<h2 id="Counter"><span style="color: #00008b;"> Counter</span></h2>
+<h2 id="Counter">Counter</h2>
 <p>There is a counter for the number of indexing operations which have been performed.  This count is shown as the number to the left of the indexing <strong>Distance</strong>.
 </p>
 <ul><li>It is incremented by 1 for each Fwd indexing operation.
@@ -110,7 +112,7 @@
 </li><li>The count starts at 0 when Rosetta is started.  (<em>It is not saved when you exit and then re-start Rosetta.</em>)
 </li><li>If the indexing <strong>Distance</strong> is changed, it reverts to 0.  (T<em>he assumption is that you are starting a different activity.</em>)
 </li><li>You can set it back to 0 yourself by double-clicking on the number (<em>double-clicking is implemented so you do not accidentally reset it</em>).
-</li></ul><h2 id="Spindles"><span style="color: #00008b;"> Spindles</span></h2>
+</li></ul><h2 id="Spindles">Spindles</h2>
 <p>For the spindles, this can be in either degrees or divisions of a circle.
 </p>
 <p class="vspace">Additionally, you can choose to index:
@@ -125,12 +127,12 @@
 </p>
 <ul><li><span style="color: red;">Do not mix Fwd and Rev indexes while you are working around a pattern.</span>  Click the same direction button for every index of the pattern, so the backlash is always taken up the same way.
 </li><li><span style="color: red;">Do not back up one index with a single click of the other direction button.</span>  The spindle would stop short by the amount of backlash.  If you go one index too far, click the other direction button <strong>twice</strong>, then click the original direction button <strong>once</strong> - the spindle then arrives at the position from the usual direction.
-</li></ul><p class="vspace"><strong>Note:</strong> Each index is measured from where the previous index was meant to stop, not from where the spindle actually stopped, so the tiny differences in where it stops do not add up as you work around the circle.  For example, 24 divisions done all the way round end back where they started.  After the spindle has been run (not indexed), the next index starts from wherever the spindle is.
+</li></ul><p class="note"><strong>Note:</strong> Each index is measured from where the previous index was meant to stop, not from where the spindle actually stopped, so the tiny differences in where it stops do not add up as you work around the circle.  For example, 24 divisions done all the way round end back where they started.  After the spindle has been run (not indexed), the next index starts from wherever the spindle is.
 </p>
-<h2 id="Linear-Axes"><span style="color: #00008b;"> Linear Axes</span></h2>
+<h2 id="Linear-Axes">Linear Axes</h2>
 <p>For linear axes, this is a distance.  The UOM shown for these axes, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
 </p>
-<h2 id="Angular-Rotary-Axes"><span style="color: #00008b;"> Angular (Rotary) Axes</span></h2>
+<h2 id="Angular-Rotary-Axes">Angular (Rotary) Axes</h2>
 <p>For the angular axes (A, B, and C), this is a rotary indexing, in degrees or divisions of a circle.
 </p>
 
@@ -141,6 +143,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="RosettaMainScreen.html"><span>Previous</span>Main Screen</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="MainScreenSynchronizedMovement.html"><span>Next</span>Synchronized Movement</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -151,6 +154,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

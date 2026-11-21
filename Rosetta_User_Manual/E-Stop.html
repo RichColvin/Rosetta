@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>E-Stop (F1) – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -31,16 +33,16 @@
 </p>
 <hr/>
 <p><a id="LostContact"></a>
-</p><h1 id="Lost-Contact-with-a-Box"><span style="color: #00008b;"> Lost Contact with a Box</span></h1>
+</p><h1 id="Lost-Contact-with-a-Box">Lost Contact with a Box</h1>
 <p>Rosetta also goes into E-STOP by itself if the Raspberry Pi loses contact with the Base Box or the Expansion Box while it is running - for example, a network cable comes loose, or a box is switched off.  All the axes stop, a message such as <strong>Expansion box lost contact - E-stop</strong> says which box it was, and (if used) the signal tower's red light comes on and the fault siren sounds.
 </p>
 <p class="vspace">Check that box's network cable, the network switch in the Base Box, and the box's power.  Once the box is back in contact, press F1 to clear the E-STOP.
 </p>
 <hr/>
-<h1 id="E-Stop-Button"><span style="color: #00008b;"> E-Stop Button</span></h1>
+<h1 id="E-Stop-Button">E-Stop Button</h1>
 <p>If an <a href="E-StopCabling.html">E-stop button</a> is connected, pressing it also puts the system into E-STOP, and the E-STOP cannot be released (F1) until the button is released.
 </p>
-<h2 id="Using-the-E-Stop-Button"><span style="color: #00008b;"> Using the E-Stop Button</span></h2>
+<h2 id="Using-the-E-Stop-Button">Using the E-Stop Button</h2>
 <table border="1" style="width: 100%; background-color: #F6F5F4; border: 1px solid darkgray; "><tr><td style="width: 80px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> Machine State</span>
 </td><td style="width: 100px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> E-Stop Button Status</span>
 </td><td style="width: 175px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> Action Taken</span>
@@ -78,6 +80,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="RunningGcodePrograms.html"><span>Previous</span>Running Gcode Programs</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="PowerOn.html"><span>Next</span>Power On (F2)</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -88,6 +91,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

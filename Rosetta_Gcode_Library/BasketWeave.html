@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Basket Weave – Rosetta Gcode Library</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -30,24 +32,22 @@
 
 
 </p><div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/BasketWeave.jpg" width="200px"/><br/><span class="caption"><strong><em>Basket Weave Pattern</em></strong></span></span></div>
-<h1 id="Purpose"><span style="color: navy;"> Purpose</span></h1>
+<h1 id="Purpose">Purpose</h1>
 <p>This program is to create a basket weave pattern as shown in the picture to the right
 </p><hr/>
-<h1 id="Program-Designer"><span style="color: navy;"> Program Designer</span></h1>
+<h1 id="Program-Designer">Program Designer</h1>
 <p>If you have any questions, contact Rich Colvin
 </p><hr/>
-<h1 id="Gcode"><span style="color: navy;"> Gcode</span></h1>
-<table border="0" style="margin-left: 15px; margin-right: 15px;"><tr><td rowspan="4" style="width: 50px;" valign="top"> <a href="Gcode/BasketWeave.ngc"><img alt="" src="Images/GcodeFileLogo.png"/></a>
-</td><td style="text-align: left; vertical-align: top; padding-left: 10px;" valign="top"> Right-click on the file icon shown to the left, and then select <strong>Save Link As...</strong> to save it in Rosetta&rsquo;s Gcode folder (in the Save window, click <strong>Gcode</strong> in the list on the left):
-</td></tr><tr><td style="font-family: Courier; font-size: large; padding-left: 50px;" valign="top"> ~/linuxcnc/configs/Rosetta/gcode
-</td></tr><tr><td style="text-align: left; vertical-align: top; padding-left: 10px;" valign="top"> The recommended file name is
-</td></tr><tr><td style="font-family: Courier; font-size: large; padding-left: 50px;" valign="top"> BasketWeave.ngc
-</td></tr></table>
+<h1 id="Gcode">Gcode</h1>
+<div class="gcode-download">
+<p><a class="download" href="Gcode/BasketWeave.ngc" download="BasketWeave.ngc">Download BasketWeave.ngc</a></p>
+<p>Save it in Rosetta&rsquo;s Gcode folder, <code>~/linuxcnc/configs/Rosetta/gcode</code>. If the browser asks where to save it, click <strong>Gcode</strong> in the list on the left; if it saves it straight to your <strong>Downloads</strong> folder, move it from there into the Gcode folder.</p>
+</div>
 <hr/>
 <p>
 
 
-</p><h1 id="How-it-Works"><span style="color: navy;"> How it Works</span></h1>
+</p><h1 id="How-it-Works">How it Works</h1>
 <p>The activity is:
 </p>
 
@@ -69,7 +69,7 @@
 <p>
 
 
-</p><h1 id="Approach-Options"><span style="color: navy;"> Approach Options</span></h1>
+</p><h1 id="Approach-Options">Approach Options</h1>
 <p>The approach options for using this code are:
 </p><ol><li>Select the end of the piece to start making the cuts:
 <ol style="list-style: lower-alpha;"><li> Start from the headstock end, and move towards the tailstock end. (DEFAULT)
@@ -81,7 +81,7 @@
 <p>
 
 
-</p><h1 id="Axes-Movement-Notes"><span style="color: navy;"> Axes &amp; Movement Notes</span></h1>
+</p><h1 id="Axes-Movement-Notes">Axes &amp; Movement Notes</h1>
 <table style="width: calc(100% - 60px); margin-left: 30px; border-collapse: collapse; border: 0px solid black;"><tr><td style="width: 50px; background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Axis</strong></span>
 </td><td style="width: 30%; background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Usage</strong></span>
 </td><td style="background-color: #00416a; text-align: center; vertical-align: bottom; padding-left: 5px; padding-right: 5px; border-style: solid; border-color: black; border-width: thin;" valign="top"> <span style="color: white;"> <strong>Comments</strong></span>
@@ -112,7 +112,7 @@
 <p class="vspace">
 
 
-</p><h1 id="User-Data-to-be-Entered"><span style="color: navy;"> User Data to be Entered</span></h1>
+</p><h1 id="User-Data-to-be-Entered">User Data to be Entered</h1>
 <p>The user will need to set these data:
 </p>
 
@@ -175,6 +175,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="GCodeReferences.html"><span>Previous</span>GCode References</a><a class="pager-contents" href="index.html"><span>Gcode Library</span>Contents</a><a class="pager-next" href="Curvilinear.html"><span>Next</span>Curvilinear</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -185,6 +186,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

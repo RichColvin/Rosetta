@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Main Screen – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -24,7 +26,7 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#At-Startup">At Startup</a></li><li class="toc-l0"><a href="#After-Startup">After Startup</a></li><li class="toc-l1"><a href="#Raspberry-Pi-Temperature">Raspberry Pi Temperature</a></li><li class="toc-l1"><a href="#ENA_">ENA</a></li><li class="toc-l1"><a href="#Feed-Rate">Feed Rate</a></li><li class="toc-l1"><a href="#Run-Operation">Run Operation</a></li><li class="toc-l1"><a href="#Device">Device</a></li></ul></nav>
   <div class="content">
 
-<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<h1 id="Axes-Colors">Axes Colors</h1>
 <table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
 </td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
@@ -73,7 +75,7 @@
 <table border="0" style="width: 100%; "><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="At-Startup"><span style="color: #00008b;"> At Startup</span></h1>
+<h1 id="At-Startup">At Startup</h1>
 <p>When the Rosetta system is started, the screen shown below will be displayed.  At this point, the LinuxCNC system is still in an "Estop" and "off" state. 
 </p>
 
@@ -90,7 +92,7 @@
 <table border="0" style="width: 100%; "><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="After-Startup"><span style="color: #00008b;"> After Startup</span></h1>
+<h1 id="After-Startup">After Startup</h1>
 <p>After 
 </p><ol><li><a href="E-Stop.html">releasing the Estop (F1)</a>, and 
 </li><li><a href="PowerOn.html">powering the system on (F2)</a>, 
@@ -104,7 +106,7 @@
 <p class="vspace">The controls on this panel to the right are outlined below.
 </p>
 <p class="vspace"><a id="PiTemperature"></a>
-</p><h2 id="Raspberry-Pi-Temperature"><span style="color: #00008b;"> Raspberry Pi Temperature</span></h2>
+</p><h2 id="Raspberry-Pi-Temperature">Raspberry Pi Temperature</h2>
 <p>There is a Raspberry Pi inside the Rosetta system.  This is a small computer inside the Base Box that is used to run Rosetta.
 </p>
 <p class="vspace">At the top right of the panel, beside the Rosetta logo, is the temperature of the Raspberry Pi (for example, <strong>Raspberry Pi 66 °C</strong>).  This displayed text changes colors if the Raspberry Pi’s temperature rises too high.
@@ -119,7 +121,7 @@
 <p class="vspace">Should any of these conditions occur, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
 </p>
 <p class="vspace"><a id="ENA"></a>
-</p><h2 id="ENA_"><span style="color: #00008b;"> ENA</span></h2>
+</p><h2 id="ENA_">ENA</h2>
 <p>These buttons are used to enable or disable an axis.
 </p><ul><li>When red, the axis is disabled.
 </li><li>When green, the axis is enabled.
@@ -140,14 +142,14 @@
 </p></td></tr></table>
 <p class="vspace"><strong>Axis Not Enabled</strong> is set on <a href="Other.html">Settings - Other</a>.
 </p>
-<h2 id="Feed-Rate"><span style="color: #00008b;"> Feed Rate</span></h2>
+<h2 id="Feed-Rate">Feed Rate</h2>
 <p>Used to set the feed rate (speed) for movements on this page.  The unit of measure (UOM) for that speed is shown on the screen.
 </p>
 <p class="vspace">These feed rates are not used on the <a href="ManualControl.html">Manual Control / Jogging (F3)</a> nor the <a href="MDITab.html">MDI Tab (F5)</a>.
 </p>
 <p class="vspace">The UOM shown, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
 </p>
-<h2 id="Run-Operation"><span style="color: #00008b;"> Run Operation</span></h2>
+<h2 id="Run-Operation">Run Operation</h2>
 <p>These 3 buttons are used for running the spindles.
 </p>
 
@@ -163,7 +165,7 @@
 </li><li>This feed rate can be set anywhere in the range of +1,000% to -1,000%.  
 </li><li>If the feed rate is set to 0, the Sp1 will not run.
 </li><li>If the Sp1 spindle is disabled, it will not run.
-</li></ol><h2 id="Device"><span style="color: #00008b;"> Device</span></h2>
+</li></ol><h2 id="Device">Device</h2>
 <p>This allows the user to denote the use of the non-spindle axes.  The values shown are in the <strong>Device Names</strong> list on <a href="Other.html">Settings - Other</a>.
 </p>
 
@@ -174,6 +176,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="SwitchSettingsOnTheDM542Ts.html"><span>Previous</span>DIP Switch Settings on the DM542T Stepper Motor Drives</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="MainScreenIndexing.html"><span>Next</span>Indexing</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -184,6 +187,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

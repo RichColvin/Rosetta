@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Scale Settings for a Device – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -28,10 +30,10 @@
 </p>
 <p class="vspace"><strong><ins>Note</ins>:</strong> the Settings program cannot run while Rosetta (LinuxCNC) is running.  So each round of tuning is: move and measure the axis in Rosetta, exit it, change the <strong>Scale</strong> in the Settings program, click <strong>Save All Settings</strong> on the Axis Selection tab, close the Settings program, then start Rosetta again and re-measure.
 </p>
-<h1 id="Steps-for-Setting-the-Scale"><span style="color: #00008b;"> Steps for Setting the Scale</span></h1>
+<h1 id="Steps-for-Setting-the-Scale">Steps for Setting the Scale</h1>
 <p>The axis' <strong>scale</strong> is used by LinuxCNC to know how to convert your distance measurement (i.e., inches, mm, or degrees) into pulses sent to a stepper motor for rotation.  It is also used for speed (i.e., rpm) on the spindles.
 </p>
-<h2 id="Step-1-Identify-a-Starting-Scale-Value"><span style="color: #00008b;"> Step 1 - Identify a Starting Scale Value</span></h2>
+<h2 id="Step-1-Identify-a-Starting-Scale-Value">Step 1 - Identify a Starting Scale Value</h2>
 <p>Use the table below to identify a starting scale value.
 </p>
 
@@ -121,13 +123,13 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 </table>
 <p class="vspace">This value does not have to be exact for speed, but <span style="color: #b22222;"> it needs to be very exact as it also sets the indexing operations for the spindle and the rosette phaser/multipler. </span><span style="color: black;"> Steps 2 &amp; 3 below are really key for this.</span>
 </p></td></tr></table>
-<h3 id="Metric-and-Multi-start-Leadscrews"><span style="color: #00008b;"> Metric and Multi-start Leadscrews</span></h3>
+<h3 id="Metric-and-Multi-start-Leadscrews">Metric and Multi-start Leadscrews</h3>
 <p>A leadscrew's <strong>lead</strong> - how far one turn moves the slide - is its pitch × its number of starts.  A 2mm pitch leadscrew with 4 starts moves 8mm a turn, so it needs a quarter of the pulses of a single-start one.  Count the starts before working out the Scale, and test with a small move first (step 2 below).
 </p>
 <p class="vspace">The Ornamental Turning Book of Knowledge's  <a class="online" href="https://otbok.info/index.php?n=Main.Leadscrew#Motor" rel="noopener" target="_blank" title="Opens on the Internet">Leadscrew</a> page explains pitch, lead and starts, and has tables of the pulses per mm and per inch for common metric and imperial leadscrews at 6,400 pulses per motor turn.
 </p>
 <hr/>
-<h2 id="Step-2-Measure-the-Actual-Movement"><span style="color: #00008b;"> Step 2 - Measure the Actual Movement</span></h2>
+<h2 id="Step-2-Measure-the-Actual-Movement">Step 2 - Measure the Actual Movement</h2>
 <p>The process for identifying the actual movement achieved is:
 </p>
 <ol><li value="1"> Enable the axis you will be using.
@@ -139,7 +141,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 </div><ol><li value="4"> Once you are satisfied that the magnitude is right, set the movement for the axis to be a distance which makes sense for the device.  A good starting point is 0.100” (especially as that is one complete revolution on a  <a class="online" href="https://otbok.info/index.php?n=Main.DialIndicator" rel="noopener" target="_blank" title="Opens on the Internet">dial indicator</a>).
 </li><li value="5"> Use the measured movement in the next step.
 </li></ol><hr/>
-<h2 id="Step-3-Tune-the-Settings"><span style="color: #00008b;"> Step 3 - Tune the Settings</span></h2>
+<h2 id="Step-3-Tune-the-Settings">Step 3 - Tune the Settings</h2>
 <p>The values noted above should get very close to the expected movement for a selected axis.  But, it is important to ensure the observed movement matches the calculated movement.  To do this,
 </p>
 <p class="vspace">Adjust the Scale value as necessary.  This formulas below can help with determining the new values.
@@ -148,7 +150,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 <table border="0"><tr><td class="center">     </td><td class="right"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>N</mi><mi>e</mi><mi>w</mi><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>e</mi><mi>S</mi><mi>e</mi><mi>t</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>g</mi></mrow></math></td><td class="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>=</mo><mi>C</mi><mi>u</mi><mi>r</mi><mi>r</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>e</mi><mi>S</mi><mi>e</mi><mi>t</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>g</mi><mi>×</mi><mfrac><mrow><mi>P</mi><mi>l</mi><mi>a</mi><mi>n</mi><mi>n</mi><mi>e</mi><mi>d</mi><mi>M</mi><mi>o</mi><mi>v</mi><mi>e</mi><mi>m</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>D</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>a</mi><mi>n</mi><mi>c</mi><mi>e</mi></mrow><mrow><mi>A</mi><mi>c</mi><mi>t</mi><mi>u</mi><mi>a</mi><mi>l</mi><mi>M</mi><mi>o</mi><mi>v</mi><mi>e</mi><mi>m</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>D</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>a</mi><mi>n</mi><mi>c</mi><mi>e</mi></mrow></mfrac></mrow></math></td></tr>
 </table>
 <hr/>
-<h2 id="An-Actual-Case"><span style="color: #00008b;"> An Actual Case</span></h2>
+<h2 id="An-Actual-Case">An Actual Case</h2>
 <p>The value from the table above notes that the cross slide value should be
 </p>
 <div class="indent">Axis = 384,000 pulses/inch
@@ -157,7 +159,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 <div class="indent">X Axis = 387,650 pulses/inch
 </div><div class="indent">Z Axis = 387,100 pulses/inch 
 </div><hr/>
-<h2 id="Recommendation"><span style="color: #00008b;"> Recommendation</span></h2>
+<h2 id="Recommendation">Recommendation</h2>
 <p>Once you determine the correct value for a given device, attach a label to that device with the value(s) needed. If you do not want to use a sticky label (e.g., from a Dymo label printer), then attach a string tag to the device.
 </p>
 <p class="vspace">For example, my Retractor has this label attached to it.
@@ -178,6 +180,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="AxisAndStepperMotorTuning.html"><span>Previous</span>Axis and Stepper Motor Tuning</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="ScaleAndMicrosteps.html"><span>Next</span>Microstep Calculator</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -188,6 +191,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

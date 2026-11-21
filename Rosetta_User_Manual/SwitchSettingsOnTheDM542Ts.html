@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DIP Switch Settings on the DM542T Stepper Motor Drives – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -30,7 +32,7 @@
 </p><ol><li><span style="color: red;">Before opening the cover on the Rosetta box, ensure it is powered off and the power cable removed.</span>  This will help ensure you are not shocked.
 </li><li><span style="color: red;">Do not change the 5V/24V switch on the side of the DM542T.</span>  If it is set to 24V, the channel will not work correctly to make your stepper motor work. 
 </li><li><span style="color: red;">Do not touch any components inside the box which have exposed places.</span> Static electricity in your body can damage the electrical components.
-</li></ol><h1 id="Stepper-Motor-Current-Amps"><span style="color: #00008b;"> Stepper Motor Current (Amps)</span></h1>
+</li></ol><h1 id="Stepper-Motor-Current-Amps">Stepper Motor Current (Amps)</h1>
 <p>Depending on the stepper motor you are driving, you also may want to adjust the current being delivered to the motor.  Some testing has shown that setting it too high can cause your stepper motor to heat up quite a bit.  It probably won't overheat, but it can get quite hot.  In particular, NEMA 17 stepper motors generally do not need as much current as NEMA 23 stepper motors.  You can set the value closer to what is needed if you wish.
 </p>
 <p class="vspace">Do note that setting it too low can cause the stepper motor to not work as expected.  So test the values selected before committing a new setting for work on a prized piece.
@@ -39,10 +41,10 @@
 </p>
 <p class="vspace">Changes to this will probably require changes to the <a href="ScaleSettingsForADevice.html">scale settings for a device</a> on the <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab of the Settings program.
 </p><hr/>
-<h1 id="Idle-Current"><span style="color: #00008b;"> Idle Current</span></h1>
+<h1 id="Idle-Current">Idle Current</h1>
 <p>We recommend you leave this at 50%.  (That is SW4 set to off).
 </p><hr/>
-<h1 id="Microsteps-per-Revolution"><span style="color: #00008b;"> Microsteps per Revolution</span></h1>
+<h1 id="Microsteps-per-Revolution">Microsteps per Revolution</h1>
 <p>When you run the program, <a href="ScaleAndMicrosteps.html">Microstep Calculator</a>, to identify the micro steps per revolution you want to use, you can change the values for the selected channel on the DM542 Stepper Motor Drive.  
 </p>
 <p class="vspace">As noted there,
@@ -58,6 +60,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="SavingAndSharingSettings.html"><span>Previous</span>Saving and Sharing Settings</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="RosettaMainScreen.html"><span>Next</span>Main Screen</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -68,6 +71,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

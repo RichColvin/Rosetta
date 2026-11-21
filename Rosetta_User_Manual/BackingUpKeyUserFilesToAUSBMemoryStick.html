@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Backing Up Key User Files to a USB Flash Drive – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -29,13 +31,13 @@
 <p class="vspace">To copy a backup back onto the Raspberry Pi - for example after replacing its memory card - see <a href="RestoringKeyUserFilesFromAUSBFlashDrive.html">Restoring Key User Files from a USB Flash Drive</a>.
 </p>
 <p class="vspace"><a id="WhatGetsCopied"></a>
-</p><h1 id="What-Gets-Copied"><span style="color: #00008b;"> What Gets Copied</span></h1>
+</p><h1 id="What-Gets-Copied">What Gets Copied</h1>
 <p>These are the files which get backed up to a USB flash drive when this program gets run.
 </p>
 <p class="vspace">Note: hidden files (names starting with a period) are not copied.
 </p>
 <hr/>
-<h2 id="Settings"><span style="color: #00008b;"> Settings</span></h2>
+<h2 id="Settings">Settings</h2>
 <p>Your settings, and any settings files you have exported get backed up.
 </p>
 
@@ -44,10 +46,10 @@
 </td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/Documents/*.ini
 </td><td style="font-family: Courier;" valign="top"> Documents
 </td></tr></table>
-<p class="vspace"><strong>Key Note:</strong>
+<p class="note"><strong>Key Note:</strong>
 </p><ol><li>Settings files (*.ini) saved in other directories are not backed up by this program.
 </li></ol><hr/>
-<h2 id="Gcode-Programs"><span style="color: #00008b;"> Gcode Programs</span></h2>
+<h2 id="Gcode-Programs">Gcode Programs</h2>
 <p>Your gcode programs in the default directory.
 </p>
 
@@ -56,10 +58,10 @@
 </td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/*.*
 </td><td style="font-family: Courier;" valign="top"> gcode
 </td></tr></table>
-<p class="vspace"><strong>Key Note:</strong>
+<p class="note"><strong>Key Note:</strong>
 </p><ol><li>Gcode programs in sub-directories of this folder are backed up.  However, gcode programs in other directories are not backed up by this program.
 </li></ol><hr/>
-<h2 id="HAL-Additions"><span style="color: #00008b;"> HAL Additions</span></h2>
+<h2 id="HAL-Additions">HAL Additions</h2>
 <p>Your own HAL additions and your tool table.
 </p>
 
@@ -69,10 +71,10 @@
 <p class="vspace">/home/reuben/linuxcnc/configs/Rosetta/Rosetta_Custom/Rosetta_Tool.tbl
 </p></td><td style="font-family: Courier;" valign="top"> Rosetta_Custom
 </td></tr></table>
-<p class="vspace"><strong>Key Note:</strong>
+<p class="note"><strong>Key Note:</strong>
 </p><ol><li>If these files are saved in other directories, they are not backed up by this program.
 </li></ol><hr/>
-<h2 id="Your-Subroutines-and-User-M-codes"><span style="color: #00008b;"> Your Subroutines and User M-codes </span></h2>
+<h2 id="Your-Subroutines-and-User-M-codes">Your Subroutines and User M-codes</h2>
 <p>Your own subroutines and user M-codes in LinuxCNC's nc_files directory.
 </p>
 
@@ -81,20 +83,20 @@
 </td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/nc_files/*.*
 </td><td style="font-family: Courier;" valign="top"> nc_files
 </td></tr></table>
-<p class="vspace"><strong>Key Note:</strong>
+<p class="note"><strong>Key Note:</strong>
 </p><ol><li>If these files are saved in other directories, they are not backed up by this program.
 </li></ol>
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="Backing-up-the-Rosetta-Settings-files"><span style="color: #00008b;"> Backing up the Rosetta Settings files</span></h1>
+<h1 id="Backing-up-the-Rosetta-Settings-files">Backing up the Rosetta Settings files</h1>
 <p>To back up these files, there are 2 options.
 </p>
 
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-1-Use-the-Applications-menu"><span style="color: #00008b;"> Option 1:  Use the Applications menu</span></h2>
+<h2 id="Option-1-Use-the-Applications-menu">Option 1:  Use the Applications menu</h2>
 <ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
 </li><li>Click on the arrow to the right of Rosetta
 </li><li>Click on Backup Rosetta
@@ -112,15 +114,15 @@
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h2 id="Option-2-Use-the-File-menu-in-Rosetta-Settings"><span style="color: #00008b;"> Option 2:  Use the File menu in Rosetta Settings</span></h2>
+<h2 id="Option-2-Use-the-File-menu-in-Rosetta-Settings">Option 2:  Use the File menu in Rosetta Settings</h2>
 <ol><li>Open the <a href="AxisSelection.html">Rosetta Settings</a> program.
 </li><li>Click on <strong>File</strong> at the top left corner of the Rosetta Settings window.
 </li><li>Click on <strong>Back Up to USB...</strong>
 </li></ol><p class="vspace">The same Back Up to USB window opens.  When you close it, you are back in Rosetta Settings.
 </p>
-<p class="vspace"><strong>Note:</strong> Rosetta Settings cannot be run while LinuxCNC is running, so this option is only there when LinuxCNC is closed.
+<p class="note"><strong>Note:</strong> Rosetta Settings cannot be run while LinuxCNC is running, so this option is only there when LinuxCNC is closed.
 </p><hr/>
-<h1 id="After-the-backup-finishes-the-USB-flash-drive-is-ejected"><span style="color: #00008b;"> After the backup finishes:  the USB flash drive is ejected</span></h1>
+<h1 id="After-the-backup-finishes-the-USB-flash-drive-is-ejected">After the backup finishes:  the USB flash drive is ejected</h1>
 <p>When the backup finishes, Rosetta <strong>ejects</strong> the USB flash drive.  Ejecting means the Raspberry Pi has finished with the flash drive and has disconnected from it, so that it is safe to pull out.  The flash drive is still plugged in, but the Raspberry Pi can no longer use it:  it no longer shows in the File Manager, or in the Back Up to USB or Restore from USB windows.
 </p>
 <ul><li><span style="color: red;">Do not pull the USB flash drive out while the backup is running.</span>  Wait until Rosetta says <strong>It is now safe to remove the USB stick.</strong>
@@ -131,7 +133,7 @@
 </li><li>Wait a few seconds for the Raspberry Pi to find it.  A File Manager window may open showing what is on the flash drive; you can close that window.
 </li></ol><p class="vspace">The USB flash drive can now be used again.
 </p>
-<p class="vspace"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
+<p class="note"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
 </p>
 
 
@@ -142,6 +144,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="GeometricChuckDesigner.html"><span>Previous</span>Geometric Chuck Designer</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="RestoringKeyUserFilesFromAUSBFlashDrive.html"><span>Next</span>Restoring Key User Files from a USB Flash Drive</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -152,6 +155,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

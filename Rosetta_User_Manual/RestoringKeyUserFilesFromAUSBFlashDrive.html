@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Restoring Key User Files from a USB Flash Drive – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -29,13 +31,13 @@
 <p class="vspace">It puts back the same files Back Up to USB copies: your settings files, your gcode programs, your HAL additions and tool table, and your subroutines and user M-codes.  See <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html#WhatGetsCopied">What Gets Copied</a> for the full list.
 </p>
 <hr/>
-<h1 id="Before-you-start"><span style="color: #00008b;"> Before you start</span></h1>
+<h1 id="Before-you-start">Before you start</h1>
 <ul><li><span style="color: red;">Do not run Restore from USB while LinuxCNC is running.</span>  LinuxCNC saves its settings as it closes, which would undo the restore.  Close LinuxCNC first.  (Rosetta Settings cannot be opened while LinuxCNC is running anyway, and Restore from USB checks again before it starts.)
 </li><li><span style="color: red;">Do not remove the USB flash drive while the restore is running.</span>  Wait until Rosetta says it is safe to remove it.
-</li></ul><p class="vspace"><strong>Note:</strong> Every file the restore replaces is first copied to the folder /home/reuben/Documents/Before_Restore, in a folder named with the date and time of the restore.  If you restore the wrong backup, your previous files are still there.
+</li></ul><p class="note"><strong>Note:</strong> Every file the restore replaces is first copied to the folder /home/reuben/Documents/Before_Restore, in a folder named with the date and time of the restore.  If you restore the wrong backup, your previous files are still there.
 </p>
 <hr/>
-<h1 id="Restoring-a-backup"><span style="color: #00008b;"> Restoring a backup</span></h1>
+<h1 id="Restoring-a-backup">Restoring a backup</h1>
 <ol><li>Plug the USB flash drive that holds the backup into the Raspberry Pi.
 </li><li>Open the <a href="AxisSelection.html">Rosetta Settings</a> program.
 </li><li>Click on <strong>File</strong> at the top left corner of the Rosetta Settings window.
@@ -45,11 +47,11 @@
 </li><li>Click <strong>Restore</strong>.  A box lists what will be replaced.  Click <strong>Restore</strong> again to go ahead, or <strong>Cancel</strong> to stop.
 </li><li>Wait for the <strong>Restore complete</strong> box, then click <strong>OK</strong>.  The USB flash drive is ejected for you, so it can be removed (see <a href="#AfterRestore">After the restore finishes</a> below).
 </li><li>Rosetta Settings closes by itself.  Open it again to see the restored settings.
-</li></ol><p class="vspace"><strong>Note:</strong> Rosetta Settings closes after a restore so that it cannot save the settings it was showing over the ones just restored.  If you have changed any Scale, speed, acceleration or PID values without saving them, Restore from USB asks first whether to save them.
+</li></ol><p class="note"><strong>Note:</strong> Rosetta Settings closes after a restore so that it cannot save the settings it was showing over the ones just restored.  If you have changed any Scale, speed, acceleration or PID values without saving them, Restore from USB asks first whether to save them.
 </p>
 <p class="vspace"><a id="AfterRestore"></a>
 </p><hr/>
-<h1 id="After-the-restore-finishes-the-USB-flash-drive-is-ejected"><span style="color: #00008b;"> After the restore finishes:  the USB flash drive is ejected</span></h1>
+<h1 id="After-the-restore-finishes-the-USB-flash-drive-is-ejected">After the restore finishes:  the USB flash drive is ejected</h1>
 <p>When the restore finishes, Rosetta <strong>ejects</strong> the USB flash drive.  Ejecting means the Raspberry Pi has finished with the flash drive and has disconnected from it, so that it is safe to pull out.  The flash drive is still plugged in, but the Raspberry Pi can no longer use it:  it no longer shows in the File Manager, or in the Back Up to USB or Restore from USB windows.
 </p>
 <ul><li><span style="color: red;">Do not pull the USB flash drive out while the restore is running.</span>  Wait until Rosetta says <strong>It is now safe to remove the USB stick.</strong>
@@ -60,14 +62,14 @@
 </li><li>Wait a few seconds for the Raspberry Pi to find it.  A File Manager window may open showing what is on the flash drive; you can close that window.
 </li></ol><p class="vspace">The USB flash drive can now be used again.
 </p>
-<p class="vspace"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
+<p class="note"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
 </p>
 <hr/>
-<h1 id="What-the-restore-does-not-change"><span style="color: #00008b;"> What the restore does not change</span></h1>
+<h1 id="What-the-restore-does-not-change">What the restore does not change</h1>
 <ul><li>Files on the Raspberry Pi that are not in the backup are left as they are.  For example, a gcode program you saved after the backup was made is kept.
 </li><li>Backups made before Rose Engine Butler was renamed Rosetta (in a folder named REB_Backup on the USB flash drive) can be restored too.  Their old file names are changed to the new ones as they are copied.
 </li></ul><hr/>
-<h1 id="A-backup-from-a-different-machine"><span style="color: #00008b;"> A backup from a different machine</span></h1>
+<h1 id="A-backup-from-a-different-machine">A backup from a different machine</h1>
 <p>If the backup's axis selection (which axis uses each plug) or expansion box setting is different from this machine's, the Restore from USB window says so in red, listing each difference - for example, <strong>Channel 04: C here, B in the backup.</strong>
 </p>
 <ul><li><span style="color: red;">Do not restore a backup from a machine set up differently unless you mean to.</span>  The restore copies that machine's axis selection along with its other settings.  After restoring, check the <a href="AxisSelection.html">Axis Selection</a> tab in Rosetta Settings, and change it to match how this machine's motors are plugged in, before you start LinuxCNC.
@@ -80,6 +82,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="BackingUpKeyUserFilesToAUSBMemoryStick.html"><span>Previous</span>Backing Up Key User Files to a USB Flash Drive</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="ReleaseNotes.html"><span>Next</span>What&#x27;s New in Rosetta</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -90,6 +93,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

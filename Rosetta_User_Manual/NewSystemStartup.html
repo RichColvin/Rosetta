@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Starting Up Your New System – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -65,32 +67,32 @@
 <table border="0" width="100%"><tr><td valign="top">
 <hr/>
 </td></tr></table>
-<h1 id="Additional-Notes"><span style="color: #00008b;"> Additional Notes</span></h1>
+<h1 id="Additional-Notes">Additional Notes</h1>
 <p>If you run the update program too soon after starting up your system, you may encounter an error.  This is because the virus scanning is still running.
 </p>
 <p class="vspace">Wait 30 minutes and run it again.  This should clear up any issues.
 </p>
 <hr/>
-<h1 id="System-Usage-Notes"><span style="color: #00008b;"> System Usage Notes</span></h1>
-<h2 id="Changes-to-System-Settings"><span style="color: #00008b;"> Changes to System Settings</span></h2>
+<h1 id="System-Usage-Notes">System Usage Notes</h1>
+<h2 id="Changes-to-System-Settings">Changes to System Settings</h2>
 <p>Settings are changed in the separate <strong>Rosetta Settings</strong> program, which cannot run while Rosetta is running.  To change a setting:
 </p><ol><li>Close Rosetta by clicking on the X in the top right of the screen, and give it a minute or so to let the shutdown program complete.
 </li><li>Run the Settings program, make your changes, and click <strong>Save All Settings</strong> on the Axis Selection tab.
 </li><li>Close the Settings program, then double-click on the Turk's head icon to restart Rosetta.
 </li></ol><p class="vspace"><a id="SwitchingOff"></a>
-</p><h2 id="Switching-the-System-Off"><span style="color: #00008b;"> Switching the System Off</span></h2>
+</p><h2 id="Switching-the-System-Off">Switching the System Off</h2>
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta_Shut_Down.png" width="45px"/></span></div>
 <p><span style="color: red;"><strong>Do not switch the power off while the computer is running.</strong></span>  Switching off a running computer can damage the files on its memory card.  Instead:
 </p><ol><li>Close Rosetta, and any other Rosetta program that is open.
 </li><li>Click on <strong>Shut Down</strong> - at the bottom of the <strong>Applications</strong> menu, or the red power symbol on the bar that pops up at the bottom middle of the screen.
 </li><li>Click <strong>Shut Down</strong> to confirm.  If a Rosetta program is still open, it asks you to close it first.
 </li><li>When the screen has gone dark, wait 10 seconds, then switch the power off.
-</li></ol><h2 id="Entering-Data-Values"><span style="color: #00008b;"> Entering Data Values</span></h2>
+</li></ol><h2 id="Entering-Data-Values">Entering Data Values</h2>
 <p>The system used for building screens in LinuxCNC has some quirks.
 </p><ol><li>To change a value, you must have the mouse over that field.
 </li><li>To have the system accept the value you entered, you must depress the <strong>Enter</strong> key after entering the value.
 </li><li>System checks are built into many fields to help you verify that you are not entering invalid values.  For example, there is a relationship between the axis scaling and the axis max speed.  Thusly, we have the system ensure you do not enter a set of values which is too high (and which would not work correctly, thusly bringing up an error message).
-</li></ol><h2 id="User-Settings-Files"><span style="color: #00008b;"> User Settings Files</span></h2>
+</li></ol><h2 id="User-Settings-Files">User Settings Files</h2>
 <p>Your settings are saved in the file
 </p>
 <table border="0" style="width: calc(100% - 40px); margin-left: 30px; margin-top: 10px; margin-bottom: 10px;"><tr><td style="width: 100%; font-family: Courier; padding-left: 5px; padding-right: 5px;" valign="top">
@@ -106,6 +108,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="HowAllThePartsFitTogether.html"><span>Previous</span>How the Rosetta Programs Fit Together</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="WiFi.html"><span>Next</span>Setting up Wi-Fi</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -116,6 +119,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Threading - Single Start – Rosetta Gcode Library</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -27,7 +29,7 @@
 <p class="vspace">
 
 
-</p><h1 id="Purpose"><span style="color: navy;"> Purpose</span></h1>
+</p><h1 id="Purpose">Purpose</h1>
 <p>This gCode is used to establish threads on a piece.
 </p>
 <p class="vspace">
@@ -35,7 +37,7 @@
 
 
 
-</p><h1 id="Code"><span style="color: navy;"> Code</span></h1>
+</p><h1 id="Code">Code</h1>
 <table align="center" bgcolor="#dcdcdc" border="1" cellpadding="5px" style="border-collapse:collapse" width="90%"><tr><td valign="top">
 <p>; Make single-start threads<br/>; The value of Z is the distance to cut the threads (in this case, 0.25 inches)<br/>; The value of K should be 1/TPI (in this case, 16 TPI = 0.0625)<br/>G33 Z0.25 K0.0625<br/>; <br/>; If the cross slide is connected to X also, these codes can reposition the cutter back to the beginning position.<br/>; Move the cutter along the X axis out from the threads (towards the user) by 0.5 inches<br/>G0 X0.5<br/>; Move the cutter along the Z axis in the opposite direction of the threading by 0.25 inches<br/>G0 Z-0.25<br/>; Move the cutter along the X axis to put it back into place<br/>G0 X-0.5
 </p></td></tr></table>
@@ -44,7 +46,7 @@
 
 
 
-</p><h1 id="Code-Comments"><span style="color: navy;"> Code Comments</span></h1>
+</p><h1 id="Code-Comments">Code Comments</h1>
 <p>G33 is only used for single-start threads.  For multi-start threads, G76 is needed.
 </p>
 <p class="vspace">
@@ -59,6 +61,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="Curvilinear.html"><span>Previous</span>Curvilinear</a><a class="pager-contents" href="index.html"><span>Gcode Library</span>Contents</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -69,6 +72,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Troubleshooting – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -34,21 +36,21 @@
 </div><hr/>
 <h1 id="Starting-Up"><span style="color: #5D6532;"> Starting Up</span></h1>
 <p><a id="nostart"></a>
-</p><h2 id="Rosetta-won-t-start"><span style="color: #00008b;"> Rosetta won't start</span></h2>
+</p><h2 id="Rosetta-won-t-start">Rosetta won't start</h2>
 <div class="indent">If <strong>Expansion Box - Connected</strong> is ticked on the <a href="AxisSelection.html">Axis Selection</a> tab, Rosetta looks for the Expansion Box when it starts, and won't start if it can't find it.
 <ul><li>Make sure both boxes are switched on before starting Rosetta, and that the Expansion Box's network cable is plugged into the Base Box.
 </li><li>If you don't have an Expansion Box, or aren't using it today, untick <strong>Connected</strong>, then start Rosetta again.
 </li></ul></div><div class="indent">The same applies to the Base Box: it must be switched on before Rosetta is started.
 </div><p><a id="lostcontact"></a>
-</p><h2 id="Base-box-lost-contact-E-stop-or-Expansion-box-lost-contact-E-stop"><span style="color: #00008b;"> "Base box lost contact - E-stop" or "Expansion box lost contact - E-stop"</span></h2>
+</p><h2 id="Base-box-lost-contact-E-stop-or-Expansion-box-lost-contact-E-stop">"Base box lost contact - E-stop" or "Expansion box lost contact - E-stop"</h2>
 <div class="indent">The Raspberry Pi stopped hearing from that box while Rosetta was running, so it put the system into E-stop.  Check that box's network cable, the network switch, and the box's power, then press F1.  See <a href="E-Stop.html#LostContact">Lost contact with a box</a>.
 </div><hr/>
 <h1 id="General-Usage-of-the-System"><span style="color: #5D6532;"> General Usage of the System</span></h1>
 <p><a id="grayrow"></a>
-</p><h2 id="An-axis-row-is-grayed-out-on-the-main-screen"><span style="color: #00008b;"> An axis row is grayed out on the main screen</span></h2>
+</p><h2 id="An-axis-row-is-grayed-out-on-the-main-screen">An axis row is grayed out on the main screen</h2>
 <div class="indent">That axis isn't assigned to a channel (plug), or it is assigned to an Expansion Box channel (06 - 09) while the Expansion Box isn't ticked as <strong>Connected</strong>.  Assign it on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program, then restart Rosetta.
 </div><p class="vspace"><a id="estop"></a>
-</p><h2 id="The-E-stop-won-t-clear-F1-does-nothing"><span style="color: #00008b;"> The E-stop won't clear (F1 does nothing)</span></h2>
+</p><h2 id="The-E-stop-won-t-clear-F1-does-nothing">The E-stop won't clear (F1 does nothing)</h2>
 <div class="indent">If an <a href="E-StopCabling.html">E-stop button</a> is set as connected in the Settings program:
 <ul><li>the E-stop can't be cleared while the button is pressed, and
 </li><li>it can't be cleared when nothing is plugged into the E-stop plug.
@@ -56,27 +58,27 @@
 </div><div class="indent">If you don't have an E-stop button, make sure <strong>E-Stop Button - Connected</strong> is unchecked on the <a href="InputsOutputsSound.html#EStopButton">Inputs, Outputs, and Sounds</a> tab of the Settings program.
 </div><div class="indent">If a box lost contact, F1 works again once that box is back in contact - see <a href="#lostcontact">lost contact</a>.
 </div><p class="vspace"><a id="sp1jog"></a>
-</p><h2 id="Unable-to-jog-the-rosette-phaser-multiplier-spindle-Sp1"><span style="color: #00008b;"> Unable to jog the rosette phaser/multiplier spindle (Sp1)</span></h2>
+</p><h2 id="Unable-to-jog-the-rosette-phaser-multiplier-spindle-Sp1">Unable to jog the rosette phaser/multiplier spindle (Sp1)</h2>
 <div class="indent">The F3 <a href="ManualControl.html">Manual Control</a> / Jogging screen can't be used to jog that spindle.  It is the only axis which can't be jogged, because of the way LinuxCNC's AXIS screen is built.
 </div><p class="vspace"><a id="settingnochange"></a>
-</p><h2 id="I-changed-a-setting-but-nothing-changed-in-Rosetta"><span style="color: #00008b;"> I changed a setting, but nothing changed in Rosetta</span></h2>
+</p><h2 id="I-changed-a-setting-but-nothing-changed-in-Rosetta">I changed a setting, but nothing changed in Rosetta</h2>
 <div class="indent">Changes made in the Settings program take effect the <strong>next time Rosetta starts</strong>.  Because the Settings program can't run at the same time as Rosetta, this normally happens on its own.  If you don't see the change:
 <ul><li>make sure the change was saved (see <a href="#tuninglost">Tuning changes were lost</a>), then
 </li><li>close Rosetta completely and start it again.
 </li></ul></div><p class="vspace"><a id="gcodeload"></a>
-</p><h2 id="A-G-code-program-won-t-load-or-run"><span style="color: #00008b;"> A G-code program won't load or run</span></h2>
+</p><h2 id="A-G-code-program-won-t-load-or-run">A G-code program won't load or run</h2>
 <div class="indent">The most common reason is that the program moves an axis that isn't assigned to a channel (plug).  For example, a program that moves <strong>C</strong> won't run if C isn't assigned.
 <ul><li>Look at which axis letters the program uses (the <a href="../Rosetta_Gcode_Library/index.html">G-code library</a> lists them for each program).
 </li><li>Assign those axes on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program, then restart Rosetta.
 </li></ul></div><p class="vspace"><a id="threading"></a>
-</p><h2 id="The-Threading-tab-won-t-run"><span style="color: #00008b;"> The Threading tab won't run</span></h2>
+</p><h2 id="The-Threading-tab-won-t-run">The Threading tab won't run</h2>
 <div class="indent">Threading turns the work with the <strong>C</strong> axis, not with spindle Sp0, so C must be assigned to a channel.  For a threading setup, put <strong>C</strong> on the plug the main spindle drive is connected to (by default, Sp0 is on channel 04), in place of Sp0.  Assign it on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program, then restart Rosetta.
 </div><hr/>
 <h1 id="Error-Messages"><span style="color: #5D6532;"> Error Messages</span></h1>
 <p>Generally, these messages are seen on the lower right-hand corner of the screen when using LinuxCNC.
 </p>
 <p class="vspace"><a id="ferror"></a>
-</p><h2 id="Joint-following-error-joint-0-following-error"><span style="color: #00008b;"> Joint following error ("joint 0 following error")</span></h2>
+</p><h2 id="Joint-following-error-joint-0-following-error">Joint following error ("joint 0 following error")</h2>
 <div class="indent"><strong>What it means</strong>
 </div><div class="indent">LinuxCNC is always checking that each axis is where it was told to be.  If an axis falls too far behind, LinuxCNC turns the machine off and reports a following error.  The number in the message is the joint, not the plug.
 </div><div class="indent"><strong>What it does not mean</strong>
@@ -94,7 +96,7 @@
 </li><li>If it keeps happening, reduce the feed rate, or lower the <strong>Max Vel</strong> and <strong>Max Accel</strong> values on <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a>.
 </li></ol></div><div class="indent">Another guide which may be of use is <a class="online" href="https://www.linuxcnc.org/docs/html/config/stepper-diagnostics.html" rel="noopener" target="_blank" title="Opens on the Internet">LinuxCNC Stepper Diagnostics</a>.
 </div><p class="vspace"><a id="latency"></a>
-</p><h2 id="Latency-error-Unexpected-realtime-delay-or-error-finishing-read"><span style="color: #00008b;"> Latency error ("Unexpected realtime delay..." or "error finishing read")</span></h2>
+</p><h2 id="Latency-error-Unexpected-realtime-delay-or-error-finishing-read">Latency error ("Unexpected realtime delay..." or "error finishing read")</h2>
 <div class="indent"><strong>What it means</strong>
 </div><div class="indent">LinuxCNC has to send a steady stream of small instructions to the motor controller board, on a strict schedule, many times every second.  If something on the computer delays it, or the instructions are slow getting through the network cables to the boards, the motors can't be kept in step.  LinuxCNC then stops the machine and reports a latency error, rather than risk a distorted pattern.
 </div><div class="indent">On a rose engine, the motions have to stay in step with each other (for example, the spindle rotation and the rubber or cutter movement).  If the instructions arrive late, the motions drift apart and the pattern gets distorted.  Stopping protects your workpiece and your cutter.
@@ -112,7 +114,7 @@
 </li><li>Check that the network cables are firmly plugged in at both ends, and that nothing other than the Raspberry Pi and the boxes is plugged into the network switch.
 </li><li>If the error keeps happening, note when it occurs (at startup, at a certain point in a pattern, or at random) and email us at <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a>.
 </li></ol></div><p class="vspace"><a id="PiHot"></a>
-</p><h2 id="The-Pi-is-warm-or-too-hot-Raspberry-Pi-is-warm-or-Raspberry-Pi-is-too-hot"><span style="color: #00008b;"> The Pi is warm or too hot ("Raspberry Pi is warm" or "Raspberry Pi is too hot")</span></h2>
+</p><h2 id="The-Pi-is-warm-or-too-hot-Raspberry-Pi-is-warm-or-Raspberry-Pi-is-too-hot">The Pi is warm or too hot ("Raspberry Pi is warm" or "Raspberry Pi is too hot")</h2>
 <div class="indent"><strong>What it means</strong>
 </div><div class="indent">The temperature at the top of the main screen has reached the <strong>Warning</strong> (orange) or <strong>Alarm</strong> (red) temperature set in <a href="Other.html#PiTemperature">Rosetta Settings</a>.  Near 85 °C the Pi slows itself down, and that can cause a following error or a latency error part way through a program.  Rosetta does not stop anything - it is a warning.
 </div><div class="indent"><strong>What to do</strong>
@@ -122,7 +124,7 @@
 </li><li>Close Firefox and any other programs you aren't using - they make the Pi work harder.
 </li><li>If it keeps happening, email us at <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a>.  The highest temperature is sent to us each time you update the software, which helps us see what happened.
 </li></ol></div><p class="vspace"><a id="Undervoltage"></a>
-</p><h2 id="The-power-supply-isn-t-keeping-up-undervoltage"><span style="color: #00008b;"> "The power supply isn't keeping up (undervoltage)"</span></h2>
+</p><h2 id="The-power-supply-isn-t-keeping-up-undervoltage">"The power supply isn't keeping up (undervoltage)"</h2>
 <div class="indent"><strong>What it means</strong>
 </div><div class="indent">The Raspberry Pi's 5V supply dropped too low for a moment, and a <strong>⚡</strong> is shown beside the temperature on the main screen.  It is often brief - for example, when the motors all start at once - but a Pi short of power can behave like a hot one.
 </div><div class="indent"><strong>What to do</strong>
@@ -131,7 +133,7 @@
 </li></ol></div><hr/>
 <h1 id="Limit-Switches-and-Signal-Tower"><span style="color: #5D6532;"> Limit Switches and Signal Tower</span></h1>
 <p><a id="limit"></a>
-</p><h2 id="An-axis-stopped-on-a-limit-switch"><span style="color: #00008b;"> An axis stopped on a limit switch</span></h2>
+</p><h2 id="An-axis-stopped-on-a-limit-switch">An axis stopped on a limit switch</h2>
 <div class="indent">When a limit switch is tripped, LinuxCNC turns the machine off and shows an error.
 <ol><li>Clear the error (click on the X), then power on (F2).
 </li><li>If the switch is set as a <strong>min</strong> or <strong>max</strong> limit, jog the axis away from the switch.
@@ -139,33 +141,33 @@
 </li></ol></div><div class="indent">If a limit trips when no switch is touched, check the cable and connector - a broken or loose wire reads the same as a tripped switch.  Also make sure any Limit Jack with nothing plugged in is set to <strong>Not used</strong>, because an empty normally closed (NC) jack reads the same as a tripped switch.
 </div><div class="indent">If a limit jack shows "not assigned - cleared" in the Settings program, see <a href="#jacknotassigned">that entry</a> below.
 </div><p class="vspace"><a id="towerred"></a>
-</p><h2 id="The-signal-tower-s-red-light-is-on-or-the-buzzer-sounded"><span style="color: #00008b;"> The signal tower's red light is on, or the buzzer sounded</span></h2>
+</p><h2 id="The-signal-tower-s-red-light-is-on-or-the-buzzer-sounded">The signal tower's red light is on, or the buzzer sounded</h2>
 <div class="indent">The red light means LinuxCNC stopped the machine because of a <a href="#ferror">joint following error</a>, a <a href="#limit">tripped limit switch</a>, or a box that <a href="#lostcontact">lost contact</a>.  The buzzer sounds for a few seconds when the red light comes on.  See those entries for what to do.  The red light goes off when the machine is powered on again (F2).
 </div><div class="indent">Pressing the E-stop or stopping a program does <strong>not</strong> turn on the red light.
 </div><p class="vspace"><a id="towerboot"></a>
-</p><h2 id="The-signal-tower-lights-or-buzzer-are-on-when-Rosetta-isn-t-running"><span style="color: #00008b;"> The signal tower lights or buzzer are on when Rosetta isn't running</span></h2>
+</p><h2 id="The-signal-tower-lights-or-buzzer-are-on-when-Rosetta-isn-t-running">The signal tower lights or buzzer are on when Rosetta isn't running</h2>
 <div class="indent">The tower's relay board must be the type that switches on when its input is pulled <strong>low</strong> ("active low").  The controller board holds its outputs high whenever Rosetta isn't running (while starting up and after it exits), so a board that switches on when its input is high turns everything on at those times.  Use an active-low relay board. (The Rosetta system we ship already comes with this type of relays.)
 </div><hr/>
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="75px"/></span></div>
 <h1 id="Settings-Program"><span style="color: #5D6532;"> Settings Program</span></h1>
 <p><a id="settingsopen"></a>
-</p><h2 id="The-Settings-program-won-t-open"><span style="color: #00008b;"> The Settings program won't open</span></h2>
+</p><h2 id="The-Settings-program-won-t-open">The Settings program won't open</h2>
 <div class="indent">The Settings program can't run while Rosetta is running.  Close Rosetta first (click on the X in the top right of its screen, and wait a minute for it to finish shutting down), then open the Settings program.
 </div><p class="vspace"><a id="tuninglost"></a>
-</p><h2 id="Tuning-changes-were-lost"><span style="color: #00008b;"> Tuning changes were lost</span></h2>
+</p><h2 id="Tuning-changes-were-lost">Tuning changes were lost</h2>
 <div class="indent">Scale, Max Vel, Max Accel, and PID changes are only saved when you click <strong>Save All Settings</strong> on the Axis Selection tab, or choose <strong>Save and Close</strong> when the Settings program asks as you close it.  If <strong>Close Without Saving</strong> was chosen, those changes are discarded.  See <a href="SavingAndSharingSettings.html">Saving and Sharing Settings</a>.
 </div><div class="indent">All other settings (channel assignments, Expansion Box Connected, limit jacks, E-stop, signal tower, backlash, jog speeds, measurement system and device names) are saved as soon as you change them.
 </div><p class="vspace"><a id="jacknotassigned"></a>
-</p><h2 id="A-limit-switch-s-jack-shows-not-assigned-cleared"><span style="color: #00008b;"> A limit switch's jack shows "not assigned - cleared"</span></h2>
+</p><h2 id="A-limit-switch-s-jack-shows-not-assigned-cleared">A limit switch's jack shows "not assigned - cleared"</h2>
 <div class="indent">The axis that jack was set to is no longer assigned to a channel (plug), so the jack was set back to <strong>Not used</strong>.  Assign the axis to a channel, then choose it for the jack again.
 </div><p class="vspace"><a id="jogrefused"></a>
-</p><h2 id="A-jog-speed-change-was-refused-and-put-back"><span style="color: #00008b;"> A jog speed change was refused and put back</span></h2>
+</p><h2 id="A-jog-speed-change-was-refused-and-put-back">A jog speed change was refused and put back</h2>
 <div class="indent">In each group of jog speeds, <strong>Min</strong> must be no more than <strong>Default</strong>, and <strong>Default</strong> must be no more than <strong>Max</strong>.  A change that breaks this is refused and the old value is put back.  Change the values in an order that keeps them in that order - for example, to raise all three, change Max first, then Default, then Min.
 </div><p class="vspace"><a id="sp1assign"></a>
-</p><h2 id="Sp1-can-t-be-assigned-to-a-channel"><span style="color: #00008b;"> Sp1 can't be assigned to a channel</span></h2>
+</p><h2 id="Sp1-can-t-be-assigned-to-a-channel">Sp1 can't be assigned to a channel</h2>
 <div class="indent">Sp1 (the rosette phaser/multiplier spindle) always runs as a percentage of Sp0's speed, so Sp1 can only be assigned when <strong>Sp0</strong> is also assigned to a channel.  Assign Sp0 first, then Sp1.
 </div><p class="vspace"><a id="phonealerts"></a>
-</p><h2 id="Phone-alerts-don-t-arrive"><span style="color: #00008b;"> Phone alerts don't arrive</span></h2>
+</p><h2 id="Phone-alerts-don-t-arrive">Phone alerts don't arrive</h2>
 <div class="indent">In Rosetta Settings, on the <strong>Inputs, Outputs, and Sounds</strong> tab, press <strong>Send Test Message</strong>, and look at what it says under the button:
 <ul><li><strong>Not sent: couldn't reach the ntfy server</strong> - the Raspberry Pi isn't on the internet.  Check its Wi-Fi (see <a href="WiFi.html">Setting up Wi-Fi</a>).
 </li><li><strong>Sent - check your phone</strong>, but nothing arrives - the topic in the ntfy app doesn't match the one in Rosetta Settings.  Check every letter: capital letters matter.  Also check that your phone allows notifications from the ntfy app.
@@ -182,6 +184,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="Sounds.html"><span>Previous</span>Sounds</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="Help.html"><span>Next</span>ℛ Help</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -192,6 +195,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

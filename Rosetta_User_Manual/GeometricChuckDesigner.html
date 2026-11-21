@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Geometric Chuck Designer – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -36,7 +38,7 @@
 </td></tr></table>
 <hr/>
 <p><a id="Opening"></a>
-</p><h1 id="Opening-the-Geometric-Chuck-Designer"><span style="color: #00008b;"> Opening the Geometric Chuck Designer</span></h1>
+</p><h1 id="Opening-the-Geometric-Chuck-Designer">Opening the Geometric Chuck Designer</h1>
 <div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta_GeoChuck.png" width="50px"/></span></div>
 <ol><li>Click on <strong>Applications</strong> at the top left corner of the screen.
 </li><li>Click on the arrow to the right of Rosetta.
@@ -47,12 +49,12 @@
 </p>
 <hr/>
 <p><a id="Designing"></a>
-</p><h1 id="Designing-a-Pattern"><span style="color: #00008b;"> Designing a Pattern</span></h1>
+</p><h1 id="Designing-a-Pattern">Designing a Pattern</h1>
 <p>The Geometric Chuck Designer fills the screen, like the Rosette Designer.  The drawings in the middle change as you change the settings on the left, and the notes on the right explain each section, with a button that opens this page at that section.  The drawings:
 </p><ul><li><strong>The pattern</strong> shows the cut on the face of the work, seen from the end.  The red dot is where the cut starts.
 </li><li><strong>X and C</strong> shows how X (the cutter's radius) and C (the angle) move along the pattern.
 </li></ul><p class="vspace"><a id="ChuckSettings"></a>
-</p><h2 id="Chuck-Settings"><span style="color: #00008b;"> Chuck Settings</span></h2>
+</p><h2 id="Chuck-Settings">Chuck Settings</h2>
 <p>A two-part geometric chuck adds three circles together, each turning at its own speed.  The pattern is where they add up.  <strong>Set by</strong> chooses how you enter them:
 </p><ul><li><strong>Chuck settings (L, V)</strong> - as you would set a geometric chuck (below).  This is the usual way.
 </li><li><strong>Stages (r, k)</strong> - the circles one by one, for patterns a two-part chuck can't make (see <a href="#Stages">Stages</a>, below).
@@ -85,7 +87,7 @@
 </li></ul><p class="vspace">The third circle (L3, V2) adds smaller loops on top of the pattern.
 </p>
 <p class="vspace"><a id="Bazley"></a>
-</p><h2 id="Bazley-s-Figures"><span style="color: #00008b;"> Bazley's Figures</span></h2>
+</p><h2 id="Bazley-s-Figures">Bazley's Figures</h2>
 <p>T. S. Bazley's  <a class="online" href="https://archive.org/details/indextogeometri00bazlgoog" rel="noopener" target="_blank" title="Opens on the Internet">Index to the Geometric Chuck</a> (1875) shows over 3,400 numbered figures, with the chuck settings for each.  To cut one:
 </p><ol><li>Type the figure's number in <strong>Bazley figure</strong>.
 </li><li>Type its <strong>size</strong> - the figure's largest diameter.
@@ -98,10 +100,10 @@
 </p>
 <p class="vspace">If you change a setting afterwards (other than Rotation), the pattern is no longer Bazley's figure, and the note no longer names it.
 </p>
-<p class="vspace"><strong>Note:</strong> The settings for Bazley's figures are from Roy Lindley's catalogue (see <a href="#Acknowledgement">Acknowledgement</a>, above).
+<p class="note"><strong>Note:</strong> The settings for Bazley's figures are from Roy Lindley's catalogue (see <a href="#Acknowledgement">Acknowledgement</a>, above).
 </p>
 <p class="vspace"><a id="Stages"></a>
-</p><h2 id="Stages_"><span style="color: #00008b;"> Stages</span></h2>
+</p><h2 id="Stages_">Stages</h2>
 <p>With <strong>Set by</strong> at <strong>Stages (r, k)</strong>, there are 5 circles, entered one by one.  Each turns a circle of radius <strong>r</strong>, <strong>k</strong> times for each turn of the first, set at its <strong>Phase</strong> to start.  Leave <strong>r</strong> at 0 for a stage you don't use.  Use it for patterns a two-part chuck can't make - for example, four or five circles.
 </p>
 
@@ -118,7 +120,7 @@
 <p class="vspace">Switching back to <strong>Chuck settings</strong> keeps the pattern when a two-part chuck can make it.  When it can't - more than three circles, stage 1 not at k = 1, or stages 1 and 2 at different phases - the Designer asks first, and the chuck settings replace the stages.
 </p>
 <p class="vspace"><a id="Movement"></a>
-</p><h2 id="Movement_"><span style="color: #00008b;"> Movement</span></h2>
+</p><h2 id="Movement_">Movement</h2>
 <table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Cutting speed</strong>
 </td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
 <p>How fast the cutter moves along the pattern, in inches (or mm) per minute.  C slows down where it, or X, can't keep up - most where the pattern passes close to the centre, where C has to turn fast.  The note under the drawings gives the time.
@@ -127,7 +129,7 @@
 <p>Which way C turns: <strong>+</strong> or <strong>-</strong>.  The other way cuts the pattern's mirror image.
 </p></td></tr></table>
 <p class="vspace"><a id="Depth"></a>
-</p><h2 id="Depth_"><span style="color: #00008b;"> Depth</span></h2>
+</p><h2 id="Depth_">Depth</h2>
 <p>Choose one:
 </p>
 <table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Passes, deeper each time</strong>
@@ -144,7 +146,7 @@
 <p class="vspace"><strong>Deeper is +</strong>:  normally the cutter goes deeper by moving Z in its minus direction.  Tick this if going deeper means moving it in its plus direction.
 </p>
 <p class="vspace"><a id="Advance"></a>
-</p><h2 id="Advance-and-Retract-Cutter"><span style="color: #00008b;"> Advance and Retract Cutter</span></h2>
+</p><h2 id="Advance-and-Retract-Cutter">Advance and Retract Cutter</h2>
 <p>To start the cutter clear of the work, set how far it moves in before cutting - <strong>X advance</strong>, <strong>Z advance</strong> or both - and which way: <strong>Towards centre</strong> or <strong>Away</strong> for X, <strong>Towards headstock</strong> or <strong>Away</strong> for Z.  Leave both at 0 for no advance.
 </p><ol><li>Put the cutter that far clear of where the pattern is to be cut.
 </li><li>Run the program.  The cutter moves in at the <strong>Plunge feed</strong> - Z last, so it enters the work straight in.
@@ -152,9 +154,9 @@
 </li><li>At the end, the cutter moves back out to exactly where you put it, Z first.
 </li></ol><p class="vspace"><span style="color: red;"><strong>Do not run the program until you have checked each advance's direction.</strong></span>  The cutter moves the whole advance distance that way before it starts cutting - set the wrong way, it moves into the work instead of up to it.
 </p>
-<p class="vspace"><strong>Note:</strong> If the program is stopped part way, the cutter is left where it stopped - it moves back out only at the normal end.
+<p class="note"><strong>Note:</strong> If the program is stopped part way, the cutter is left where it stopped - it moves back out only at the normal end.
 </p>
-<h2 id="Notes-Under-the-Drawings"><span style="color: #00008b;"> Notes Under the Drawings</span></h2>
+<h2 id="Notes-Under-the-Drawings">Notes Under the Drawings</h2>
 <p>Under the drawings, the Geometric Chuck Designer gives:
 </p><ul><li>the pattern's symmetry, and how many times one pattern turns C;
 </li><li>its largest and smallest radius;
@@ -168,7 +170,7 @@
 </li><li>a V or a k isn't a number.
 </li></ul><hr/>
 <p><a id="CheckCircle"></a>
-</p><h1 id="Setting-the-Start-Radius-Check-Circle"><span style="color: #00008b;"> Setting the Start Radius:  Check Circle</span></h1>
+</p><h1 id="Setting-the-Start-Radius-Check-Circle">Setting the Start Radius:  Check Circle</h1>
 <p>The program moves the cutter from wherever it is put, so the cutter's distance from C's axis - the <strong>start radius</strong> the note under the drawings gives - sets the pattern's size and shape.  That distance is hard to measure, especially when the headstock moves.  The <strong>Check Circle...</strong> button makes it easy: it saves a small program that turns C once with X and Z standing still, so the cutter draws a circle round C's axis.  The circle's diameter is twice the cutter's radius.
 </p><ol><li>Press <strong>Check Circle...</strong>.  It saves a program named for the size the circle should be, for example <em>Check-Circle_2.500in.ngc</em>, in the gcode folder, and offers to open it in Rosetta.
 </li><li>Put the cutter just touching the work, where the cut will start.
@@ -176,15 +178,15 @@
 </li><li>If the circle is smaller than it should be, move X out by half the difference; if it is bigger, move X in.  For example, if a circle that should be 3" across comes out 2 1/8", move X out by 7/16".
 </li><li>Run the check circle again, until it is the right size.
 </li><li>Open the pattern program and run it, without moving X.
-</li></ol><p class="vspace"><strong>Note:</strong> with an <strong>X advance</strong>, set the circle first, then move X by the advance, as the check circle's message says, before running the pattern.
+</li></ol><p class="note"><strong>Note:</strong> with an <strong>X advance</strong>, set the circle first, then move X by the advance, as the check circle's message says, before running the pattern.
 </p>
-<p class="vspace"><strong>Note:</strong> the check circle cuts a light circle in the work.  On a paper chuck that doesn't matter; on finished work, set the radius on a scrap piece first.
+<p class="note"><strong>Note:</strong> the check circle cuts a light circle in the work.  On a paper chuck that doesn't matter; on finished work, set the radius on a scrap piece first.
 </p>
-<p class="vspace"><strong>Note:</strong> the check circle works on any machine - see  <a class="online" href="https://otbok.info/index.php?n=Main.GcodeForOrnamentalTurning#StartRadius" rel="noopener" target="_blank" title="Opens on the Internet">Working from Where the Cutter Starts</a> in the Ornamental Turning Book of Knowledge.
+<p class="note"><strong>Note:</strong> the check circle works on any machine - see  <a class="online" href="https://otbok.info/index.php?n=Main.GcodeForOrnamentalTurning#StartRadius" rel="noopener" target="_blank" title="Opens on the Internet">Working from Where the Cutter Starts</a> in the Ornamental Turning Book of Knowledge.
 </p>
 <hr/>
 <p><a id="Saving"></a>
-</p><h1 id="Saving-and-Running-the-Program"><span style="color: #00008b;"> Saving and Running the Program</span></h1>
+</p><h1 id="Saving-and-Running-the-Program">Saving and Running the Program</h1>
 <ol><li>Press <strong>Save G-code...</strong>.  The Geometric Chuck Designer suggests a name, such as <em>GeoChuck-5fold_k6_face.ngc</em>, in the gcode folder.
 </li><li>If Rosetta is running, the Geometric Chuck Designer offers to open the program in Rosetta.  Otherwise, open it in Rosetta with <strong>File</strong> &gt; <strong>Open</strong>.
 </li><li>Index C to turn the pattern where you want it on the work - the red dot on the drawing is where the cut starts.
@@ -192,20 +194,20 @@
 </li><li>Run the program.
 </li></ol><p class="vspace"><span style="color: red;"><strong>Do not run a pattern that passes through the centre until you have checked that X can travel past C's axis by the distance the note gives.</strong></span>  To cut through the centre, the cutter crosses to the other side of the axis.  If X can't travel that far, make the pattern smaller (smaller L's, a smaller Bazley size, or smaller r's).
 </p>
-<p class="vspace"><strong>Note:</strong> while the program runs, the progress bar on the Rosetta panel shows which pass it is on, for example <em>Program 42% - pass 2 of 3</em>.
+<p class="note"><strong>Note:</strong> while the program runs, the progress bar on the Rosetta panel shows which pass it is on, for example <em>Program 42% - pass 2 of 3</em>.
 </p>
 <p class="vspace"><span style="color: red;"><strong>Do not name the program starting with "Rosetta", and do not name it M100 through M199.</strong></span>  Those names are reserved (see <a href="RunningGcodePrograms.html">Running Gcode Programs</a>), and the Geometric Chuck Designer refuses them.
 </p>
-<p class="vspace"><strong>Note:</strong> C is not turned back at the end, so after several passes C may read thousands of degrees.  The work is in the same place, and the next program again works from wherever C is.
+<p class="note"><strong>Note:</strong> C is not turned back at the end, so after several passes C may read thousands of degrees.  The work is in the same place, and the next program again works from wherever C is.
 </p>
 <hr/>
 <p><a id="Opening2"></a>
-</p><h1 id="Changing-a-Saved-Pattern"><span style="color: #00008b;"> Changing a Saved Pattern</span></h1>
+</p><h1 id="Changing-a-Saved-Pattern">Changing a Saved Pattern</h1>
 <p>Press <strong>Open...</strong> and choose a program the Geometric Chuck Designer saved.  Its settings come back, ready to change and save again.
 </p>
 <p class="vspace">The Geometric Chuck Designer also remembers every setting of the last pattern you worked on, so it opens the way you left it.  Press <strong>New</strong> to start again from the standard pattern.
 </p>
-<p class="vspace"><strong>Note:</strong> only programs saved by the Geometric Chuck Designer can be opened this way.
+<p class="note"><strong>Note:</strong> only programs saved by the Geometric Chuck Designer can be opened this way.
 </p>
 
 
@@ -216,6 +218,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="RosetteDesigner.html"><span>Previous</span>Rosette Designer</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="BackingUpKeyUserFilesToAUSBMemoryStick.html"><span>Next</span>Backing Up Key User Files to a USB Flash Drive</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -226,6 +229,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>

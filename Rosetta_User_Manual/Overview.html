@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Overview – Rosetta User Manual</title>
 <link rel="stylesheet" href="rosetta-docs.css">
+<script src="search-index.js" defer></script>
+<script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
 </head>
 <body>
@@ -28,7 +30,7 @@
 </p>
 <p class="vspace">It is designed to provide the ornamental turner a way for synchronizing activities on the rose engine using stepper motors, in a manner which also assists the ornamental turner with reducing the workload for onerous tasks.
 </p>
-<h1 id="Design-goals"><span style="color: #00008b;"> Design goals</span></h1>
+<h1 id="Design-goals">Design goals</h1>
 <p>We designed Rosetta to provide the ornamental turner with the ability to:
 </p><ol><li>Execute relatively simple movements using menu options.
 </li><li>Remove the mundane tasks from the ornamental turner’s activities, increasing the likelihood that the final product will have fewer errors.   An example is adding a turk’s head design onto the end of a piece, and skipping every 3<sup>rd</sup> index.
@@ -48,7 +50,7 @@
 </li><li>Is integrated with the devices provided by ornamental turning vendors.
 </li><li>Can have the software upgraded easily by the user as new functionality becomes available.
 </li></ol><hr/>
-<h1 id="Rosetta-is-more-than-the-software-or-the-hardware"><span style="color: #00008b;"> Rosetta is more than the software or the hardware</span></h1>
+<h1 id="Rosetta-is-more-than-the-software-or-the-hardware">Rosetta is more than the software or the hardware</h1>
 <p>The ornamental turner needs a system which is not just powerful, but which has a set of tools surrounding it to make it functionally easy to use. To that end, there are additional pieces which have been provided.
 </p>
 <p class="vspace"><strong>Designed with the ornamental turner in mind</strong>
@@ -74,7 +76,7 @@
 </p><div class="indent">We want Rosetta to be one which can be purchased as a completed system, needing no user design nor development. Just plug it in and go.
 </div><div class="indent">And we are designing it so that you can expand as your needs grow.  The Expansion Box<sup><a href="#Note_02">②</a></sup> can be added later if you find the Base Box<sup><a href="#Note_01">①</a></sup> does not support enough axes of movement.
 </div><hr/>
-<h1 id="What-are-some-examples-of-how-it-can-be-used"><span style="color: #00008b;"> What are some examples of how it can be used?</span></h1>
+<h1 id="What-are-some-examples-of-how-it-can-be-used">What are some examples of how it can be used?</h1>
 <p>Some examples of the way Rosetta can be used include:
 </p>
 <ul><li>Run the rose engine as a typical machine:
@@ -91,7 +93,7 @@
 </li><li>Add threads to an object with many advanced options available but not required.
 </li><li>Using the <a href="RosetteDesigner.html">Rosette Designer</a>, the ornamental turner can use emulate the use of an actual, physical rosette to confirm the design imparted meets their artistic goals.  And then, the designed rosette can be exported for 3D printing or machining.
 </li></ul><hr/>
-<h1 id="What-is-Rosetta-not-designed-to-do"><span style="color: #00008b;"> What is Rosetta not designed to do?</span></h1>
+<h1 id="What-is-Rosetta-not-designed-to-do">What is Rosetta not designed to do?</h1>
 <p>Rosetta is not intended to be used to replace the ornamental turner. It is not a system built to enable the user to develop a complete design, load it into Rosetta, and then press <strong>GO</strong>.
 </p>
 <p class="vspace">We believe that workmanship at risk<sup><a href="#Note_03">③</a></sup> makes for the most beautiful products.
@@ -101,7 +103,7 @@
 <p class="vspace">But more importantly, the process of ornamental turning should be fun. Rosetta is designed to help you with that journey.
 </p>
 <hr/>
-<h1 id="Why-is-LinuxCNC-being-used"><span style="color: #00008b;"> Why is LinuxCNC being used?</span></h1>
+<h1 id="Why-is-LinuxCNC-being-used">Why is LinuxCNC being used?</h1>
 <p>LinuxCNC ...
 </p>
 <ol><li>Can be configured to meet the design goals needed for use on a rose engine, without having to develop a set of programs which may be difficult to support later.
@@ -114,7 +116,7 @@
 </li></ol><p class="vspace">All this provides for a system which can meet the current needs at a reasonable cost, and provide for good long-term support.
 </p>
 <hr/>
-<h1 id="What-is-the-underlying-technology-being-used"><span style="color: #00008b;"> What is the underlying technology being used?</span></h1>
+<h1 id="What-is-the-underlying-technology-being-used">What is the underlying technology being used?</h1>
 <p>Rosetta uses:
 </p>
 <ol><li> <a class="online" href="https://en.wikipedia.org/wiki/LinuxCNC" rel="noopener" target="_blank" title="Opens on the Internet">LinuxCNC</a>, an  <a class="online" href="https://en.wikipedia.org/wiki/Open-source_software" rel="noopener" target="_blank" title="Opens on the Internet">open-source system</a> which runs on  <a class="online" href="https://www.debian.org/" rel="noopener" target="_blank" title="Opens on the Internet">Debian</a> <a class="online" href="https://en.wikipedia.org/wiki/Linux" rel="noopener" target="_blank" title="Opens on the Internet">Linux</a>.  
@@ -127,7 +129,7 @@
 </li><li>Standard computer keyboard and mouse
 </li></ul></li><li>A custom printed circuit board (PCB), developed to make the wiring of the system easier, faster, and more reliable.
 </li></ol><hr/>
-<h1 id="Notes"><span style="color: #00008b;"> Notes</span></h1>
+<h1 id="Notes">Notes</h1>
 <ol><li value="1"> <a id="Note_01"></a>The Base Box supports 
 <ul><li>6 channels (axes)
 </li><li>3 limit switches
@@ -145,6 +147,7 @@
 
 
   </div>
+<!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="HowAllThePartsFitTogether.html"><span>Next</span>How the Rosetta Programs Fit Together</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">
   <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
@@ -155,6 +158,7 @@
     <div class="footer-contact">Questions or comments?<br>
       <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></div>
   </div>
+  <p class="manual-version"><!--version-->This manual matches Rosetta O/S 1.0 Beta 1.17 - 19 November 2026.<!--/version--></p>
   <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
 </footer>
 </body>
