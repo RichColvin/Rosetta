@@ -46,7 +46,6 @@ a:hover { color: var(--navy); }
   color: #fff;
 }
 .brand { display: flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; }
-.brand img { background: #fff; border-radius: 50%; padding: 3px; }
 .brand-name { font: 600 28px/1 Garamond, "EB Garamond", Georgia, serif; letter-spacing: .5px; }
 .brand-section { font-size: 18px; opacity: .85; margin-left: 6px; }
 .site-nav { display: flex; gap: 6px; flex-wrap: wrap; }
