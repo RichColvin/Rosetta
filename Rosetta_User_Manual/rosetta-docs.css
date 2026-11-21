@@ -196,6 +196,12 @@ math { font-size: 1.1em; }
 }
 .note > :first-child { margin-top: 0; } .note > :last-child { margin-bottom: 0; }
 
+/* ---------- the Help page's books ---------- */
+.help-library img { margin-bottom: 4px; }
+.content table.help-books td { vertical-align: middle; padding: 6px 10px; border-bottom: 1px solid var(--rule); }
+.content table.help-books td.help-book { width: 40px; text-align: center; }
+.content table.help-books p { margin: 0; }
+
 /* ---------- G-code download button ---------- */
 a.download {
   display: inline-block; margin: 4px 0; padding: 7px 14px; border-radius: 6px;
