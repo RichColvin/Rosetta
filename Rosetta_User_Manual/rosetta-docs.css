@@ -91,6 +91,7 @@ a.online::after, .online-eg { content: " ↗"; font-size: .85em; }
 .content table { border-collapse: collapse; max-width: 100%; }
 .content td, .content th { padding: 4px 8px; vertical-align: top; }
 .content table[border="1"] td, .content table[border="1"] th { border: 1px solid var(--rule); }
+.content td.col-rule { border-left: 2px solid #d3d3d3; padding-left: 16px; }
 .vspace { margin-top: 1em; }
 .indent { margin-left: 2em; }
 .clearboth { clear: both; }
@@ -111,6 +112,11 @@ math { font-size: 1.1em; }
   color: var(--muted); font-size: 14px;
 }
 .site-footer p { margin: .4em 0; }
+.footer-links {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px 24px;
+  margin: 10px 0; padding: 8px 12px; background: #d3d3d3; color: var(--ink);
+}
+.footer-contact { text-align: right; }
 .copyright { font-size: 13px; }
 
 /* ---------- small screens ---------- */
@@ -119,6 +125,8 @@ math { font-size: 1.1em; }
   .site-header { padding: 10px 16px; }
   .page { padding: 16px; }
   .site-footer { padding: 12px 16px 20px; }
+  .footer-links { grid-template-columns: 1fr; }
+  .footer-contact { text-align: left; }
   .rfloat, .lfloat, .content table[style*="float"] { float: none !important; width: auto !important; margin: 12px 0 !important; }
   .content table { display: block; overflow-x: auto; }
   .indent { margin-left: 1em; }
