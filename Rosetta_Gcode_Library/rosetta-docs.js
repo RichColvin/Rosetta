@@ -12,7 +12,22 @@
 
   /* Opened from this machine's disk (the Pi), not the website: links that
      need the Internet get their own colour (see rosetta-docs.css). */
-  if (location.protocol === "file:") document.documentElement.classList.add("on-this-machine");
+  var onThisMachine = location.protocol === "file:";
+  if (onThisMachine) document.documentElement.classList.add("on-this-machine");
+
+  /* A link with data-pi-href opens that Internet address instead when read
+     on the Pi - for pages whose point is something only the website has
+     (e.g. 3D Printable Parts, whose files aren't shipped to the Pi). */
+  function usePiLinks() {
+    if (!onThisMachine) return;
+    document.querySelectorAll("a[data-pi-href]").forEach(function (a) {
+      a.href = a.getAttribute("data-pi-href");
+      a.classList.add("online");
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.title = "Opens on the Internet";
+    });
+  }
 
   function esc(s) {
     return s.replace(/[&<>"]/g, function (c) {
@@ -161,7 +176,7 @@
     });
   }
 
-  function start() { setUpSearch(); setUpZoom(); }
+  function start() { usePiLinks(); setUpSearch(); setUpZoom(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
 })();
