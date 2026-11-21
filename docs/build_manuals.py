@@ -29,14 +29,16 @@
 #     - each page's Previous / Next links (between <!--pager--> and
 #       <!--/pager-->), in the order of that manual's contents page
 #       (index.html). Pages the contents page doesn't link get none.
-#     - each page's version line in the footer (between <!--version-->
-#       and <!--/version-->), from OS_Version_Label in
+#     - each page's version line under the title in the header (between
+#       <!--version--> and <!--/version-->), the same text as the
+#       programs show: OS_Version_Label in
 #       Rosetta_Display/Rosetta_Panel_v1.ui.
 #   Running it twice changes nothing the second time. Standard library
 #   only, so it runs on the Pi or a Mac.
 #
 # Version
 #   1.0 - 21 November 2026
+#   1.1 - 21 November 2026 - the version line moved to the header
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -185,11 +187,9 @@ def main():
             if "<!--pager-->" not in new:
                 new = new.replace("</main>", "<!--pager--><!--/pager-->\n</main>", 1)
             new = replace_block(new, "pager", pager)
-            stamp = "This manual matches Rosetta %s." % html.escape(label) if label else ""
-            if "<!--version-->" not in new:
-                new = new.replace('<p class="copyright">',
-                                  '<p class="manual-version"><!--version--><!--/version--></p>\n  <p class="copyright">', 1)
-            new = replace_block(new, "version", stamp)
+            stamp = html.escape(label)
+            if "<!--version-->" in new:
+                new = replace_block(new, "version", stamp)
             if new != text:
                 open(path, "w", encoding="utf-8").write(new)
         print("%s: %d pages, %d in contents order, search index %d KB"

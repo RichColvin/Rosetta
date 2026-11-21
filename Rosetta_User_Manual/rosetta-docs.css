@@ -49,6 +49,10 @@ a:hover { color: var(--navy); }
 .brand { display: flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; }
 .brand:hover, .brand:focus { color: #fff; }   /* not the navy of other links on hover */
 .brand:hover .brand-text { text-decoration: underline; text-underline-offset: 4px; }
+.brand-lines { display: flex; flex-direction: column; }
+/* the software version, as the programs show it under "Rosetta" */
+.brand-version { margin-top: 3px; font-size: 12.5px; font-style: italic; color: rgba(255,255,255,.72); }
+.brand-version:empty { display: none; }
 .brand-name { font: 600 28px/1 Garamond, "EB Garamond", Georgia, serif; letter-spacing: .5px; }
 .brand-section { font-size: 18px; opacity: .85; margin-left: 6px; }
 .site-nav { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -217,6 +221,7 @@ a.download:hover { background: #2c2c9a; color: #fff; }
   .pager { grid-template-columns: 1fr 1fr; }
   .pager-next { grid-column: 2; }
   .pager-contents { grid-column: 1 / -1; grid-row: 2; }
+  .brand-version { display: none; }
   .site-header { position: static; }    /* on a phone it would take too much of the screen */
   [id] { scroll-margin-top: 8px; }
   .footer-contact { text-align: left; }
