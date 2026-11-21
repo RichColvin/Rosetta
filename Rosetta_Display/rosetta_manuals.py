@@ -23,8 +23,8 @@
 #   pull), so no Internet connection is needed. If that page's file
 #   isn't there, the same page on the website is opened instead.
 #
-#   Imported by Rosetta_main.py (the Help tab's User Manual and Gcode
-#   Library buttons), Rosetta_Settings.py (the User Manual buttons
+#   Imported by Rosetta_main.py (the Help tab's User Manual, Gcode
+#   Library and Ornamental Turner's Handy Book buttons), Rosetta_Settings.py (the User Manual buttons
 #   beside its notes) and the Rosette and Geometric Chuck Designers
 #   (the buttons beside their notes).
 #
@@ -47,6 +47,8 @@
 #
 # Version
 #   1.0 - 21 November 2026
+#   1.1 - 21 November 2026 - document_url(): documents shipped with the
+#         User Manual, such as the Ornamental Turner's Handy Book (PDF)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -87,6 +89,16 @@ def page_url(page="index", anchor="", section="manual"):
     if os.path.isfile(path):
         return pathlib.Path(path).as_uri() + fragment
     return online + ("HomePage" if page == "index" else page) + fragment
+
+
+def document_url(name, online):
+    '''
+    A document shipped with the User Manual (Rosetta_User_Manual/
+    Documents/, e.g. "OTHB.pdf"): this machine's copy if it's there,
+    otherwise the online address given.
+    '''
+    path = os.path.join(REPO_DIR, "Rosetta_User_Manual", "Documents", name)
+    return pathlib.Path(path).as_uri() if os.path.isfile(path) else online
 
 
 def _browser_commands():

@@ -38,6 +38,8 @@
 #   1.4 - 21 November 2026 - User Manual and Gcode Library buttons
 #         open this machine's copy (rosetta_manuals.py), not the
 #         website
+#   1.5 - 21 November 2026 - Ornamental Turner's Handy Book button
+#         opens this machine's copy of the PDF too
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1609,10 +1611,12 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenOTHandyBook")
 
-        url = "https://mdfre2.colvintools.com/Documents/OTHB.pdf"
-        webbrowser.open(url)
+        # this machine's copy (shipped with the User Manual), else online
+        url = rosetta_manuals.document_url(
+            "OTHB.pdf", "https://rosetta.colvintools.com/Documents/OTHB.pdf")
+        rosetta_manuals.open_url(url)
 
-        Prt1 = "Opening website " + url
+        Prt1 = "Opening " + url
         print(Prt1)
 
 #######################################################################
