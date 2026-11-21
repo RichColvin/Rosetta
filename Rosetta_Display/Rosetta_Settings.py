@@ -45,6 +45,8 @@
 #         LinuxCNC won't start while it's open)
 #   1.6 - 15 November 2026 - Inputs, Outputs, and Sounds page: Phone
 #         Alerts (ntfy app)
+#   1.7 - 21 November 2026 - User Manual buttons open this machine's
+#         copy of the manual (rosetta_manuals.py), not the website
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -144,6 +146,7 @@ with _suppress_fd2():
     import gladevcp.hal_widgets
 import rosetta_settings_io
 import rosetta_phone_alerts
+import rosetta_manuals
 import threading
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -428,21 +431,21 @@ LIMIT_SWITCH_TYPES = ("NC", "NO")
 # User Manual pages opened by the buttons beside the Axis Selection
 # page's Limit Switches, E-Stop Button and Signal Tower and Sounds notes
 # and the tuning page's three Scale notes (Open_Manual_Link), keyed by
-# button id.
-MANUAL_URL = "https://rosetta.colvintools.com/UserManual/index.php?n=Main."
+# button id: (page, anchor). Opened from this machine's copy of the
+# manual (rosetta_manuals.py, since 21 November 2026).
 MANUAL_LINKS = {
-    "Limit_Switch_Cabling_Link": MANUAL_URL + "LimitSwitchCabling",
-    "Limit_Switch_How_Link":     MANUAL_URL + "InputsOutputsSound#LimitSwitches",
-    "Estop_Cabling_Link":        MANUAL_URL + "E-StopCabling",
-    "Estop_How_Link":            MANUAL_URL + "InputsOutputsSound#EStopButton",
-    "Tower_Cabling_Link":        MANUAL_URL + "SignalTowerCabling",
-    "Tower_How_Link":            MANUAL_URL + "InputsOutputsSound#SignalTower",
-    "Sounds_How_Link":           MANUAL_URL + "InputsOutputsSound#Sounds",
-    "Phone_Alerts_How_Link":     MANUAL_URL + "InputsOutputsSound#PhoneAlerts",
-    "Expansion_Box_How_Link":    MANUAL_URL + "AxisSelection#ExpansionBox",
-    "Linear_Scale_Link":         MANUAL_URL + "ScaleSettingsForADevice",
-    "Rotary_Scale_Link":         MANUAL_URL + "ScaleSettingsForADevice",
-    "Spindle_Scale_Link":        MANUAL_URL + "ScaleSettingsForADevice",
+    "Limit_Switch_Cabling_Link": ("LimitSwitchCabling", ""),
+    "Limit_Switch_How_Link":     ("InputsOutputsSound", "LimitSwitches"),
+    "Estop_Cabling_Link":        ("E-StopCabling", ""),
+    "Estop_How_Link":            ("InputsOutputsSound", "EStopButton"),
+    "Tower_Cabling_Link":        ("SignalTowerCabling", ""),
+    "Tower_How_Link":            ("InputsOutputsSound", "SignalTower"),
+    "Sounds_How_Link":           ("InputsOutputsSound", "Sounds"),
+    "Phone_Alerts_How_Link":     ("InputsOutputsSound", "PhoneAlerts"),
+    "Expansion_Box_How_Link":    ("AxisSelection", "ExpansionBox"),
+    "Linear_Scale_Link":         ("ScaleSettingsForADevice", ""),
+    "Rotary_Scale_Link":         ("ScaleSettingsForADevice", ""),
+    "Spindle_Scale_Link":        ("ScaleSettingsForADevice", ""),
 }
 
 # Whether a reserved-name file in gcode/ (one starting with "rosetta",
@@ -2204,10 +2207,9 @@ class HandlerClass:
     def Open_Manual_Link(self, widget):
         # One of the User Manual buttons beside the Axis Selection
         # page's notes - opens its MANUAL_LINKS page in the browser.
-        url = MANUAL_LINKS.get(Gtk.Buildable.get_name(widget))
-        if url:
-            webbrowser.open(url)
-            print("Opening website " + url)
+        link = MANUAL_LINKS.get(Gtk.Buildable.get_name(widget))
+        if link:
+            print("Opening " + rosetta_manuals.open_manual(*link))
 
     def Measurement_System_Changed(self, widget):
         if self._applying_measurement_system:

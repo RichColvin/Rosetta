@@ -61,6 +61,9 @@
 #         the V and k boxes is worked out once it pauses, not per key
 #   1.5 - 19 November 2026 - V1 and V2 are spin buttons like the
 #         others, keeping an exact fraction such as 7/3
+#   1.6 - 21 November 2026 - notes' User Manual buttons open this
+#         machine's copy of the manual (rosetta_manuals.py), not
+#         the website
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -117,6 +120,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import rosetta_geochuck as gc
 import rosetta_rosettes as rr
 import rosetta_settings_io
+import rosetta_manuals
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GCODE_DIR = os.path.join(REPO_DIR, "gcode")       # Rosetta.ini's [DISPLAY]PROGRAM_PREFIX
@@ -157,7 +161,9 @@ RANGES = {
            "advance": (0.0, 50.0, 0.5, 2)},
 }
 
-MANUAL_PAGE = "https://rosetta.colvintools.com/UserManual/index.php?n=Main.GeometricChuckDesigner"
+# User Manual page for the notes' buttons - this machine's copy
+# (rosetta_manuals.py, since 21 November 2026).
+MANUAL_PAGE = "GeometricChuckDesigner"
 
 # The notes column on the right: (heading, text, User Manual anchor),
 # one per section of the form.
@@ -622,7 +628,7 @@ class DesignerWindow(Gtk.Window):
             button = Gtk.Button(label="User Manual: " + heading)
             button.set_tooltip_text("Opens the User Manual's Geometric Chuck Designer page at %s." % heading)
             button.set_halign(Gtk.Align.START)
-            button.connect("clicked", lambda w, a=anchor: webbrowser.open(MANUAL_PAGE + "#" + a))
+            button.connect("clicked", lambda w, a=anchor: rosetta_manuals.open_manual(MANUAL_PAGE, a))
             box.pack_start(button, False, False, 0)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)

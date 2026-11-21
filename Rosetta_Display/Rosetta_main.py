@@ -35,6 +35,9 @@
 #         other move buttons; MDI mode checked by task_mode (was
 #         task_state); spindle speed changes wait for MDI mode and say
 #         so when they can't (two "Must be in MDI mode" messages)
+#   1.4 - 21 November 2026 - User Manual and Gcode Library buttons
+#         open this machine's copy (rosetta_manuals.py), not the
+#         website
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -87,6 +90,7 @@ from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GLib
 import rosetta_settings_io
+import rosetta_manuals
 import rosetta_phone_alerts
 
 SETTINGS_PATH = os.path.expanduser("~/Documents/RosettaSet_v1.ini")
@@ -103,11 +107,10 @@ SERIAL_PATH = os.path.expanduser("~/.config/Rosetta/serial")
 # to another address is a change here only. Since 04 November 2026 they're
 # on rosetta.colvintools.com - except the forum, which must stay at
 # colvintools.com/Rosetta/Forum: under rosetta.colvintools.com its users
-# can't log in.
+# can't log in. The User Manual and Gcode Library buttons open the copies
+# on this machine instead (rosetta_manuals.py, since 21 November 2026).
 WEBSITE_URL = "https://rosetta.colvintools.com/"
-USER_MANUAL_URL = "https://rosetta.colvintools.com/UserManual/"
 USER_FORUM_URL = "https://colvintools.com/Rosetta/Forum/"
-GCODE_LIBRARY_URL = "https://rosetta.colvintools.com/Gcode/"
 
 # Channel id ("00".."07") -> the role (one of the 8 axis letters or 2
 # spindles) Rosetta.ini/Rosetta.hal ship with by default. Seed value for a
@@ -1513,10 +1516,9 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenGcodeLibrary")
 
-        url = GCODE_LIBRARY_URL
-        webbrowser.open(url)
+        url = rosetta_manuals.open_manual(section="gcode")
 
-        Prt1 = "Opening website " + url
+        Prt1 = "Opening " + url
         print(Prt1)
 
 #######################################################################
@@ -1669,10 +1671,9 @@ class HandlerClass:
         print("=================================================")
         print("FUNCTION OpenUserManual")
 
-        url = USER_MANUAL_URL
-        webbrowser.open(url)
+        url = rosetta_manuals.open_manual()
 
-        Prt1 = "Opening website " + url
+        Prt1 = "Opening " + url
         print(Prt1)
 
 # ********************************************************************

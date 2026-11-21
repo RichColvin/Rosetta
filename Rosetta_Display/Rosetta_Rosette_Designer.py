@@ -111,6 +111,9 @@
 #         and slots are sized in the MDF's proportion
 #   1.26 - 19 November 2026 - 3D Printing note: the Lindow's have no
 #         phasing holes or slots
+#   1.27 - 21 November 2026 - notes' User Manual buttons open this
+#         machine's copy of the manual (rosetta_manuals.py), not
+#         the website
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -165,6 +168,7 @@ import numpy
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import rosetta_rosettes as rr
 import rosetta_rosette_3d as r3d
+import rosetta_manuals
 import rosetta_settings_io
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -225,7 +229,9 @@ PRINT_RANGES = {
 
 # The notes column on the right: (heading, text, User Manual anchor),
 # in the order of the form's sections.
-MANUAL_PAGE = "https://rosetta.colvintools.com/UserManual/index.php?n=Main.RosetteDesigner"
+# User Manual page for the notes' buttons - this machine's copy
+# (rosetta_manuals.py, since 21 November 2026).
+MANUAL_PAGE = "RosetteDesigner"
 NOTES = (
     ("Movement",
      "Rocking moves the cutter in X, pumping moves it in Z, and Both follows a rosette with each - "
@@ -929,7 +935,7 @@ class DesignerWindow(Gtk.Window):
             button = Gtk.Button(label="User Manual: " + heading)
             button.set_tooltip_text("Opens the User Manual's Rosette Designer page at %s." % heading)
             button.set_halign(Gtk.Align.START)
-            button.connect("clicked", lambda w, a=anchor: webbrowser.open(MANUAL_PAGE + "#" + a))
+            button.connect("clicked", lambda w, a=anchor: rosetta_manuals.open_manual(MANUAL_PAGE, a))
             box.pack_start(button, False, False, 0)
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
