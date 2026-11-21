@@ -138,6 +138,13 @@ pre { background: var(--panel); padding: 12px 14px; border-radius: 6px; overflow
 /* links that need the Internet */
 a.online::after, .online-eg { content: " ↗"; font-size: .85em; }
 .online-eg::after { content: none; }
+/* On the Pi's own copy (html.on-this-machine, set by rosetta-docs.js),
+   links that need the Internet are brown; on the website they look like
+   any other link, since every link there is online. */
+html.on-this-machine a.online { color: #9a4300; }
+html.on-this-machine a.online:hover { color: #6b2f00; }
+.local-only { display: none; }
+html.on-this-machine .local-only { display: inline; color: #9a4300; }
 
 /* ---------- PmWiki-era content classes ---------- */
 .content table { border-collapse: collapse; max-width: 100%; }

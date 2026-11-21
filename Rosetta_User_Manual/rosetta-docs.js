@@ -5,9 +5,14 @@
    - Search: a box in the header searching both manuals, using
      search-index.js (made by docs/build_manuals.py).
    - Picture zoom: a screenshot shown smaller than its real size can be
-     clicked to see it full size; click again or press Esc to close. */
+     clicked to see it full size; click again or press Esc to close.
+   - On the Pi's own copy only, links needing the Internet are coloured. */
 (function () {
   "use strict";
+
+  /* Opened from this machine's disk (the Pi), not the website: links that
+     need the Internet get their own colour (see rosetta-docs.css). */
+  if (location.protocol === "file:") document.documentElement.classList.add("on-this-machine");
 
   function esc(s) {
     return s.replace(/[&<>"]/g, function (c) {
