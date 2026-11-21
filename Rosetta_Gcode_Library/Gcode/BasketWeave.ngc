@@ -1,0 +1,258 @@
+%
+(=======================================================================)
+(                     RRRRRR    EEEEEEEE  BBBBBBB                       )
+(                     RR   RR   EE        BB    BB                      )
+(                     RR   RR   EE        BB    BB                      )
+(                     RRRRRR    EEEEEE    BBBBBBB                       )
+(                     RR   RR   EE        BB    BB                      )
+(                     RR    RR  EE        BB    BB                      )
+(                     RR    RR  EEEEEEEE  BBBBBBB                       )
+(                                                                       )
+( Rose Engine Butler                                                    )
+(=======================================================================)
+( BASKET WEAVE PATTERN                                                  )
+(=======================================================================)
+( Version 1.1, 17 August 2026, R. Colvin                                )
+(=======================================================================)
+( Gcode for use on a rose engine using the Rose Engine Butler           )
+( configuration of LinuxCNC.                                            )
+(                                                                       )
+( Licensing for the use of this program are at the bottom of this file. )
+(=======================================================================)
+(  *** OPERATOR NOTE ***                                                )
+(  The Rose Engine Butler configuration of LinuxCNC will need to have   )
+(  these axis selections:                                               )
+(     - C                                                               )
+(     - Z                                                               )
+(     - either X or U                                                   )
+(=======================================================================)
+(  CHECK THESE BEFORE RUNNING                                           )
+
+(-- USER PARAMETERS - PATTERN ------------------------------------------)
+(   Ensure the USER PARAMETERS below are good values for your           )
+(   desired pattern and machine.                                        ) 
+
+#1 = 02.000                          (Diameter of piece in inches.  If  )
+                                     ( machine setup is using G21, then )
+                                     (this is in mm.                    )
+#2 = 24                              (Number of Waves - number of boxes )
+                                     (around perimeter                  )
+#3 = 3                               (Number of CutsPerWave, typ. 3 or 4)
+#4 = 2                               (Rows of Patterns                  )
+
+(=======================================================================)
+(   CUTTER PLUNGE OPTION                                                )
+(   The X axis can be used for plunging the cutter into the workpiece   )
+(   for cutting, and then withdrawing it when the cutter needs to be    )
+(   repositioned.                                                       )
+(        -X = engage cutter                                             )
+(        +X = withdraw cutter                                           )
+(                                                                       )
+(   Alternatively, the retractor can be used to move the headstock away )
+(   from the cutter -- i.e., withdrawing the cutter, or into the cutter )
+(   -- i.e., engaging the cutter.  The retractor is setup in this code  )
+(   as the U axis.                                                      )
+(        +U = move headstock into cutter - engage the cutter            )
+(        -U = move headstock away from cutter - withdraw the cutter     )
+(                                                                       )
+(   In either case, the Z axis is used with the Spindle to move the     )
+(   cutter whilst cutting.                                              )
+
+#10 = 2                              (Cutter plunge option              )
+                                     (   1 = Use X axis                 )
+                                     (   2 = Use U axis                 )
+
+(=======================================================================)
+(   X/U AXIS PARAMETERS                                                 )
+(   The X axis is used to plunge the cutter into the workpiece, and     )
+(   withdraw it from the piece between repositioning moves.             )
+(                                                                       )
+(   Starting position for X is at the withdrawn position, so that when  )
+(   plunged to #22 distance, it is at the desired depth. Be sure to     )
+(   account for backlash.                                               )
+(                                                                       )
+(   Starting position for U is at the headstock pushed away position,   )
+(   so that when plunged to #22 distance, it is at the desired depth.   )
+(   Be sure to account for backlash.                                    )
+
+#20 = 10.000                         (Feed rate for withdraw,           )
+                                     (in/min or mm/min                  )
+#21 =  1.000                         (Feed rate for plunge,             )
+                                     (in/min or mm/min                  )
+#22 =  0.500                         (Distance to plunge/withdraw,      )
+                                     (in or mm                          )
+
+(=======================================================================)
+(   C AXIS PARAMETERS                                                   )
+(   Set the start position for C so that it is where you wish to begin  )
+(   cutting the pattern.  Be sure to account for backlash.              )
+(                                                                       )
+(   Check that the scale for the C axis is appropriately set. This is   ) 
+(   set in Rose Engine Butler on the Settings screen.                   )
+(                                                                       )
+(   Check that backlash for this axis is set appropriately. This is     ) 
+(   set in Rose Engine Butler on the Settings screen.                   )
+
+#30 = 600.00    (Feed, C reposition move, in/min or mm/min              )
+
+(=======================================================================)
+(   Z AXIS PARAMETERS                                                   )
+(   Set the start position for Z so that it is where you wish to begin  )
+(   cutting the pattern.  Be sure to account for backlash.              )
+(                                                                       )
+(   Check that the scale for the Z axis is appropriately set. This is   ) 
+(   set in Rose Engine Butler on the Settings screen.                   )
+(                                                                       )
+(   Check that backlash for this axis is set appropriately. This is     ) 
+(   set in Rose Engine Butler on the Settings screen.                   )
+
+#40 = 02.00                          (Feed, Z reposition move,          )
+                                     (in/min or mm/min                  )
+
+(=======================================================================)
+(   C & Z AXES - SYNCHRONIZED MOVEMENT PARAMETERS                       )
+
+#50 = 10.00                          (Feed, synchronized cutting move,  )
+                                     (in/min or mm/min                  )
+#51 = 02.00                          (Feed, repositioning move,         )
+                                     (in/min or mm/min                  )
+
+(=======================================================================)
+(   OTHER PARAMETERS                                                    )
+(-- Starting side for cutting the pattern                               )
+#60 = 1                              (Starting side                     )
+                                     (   1 = left; headstock side,      )
+                                     (       moving towards tailstock   )
+                                     (   2 = right; tailstock side,     )
+                                     (       moving towards headstock   )
+
+(=======================================================================)
+( PROGRAM FOR MAKING THIS PATTERN FOLLOWS.  CHANGES ARE NOT RECOMMENDED.)
+(=======================================================================)
+(-- CONSTANTS ----------------------------------------------------------)
+#90 = 3.14159265                         (Pi                            )
+
+(=======================================================================)
+(-- CALCULATED VALUES --------------------------------------------------)
+#101 = [#1 / 2]                      (Piece's radius, inch or mm        )
+#102 = [[360 / #2] / 2]              (Spindle Amplitude, deg            )
+#103 = [#101 * #102 * [#90 / 180]]   (Z Amplitude = chord length for    )
+                                     (Spindle Amplitude, inch or mm     )
+                                        
+(-- CALCULATED VALUES - REPOSITIONING FOR NEXT CUT IN WAVE -------------)
+#104 = [#102 / #3]                   (Spindle / C axis                  )
+O01 IF [#60 EQ 1]                    (Z axis                            )
+  #105 = [#103 / #3]                 (Move away from headstock          )
+O01 ELSE
+  #105 = [-#103 / #3]                (Move towards headstock            )
+O01 ENDIF
+
+(-- CALCULATED VALUES - REPOSITIONING FOR NEXT WAVE --------------------)
+#106 = [#104 * [#3 - 1]]             (Spindle / C axis                  )
+#107 = [#105 * [#3 - 1]]             (Z axis                            )
+
+(=======================================================================)
+(-- MACHINE / MODE SETUP -----------------------------------------------)
+G20                                  (Imperial mode / G21 is metric     )
+G91                                  (Use incremental mode for all      )
+                                     (pattern moves below               )
+
+(=======================================================================)
+(-- Loop: repeat number of Rows of Patterns times ----------------------)
+#501 = 1
+O02 WHILE [#501 LT [#4 + 1]]
+
+  (-- Loop: repeat number Cuts Per Wave --------------------------------)
+  #502 = 1
+  O021 WHILE [#502 LT [#3 + 1]]
+  
+    (-- Plunge the cutter into the workpiece ---------------------------)
+    O0211 IF [#10 EQ 1]              (Use the X axis for plunging       )
+      G1 X[-#22] F#21                (Plunge cutter into piece          )
+    O0211 ELSE                       (Use the retractor for plunging    )
+      G1 U[#22] F#21                 (Release the headstock = plunge    )
+                                     (cutter into piece                 )
+    O0211 ENDIF
+
+    (-- O03 Loop: repeat number Waves ----------------------------------)
+    #503 = 1
+    O0212 WHILE [#503 LT [#2 + 1]]
+      O02121 IF [#60 EQ 1]           (Starting on the headstock side    )
+        G1 C#102 Z[#103] F#50
+        G1 C#102 Z[-#103] F#50
+      O02121 ELSE                    (Starting on the tailstock side    )
+        G1 C#102 Z[-#103] F#50
+        G1 C#102 Z[#103] F#50
+      O02121 ENDIF
+      #503 = [#503 + 1]
+    O0212 ENDWHILE
+          
+    (-- Withdraw the cutter from the workpiece -------------------------)
+    O0213 IF [#10 EQ 1]              (Use the X axis for withdrawing    )
+                                     (the cutter                        )
+      G1 X[#22] F#20                 (Withdraw cutter                   )
+    O0213 ELSE                       (Use the retractor for             )
+                                     (withdrawing the cutter            )
+      G1 U[-#22] F#20                (Push the headstock towards the    )
+                                     (back = withdraw the cutter        )
+    O0213 ENDIF
+
+    (-- If not the last pass, re-position the cutter for the next Cut --)
+    (-- in the Wave ----------------------------------------------------)
+    O0214 IF [#502 LT #3]
+      O02141 IF [#60 EQ 1]           (Starting on the headstock side    )
+        G1 C#106 Z[-#107] F#51
+      O02141 ELSE                    (Starting on the tailstock side    )
+        G1 C#106 Z[#107] F#51
+      O02141 ENDIF
+    O0214 ENDIF
+    #502 = [#502 + 1]
+  O021 ENDWHILE
+
+  #104 = [-#104]  (Reverse spindle repositioning per cut per wave)
+  #501 = [#501 + 1]
+O02 ENDWHILE
+
+(-- PROGRAM END --------------------------------------------------------)
+M2
+(=======================================================================)
+( End User Customisation:                                               )
+(   The end user of the Rose Engine Butler system may modify this file  )
+(   to accommodate their local configuration.                           )
+(                                                                       )
+(   Changes to this file are not supported by Colvin Tools nor          )
+(   Brainwave Embedded.                                                 )
+(=======================================================================)
+( Copyright (c) 2026 Colvin Tools and Brainwave Embedded.               )
+(=======================================================================)
+( The following MIT/X Consortium License applies to the Rose Engine     )
+( Butler system. Use of this system constitutes consent to the terms    )
+( outlined below.                                                       )
+(                                                                       )
+( Permission is hereby granted, free of charge, to any person           )
+( obtaining a copy of this software and associated documentation        )
+( files (the "Software"), to deal in the Software without               )
+( restriction, including without limitation the rights to use, copy,    )
+( modify, merge, publish, distribute, sublicense, and/or sell copies    )
+( of the Software, and to permit persons to whom the Software is        )
+( furnished to do so, subject to the following conditions:              )
+(                                                                       )
+(       The above copyright notice and this permission notice shall     )
+(       be included in all copies or substantial portions of the        )
+(       Software.                                                       )
+(                                                                       )
+( THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       )
+( EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    )
+( MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                 )
+( NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS   )
+( BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN    )
+( ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN     )
+( CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE      )
+( SOFTWARE.                                                             )
+(                                                                       )
+( Except as contained in this notice, the name of COPYRIGHT HOLDERS     )
+( shall not be used in advertising or otherwise to promote the sale,    )
+( use or other dealings in this Software without prior written          )
+( authorization from COPYRIGHT HOLDERS.                                 )
+(=======================================================================)
+%

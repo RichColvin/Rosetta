@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axes – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Axes</span></p>
+  <h1>Axes</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l1"><a href="#Base-Box">Base Box</a></li><li class="toc-l1"><a href="#Expansion-Box">Expansion Box</a></li><li class="toc-l0"><a href="#Setting-the-axis-assignments">Setting the axis assignments</a></li><li class="toc-l0"><a href="#Device-specific-axis-assignments">Device-specific axis assignments</a></li><li class="toc-l1"><a href="#Device-specific-axis-scenario-Cross-slide">Device-specific axis scenario - Cross slide</a></li><li class="toc-l1"><a href="#Device-specific-axis-scenario-Curvilinear-slide">Device-specific axis scenario - Curvilinear slide</a></li><li class="toc-l1"><a href="#Why-use-device-specific-files">Why use device-specific files?</a></li></ul></nav>
+  <div class="content">
+
+
+
+<table align="right" border="0" style="margin-bottom: 20px; margin-left: 20px; border-collapse: collapse;"><tr><td style="vertical-align: bottom; text-align: left; border-style: solid; border-color: gray; border-top-width: thin; border-bottom-width: thin; border-left-width: thin; border-right-width: thin; " valign="top">
+<div class="img"> <img alt="" height="210px" src="Images/Axes-LRE.png"/><br class="clearboth"/></div>
+<p><strong>Lathe Axes</strong>, shown on a Lindow Rose Engine
+</p></td><td valign="top" width="10px">
+<p> 
+</p></td><td style="vertical-align: bottom; text-align: left; border-style: solid; border-color: gray; border-top-width: thin; border-bottom-width: thin; border-left-width: thin; border-right-width: thin; " valign="top">
+<div class="img"> <img alt="" height="200px" src="Images/Axes.png"/><br class="clearboth"/></div>
+<p><strong>Lathe Axes</strong>, shown on an MDF Rose Engine 2.0
+</p></td></tr></table>
+<p class="vspace">The Rosetta system can support up to 10 axes (6 on the Base Box and 4 more on the optional Expansion Box).  The stepper motor plugs on the system are known as channels.
+</p>
+<p class="vspace">Each channel can be set to one of the spindles or axes noted below.
+</p>
+<p class="vspace">These axes are also depicted in the pictures to the right to show how they orient for use on lathes.
+</p>
+
+<table style="width: 100%;  border: 2px solid black; border-collapse: collapse;"><tr><td colspan="6" style="background-color: #00416a; text-align: center;" valign="top"> <span style="color: white;"> <span class="pmL2"><strong>Lathe Axes</strong></span></span>
+</td></tr><tr><td style="width: 50px; background-color: #00416a; text-align: center; vertical-align: bottom; border: 1px solid black; bottom; border-left: thin; border-right: thin; border-top: thin; border-bottom: thin;" valign="top"> <span style="color: white;"> <strong>Axis</strong></span>
+</td><td style="width: 65px; background-color: #00416a; text-align: center; vertical-align: bottom; border: 1px solid black; border-left: thin; border-right: thin; border-top: thin; border-bottom: thin;" valign="top"> <span style="color: white;"> <strong>Mvmt Type</strong></span>
+</td><td style="width: 250px; background-color: #00416a; text-align: center; vertical-align: bottom; border: 1px solid black; border-left: thin; border-right: thin; border-top: thin; border-bottom: thin;" valign="top"> <span style="color: white;"> <strong>Potential Use(s)</strong></span>
+</td><td style="background-color: #00416a; text-align: center; vertical-align: bottom; border: 1px solid black; border-left: thin; border-right: thin; border-top: thin; border-bottom: thin;" valign="top"> <span style="color: white;"> <strong>Comments</strong></span>
+<p>
+</p></td></tr><tr><td style="text-align: center; vertical-align: middle; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <strong>Sp0</strong>
+</td><td style="text-align: center; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> Spindle
+</td><td style="padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top">
+<ol><li>Spindle
+</li></ol></td><td style="padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top">  
+<p>
+</p></td></tr><tr><td style="text-align: center; vertical-align: middle; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <strong>Sp1</strong>
+</td><td style="text-align: center; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> Spindle
+</td><td style="padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top">
+<ol><li><a class="online" href="https://otbok.info/index.php?n=Main.RosettePhaserMultiplier" rel="noopener" target="_blank" title="Opens on the Internet">Rosette Phaser/Multiplier</a>
+</li></ol></td><td style="padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top">  
+<p>
+</p></td></tr><tr><td colspan="4" style="background-color:  black; border: 1px solid black; margin: thin; " valign="top">
+<p>
+</p></td></tr><tr><td style="background-color:  #e5a50a; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">X</span></strong></span>
+</td><td style="background-color:  #ffefda; text-align: center; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> Linear
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top">
+<ol><li>Cross Slide
+</li></ol></td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> By convention, this is in and out
+<p>
+</p></td></tr><tr><td style="background-color:  #e5e4e2; vertical-align: middle; text-align: center; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: gray;"> <strong>Y</strong></span>
+</td><td style="background-color:  #e5e4e2; text-align: center; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: gray;"> n/a</span>
+</td><td style="background-color:  #e5e4e2; border: 1px solid black; padding-left: 5px; padding-right: 5px;" valign="top">
+<div class="indent"><span style="color: gray;"> n/a - axis is not configured</span>
+</div></td><td style="background-color:  #e5e4e2; border: 1px solid black;  padding-left: 5px; padding-right: 5px;" valign="top"> <span style="color: gray;">  </span>
+<p>
+</p></td></tr><tr><td style="background-color:  #1a5fb4; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">Z</span></strong></span>
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Linear
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li>Cross Slide<br class="clearboth"/>
+</li><li><a class="online" href="https://otbok.info/index.php?n=Main.CurvilinearSlide" rel="noopener" target="_blank" title="Opens on the Internet">Curvilinear Slide</a>
+</li></ol></td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> By convention, this is left and right
+<p>
+</p></td></tr><tr><td colspan="4" style="background-color:  black;" valign="top">
+<p>
+</p></td></tr><tr><td style="background-color:  #e5a50a; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">A</span></strong></span>
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Rotary
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">  
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> By convention, A is rotation around X
+<p>
+</p></td></tr><tr><td style="background-color:  #a51d2d; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">B</span></strong></span>
+</td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Rotary
+</td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li><a class="online" href="https://otbok.info/index.php?n=Main.SphericalSlide" rel="noopener" target="_blank" title="Opens on the Internet">Spherical Slide</a>
+</li></ol></td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thick; margin-top: thin; margin-bottom: thin; " valign="top">  By convention, B is rotation around Y
+<p>
+</p></td></tr><tr><td style="background-color:  #1a5fb4; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">C</span></strong></span>
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Rotary
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li>Spindle
+</li></ol></td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> By convention, C is rotation around Z.  C is also used when synchronized motion of another axis and the spindle is needed (the spindle’s motor is plugged into this axis jack).
+<p>
+</p></td></tr><tr><td colspan="4" style="background-color:  black;" valign="top">
+<p>
+</p></td></tr><tr><td style="background-color:  #e5a50a; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">U</span></strong></span>
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Linear
+</td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li><a class="online" href="https://otbok.info/index.php?n=Main.Retractor" rel="noopener" target="_blank" title="Opens on the Internet">Retractor</a> <br class="clearboth"/>
+</li><li><a class="online" href="https://otbok.info/index.php?n=Main.Rubber" rel="noopener" target="_blank" title="Opens on the Internet">Dynamic Rubber</a>
+</li></ol></td><td style="background-color:  #ffefda; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> U is parallel to X<br class="clearboth"/>
+<p>
+</p></td></tr><tr><td style="background-color:  #a51d2d; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">V</span></strong></span>
+</td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Linear
+</td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li><a class="online" href="https://otbok.info/index.php?n=Main.AmplitudeAdjuster" rel="noopener" target="_blank" title="Opens on the Internet">Dynamic Amplitude Adjuster</a>
+</li></ol></td><td style="background-color:  #f6dbd8; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> V is parallel to Y<br class="clearboth"/>
+<p>By convention, this is up and down.
+
+</p></td></tr><tr><td style="background-color:  #1a5fb4; vertical-align: middle; text-align: center; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin;" valign="top"> <span style="color: white;"> <strong><span class="pmL1">W</span></strong></span>
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> Linear
+</td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top">
+<ol><li>Cross Slide<br class="clearboth"/>
+</li><li><a class="online" href="https://otbok.info/index.php?n=Main.CurvilinearSlide" rel="noopener" target="_blank" title="Opens on the Internet">Curvilinear Slide</a>
+</li></ol></td><td style="background-color:  #e5effb; padding-left: 5px; padding-right: 5px; border: 1px solid black; margin-left: thin; margin-right: thin; margin-top: thin; margin-bottom: thin; " valign="top"> W is parallel to Z
+</td></tr></table>
+
+<table style="margin-left: 10px; margin-bottom: 10px; width: 400px; float: right; border: 0px solid darkgray; "><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesBase.png"/> <br class="clearboth"/>
+<p><strong>Axis Assignments on Base Box</strong>
+</p></td></tr><tr><td style="border: 0px solid darkgray; " valign="top">  
+</td></tr><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesExpansionBox.png"/> <br class="clearboth"/>
+<p><strong>Axis Assignments with Expansion Box</strong>
+</p></td></tr></table>
+<h2 id="Base-Box"><span style="color: #00008b;"> Base Box</span></h2>
+<p>On the Base Box, up to 6 of these spindles and axes can be <a href="AxisSelection.html">selected for use</a> at any time - one per channel (plug).  
+</p><ul><li>Sp1 can only be used when Sp0 is also selected for use.
+</li></ul><p class="vspace">The axes selected for use are shown at the bottom of the LinuxCNC screen on the right.  As depicted here, the selected axes are: U, V, W, C, X, &amp; Z.
+</p>
+<h2 id="Expansion-Box"><span style="color: #00008b;"> Expansion Box</span></h2>
+<p>With the addition of the Expansion Box, all 10 of these spindles and axes can be <a href="AxisSelection.html">selected for use</a> at any time - one per channel (plug).
+</p>
+<p class="vspace">The Rosetta user can move the axes around to be assigned to whichever channel they wish.
+</p>
+<hr/>
+<h1 id="Setting-the-axis-assignments"><span style="color: #00008b;"> Setting the axis assignments</span></h1>
+<div class="img imgonly"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/></span></div>
+<p>To update the assignment of axes to channels (= plugs on the front of the box), you need to use the <strong>Rosetta Settings</strong> program (the one with a gear as the icon).  
+</p>
+<p class="vspace"><strong>Rosetta Settings</strong> allows you to select
+</p><ul><li>Which axes you wish to use, and
+</li><li>Which channel each axis is assigned to use.
+</li></ul><p class="vspace">The process to do this is
+</p><ol><li>Exit <strong>Rosetta</strong>
+</li><li>Start <strong>Rosetta Settings</strong>
+<ul><li>Make whatever changes you wish,
+</li><li>Save the settings, then
+</li><li>Exit Rosetta Settings
+</li></ul></li><li>Restart <strong>Rosetta</strong>.
+</li></ol><hr/>
+<h1 id="Device-specific-axis-assignments"><span style="color: #00008b;"> Device-specific axis assignments</span></h1>
+<p>Device-specific settings are a very useful feature.  You may find that your curvilinear slide's stepper motor runs differently than your cross slide.  And as they both will probably be setup using the Z axis, you don't have figure it out each time.
+</p>
+<p class="vspace">For example:
+</p>
+<table style="width: calc(100% - 40px); margin-right: 20px; margin-left: 20px; border-collapse: collapse; border: 2px solid black; "><tr><td style="width: 50%; text-align: center; background-color: #00416a; vertical-align: bottom; border: 1px solid black; padding: 5px;" valign="top"> <span style="color: white;"> Cross Slide</span>
+</td><td style="width: 50%; text-align: center; background-color: #00416a; vertical-align: bottom; border: 1px solid black; padding: 5px;" valign="top"> <span style="color: white;"> Curvilinear Slide</span>
+</td></tr><tr><td style="text-align: left; vertical-align: top; border: 1px solid black; padding: 5px;" valign="top">
+<ul><li>Leadscrew 
+<ul><li>Has a 0.100” pitch
+</li><li>Has 1 start
+</li></ul></li><li>Gearing ratio is 120:20
+</li></ul></td><td style="text-align: left; vertical-align: top; border: 1px solid black; padding: 5px;" valign="top">
+<ul><li>Leadscrew
+<ul><li>Moves with a 2mm pitch
+</li><li>Has 4 starts
+</li></ul></li></ul><div class="indent">(thusly it moves 8 mm per revolution)
+</div><ul><li>Gearing ratio is 1:1
+</li></ul></td></tr><tr><td style="text-align: left; vertical-align: top; border: 1px solid black; padding: 5px;" valign="top">
+<p>For my cross slide, the calculated value was different than the actual value. Additionally, the two axes were not the same. The values were calibrated using a dial indicator to be: 
+</p><ul><li>X Axis
+<ul><li>Scale = 387,650 pulses/inch
+</li><li>Backlash = 0.027”
+</li></ul></li><li>Z Axis 
+<ul><li>Scale = 387,100 pulses/inch 
+</li><li>Backlash = 0.027”
+</li></ul></li></ul></td><td style="text-align: left; vertical-align: top; border: 1px solid black; padding: 5px;" valign="top">
+<ul><li>Scale = 2,015.748 pulses/inch
+</li><li>Backlash = 0.005”
+</li></ul></td></tr></table>
+<h2 id="Device-specific-axis-scenario-Cross-slide"><span style="color: #00008b;"> Device-specific axis scenario - Cross slide</span></h2>
+<p>Using the <strong>Rosetta Settings</strong> program, enter the values you want for the Cross Slide. For this scenario that includes
+</p><ul><li>X axis
+</li><li>Z axis
+</li></ul><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-SaveSubsetofSettingsAs.png" width="125px"/></span></div>
+<p>Once everything is good, use the button, <strong>Save Subset of Settings As...</strong> to save the settings for only these axes to its own file.  I named mine, "CrossSlide.RosettaSet_v1.ini".  
+</p>
+<p class="vspace">You can name it anything, but it <span style="color: red;">cannot be named RosettaSet_v1.ini</span>.  And it should have an extension of .ini.
+</p>
+<table border="0" width="100%"><tr><td valign="top" width="33%">
+<hr/>
+</td><td valign="top">   
+</td></tr></table>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-LoadSettingsFromFile.png" width="125px"/></span></div>
+<p>Then, whenever you want to use your cross slide, you can load the settings for it.  The re-loaded file will only change the values for those axes (in this case, X &amp; Z) and all the others will stay the same.
+</p>
+<hr/>
+<h2 id="Device-specific-axis-scenario-Curvilinear-slide"><span style="color: #00008b;"> Device-specific axis scenario - Curvilinear slide</span></h2>
+<p>Using the <strong>Rosetta Settings</strong> program, you can enter the values you want for the Curvilinear Slide. For this scenario that includes
+</p><ul><li>Z axis
+</li></ul><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-SaveSubsetofSettingsAs.png" width="125px"/></span></div>
+<p>Once everything is good, use the button, <strong>Save Subset of Settings As...</strong> to save the settings for only the Z axis to its own file.  I named mine, "CurvilinearSlide.RosettaSet_v1.ini".
+</p>
+<p class="vspace">As noted above, you can name it anything, but it <span style="color: red;">cannot be named RosettaSet_v1.ini</span>.  And it should have an extension of .ini.
+</p>
+<table border="0" width="100%"><tr><td valign="top" width="33%">
+<hr/>
+</td><td valign="top">   
+</td></tr></table>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-LoadSettingsFromFile.png" width="125px"/></span></div>
+<p>Then, whenever you want to use your curvilinear slide, you can re-load those settings for it.  The re-loaded file will only change the values for that axis (in this case, Z) and all the others will stay the same.
+</p>
+<hr/>
+<h2 id="Why-use-device-specific-files"><span style="color: #00008b;"> Why use device-specific files?</span></h2>
+<p>There are a number of reasons for doing this:
+</p><ol><li>It makes it easy to switch devices and easily load the settings needed for that device
+</li><li>It allows you to save the values for your devices in case you accidentally over-write them
+</li><li>It allows a device maker to supply the data with the device
+</li></ol>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

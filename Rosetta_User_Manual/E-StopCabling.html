@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cabling an E-Stop Button to Rosetta – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Cabling an E-Stop Button to Rosetta</span></p>
+  <h1>Cabling an E-Stop Button to Rosetta</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Connector">Connector</a></li><li class="toc-l0"><a href="#Cable-Sizing">Cable Sizing</a></li><li class="toc-l0"><a href="#Wiring-the-Switch">Wiring the Switch</a></li><li class="toc-l0"><a href="#E-Stop-Button-Notes">E-Stop Button Notes</a></li></ul></nav>
+  <div class="content">
+
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/GX16-2.png" width="150px"/><br/><span class="caption"><strong><em>GX-16/2 Plug</em></strong></span></span></div>
+<h1 id="Connector"><span style="color: #00008b;"> Connector</span></h1>
+<p>A GX-16/2 female plug is used to connect an E-stop button to the Rosetta system. This plug is sometimes called an <em>aviation connector</em>.
+</p>
+<h1 id="Cable-Sizing"><span style="color: #00008b;"> Cable Sizing</span></h1>
+<p>The cable between the Rosetta system and your E-stop button should:
+</p><ul><li>Have 2 conductors within the cable
+</li><li>Be stranded - this is more flexible than solid wire
+</li><li>Be 22 AWG (gauge; 24 AWG is the minimum) - this is easily soldered to the GX-16 connector
+</li><li>Be shielded, with the shield connected to ground at the Rosetta box end only - this will help isolate the signal from noise which could be encountered in adjacent cables (e.g., for stepper motors) 
+</li></ul><h1 id="Wiring-the-Switch"><span style="color: #00008b;"> Wiring the Switch</span></h1>
+<table align="right" border="1" style="margin-bottom: 24px;" width="100%"><tr><td align="center" bgcolor="#00416a" valign="bottom" width="65px"> <span style="color: white;"> <strong>GX-16 Pin</strong></span>
+</td><td align="center" bgcolor="#00416a" valign="bottom" width="65px"> <span style="color: white;"> <strong>Wire Color</strong></span>
+</td><td align="center" bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Purpose</strong></span>
+</td></tr><tr><td align="center" valign="middle"> <strong>1</strong>
+</td><td align="center" bgcolor="Red" valign="middle"> <span style="color: white;"> Red</span>
+</td><td style="text-align: left; vertical-align: top; padding-left: 5px; padding-right: 5px;" valign="top"> Signal (to the Rosetta input) - <span style="color: red;"><strong>do not connect to any power source</strong></span>
+</td></tr><tr><td align="center" valign="middle"> <strong>2</strong>
+</td><td align="center" bgcolor="Black" valign="middle"> <span style="color: white;"> Black</span>
+</td><td style="text-align: left; vertical-align: top; padding-left: 5px; padding-right: 5px;" valign="top"> GND (ground)
+</td></tr></table>
+<h1 id="E-Stop-Button-Notes"><span style="color: #00008b;"> E-Stop Button Notes</span></h1>
+<p>E-stop switches are wired as <ins>normally closed</ins>, and the circuit becomes open when the switch is triggered.
+</p>
+<p class="vspace">The E-stop button simply connects the two pins together when it is not pressed. The Rosetta box supplies the signal itself, so never connect either wire to a power supply.
+</p>
+<p class="vspace">The E-stop button plugs into the Base Box.
+</p>
+<p class="vspace">The use of such a switch must be configured on the <a href="InputsOutputsSound.html#EStopButton">Inputs, Outputs, and Sounds</a> tab of the Rosetta Settings program. See <a href="E-Stop.html">E-Stop</a> for how the button works together with the F1 key.
+</p>
+<table border="0" width="100%"><tr><td valign="top">  
+</td></tr></table>
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

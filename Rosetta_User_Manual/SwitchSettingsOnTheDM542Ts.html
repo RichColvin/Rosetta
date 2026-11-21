@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIP Switch Settings on the DM542T Stepper Motor Drives – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>DIP Switch Settings on the DM542T Stepper Motor Drives</span></p>
+  <h1>DIP Switch Settings on the DM542T Stepper Motor Drives</h1>
+  
+  <div class="content">
+
+<p>Rosetta uses DM542T Stepper Motor Drivers to make the stepper motors work.  There is one for each channel inside the Rosetta case.  These DM542Ts can have different configurations (DIP Switch Settings) set on them based on your needs. 
+</p>
+<p class="vspace"><strong><ins>Notes</ins></strong>
+</p><ol><li><span style="color: red;">Before opening the cover on the Rosetta box, ensure it is powered off and the power cable removed.</span>  This will help ensure you are not shocked.
+</li><li><span style="color: red;">Do not change the 5V/24V switch on the side of the DM542T.</span>  If it is set to 24V, the channel will not work correctly to make your stepper motor work. 
+</li><li><span style="color: red;">Do not touch any components inside the box which have exposed places.</span> Static electricity in your body can damage the electrical components.
+</li></ol><h1 id="Stepper-Motor-Current-Amps"><span style="color: #00008b;"> Stepper Motor Current (Amps)</span></h1>
+<p>Depending on the stepper motor you are driving, you also may want to adjust the current being delivered to the motor.  Some testing has shown that setting it too high can cause your stepper motor to heat up quite a bit.  It probably won't overheat, but it can get quite hot.  In particular, NEMA 17 stepper motors generally do not need as much current as NEMA 23 stepper motors.  You can set the value closer to what is needed if you wish.
+</p>
+<p class="vspace">Do note that setting it too low can cause the stepper motor to not work as expected.  So test the values selected before committing a new setting for work on a prized piece.
+</p>
+<p class="vspace">To change the current setting, you can change the values for the selected channel on the DM542 Stepper Motor Drive.  Those switches are SW1 - SW3, and the value options are listed on page 6 in the <a class="online" href="https://rosetta.colvintools.com/Support/Images/DM542T_V4.0.pdf" rel="noopener" target="_blank" title="Opens on the Internet">User Manual for the DM542T</a>.
+</p>
+<p class="vspace">Changes to this will probably require changes to the <a href="ScaleSettingsForADevice.html">scale settings for a device</a> on the <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab of the Settings program.
+</p><hr/>
+<h1 id="Idle-Current"><span style="color: #00008b;"> Idle Current</span></h1>
+<p>We recommend you leave this at 50%.  (That is SW4 set to off).
+</p><hr/>
+<h1 id="Microsteps-per-Revolution"><span style="color: #00008b;"> Microsteps per Revolution</span></h1>
+<p>When you run the program, <a class="online" href="https://rosetta.colvintools.com/MicroStepCalculator.html" rel="noopener" target="_blank" title="Opens on the Internet">Scale and Microsteps</a>, to identify the micro steps per revolution you want to use, you can change the values for the selected channel on the DM542 Stepper Motor Drive.  
+</p>
+<p class="vspace">As noted there,
+</p><ul><li><strong><em>Higher microsteps per revolution</em></strong>:  this gives more granularity of movement, though something below 0.0005” is probably not noticeable.
+</li><li><strong><em>Lower microsteps per revolution</em></strong>: this allows the stepper motor to run faster.  This may be desired if you want to quickly move the position of the cutter or the object before engaging the cutter into the workpiece.
+</li></ul><p class="vspace">Those switches are SW5 - SW8, and the value options are listed on page 6 in the <a class="online" href="https://rosetta.colvintools.com/Support/Images/DM542T_V4.0.pdf" rel="noopener" target="_blank" title="Opens on the Internet">User Manual for the DM542T</a>.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

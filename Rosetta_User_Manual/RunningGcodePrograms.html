@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Gcode Programs – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Running Gcode Programs</span></p>
+  <h1>Running Gcode Programs</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Storing-a-Gcode-Program-on-Rosetta">Storing a Gcode Program on Rosetta</a></li><li class="toc-l0"><a href="#Naming-Your-Gcode-Programs">Naming Your Gcode Programs</a></li><li class="toc-l0"><a href="#Editing-a-Gcode-Program">Editing a Gcode Program</a></li><li class="toc-l0"><a href="#Running-a-Gcode-Program">Running a Gcode Program</a></li><li class="toc-l1"><a href="#If-an-axis-is-not-available-for-use">If an axis is not available for use</a></li><li class="toc-l1"><a href="#If-an-axis-is-not-enabled">If an axis is not enabled</a></li><li class="toc-l0"><a href="#Using-AI-to-Create-a-Gcode-Program">Using AI to Create a Gcode Program</a></li><li class="toc-l0"><a href="#Notes">Notes</a></li></ul></nav>
+  <div class="content">
+
+<p>With LinuxCNC, you can download a Gcode program from the <a href="../Rosetta_Gcode_Library/index.html">Rosetta Gcode library</a> (<a href="../Rosetta_Gcode_Library/index.html">rosetta.colvintools.com/Gcode</a>) and run that, or run a Gcode program you created.
+</p>
+<h1 id="Storing-a-Gcode-Program-on-Rosetta"><span style="color: #00008b;"> Storing a Gcode Program on Rosetta</span></h1>
+<p>It is recommended that you store the programs in the default directory already setup:
+</p>
+
+<table border="0" style="width: calc(100% - 40px); margin-left: 20px;"><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/
+</td></tr></table>
+<p class="vspace"><strong>Key Notes:</strong>
+</p><ol><li>Storing gcode files in this directory (or a sub-directory of this directory) will ensure the <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">backup program</a> will copy them to a USB flash drive.
+</li><li>Gcode programs in other directories are not backed up using the <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">backup program</a>.
+</li><li>The Gcode files for LinuxCNC have a file type of <strong>.ngc</strong>.
+</li></ol>
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Naming-Your-Gcode-Programs"><span style="color: #00008b;"> Naming Your Gcode Programs</span></h1>
+<p>A few file names are reserved for the Rosetta system's own use.  LinuxCNC looks in the <strong>gcode</strong> directory first when it needs one of its own files, so a program of yours with one of these names could be used in place of the system's file, and features such as the <strong>Threading</strong> tab would not work correctly.
+</p>
+<p class="vspace">When you name a Gcode program,
+</p>
+<ul><li><span style="color: red;">do not start the file's name with <strong>Rosetta</strong> or <strong>rosetta</strong> (in upper or lower case, or any mix of the two).</span>  For example, <strong>Rosetta_Flower.ngc</strong> and <strong>rosetta_test.ngc</strong> should be renamed, to be something like <strong>Flower.ngc</strong> and <strong>test.ngc</strong>.
+</li><li><span style="color: red;">do not name it <strong>M100</strong> through <strong>M199</strong>.</span>  LinuxCNC treats files with these names as custom M-codes.
+</li></ul><p class="vspace">Any other name is fine.  
+</p>
+<p class="vspace">If you download a program whose name breaks one of these rules, <strong>rename it when you save the file to the gcode directory</strong>.
+</p>
+<p class="vspace">Rosetta checks for these reserved names every time LinuxCNC starts.  If one is found, what happens depends on the <strong>Startup File Check</strong> choice on the <a href="Other.html">Other</a> tab of Rosetta Settings:
+</p><ul><li><strong>Abort startup</strong> (the default) - a message names the file(s) which are using reserved names, and LinuxCNC does not start until they are renamed.
+</li><li><strong>Warn, but let me continue</strong> - the same message is shown, but LinuxCNC starts anyway once you close it.
+</li></ul><p class="vspace">A short sound plays with the message if startup is aborted - see <a href="Sounds.html">Sounds</a>.
+</p>
+<p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>Updating the Rosetta system never changes or removes the files in the <strong>gcode</strong> directory.
+</li></ol><hr/>
+<h1 id="Editing-a-Gcode-Program"><span style="color: #00008b;"> Editing a Gcode Program</span></h1>
+<div class="img imgcaption"><span class="frame lfloat"> <img alt="" src="Images/Thunar.png" width="65px"/><br/><span class="caption"><strong><em>Thunar</em></strong></span></span></div>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/Thunar-Desktop.png" width="300px"/><br/><span class="caption"><strong><em>Thunar</em></strong></span></span></div>
+<p>You can list all the programs in the directory noted above using the file manager, Thunar.  The easiest way to start using Thunar is hover your mouse at the bottom middle of the screen.  When the bar pops up, click on the icon which looks like a file cabinet.
+</p>
+<p class="vspace">Once Thunar is started, you can use the icons on the left side of the screen for <strong>Places</strong>, navigate to where the Gcode programs are stored.  Click on <strong>Home</strong> then navigate down to
+</p>
+
+<table border="0" style="width: calc(100% - 40px); margin-left: 40px;"><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/
+</td></tr></table>
+<p class="vspace">Alternatively, you can enter the directory in the location field (at the top of the screen) directly by entering the location noted above.
+</p>
+<div class="img imgcaption"><span class="frame lfloat"> <img alt="" src="Images/Geany.png" width="50px"/><br/><span class="caption"><strong><em>Geany</em></strong></span></span></div>
+<p>Then, on the one you wish to edit, right-click on it with your mouse, and choose the editor you wish to use.  One editor included with the system is <strong>Geany</strong>, but you could install a different one if you prefer.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Running-a-Gcode-Program"><span style="color: #00008b;"> Running a Gcode Program</span></h1>
+<p>To run a Gcode program, LinuxCNC must be in a started mode<sup><a href="#Note_02">②</a></sup>.
+</p>
+<ol><li value="1"> Press the <strong>O</strong> button<sup><a href="#Note_01">①</a></sup> on the keyboard to open the program, or
+</li></ol><div class="indent">Click on <strong><ins>F</ins>ile</strong> on the top menu bar, then
+</div><div class="indent">Click on <strong><ins>O</ins>pen</strong>
+</div><ol><li value="2"> The <strong>Open</strong> window starts in the directory where Gcode programs are stored:
+</li></ol>
+<table border="0" style="width: calc(100% - 40px); margin-left: 40px;"><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/
+</td></tr></table>
+<ol><li value="3"> Click on the Gcode program you wish to run, and click the <strong><ins>O</ins>pen</strong> button.  After opening the file, the image on the <strong>Preview</strong> tab should be updated to show a simulation of the movement path.  This is an approximation, but may be useful for you.
+<ul><li>If you open a program from a different directory, the <strong>Open</strong> window will start there for the rest of the session.  It starts in the <strong>gcode</strong> directory again each time LinuxCNC is started.
+</li><li>You may notice an error.  For example, if the Gcode program is expecting to use the B axis but you do not have your system configured to use the B axis, this will generate an error.
+</li><li>You will have to correct any errors for LinuxCNC to load the Gcode program.
+</li></ul></li></ol><div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/GoButton.png" width="200px"/><br/><span class="caption"><strong><em>Gcode Go Button</em></strong></span></span></div>
+<ol><li value="4"> Press the <strong>R</strong> button<sup><a href="#Note_01">①</a></sup> on the keyboard to run the program, or click on the <strong>Go</strong> button.  This is the one shown in the image to the right.
+<ul><li>If you prefer to step the Gcode program one step at a time, either press the <strong>T</strong> button<sup><a href="#Note_01">①</a></sup>, or use the button to the right of the <strong>Go</strong> button.  If you experience errors with what is happening, this may be useful for you.
+</li></ul></li></ol><p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>If you open a program from a different directory, the <strong>Open</strong> window will open that directory for the rest of the session.  It will reset to defaulting in the <strong>gcode</strong> directory again each time LinuxCNC is started.
+</li></ol><h2 id="If-an-axis-is-not-available-for-use"><span style="color: #00008b;"> If an axis is not available for use</span></h2>
+<p>When you click <strong><ins>O</ins>pen</strong> to open the gcode program you wish to run, Rosetta will check to confirm that the needed axes are configured for use.  If an axis has not been assigned to one of the available channels, the gcode program cannot run.
+</p>
+<p class="vspace">For example,
+</p><ul><li>If your Rosetta system is setup as:
+<ul><li>Channel 00 - X axis
+</li><li>Channel 01 - Z axis
+</li><li>Channel 02 - A axis
+</li><li>Channel 03 - U axis
+</li><li>Channel 04 - Sp0
+</li><li>Channel 05 - Sp1
+</li></ul></li><li>And the gcode program you wish to run needs X, Z, and C to run,
+</li></ul><p class="vspace">The program cannot be executed as there is no C axis.
+</p>
+<p class="vspace">To remediate this, 
+</p><ol><li>Exit Rosetta,
+</li><li>Start the Rosetta Settings program.  
+<ol><li>The <a href="AxisSelection.html">Axis Selection</a> tab will enable you to re-configure the axes so that X, Z, and C are available.  
+</li><li>Save the changes and Exit the Rosetta Settings Program
+</li></ol></li><li>Re-start Rosetta
+</li></ol><h2 id="If-an-axis-is-not-enabled"><span style="color: #00008b;"> If an axis is not enabled</span></h2>
+<p>When you click <strong>Go</strong> (or press <strong>R</strong>), Rosetta checks which axes the program moves.  If any of them has its <strong>ENA</strong> button off (red), a box such as <strong>C not enabled</strong> appears before anything moves:
+</p><ul><li>Click <strong>Enable C and Run</strong> (or press Enter) to turn C's ENA on and run the program.
+</li><li>Click <strong>Cancel</strong> to leave it off.  The program does not run.
+</li></ul><p class="vspace">If <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong> (on the <a href="Other.html#AxisNotEnabled">Other</a> tab of Rosetta Settings), there is no box:  the ENA is turned on, a note in the bottom right corner of the LinuxCNC window says so, and the program runs.
+</p>
+<p class="vspace"><strong>Note:</strong> The check uses the program's <strong>Preview</strong>.  A rapid (G0) move made before the program's first cutting move is not shown in the Preview, so an axis moved only by such a move is not checked.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Using-AI-to-Create-a-Gcode-Program"><span style="color: #00008b;"> Using AI to Create a Gcode Program</span></h1>
+<p>The Claude code program was installed on the Rosetta system.  To use it, on the Raspberry Pi, you will need a Claude coding license which is typically included in the Pro plan, but not the free plan.  The free plan level can be used on a web browser to do similar work.
+</p>
+<p class="vspace">Other AI programs may also work; however, we have not tested those.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Notes"><span style="color: #00008b;"> Notes</span></h1>
+<ol><li value="1"> <a id="Note_01"></a>Using either upper case or lower case letters for this is acceptable.
+</li><li value="2"> <a id="Note_02"></a>If an error is encountered, LinuxCNC will usually power off.  You will have to power on (F2) again to resume operations.
+</li></ol>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Tower – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Signal Tower</span></p>
+  <h1>Signal Tower</h1>
+  
+  <div class="content">
+
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/SignalTower.png" width="100px"/><br/><span class="caption"><strong><em>Signal Tower</em></strong></span></span></div>
+<p class="vspace">A signal tower is a small column of coloured lights, usually also with a buzzer.  
+</p>
+<p class="vspace">It is useful to have when running longer operations on Rosetta as it shows at a glance the system’s current status (e.g., is it still running or not).  And they LED lights are typically bright enough that they can be seen from across the shop.
+</p>
+<p class="vspace">Rosetta is also configured to illuminate the red light if a typical error is encountered.
+</p>
+<p class="vspace">The presence of a buzzer is useful as it can alert you if you are not looking in that direction.  This is especially useful if an error is encountered.
+</p>
+<p class="vspace">Use of a signal tower is optional: everything works without one.
+</p>
+<h1 id="What-It-Tells-You"><span style="color: #00008b;"> What It Tells You</span></h1>
+<table border="1" style="margin-bottom: 24px;" width="100%"><tr><td align="center" bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Signal</strong></span>
+</td><td align="center" bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>What it means</strong></span>
+</td></tr><tr><td align="center" valign="middle"> <img alt="" src="Images/SignalTower-RedLight.png" width="40px"/> <br class="clearboth"/> <strong><span style="color: red;">Red</span></strong> <br class="clearboth"/> <strong> <span style="color: red;">Light</span></strong>
+</td><td style="padding-left: 5px; padding-right: 5px;" valign="top"> Something went wrong and your attention to the system is needed: 
+<ul><li>an axis had a following error, 
+</li><li>a limit switch tripped, or
+</li><li>the Base Box or Expansion Box lost contact with the Raspberry Pi (see <a href="E-Stop.html#LostContact">Lost contact</a>).
+</li></ul><p class="vspace">This lamp stays lit until you resolve the error and re-<a href="PowerOn.html">power on</a> Rosetta.
+</p></td></tr><tr><td align="center" valign="middle"> <img alt="" src="Images/SignalTower-GreenLight.png" width="40px"/> <br class="clearboth"/> <strong><span style="color: green;">Green</span></strong> <br class="clearboth"/> <strong> <span style="color: green;">Light</span></strong>
+</td><td style="padding-left: 5px; padding-right: 5px;" valign="top"> The machine is working on a task which could be lengthy.  These are the operations setup to illuminate the green light:
+<ul><li>a spindle is turning,
+</li><li>an indexing move, 
+</li><li>a <a href="MainScreenSynchronizedMovement.html">synchronized movement</a>,
+</li><li>a <a href="MainScreenThreading.html">threading movement</a>,
+</li><li>an <a href="MDITab.html">MDI</a> command is running, or
+</li><li>a <a href="RunningGcodePrograms.html">Gcode</a> program is running.
+</li></ul><p class="vspace">Other activities (e.g., <a href="ManualControl.html">jogging</a>) do not illuminate this light.
+</p></td></tr><tr><td align="center" valign="middle"> <img alt="" src="Images/SignalTower-Siren.png" width="60px"/> <br class="clearboth"/> <strong>Siren</strong>
+</td><td style="padding-left: 5px; padding-right: 5px;" valign="top"> A siren which is used to alert you to certain conditions are achieved: 
+<ul><li>A condition is triggered which illuminates the red light → 3-second siren sounds
+</li><li>Tasks outlined which trigger the green light to illuminate are completed → 3 short beeps
+</li><li>Gcode program encounters an M0 or M1 (Pause) command → 2 short beeps
+</li></ul></td></tr><tr><td align="center" valign="middle"> <strong>Both lights</strong> <br class="clearboth"/> <strong>off</strong>
+</td><td style="padding-left: 5px; padding-right: 5px;" valign="top"> The machine is idle, finished, or turned off.
+</td></tr></table>
+<p class="vspace">The full list of what does, and does not, turn each light on is in <a href="InputsOutputsSound.html#SignalTower">Inputs, Outputs, and Sounds - Signal Tower</a>.  The buzzer's sounds are explained in <a href="Sounds.html">Sounds</a>.
+</p>
+<h1 id="Why-It-Is-Useful"><span style="color: #00008b;"> Why It Is Useful</span></h1>
+<ul><li><strong>Long programs.</strong>  A rose engine pattern can run for hours.  This enables you to work elsewhere in the shop and see from a distance whether the machine is still running (green), has finished (dark), or has stopped with a problem (red).
+</li><li><strong>Hear it, even when you can't see it.</strong>  The buzzer tells you the moment something goes wrong, or when a job is done, without watching the screen.
+</li><li><strong>Problems stay visible.</strong>  A following error, a tripped limit switch or a lost connection to a box can be over in an instant.  The red light stays on so you know it happened, even if you were not there to see it.
+</li></ul><h1 id="What-to-Buy"><span style="color: #00008b;"> What to Buy</span></h1>
+<p>The signal tower must be:
+</p>
+<table border="1" style="margin-bottom: 24px;" width="100%"><tr><td bgcolor="#00416a" valign="bottom" width="100px"> <span style="color: white;"> <strong>Specification</strong></span>
+</td><td bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Requirement</strong></span>
+</td></tr><tr><td style="padding-left: 5px;" valign="top"> <strong>Voltage</strong>
+</td><td style="padding-left: 5px;" valign="top"> <span style="color: red;"><strong>24 volts DC (VDC)</strong></span>.  The voltage supplied to this from Rosetta is 24 VDC.
+</td></tr><tr><td style="padding-left: 5px;" valign="top"> <strong>Lights</strong>
+</td><td style="padding-left: 5px;" valign="top"> At least a green and a red light.  Other colours (such as yellow or blue) may be on the tower, but they will not be used.
+</td></tr><tr><td style="padding-left: 5px;" valign="top"> <strong>Buzzer</strong>
+</td><td style="padding-left: 5px;" valign="top"> Built in, with a steady (continuous) tone.  A buzzer that pulses on its own will blur the short beeps together.
+</td></tr><tr><td style="padding-left: 5px;" valign="top"> <strong>Light Type</strong>
+</td><td style="padding-left: 5px;" valign="top"> LED, steady (not flashing).  LED towers typically draw under 100 mA per light.
+</td></tr><tr><td style="padding-left: 5px;" valign="top"> <strong>Wiring</strong>
+</td><td style="padding-left: 5px;" valign="top"> The tower needs a separate wire for each light and the buzzer, plus one common wire.
+<p class="vspace">The cabling of the signal tower to Rosetta is outlined in <a href="SignalTowerCabling.html">signal tower cabling</a>.
+</p></td></tr></table>
+<p class="vspace">Signal towers sold for machine tools (often listed as "LED stack light" or "tower light 24V with buzzer") meet these requirements.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

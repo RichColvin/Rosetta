@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rosette Designer – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Rosette Designer</span></p>
+  <h1>Rosette Designer</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Opening-the-Rosette-Designer">Opening the Rosette Designer</a></li><li class="toc-l0"><a href="#Designing-a-Rosette">Designing a Rosette</a></li><li class="toc-l1"><a href="#Rosette_">Rosette</a></li><li class="toc-l1"><a href="#The-Ellipse">The Ellipse</a></li><li class="toc-l1"><a href="#Movement_">Movement</a></li><li class="toc-l1"><a href="#Depth_">Depth</a></li><li class="toc-l1"><a href="#Advance-and-Retract-Cutter">Advance and Retract Cutter</a></li><li class="toc-l1"><a href="#Object-Size">Object Size</a></li><li class="toc-l1"><a href="#Notes-Under-the-Drawings">Notes Under the Drawings</a></li><li class="toc-l0"><a href="#Set-the-Backlash-First">Set the Backlash First</a></li><li class="toc-l0"><a href="#Setting-the-Start-Radius-Check-Circle">Setting the Start Radius:  Check Circle</a></li><li class="toc-l0"><a href="#Saving-and-Running-the-Program">Saving and Running the Program</a></li><li class="toc-l0"><a href="#Saving-the-Rosette-for-3D-Printing">Saving the Rosette for 3D Printing</a></li><li class="toc-l1"><a href="#The-Settings">The Settings</a></li><li class="toc-l1"><a href="#Saving_">Saving</a></li><li class="toc-l1"><a href="#Things-to-Know">Things to Know</a></li><li class="toc-l0"><a href="#Changing-a-Saved-Rosette">Changing a Saved Rosette</a></li></ul></nav>
+  <div class="content">
+
+<p>On a rose engine, a <strong>rosette</strong> is a cam: as the work turns, a rubber follows the rosette's edge or face, and the machine rocks or pumps to follow it (see the Ornamental Turning Book of Knowledge's <a class="online" href="https://otbok.info/index.php?n=Main.Rosette" rel="noopener" target="_blank" title="Opens on the Internet">Rosettes</a> page).  The <strong>Rosette Designer</strong> makes a <em>software</em> rosette instead: you choose its shape, and it saves a G-code program in which C turns the work while the cutter follows the rosette:
+</p><ul><li><strong>Rocking</strong> - the cutter follows the rosette in X.
+</li><li><strong>Pumping</strong> - the cutter follows the rosette in Z.
+</li><li><strong>Both</strong> - X follows one rosette and Z another, as with two rosettes engaged at once.
+</li></ul><p class="vspace">Use it to try a rosette before buying or making one, or to use a rosette you would need too rarely to be worth making.
+</p>
+
+<table style="margin-left: 10px; margin-bottom: 10px; width: 100%; float: right; background-color: #F6F5F4;  border: 1px solid darkgray; "><tr><td valign="top"> <img alt="" src="Images/RosetteDesigner.png"/>
+</td></tr></table>
+<hr/>
+<p><a id="Opening"></a>
+</p><h1 id="Opening-the-Rosette-Designer"><span style="color: #00008b;"> Opening the Rosette Designer</span></h1>
+<ol><li>Click on <strong>Applications</strong> at the top left corner of the screen.
+</li><li>Click on the arrow to the right of Rosetta.
+</li><li>Click on <strong>Rosette Designer</strong>.
+</li></ol><p class="vspace">The Rosette Designer only writes G-code files, so it can be open while Rosetta is running.
+</p>
+<p class="vspace">Only one Rosette Designer window can be open.  If one is already open, for example behind Rosetta, opening it again brings that window to the front, with a message saying it was already open.
+</p>
+<hr/>
+<p><a id="Designing"></a>
+</p><h1 id="Designing-a-Rosette"><span style="color: #00008b;"> Designing a Rosette</span></h1>
+<p>The Rosette Designer fills the screen, like Rosetta Settings.  The drawings in the middle change as you change the settings on the left, and the notes on the right explain each section, with a button that opens this page at that section.  The drawings:
+</p><ul><li><strong>The rosette</strong> shows how far the cutter moves as the work turns once.
+</li><li><strong>The cut</strong> shows what the cut will look like on the work.
+</li></ul><p class="vspace"><a id="Rosette"></a>
+</p><h2 id="Rosette_"><span style="color: #00008b;"> Rosette</span></h2>
+<p>With <strong>Motion</strong> set to <strong>Both</strong> (see Movement, below), there are two columns of these settings: the <strong>Rocking rosette (X)</strong> and the <strong>Pumping rosette (Z)</strong>, each with its own shape, lobes, amplitude and invert, and the pumping rosette also has a phase.  The drawing shows both rosettes - X in blue, Z in red.
+</p>
+<p class="vspace">With an <strong>Ellipse</strong> there is one more column - see <a href="#Ellipse">The Ellipse</a>, below.
+</p>
+
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Shape</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The shape of the rosette.  The <strong>Holtzapffel</strong> letters are the patterns in Holtzapffel &amp; Co.'s guide to their rose cutting frame:
+</p><ul><li><strong>A</strong> - a smooth wave (a sine).
+</li><li><strong>C</strong> - sharp points with hollow sides.
+</li><li><strong>D</strong> - round petals meeting in sharp cusps.
+</li><li><strong>F</strong> - groups of three waves, the middle one notched, like a Cupid's bow.  F with 1 lobe (F-1) is a single heart.
+</li><li><strong>J</strong> - waves on arcs.
+</li><li><strong>K</strong> - a waved polygon.
+</li><li><strong>M</strong> and <strong>N</strong> - scallops on lobes (M's lobes are longer).
+</li><li><strong>O</strong> and <strong>P</strong> - groups of swelling scallops or waves.
+</li><li><strong>Q</strong> - scallops on arcs.
+</li><li><strong>S</strong> - a scalloped heart.
+</li></ul><p class="vspace">For more on each letter, and what its number counts, see  <a class="online" href="https://otbok.info/index.php?n=Main.Rosette#Holtzapffel" rel="noopener" target="_blank" title="Opens on the Internet">Holtzapffel Rosette Letters</a> in the Ornamental Turning Book of Knowledge.
+</p>
+<p class="vspace">The other shapes:
+</p><ul><li><strong>Plain polygon</strong> - straight sides between points.
+</li><li><strong>Lotus</strong> - straight sides from point to point, with a small V notch in the middle of each lobe.
+</li><li><strong>Tudor</strong> - a rounded petal for each lobe, with a small sharp barb between the petals, like the sepals of a Tudor rose.
+</li><li><strong>Ellipse</strong> - a true ellipse (see <a href="#Ellipse">The Ellipse</a>, below).
+</li></ul><p class="vspace">Lotus, Tudor and F-1 cut the pattern that the MDF Rose Engine's rosette of that name draws on a <a class="online" href="https://otbok.info/index.php?n=Main.PaperChuck" rel="noopener" target="_blank" title="Opens on the Internet">paper chuck</a> (see the <a class="online" href="https://www.colvintools.com/MDF-RE%20-%20Rosettes.html" rel="noopener" target="_blank" title="Opens on the Internet">MDF Rose Engine rosettes</a>).
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Lobes</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>How many lobes around the work, counted the way the Holtzapffel guide numbers its rosettes - the small waves around the edge.  For example, J24 has 24 waves, on 4 arcs of 6.
+</p>
+<p class="vspace">Shapes made of groups (J, M, N, O, P and Q) only take whole groups, so <strong>Lobes</strong> steps by a group.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Amplitude</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>How far the cutter moves, from the rosette's highest point to its lowest - the amount the cut moves at the work, not at the rosette.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Phase</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>There is no phase setting for a single rosette.  To put the pattern where you want it on the work, index the work on the Rosetta panel before running the program - this does what the phasing holes on a physical rosette do.
+</p>
+<p class="vspace">With <strong>Motion</strong> set to <strong>Both</strong>, the pumping rosette has a <strong>Phase</strong>: it turns the pumping rosette relative to the rocking rosette, either as <strong>% of a lobe</strong> (50 is half a lobe) or in <strong>degrees</strong> of the spindle.  For example, half a lobe of a 7-lobed rosette is 50% of a lobe, or 25.71 degrees.  Indexing can't do this, since it turns both rosettes together.
+</p>
+<p class="vspace">For shapes made of groups (J, M, N, O, P, Q and S), the phase can go past 100%, moving through the group - up to 600% for J's groups of 6.
+</p>
+<p class="vspace">The rosette on an Ellipse also has a Phase - see <a href="#Ellipse">The Ellipse</a>, below.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Invert</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>Turns points into hollows.  This is the same as running the rosette with the cutter on the opposite side of the spindle's axis of rotation - far side cutting instead of near side.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Straight sides</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>For a plain polygon rocking on the face, sets the amplitude that makes its sides straight at the <strong>Radius</strong> (see Object Size, below).
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Rubber</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The rubber that follows the rosette.  For now, the only choice is a <strong>Point</strong>, which follows the shape exactly.
+</p></td></tr></table>
+<p class="vspace"><a id="Ellipse"></a>
+</p><h2 id="The-Ellipse"><span style="color: #00008b;"> The Ellipse</span></h2>
+<p>Choose <strong>Ellipse</strong> as the <strong>Shape</strong> of the rocking rosette.  An Ellipse only rocks (X): with <strong>Motion</strong> set to <strong>Pumping</strong>, it doesn't move the cutter.
+</p>
+<p class="vspace">Under <strong>Ellipse Parameters</strong>:
+</p><ul><li><strong>A</strong> - half the ellipse's length: from its centre to the end of its length.
+</li><li><strong>B</strong> - half its width: from its centre to its side.
+</li></ul><p class="vspace">For example, an ellipse 4" long and 2" wide has A = 2 and B = 1.  The note under the drawings gives its length, width and the distance between its foci.
+</p>
+<p class="vspace"><strong>The rosette on the ellipse.</strong>  With an Ellipse, a second column appears beside it: the <strong>Rocking rosette on the ellipse (X)</strong>.  Its waves are cut in from the ellipse, so the ellipse is the outside of the pattern.
+</p><ul><li><strong>Shape</strong> - any shape, or <strong>None</strong> for the plain ellipse.
+</li><li><strong>Lobes</strong> - spaced evenly along the ellipse's outline, so on a long ellipse they don't crowd together along its sides.
+</li><li><strong>Amplitude</strong> - how far the waves cut in from the ellipse.
+</li><li><strong>Phase</strong> - slides the pattern along the outline, as <strong>% of a lobe</strong> or in degrees (360 is the whole outline).  For example, at 0% a D rosette has a cusp at each end of the ellipse; at 50% it has a petal there.
+</li><li><strong>Invert</strong> - turns points into hollows, as above.
+</li></ul><p class="vspace">With <strong>Motion</strong> set to <strong>Both</strong>, the <strong>Pumping rosette (Z)</strong> is a third column.  Its lobes are spaced along the outline too, so the two stay in step.
+</p>
+
+<table style="margin-left: 20px; margin-bottom: 10px; background-color: #F6F5F4; border: 1px solid darkgray; "><tr><td valign="top"> <img alt="" src="Images/Ellipse_D12_Phase0.jpeg"/>
+</td><td valign="top"> <img alt="" src="Images/Ellipse_D12_Phase50.jpeg"/>
+</td></tr><tr><td align="center" valign="top"> D12 on A = 1, B = 0.5, Phase 0%
+</td><td align="center" valign="top"> The same, Phase 50%
+</td></tr></table>
+<p class="vspace"><strong>Where to start the cutter.</strong>  The note under the drawings says where to put the cutter: radius A from the centre, or less when the pattern starts on a wave's deepest point - for example, a D rosette at Phase 0% starts on a cusp, so the cutter starts in by the whole amplitude.  Put the cutter on the line you want the ellipse's length to lie along, and use the <a href="#CheckCircle">check circle</a> to set the radius.
+</p>
+<p class="vspace"><span style="color: red;"><strong>Do not expect an exact A by B ellipse unless the cutter starts at the radius the note gives.</strong></span>  The program moves the cutter from wherever it is put, by the same amounts at any radius - as a physical ellipse rosette does - so the length always comes out 2 x (A - B) more than the width.  Started further out, the cut is rounder; further in, it is longer and narrower, and then a peanut and a figure 8.
+</p>
+<p class="vspace"><strong>Note:</strong> with A = 1 and B = 0.5, the length is always 1" more than the width: started at the right radius the cut is 2" x 1"; started further out, perhaps 2 3/8" x 1 3/8".
+</p>
+<p class="vspace"><a id="Movement"></a>
+</p><h2 id="Movement_"><span style="color: #00008b;"> Movement</span></h2>
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Motion</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p><strong>Rocking (X)</strong>, <strong>Pumping (Z)</strong>, or <strong>Both</strong> - a rocking rosette and a pumping rosette at the same time.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Cutting on</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p><strong>Face</strong> (the end of the work) or <strong>Side</strong>.  This sets which axis goes deeper into the work - Z on the face, X on the side - and how the cut is drawn.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>C speed</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>How fast C turns the work while cutting, in revolutions per minute.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>C direction</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>Which way C turns: <strong>+</strong> or <strong>-</strong>.
+</p></td></tr></table>
+<p class="vspace"><a id="Depth"></a>
+</p><h2 id="Depth_"><span style="color: #00008b;"> Depth</span></h2>
+<p>Choose one:
+</p>
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Passes, deeper each time</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The program cuts the rosette several times, going <strong>Depth per pass</strong> deeper before each pass, at the <strong>Plunge feed</strong>.  The first pass is already one step deep, so put the cutter just touching the work.  At the end, the cutter backs out to where it started.
+</p>
+<p class="vspace"><strong>Finishing pass</strong>:  tick it to run the last pass slower, for a better finish - at a percentage of <strong>C speed</strong> (10% to start).  The earlier passes run at full C speed.
+</p>
+<p class="vspace"><strong>Spring passes</strong>:  0 to 5 extra turns at the final depth, to clean up the cut.  They run at the finishing speed when <strong>Finishing pass</strong> is ticked.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Turns at one depth</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The program cuts the rosette the chosen number of times without going deeper - as with a physical rosette.  To go deeper, move the cutter in yourself and run the program again.
+</p></td></tr></table>
+<p class="vspace"><strong>Deeper is +</strong>:  normally the cutter goes deeper by moving the depth axis in its minus direction.  Tick this if going deeper means moving it in its plus direction.
+</p>
+<p class="vspace"><a id="Advance"></a>
+</p><h2 id="Advance-and-Retract-Cutter"><span style="color: #00008b;"> Advance and Retract Cutter</span></h2>
+<p>To start the cutter clear of the work, set how far it moves in before cutting - <strong>X advance</strong>, <strong>Z advance</strong> or both - and which way: <strong>Towards centre</strong> or <strong>Away</strong> for X, <strong>Towards headstock</strong> or <strong>Away</strong> for Z.  Leave both at 0 for no advance.
+</p><ol><li>Put the cutter that far clear of where the pattern is to be cut.
+</li><li>Run the program.  The cutter moves in at the <strong>Plunge feed</strong> - the depth axis last (Z on the face, X on the side), so it enters the work along the depth direction.
+</li><li>The passes are cut from there - their depth is measured from where the advance ends.
+</li><li>At the end, the cutter moves back out to exactly where you put it, the depth axis first.
+</li></ol><p class="vspace"><span style="color: red;"><strong>Do not run the program until you have checked each advance's direction.</strong></span>  The cutter moves the whole advance distance that way before it starts cutting - set the wrong way, it moves into the work instead of up to it.
+</p>
+<p class="vspace"><strong>Note:</strong> If the program is stopped part way, the cutter is left where it stopped - it moves back out only at the normal end.
+</p>
+<p class="vspace"><a id="ObjectSize"></a>
+</p><h2 id="Object-Size"><span style="color: #00008b;"> Object Size</span></h2>
+<p><strong>Radius</strong> is the radius of the object being made - the piece you are cutting - and <strong>Radius is the</strong> says which part of the cut it is:
+</p><ul><li><strong>Outside (largest)</strong> - where the cut comes furthest out from the centre.
+</li><li><strong>Inside (smallest)</strong> - where the cut comes closest in.
+</li></ul><p class="vspace">If you are making a rosette to use later on a rose engine, the object being made is that rosette: enter the radius of the rosette you want to make.  Rose engines differ - some measure their rosettes across the points (use Outside), others across the hollows (use Inside).
+</p>
+<p class="vspace">A physical rosette usually has phasing holes, which let it be turned relative to the work on the rose engine.  The G-code program doesn't cut them - add them as you would for any rosette, or use <a href="#Print">Save for 3D Printing</a>, which puts them in.  (Patterns cut with Rosetta itself don't need them: index on the Rosetta panel instead.)
+</p>
+<p class="vspace">Radius is only used for the drawing, for <strong>Straight sides</strong> and for the note on where to start the cutter - the program cuts wherever the cutter is.  When cutting on the face with a rocking rosette, the note under the drawings says where to put the cutter so that the outside or inside of the cut is at that radius.
+</p>
+<p class="vspace"><strong>Note:</strong> with an Ellipse cut on the face, <strong>A</strong> and <strong>B</strong> set the size, so Object Size is greyed out.
+</p>
+<p class="vspace"><strong>Note:</strong> The same rosette cuts a different shape at a different radius - sharper and more hollow closer to the centre, rounder further out.  This is the <strong>de la Condamine effect</strong> (see  <a class="online" href="https://otbok.info/index.php?n=Main.Rosette#DeLaCondamine" rel="noopener" target="_blank" title="Opens on the Internet">The de la Condamine Effect</a> in the Ornamental Turning Book of Knowledge).  So choose the <strong>Amplitude</strong> for the Radius you will cut at, and check the drawing - it shows the shape at that radius.
+</p>
+<h2 id="Notes-Under-the-Drawings"><span style="color: #00008b;"> Notes Under the Drawings</span></h2>
+<p>Under the drawings, the Rosette Designer says how long one turn and the whole program will take (counting a slower finishing pass), where to start the cutter, and warns you when:
+</p><ul><li>C, or the axis the rosette or the depth needs, isn't assigned to a channel in <a href="AxisSelection.html">Axis Selection</a> - the program won't run until it is.
+</li><li>C's speed is above its Max Speed, or the rosette is too steep for X or Z to follow at that speed.  The program still runs, but C slows down where needed, so it takes longer.
+</li></ul><hr/>
+<p><a id="Backlash"></a>
+</p><h1 id="Set-the-Backlash-First"><span style="color: #00008b;"> Set the Backlash First</span></h1>
+<p>A rosette program reverses the rocking or pumping axis twice for every lobe - a 12-lobe rosette reverses it 24 times each turn.  Each time it reverses, any slack in the slide (play in the leadscrew, nut or gears) is taken up before the cutter moves again, so every lobe is cut slightly flat on one side and the curves come out uneven.
+</p>
+<p class="vspace">Rosetta can make up for that slack.  Before cutting a rosette, set the <strong>Backlash</strong> for the axis that follows it - X for rocking, Z for pumping, both for Both:
+</p><ol><li>Measure the axis's lost motion: with a dial indicator on the slide, jog one way, then reverse and note how far you jog before the indicator moves.
+</li><li>Open <strong>Rosetta Settings</strong> (Rosetta must be closed) and go to the <strong>Axis and Stepper Motor Tuning</strong> page.
+</li><li>Enter the measurement in that axis's <strong>Backlash</strong> box.  It is saved at once and used the next time Rosetta starts.
+</li></ol><p class="vspace">These two Holtzapffel A-12 drawings were cut on a paper chuck by the same program - the first with X's Backlash at 0, the second with it set.  The waves of the second are even and smooth:
+</p>
+
+<table border="0"><tr><td valign="top"> <img alt="" src="Images/HoltzA12_NoBacklash.jpeg"/>
+</td><td valign="top"> <img alt="" src="Images/HoltzA12_BacklashSet.jpeg"/>
+</td></tr><tr><td valign="top"> <strong>No Backlash</strong>
+</td><td valign="top"> <strong>Backlash set</strong>
+</td></tr></table>
+<p><strong>Note:</strong> Backlash matters most for small, fine patterns, where the slack is a large part of each wave.  It doesn't need to be exact - a little less than the measured lost motion is better than too much, which makes the slide jump at each reversal.
+</p>
+<p class="vspace">For more on backlash, and what compensation can't fix, see  <a class="online" href="https://otbok.info/index.php?n=Main.Backlash#Compensation" rel="noopener" target="_blank" title="Opens on the Internet">Backlash</a> in the Ornamental Turning Book of Knowledge.
+</p>
+<hr/>
+<p><a id="CheckCircle"></a>
+</p><h1 id="Setting-the-Start-Radius-Check-Circle"><span style="color: #00008b;"> Setting the Start Radius:  Check Circle</span></h1>
+<p>For a rocking rosette on the face, the program moves the cutter from wherever it is put, so the cutter's distance from C's axis - the <strong>start radius</strong> the note under the drawings gives - sets the pattern's size and shape.  That distance is hard to measure, especially when the headstock moves.  The <strong>Check Circle...</strong> button makes it easy: it saves a small program that turns C once with X and Z standing still, so the cutter draws a circle round C's axis.  The circle's diameter is twice the cutter's radius.
+</p><ol><li>Press <strong>Check Circle...</strong>.  It saves a program named for the size the circle should be, for example <em>Check-Circle_3.000in.ngc</em>, in the gcode folder, and offers to open it in Rosetta.
+</li><li>Put the cutter just touching the work, where the cut will start.
+</li><li>Run the check circle program, and measure the circle's diameter.
+</li><li>If the circle is smaller than it should be, move X out by half the difference; if it is bigger, move X in.  For example, if a circle that should be 3" across comes out 2 1/8", move X out by 7/16".
+</li><li>Run the check circle again, until it is the right size.
+</li><li>Open the rosette program and run it, without moving X.
+</li></ol><p class="vspace"><strong>Note:</strong> with an <strong>X advance</strong>, set the circle first, then move X by the advance, as the check circle's message says, before running the rosette.
+</p>
+<p class="vspace"><strong>Note:</strong> the check circle cuts a light circle in the work.  On a paper chuck that doesn't matter; on finished work, set the radius on a scrap piece first.
+</p>
+<p class="vspace"><strong>Note:</strong> the check circle works on any machine - see  <a class="online" href="https://otbok.info/index.php?n=Main.GcodeForOrnamentalTurning#StartRadius" rel="noopener" target="_blank" title="Opens on the Internet">Working from Where the Cutter Starts</a> in the Ornamental Turning Book of Knowledge.
+</p>
+<hr/>
+<p><a id="Saving"></a>
+</p><h1 id="Saving-and-Running-the-Program"><span style="color: #00008b;"> Saving and Running the Program</span></h1>
+<ol><li>Press <strong>Save G-code...</strong>.  The Rosette Designer suggests a name, such as <em>Rosette-Lotus8_rock_face.ngc</em> or <em>Rosette-HoltzD12-Ellipse50_rock_face.ngc</em>, in the gcode folder.
+</li><li>If Rosetta is running, the Rosette Designer offers to open the program in Rosetta.  Otherwise, open it in Rosetta with <strong>File</strong> &gt; <strong>Open</strong>.
+</li><li>Put the cutter where the pattern should be cut - at the radius the note under the drawings gives (use the <a href="#CheckCircle">check circle</a>).  <span style="color: red;"><strong>Do not start the program until the cutter is where you want the pattern.</strong></span>  The program works from wherever the cutter is when it starts - the same as setting up a cut with a physical rosette.
+</li><li>Run the program.
+</li></ol><p class="vspace"><strong>Note:</strong> while the program runs, the progress bar on the Rosetta panel shows which pass it is on, for example <em>Program 42% - pass 2 of 3</em>, then <em>finishing pass 3 of 3</em>.
+</p>
+<p class="vspace"><span style="color: red;"><strong>Do not name the program starting with "Rosetta", and do not name it M100 through M199.</strong></span>  Those names are reserved (see <a href="RunningGcodePrograms.html">Running Gcode Programs</a>), and the Rosette Designer refuses them.
+</p>
+<p class="vspace"><strong>Note:</strong> C is not turned back at the end: after three turns, C reads 1080 degrees.  The work is in the same place, and the next program again works from wherever C is.
+</p>
+<hr/>
+<p><a id="Print"></a>
+</p><h1 id="Saving-the-Rosette-for-3D-Printing"><span style="color: #00008b;"> Saving the Rosette for 3D Printing</span></h1>
+<p><strong>Save for 3D Printing...</strong> saves the rosette itself - not a program that cuts its pattern - so you can 3D print it, or have it made, and use it on a rose engine.  It saves two kinds of file:
+</p><ul><li><strong>STL</strong> - for a 3D printer.  Open it in your printer's slicer.
+</li><li><strong>STEP</strong> - for CAD programs, and for a machine shop that makes rosettes from metal or wood.
+</li></ul><p class="vspace">Both files are in <strong>millimetres</strong>, whatever units the design uses - slicers expect STL files in millimetres.
+</p>
+<p class="vspace">The kind of rosette depends on the design's <strong>Motion</strong>:
+</p><ul><li><strong>Rocking</strong> - a disc whose edge follows the pattern.
+</li><li><strong>Pumping</strong> - a disc with a raised rim whose top rises and falls with the pattern.  The rim stands at least 1 mm above the rest of the disc.
+</li><li><strong>Both</strong> - each rosette is saved on its own; choose <strong>Rocking (X)</strong> or <strong>Pumping (Z)</strong> at the top of the window.
+</li></ul><h2 id="The-Settings"><span style="color: #00008b;"> The Settings</span></h2>
+<ul><li><strong>Machine</strong> - fills in your rose engine's usual rosette.  <strong>MDF Rose Engine</strong> fills in everything - its size, thickness, bore, phasing holes and mounting slots, as on its rosette drawing.  The Armbruster Mark II and the Lindow fill in only their size.  Choose <strong>Other</strong> to enter your own; changing anything the machine filled in changes it to Other.
+</li><li><strong>Diameter</strong> and <strong>Measured at</strong> - the rosette's size, across the points (<strong>Largest</strong>) or across the hollows (<strong>Smallest</strong>).  Rose engines differ: measure one of your own rosettes the way your machine's maker does.  A pumping rosette's diameter is always its outside.
+</li><li><strong>Machine ratio</strong> - the rosette's wave is the design's <strong>Amplitude</strong> times this.  On most rose engines the rosette moves more or less than the cutter does, set by the machine's levers.  To find yours, cut with a rosette whose wave you know and measure the cut.  1 makes the rosette's wave the same as the cut's.
+</li><li><strong>Thickness</strong> - how thick the disc is.
+</li><li><strong>Centre bore</strong> - the diameter of the hole in the middle, to fit your rose engine's rosette arbor.
+</li><li><strong>Rim width</strong> (pumping only) - how wide the patterned rim is, in from the edge.
+</li><li><strong>Phasing holes</strong>:
+<ul><li><strong>Spacing</strong> - <strong>A quarter lobe apart</strong> (the MDF Rose Engine's way): each hole turns the pattern a quarter lobe on from the last - 0, 1/4, 1/2, 3/4, 1 lobe, and on.  So the spacing depends on the rosette's lobes: 11.25 degrees on an 8-lobe rosette, 10 on a 9-lobe one, 22.5 on a 4-lobe one.  Each hole is a whole number of lobes plus a quarter, a half or three quarters from where the pattern starts (marked <strong>Start</strong> on the drawing), so the hole at the start phases it by 0.  On a rosette with many lobes, holes a quarter lobe apart would touch, so they go 1 1/4 lobes apart instead (or 2 1/4...) - each still turns the pattern a quarter lobe on, and the window says so.  <strong>Evenly round</strong> spaces them equally instead.
+</li><li><strong>Number</strong> - how many; 0 means none.  Nine a quarter lobe apart phase the pattern from 0 to 2 lobes.
+</li><li><strong>On circle</strong> - the diameter of the circle their centres are on.
+</li><li><strong>Hole diameter</strong> - each hole's true size (the MDF Rose Engine uses a #30 drill, 0.1285").
+</li><li><strong>Centred at</strong> - where round the rosette the holes are grouped, in degrees: 0 is where the pattern starts (to the right on the drawing), 90 the top.  The MDF Rose Engine's are at 0, midway between its two slots.
+</li></ul></li><li><strong>Mounting slots</strong> - arced slots for the screws that hold the rosette to its drive gear: how many (evenly round from the top; 0 means none), the diameter of the circle along their middles, their <strong>Span</strong> in degrees (from the centre of one rounded end to the other), and their width (0.266" lets a 1/4-20 screw through).  The MDF Rose Engine has two, top and bottom, spanning 90 degrees on a 5" circle.
+</li><li><strong>Printed hole allowance</strong> - printed holes come out smaller than drawn.  This much is added to the bore, the phasing holes and the slots' width in the STL file, so they print the right size.  Start with 0.008" (0.2 mm), print one, and adjust it to suit your printer.  The STEP file keeps their true sizes, for machining.
+</li><li><strong>Save as</strong> - tick STL, STEP or both.
+</li></ul><p class="vspace">The drawing shows the rosette seen from the top, as it will be printed.  On a pumping rosette, darker parts of the rim are higher.
+</p>
+<p class="vspace">Under the settings, the window gives the rosette's size and how deep its wave is, and how much larger the STL's holes are.  It shows problems in red, and <strong>Save...</strong> stays greyed out until they are fixed - for example, phasing holes that run into the bore or the edge, or that overlap.  Warnings in orange don't stop you saving.
+</p>
+<h2 id="Saving_"><span style="color: #00008b;"> Saving</span></h2>
+<ol><li>Set the design as usual, then press <strong>Save for 3D Printing...</strong>.
+</li><li>Set the rosette's size, mounting and phasing holes, and check the drawing.
+</li><li>Press <strong>Save...</strong>.  The Rosette Designer suggests a name, such as <em>Rosette-HoltzD12_rock</em>, in the <strong>Rosettes</strong> folder in Documents.  It adds <em>.stl</em> and <em>.step</em>.
+</li><li>Copy the files to the computer you print or design with.  <strong>Back Up to USB</strong> also copies the Rosettes folder.
+</li></ol><p class="vspace">The settings are kept with the design, so the window opens with them next time, and they are saved in the G-code program too.
+</p>
+<h2 id="Things-to-Know"><span style="color: #00008b;"> Things to Know</span></h2>
+<ul><li><strong>The edge is shaped for a point rubber.</strong>  A real rubber's rounded nose can't reach right into narrow hollows, so the printed rosette cuts a little softer than the drawing.
+</li><li><strong>Which way round.</strong>  Seen from the top as printed, the rosette matches the drawing in the Rosette Designer.  For a shape that isn't the same both ways round - the F-1 heart, or S - try it on a <a class="online" href="https://otbok.info/index.php?n=Main.PaperChuck" rel="noopener" target="_blank" title="Opens on the Internet">paper chuck</a> first to see which face goes towards you.
+</li><li><strong>Fine waves.</strong>  Printers hold about 0.1 mm (0.004"), so a wave much smaller than that may not print.  The window warns you.
+</li><li><strong>Wear.</strong>  Plastic wears against the rubber.  A printed rosette suits trying a design before making it in metal or wood.
+</li></ul><p class="vspace"><span style="color: red;"><strong>Do not print a pumping rosette at a coarse layer height.</strong></span>  A pumping rosette is printed lying flat, so its patterned rim is built up in layers that leave ridges as it rises and falls.  Print it at the smallest layer height your printer can, and use a rubber that rides over what ridges remain - for example, one with a roller bearing on its nose.
+</p>
+<hr/>
+<p><a id="Opening2"></a>
+</p><h1 id="Changing-a-Saved-Rosette"><span style="color: #00008b;"> Changing a Saved Rosette</span></h1>
+<p>Press <strong>Open...</strong> and choose a program the Rosette Designer saved.  Its settings come back, ready to change and save again.
+</p>
+<p class="vspace">The Rosette Designer also remembers every setting of the last rosette you worked on, so it opens the way you left it.  Press <strong>New</strong> to start again from the standard rosette.
+</p>
+<p class="vspace"><strong>Note:</strong> only programs saved by the Rosette Designer can be opened this way.
+</p>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

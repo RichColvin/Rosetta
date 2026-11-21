@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synchronized Movement – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Synchronized Movement</span></p>
+  <h1>Synchronized Movement</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#Synchronized-Movement-Tab">Synchronized Movement Tab</a></li><li class="toc-l1"><a href="#Linear-Axes">Linear Axes</a></li><li class="toc-l1"><a href="#Angular-Axes">Angular Axes</a></li><li class="toc-l1"><a href="#Using-the-Sync-Move-Tab">Using the Sync Move Tab</a></li><li class="toc-l1"><a href="#Pausing-a-Sync-Move">Pausing a Sync Move</a></li></ul></nav>
+  <div class="content">
+
+<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
+</td></tr><tr><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #E5A50A;">Yellow</span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">X</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">U</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">A</span></strong></span>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xpos.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Aneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Apos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #A51D2D;">Red</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">V</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">B</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Yneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Ypos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #1A5FB4;">Blue</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">Z</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">W</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">C</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zpos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> Black
+</td><td colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <strong>Spindles</strong> <br class="clearboth"/>(Sp0 &amp; Sp1)
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindleneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindlepos.png" width="100%"/>
+</td></tr></table>
+<p>On this page, the axis letters are colored to assist the user.  (Note: LinuxCNC does not allow for a Y axis when running as a lathe.)
+</p>
+<p class="vspace">Every axis has a row of controls on the user screens, but only the <a href="AxisSelection.html">axes selected for use</a> can be operated - the others are grayed out.  For example, in the screen shown below, the user has selected to use the X, Z, U, V, W, and C axes, so the A and B rows are grayed out.
+</p>
+<p class="vspace">The table at the bottom of the user screen titled, <span style="color: #00008b;"> Axis Assignments</span>, shows the current axis assignments.  It is updated the next time Rosetta is started after the selected axes are changed.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Synchronized-Movement-Tab"><span style="color: #00008b;"> Synchronized Movement Tab</span></h1>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta-SyncMove.png" width="300px"/></span></div>
+<p>The <strong>Sync Move</strong> tab is used to drive synchronized movement of multiple axes.
+</p>
+<h2 id="Linear-Axes"><span style="color: #00008b;"> Linear Axes</span></h2>
+<p>For linear axes (X, Z, U, V, and W), this is a distance.  The UOM shown for these axes, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
+</p>
+<p class="vspace"><a id="AngularAxes"></a>
+</p><h2 id="Angular-Axes"><span style="color: #00008b;"> Angular Axes</span></h2>
+<p>For the angular axes (A, B, and C), this is a rotary indexing.  Beside each distance, choose its unit:
+</p><ul><li><strong>deg</strong> - degrees, with 2 decimal places, up to 99,999,999.00 degrees.
+</li><li><strong>rev</strong> - revolutions (full turns), with 3 decimal places, up to 999,999.999 revolutions.  One revolution is 360 degrees, so 40 revolutions can be entered as 40 instead of 14,400 degrees.
+</li></ul><p class="vspace">You can type a distance with or without commas (1000000 and 1,000,000 are the same).  Once you press Enter, the field shows the number with commas.
+</p>
+<p class="vspace"><strong><ins>Notes</ins>:</strong>
+</p><ol><li>When you change between <strong>deg</strong> and <strong>rev</strong>, the number in the field stays the same and its meaning changes - 40 degrees becomes 40 revolutions (and vice versa).  Check the number after changing the unit.
+</li><li>Revolutions are acceptable to use when the fraction can be expressed in up to 3 decimal places.  ½ = 0.5, ¼ = 0.25, and ⅛ = 0.125.
+</li><li>When the fraction cannot be expressed in 3 decimal places (e.g., ⅓ or ⅙), degrees may be a better choice.  0.333 revolutions results in 119.88° of movement (not 120°), and 3 of these movements will not come back to the same start (3 x 119.88° = 359.64°).
+</li></ol><p class="vspace"><strong><ins>Key Note</ins>:</strong> <br class="clearboth"/>
+With LinuxCNC, synchronized motion of the spindles cannot be achieved using Sp0 nor Sp1.  Those motors must be attached to an angular axis (A, B, or C).  It is a good idea to perform a "dry run" to ensure everything moves as expected.  You may need to change the setup for the axes (e.g., the <strong>Scale</strong>) to achieve your desired movements.
+</p>
+<h2 id="Using-the-Sync-Move-Tab"><span style="color: #00008b;"> Using the Sync Move Tab</span></h2>
+<p>To drive synchronized movement on selected axes, follow these steps:
+</p>
+<table border="1" width="100%"><tr><td style="width: 20px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Step</span>
+</td><td style="background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Action</span>
+</td><td style="width: 30px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Value Saved?</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 1
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The axis must be ENAbled. (This can be done automatically if <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong>.)
+<p class="vspace">The ENAble status for an axis is not saved when exiting Rosetta.  It will always default to not enabled.
+</p></td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: red;">No</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 2
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The feed rate for each axis must be a non-zero, positive number.  
+<p class="vspace">Note:  all the selected axes start and finish together.  The move takes as long as whichever axis needs the most time at its own feed rate, so no axis moves faster than the feed rate you set for it.
+</p></td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 3
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The axes must be selected. In the picture above, the blue tick boxes indicate that the X, Z, &amp; C axes have been selected for use.
+<p class="vspace">If an axis is ENAbled but not selected, then it will simply not run.
+</p></td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 4
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The distance to move the axis must be a non-zero, positive number.  For A, B, and C, also choose <strong>deg</strong> or <strong>rev</strong> (see <a href="#AngularAxes">Angular Axes</a> above).
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 5
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> A direction of movement for the axis must be selected.  In the picture above, 
+<ul><li>X is to move in the reverse direction.
+</li><li>Z is to move in the forward direction.
+</li><li>C is to move in the forward direction.
+</li></ul></td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 6
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> To initiate the movement, click on the <strong>Sync Move</strong> button below the axis distance fields.  
+<p class="vspace">To stop the movement part way, click on the <strong>Pause</strong> button (see <a href="#Pause">Pausing a Sync Move</a> below).
+</p>
+<p class="vspace">To return the system to where it was at the start of this operation, click on the <strong>Return to Start</strong> button.
+</p></td><td style="vertical-align: top; text-align: center;" valign="top"> n/a
+</td></tr></table>
+<p class="vspace">In the table above, where <strong>Value Saved?</strong> is <span style="color: green;">Yes</span>, that value is saved when exiting Rosetta, and will be the same when Rosetta is restarted.  The <strong>deg</strong> / <strong>rev</strong> choice for each angular axis is saved too.
+</p>
+<p class="vspace"><a id="Pause"></a>
+</p><h2 id="Pausing-a-Sync-Move"><span style="color: #00008b;"> Pausing a Sync Move</span></h2>
+<p>The <strong>Pause</strong> button, between <strong>Sync Move</strong> and <strong>Return to Start</strong>, stops a Sync Move part way - for example, when the belt driving the cutter breaks, or when you see the cutter is going to hit the chuck.  The axes slow down and stop where they are.  The button then reads <strong>Continue</strong>, and you can either:
+</p><ul><li>click <strong>Continue</strong> to finish the move.  The axes carry on along the same path, at the same speed, as if the move had not been paused, or
+</li><li>click <strong>Return to Start</strong> to send the axes back to where the Sync Move started.
+</li></ul><p class="vspace">The progress bar shows <strong>(paused)</strong> while the move is paused.  Pausing does not stop the spindles, or a cutter driven by its own motor.
+</p>
+<p class="vspace">You can turn the machine off, or press E-Stop, while the move is paused (for example, to replace a broken belt).  When the machine is back on, <strong>Continue</strong> still finishes the move from where the axes stopped.
+</p>
+<p class="vspace"><span style="color: red;"><strong>Do not move an axis of a paused Sync Move (by jogging, indexing, or running a program) unless you mean to leave its path.</strong></span> <strong>Continue</strong> goes straight from wherever the axes are to the Sync Move's end point.  If an axis was moved off the path, Rosetta says which one and asks before continuing; choose <strong>Return to Start</strong> instead if you are not sure the way is clear.
+</p>
+<p class="vspace"><strong><ins>Notes</ins>:</strong>
+</p><ol><li>Stopping a Sync Move with LinuxCNC's own <strong>Stop</strong> button (or the Esc key) also lets you use <strong>Continue</strong> or <strong>Return to Start</strong> afterwards.
+</li><li>You can also pause a Sync Move with an external Pause button plugged into a limit jack - see <a href="InputsOutputsSound.html#PauseButton">Pause Button</a>.  The external button only pauses; use <strong>Continue</strong> on the screen to carry on.
+</li><li>When a G-code program is paused (by LinuxCNC's <strong>Pause</strong> button, an M0 or M1 in the program, or the external Pause button), this button reads <strong>Continue</strong> too, and clicking it carries on with the program - the same as LinuxCNC's <strong>Resume</strong> button.
+</li></ol>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axis Selection – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Axis Selection</span></p>
+  <h1>Axis Selection</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Base-Box-and-Expansion-Box">Base Box and Expansion Box</a></li><li class="toc-l0"><a href="#Impact-of-Any-Changes">Impact of Any Changes</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
+  <div class="content">
+
+<p><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
+</p>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/Axes-2.png" width="200px"/><br/><span class="caption"><strong>Lathe Axes</strong></span></span></div>
+<p>On this screen, you select which axes you want to use for the configurable ones.  You must select from the standardized <sup><span class="pmS1">①</span></sup> options available in LinuxCNC:
+</p>
+<p class="vspace"><strong>Linear Axes</strong>
+</p><ul><li><strong>X</strong>
+</li><li><span style="color: gray;">n/a</span> <em>(there is no Y axis option in LinuxCNC when configured as a lathe)</em>
+</li><li><strong>Z</strong>
+</li><li><strong>U</strong> (parallel to  the X axis)
+</li><li><strong>V</strong> (parallel to the Y axis)
+</li><li><strong>W</strong> (parallel to the Z axis)
+</li></ul><p class="vspace"><strong>Rotary Axes</strong>
+</p><ul><li><strong>A</strong> (rotation about the X axis)
+</li><li><strong>B</strong> (rotation about the Y axis)
+</li><li><strong>C</strong> (rotation about the Z axis)
+</li></ul><p class="vspace"><strong>Spindles</strong> <br class="clearboth"/>
+The spindles are specialized rotary axes.
+</p><ul><li><strong>Sp0</strong> is used for the primary spindle
+</li><li><strong>Sp1</strong> is used for the rosette phaser / multiplier.
+</li></ul><p class="vspace">Whilst these are the traditional interpretations of those axes, there is nothing particularly critical about them except that some are linear, and others rotary.  So, if you need to implement a device which has 3 axes rotating around the spindle axis, you can use A, B, &amp; C to do that -- you'll just have to keep everything straight.
+</p>
+<table border="0" style="width: 250px; "><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<p>Additionally, you can select which channel (i.e., which plug) on the boxes is used for each axis. The only limitation is that <span style="color: red;">Sp1 cannot be selected when Sp0 is not also selected</span>.
+</p>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-AxisSelection.png" width="375px"/><br/><span class="caption"><strong><em>Axis Selection Screen</em></strong></span></span></div>
+<p>Rosetta handles up to 10 channels - 6 on the base box and 4 more on the optional expansion box (see <a href="#ExpansionBox">Base Box and Expansion Box</a> below) - and any of the following can be assigned to them.
+</p>
+<h2 id="Spindles"><span style="color: #00008b;"> Spindles</span></h2>
+<p>The two spindles, Sp0 and Sp1, are used when you use the options on the main panel:
+</p><ul><li>Run Operation (to run the spindles in forward or reverse), or
+</li><li>Indexing the spindles
+</li></ul><p class="vspace">If those motors are needed for synchronized movement with other axes, 
+</p><ol><li>This is done via a gCode program, and
+</li><li>The spindles will need to use one of the rotary/angular axes (A, B, or C) for their motion.
+</li></ol><p class="vspace"><a id="ExpansionBox"></a>
+</p><h2 id="Base-Box-and-Expansion-Box"><span style="color: #00008b;"> Base Box and Expansion Box</span></h2>
+<table style="margin-left: 20px; margin-bottom: 10px; border-collapse: collapse; border: 1px solid black;"><tr><td style="width: 150px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: left;" valign="top"> <span style="color: white;"><strong>Item</strong></span>
+</td><td style="width: 110px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: center;" valign="top"> <span style="color: white;"><strong>Base Box</strong></span>
+</td><td style="width: 110px; border: 1px solid black; padding: 5px; background-color: #00008b; text-align: center;" valign="top"> <span style="color: white;"><strong>Expansion Box</strong></span>
+</td></tr><tr><td style="border: 1px solid black; padding: 5px;" valign="top"> Channels (plugs)
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> 00 - 05
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> 06 - 09
+</td></tr><tr><td style="border: 1px solid black; padding: 5px;" valign="top"> Limit switch jacks
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> 1 - 3
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> 4 - 6
+</td></tr><tr><td style="border: 1px solid black; padding: 5px;" valign="top"> E-stop button
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> Yes
+</td><td style="border: 1px solid black; padding: 5px; text-align: center; background-color: #d3d3d3;" valign="top"> n/a
+</td></tr><tr><td style="border: 1px solid black; padding: 5px;" valign="top"> Signal tower
+</td><td style="border: 1px solid black; padding: 5px; text-align: center;" valign="top"> Yes
+</td><td style="border: 1px solid black; padding: 5px; text-align: center; background-color: #d3d3d3;" valign="top"> n/a
+</td></tr></table>
+<p class="vspace">Each plug's number matches its channel number.  On the Axis Selection screen, the base box's channels are on the left and the expansion box's on the right, each laid out the way the plugs are on the box (Top and Bottom rows).  The E-stop button and signal tower plug into the base box only.
+</p>
+<p class="vspace"><strong>Connected</strong> - tick the Connected box next to "Expansion Box" only if the expansion box is plugged in.
+</p><ul><li>With it ticked, LinuxCNC looks for the expansion box when it starts.  <span style="color: red;">If it can't find it, LinuxCNC will fail to start.</span>  If that happens, untick Connected and start Rosetta again.
+</li><li>Turn on both boxes before starting Rosetta.
+</li><li>Ticking or unticking Connected takes effect the next time Rosetta starts.
+</li></ul><p class="vspace"><strong>Without the expansion box</strong> its channels (and limit jacks 4 to 6) are greyed out, and the axes assigned to them can't be used.  They keep their assignments, ready for when an expansion box is connected.  To use one of those axes, choose it on a base box channel - the two swap, so the axis that was on that base box channel moves to the expansion box channel.  For example, if Sp0 is on channel 06 and W is on channel 04, choosing Sp0 for channel 04 puts W on channel 06.
+</p>
+<hr/>
+<h1 id="Impact-of-Any-Changes"><span style="color: #00008b;"> Impact of Any Changes</span></h1>
+<table style="margin-left: 10px; margin-bottom: 10px; width: 400px; float: right; border: 0px solid darkgray; "><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesBase.png"/> <br class="clearboth"/>
+<p><strong>Axis Assignments on Base Box</strong>
+</p></td></tr><tr><td style="border: 0px solid darkgray; " valign="top">  
+</td></tr><tr><td style="border: 1px solid darkgray; padding: 5px;" valign="top"> <img alt="" height="150px" src="Images/SelectedAxesExpansionBox.png"/> <br class="clearboth"/>
+<p><strong>Axis Assignments with Expansion Box</strong>
+</p></td></tr></table>
+<p class="vspace">Once the changes are saved and Rosetta is restarted, changes made to this screen:
+</p><ol><li>Set the way LinuxCNC interacts with the plugs on the system (via the channel assignments)
+</li><li>Update the axes displayed on the right side panel (an example is to the right)
+</li><li>Set the options available for the axes on the right side panel (linear axes have different options than angular/rotary axes).
+</li><li>Update the Axis Assignments table displayed at the bottom of the right side panel, which shows the axis on each channel.  The expansion box's channels are only shown when it is connected.  Any axes not assigned to a channel in use are grayed out and not usable by the operator.
+</li></ol>
+<table bgcolor="darkblue" border="0" width="100%"><tr><td valign="top" width="100%">
+</td></tr></table>
+<h1 id="Running-the-Rosetta-Settings-Program"><span style="color: #00008b;"> Running the Rosetta Settings Program</span></h1>
+<p>To access the Rosetta Settings program, there are 2 options:
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-1-Use-the-icon-on-the-desktop"><span style="color: #00008b;"> Option 1:  Use the icon on the desktop</span></h2>
+<div class="img"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/> </span></div>
+<p>Double-click on the Rosetta Settings icon on the desktop (the big gear)
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-2-Use-the-Applications-menu"><span style="color: #00008b;"> Option 2:  Use the Applications menu</span></h2>
+<ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
+</li><li>Click on the arrow to the right of Rosetta
+</li><li>Click on Rosetta Settings (the one with a gear)
+</li></ol>
+<table style="margin-left: 75px; margin-bottom: 10px; border: 0px solid darkgray; "><tr><td colspan="2" valign="top"> Applications
+</td></tr><tr><td rowspan="6" style="width: 200px; vertical-align: top;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta   &gt;
+</td><td style="width: 225px; vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta
+</td></tr><tr><td style="background-color: #00aae4; vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_SettingsGear.png" width="20px"/> <span style="color: white;">Rosetta Settings</span>
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Backup.png" width="20px"/> Backup Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Update.png" width="20px"/> Update Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_GeoChuck.png" width="20px"/> Geometric Chuck Designer
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_Rosette.png" width="20px"/> Rosette Designer
+</td></tr></table>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

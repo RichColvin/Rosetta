@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saving and Sharing Settings – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Saving and Sharing Settings</span></p>
+  <h1>Saving and Sharing Settings</h1>
+  
+  <div class="content">
+
+<p><strong>Key Note:</strong> The Settings program cannot be run when the Rosetta program is running.
+</p>
+<p class="vspace">Some changes made in the <a href="AxisSelection.html">Rosetta Settings</a> program are saved as soon as you make them, and others only when you save them.  The buttons for saving and loading settings are at the bottom of the <strong>Axis Selection</strong> tab, and are also in the <strong>File</strong> menu at the top left corner of the window.
+</p>
+<h1 id="What-is-saved-when"><span style="color: #00008b;"> What is saved when</span></h1>
+<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Setting</strong></span>
+</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>When it is saved</strong></span>
+</td></tr><tr><td valign="top"> Axis selection (which axis uses each plug), limit jacks, E-stop button, signal tower
+</td><td valign="top"> Immediately, as soon as you change them
+</td></tr><tr><td valign="top"> Backlash, jog speeds, measurement system, device names
+</td><td valign="top"> Immediately, as soon as you change them
+</td></tr><tr><td valign="top"> Scale, Max Vel, Max Accel, and PID values
+</td><td valign="top"> When you click <strong>Save All Settings</strong>.  If you close the Settings program with unsaved changes, it asks whether to <strong>Save and Close</strong>, <strong>Close Without Saving</strong>, or <strong>Cancel</strong>.
+</td></tr></table>
+<p class="vspace">All settings are kept in the file /home/reuben/Documents/RosettaSet_v1.ini, which Rosetta reads each time it starts.
+</p>
+<h1 id="The-buttons"><span style="color: #00008b;"> The buttons</span></h1>
+<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="width: 100px;" valign="top">
+<div class="img imgonly"> <img alt="" src="Images/Button-SaveAllSettings.png" width="200px"/></div>
+</td><td valign="top"> Saves the Scale, Backlash, Max Vel, Max Accel, and PID values for every axis.  Click this before closing the Settings program.
+</td></tr><tr><td valign="top">
+<div class="img imgonly"> <img alt="" src="Images/Button-SaveAllSettingsAs.png" width="200px"/></div>
+</td><td valign="top"> Saves all your settings, then also saves a copy to a file you choose - for example, a dated backup before you re-tune the machine.
+</td></tr><tr><td valign="top">
+<div class="img imgonly"> <img alt="" src="Images/Button-SaveSubsetofSettingsAs.png" width="200px"/></div>
+</td><td valign="top"> Saves just the axes you pick (each with its Scale, Backlash, and tuning values), and optionally the Measurement System, into a small file.  You can label it with one of your <a href="Other.html">Device Names</a> - useful for sharing the calibration for one device, such as a curvilinear slide, with another Rosetta user.
+</td></tr><tr><td valign="top">
+<div class="img imgonly"> <img alt="" src="Images/Button-LoadSettingsFromFile.png" width="200px"/></div>
+</td><td valign="top"> Loads settings from a file saved by either of the "Save ... As" buttons, and applies them.  Click <strong>Save All Settings</strong> afterwards to keep them.
+</td></tr></table>
+<h1 id="The-File-menu"><span style="color: #00008b;"> The File menu</span></h1>
+<p>The <strong>File</strong> menu at the top left corner of the Rosetta Settings window has the same four commands as the buttons above, plus:
+</p>
+
+<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Command</strong></span>
+</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>What it does</strong></span>
+</td></tr><tr><td valign="top"> <strong>Back Up to USB...</strong>
+</td><td valign="top"> Copies your settings files, gcode programs, HAL additions, tool table, and subroutines onto a USB flash drive.  See <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">Backing Up Key User Files to a USB Flash Drive</a>.
+</td></tr><tr><td valign="top"> <strong>Restore from USB...</strong>
+</td><td valign="top"> Copies a backup from a USB flash drive back onto the Raspberry Pi, then closes Rosetta Settings.  See <a href="RestoringKeyUserFilesFromAUSBFlashDrive.html">Restoring Key User Files from a USB Flash Drive</a>.
+</td></tr><tr><td valign="top"> <strong>Quit</strong>
+</td><td valign="top"> Closes Rosetta Settings.  If you have unsaved changes, it asks first.
+</td></tr></table>
+<p class="vspace"><strong>Note:</strong> The keyboard shortcuts shown in the menu also work: Ctrl+S (Save All Settings), Shift+Ctrl+S (Save All Settings As), Ctrl+O (Load Settings from File), and Ctrl+Q (Quit).
+</p>
+<p class="vspace"><strong><ins>Tip</ins>:</strong> once you have calibrated a device (see <a href="ScaleSettingsForADevice.html">Scale Settings for a Device</a>), use <strong>Save Subset of Settings As...</strong> to keep its values in a file named after the device.  Then, whenever you put that device back on the machine, load its file.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

@@ -72,6 +72,8 @@
 #         entry one-time step                                         #
 #   1.12 - 17 November 2026 - takes Backup and Update off the desktop #
 #         (one-time step; they stay in the menu)                      #
+#   1.13 - 21 November 2026 - adds the offline User Manual and Gcode  #
+#         Library icons (desktop and menu; one-time step)             #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -102,6 +104,7 @@ ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shut_Down.sh"),          # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_GeoChuck_Designer.sh"),  # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Remove_Desktop_Icons.sh"),   # 17 November 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Manuals.sh"),            # 21 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 

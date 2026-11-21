@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spindles – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Spindles</span></p>
+  <h1>Spindles</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Traditional-Usage">Traditional Usage</a></li><li class="toc-l1"><a href="#Connections">Connections</a></li><li class="toc-l0"><a href="#Synchronized-Usage">Synchronized Usage</a></li><li class="toc-l1"><a href="#Connections_">Connections</a></li></ul></nav>
+  <div class="content">
+
+<table border="0" style="width: 300px; float: right; background-color: LightGray; padding: 5px; margin-left: 10px; margin-bottom: 10px;"><tr><td valign="top">
+<p><span style="color: #00008b;"> <span class="pmL2">Gcode Example</span> <br class="clearboth"/></span>
+<strong>m3 s5 $1</strong>
+</p><div class="indent">run the rosette phaser/multiplier ($1) in the forward direction (m3) at a feed rate of 5 rpm (s5)
+</div></td></tr></table>
+<p class="vspace">There are two spindles catered for on this system:
+</p><ul><li>Sp0 = the main spindle (also known as $0 with Gcode commands), and
+</li><li>Sp1 = the rosette phaser/multiplier (also known as $1 with Gcode commands)
+</li></ul><p class="vspace">However, there are two modes of operation for the spindles, and this is a system-driven function.
+</p>
+<h2 id="Traditional-Usage"><span style="color: #00008b;"> Traditional Usage</span></h2>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/StepperConnections-1.png" width="350px"/><br/><span class="caption"><strong><em>Stepper Motor Connections</em></strong></span></span></div>
+<p>Using the configuration shown to the right, you can make a lot of things happen.  For example,
+</p>
+<ul><li>Using only Sp0 and Sp1, you can do the traditional stuff we do on rose engines (e.g., rocking &amp; pumping).
+</li></ul><div class="indent">For rocking &amp; pumping, X &amp; Z would not be synchronized for movement. 
+</div><ul><li>Using Sp0 and Z, you can make a <a class="online" href="https://otbok.info/index.php?n=Main.ECFOnFlatSurfaces" rel="noopener" target="_blank" title="Opens on the Internet">Turks Head</a>
+<ul><li>Move the cutter in (moving the Z axis by hand)
+</li><li>Move the cutter out (moving the Z axis by hand)
+</li><li>Index the Spindle (Sp0; using Rosetta’s index function)
+</li></ul><div class="indent">Repeat as necessary 
+</div></li></ul><div class="indent">X &amp; Sp1 would be unused. 
+</div><p class="vspace">When the spindle is to be used as in a typical lathe operation, it may be used for two types of operations:
+</p>
+<table border="0" style="width: calc(100% - 40px); margin-left: 20px; margin-right: 20px;"><tr><td colspan="2" valign="top">
+<hr/>
+</td></tr><tr><td style="width: 120px;" valign="top">
+<p><strong>Run Operation</strong>
+</p></td><td valign="top">
+<p>This is used to run the spindles as is done on most rose engines (e.g., for rocking or pumping).  
+</p>
+<p class="vspace">On Rosetta, the menu to the right is used (as shown in the picture to the right).
+</p>
+<p class="vspace">These fields are used to determine how it operates.
+</p>
+<div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/EnableSpeed.png" width="250px"/></span></div>
+<div class="indent"><strong>ENA</strong> is used to enable or disable the spindle's operation.  If a command is sent to the spindle’s stepper motor, but it is not enabled, no operation will happen, and an error message will eventually popup (usually a “following error”).
+<ul><li><strong>Note:</strong> If the setting <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong>, then commands to run a motor will automatically ENAble the axis, and leave it ENAbled after the operation finishes.
+</li></ul></div><div class="indent">The speed for the spindle is called the <strong>feed rate</strong>.
+<ul><li>For Sp0 (main spindle), the maximum is 10 rpm, but that is probably too fast for most rose engine work.
+</li><li>For Sp1 (rosette phaser/multiplier), the feed rate is set as a percentage of the Sp0 spindle.
+<ul><li>It has range of up to 1,000% (10x) of the speed of the Sp0 spindle.
+</li><li>If it is set at a negative number, it runs in the opposite direction.
+</li><li>If it is set to 0, it will not run.
+</li></ul></li></ul></div><div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/RunOperation.png" width="200px"/></span></div>
+<p>There are 3 buttons which are used next:
+</p><ul><li>Run in the forward direction,
+</li><li>Run in the reverse direction, or
+</li><li>Stop running.
+</li></ul></td></tr><tr><td colspan="2" valign="top">
+<hr/>
+</td></tr><tr><td valign="top">
+<p><strong>Indexing</strong>
+</p></td><td valign="top">
+<p>This is used to index the spindle(s) orientation as is done using an indexing wheel or a click plate.  
+</p>
+<div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/EnableSpeed.png" width="250px"/></span></div>
+<p>On Rosetta, the spindles to be indexed must be ENAbled.  
+</p><ul><li><strong>Note:</strong> If the setting <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong>, then commands to run a motor will automatically ENAble the axis, and leave it ENAbled after the operation finishes.
+</li></ul><p class="vspace">Then, the menu on the right side of the screen is used, and these fields are used to determine how it operates:
+</p><ul><li>Distance is a numeric value, and then the operator determines if this is:
+<ul><li>degrees, or
+</li><li>divisions of a circle
+</li></ul></li></ul><div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/Indexing.png" width="200px"/></span></div>
+<ul><li>Which spindles are to be indexed.  Select
+<ul><li>Sp0 to index the Sp0 index,
+</li><li>Sp1 to index the Sp1 index, or
+</li><li>Both Sp0 and Sp1 to index both spindles together.
+</li><li>If none are selected, nothing will happen.
+</li></ul></li></ul><p class="vspace">There are 2 buttons which are used next:
+</p><ul><li>Index in the forward direction, or
+</li><li>Index in the reverse direction.
+</li></ul><p class="vspace">The stop button noted above will stop this if needed.
+</p></td></tr><tr><td colspan="2" valign="top">
+<hr/>
+</td></tr></table>
+<h3 id="Connections"><span style="color: #00008b;"> Connections</span></h3>
+<p>For this, the spindles are connected to whichever jacks are assigned to Sp0 (the main spindle) and Sp1 (the rosette phaser/multiplier) on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program.  By default, these are channels 04 and 05, the right-hand pair of plugs on the Base Box.
+</p>
+<hr/>
+<h2 id="Synchronized-Usage"><span style="color: #00008b;"> Synchronized Usage</span></h2>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/StepperConnections-2.png" width="350px"/><br/><span class="caption"><strong><em>Stepper Motor Connections</em></strong></span></span></div>
+<p>If the spindle(s) need to have their movement synchronized with another axis (or axes), the spindle motors are not connected as above.  Instead, each is run as a rotary axis (either A, B, or C).
+</p>
+<p class="vspace">Using the configuration shown to the right, you can make threads (for example).  X would typically be unused, though the <a href="MainScreenThreading.html">threading</a> function uses it to move the cutter away from / into the piece.
+</p>
+<p class="vspace">This synchronized movement is performed via gCode, or from the main screen's <a href="MainScreenSynchronizedMovement.html">Sync Move</a> and <a href="MainScreenThreading.html">Threading</a> tabs.  For threads, use the <strong>Threading</strong> tab.  (LinuxCNC's own threading commands, G33 and G76, cannot be used on Rosetta - they expect the work to be turned by the Sp0 spindle, not by an axis such as C.)
+</p>
+<h3 id="Connections_"><span style="color: #00008b;"> Connections</span></h3>
+<p>For this, the spindles are connected to the jacks on the panel which are configured for use as rotary axes.
+</p>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

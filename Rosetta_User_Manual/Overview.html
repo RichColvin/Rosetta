@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Overview</span></p>
+  <h1>Overview</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Design-goals">Design goals</a></li><li class="toc-l0"><a href="#Rosetta-is-more-than-the-software-or-the-hardware">Rosetta is more than the software or the hardware</a></li><li class="toc-l0"><a href="#What-are-some-examples-of-how-it-can-be-used">What are some examples of how it can be used?</a></li><li class="toc-l0"><a href="#What-is-Rosetta-not-designed-to-do">What is Rosetta not designed to do?</a></li><li class="toc-l0"><a href="#Why-is-LinuxCNC-being-used">Why is LinuxCNC being used?</a></li><li class="toc-l0"><a href="#What-is-the-underlying-technology-being-used">What is the underlying technology being used?</a></li><li class="toc-l0"><a href="#Notes">Notes</a></li></ul></nav>
+  <div class="content">
+
+<p><strong>Rosetta</strong> was developed by ornamental turners for use with a rose engine.
+</p>
+<p class="vspace">It is designed to provide the ornamental turner a way for synchronizing activities on the rose engine using stepper motors, in a manner which also assists the ornamental turner with reducing the workload for onerous tasks.
+</p>
+<h1 id="Design-goals"><span style="color: #00008b;"> Design goals</span></h1>
+<p>We designed Rosetta to provide the ornamental turner with the ability to:
+</p><ol><li>Execute relatively simple movements using menu options.
+</li><li>Remove the mundane tasks from the ornamental turner’s activities, increasing the likelihood that the final product will have fewer errors.   An example is adding a turk’s head design onto the end of a piece, and skipping every 3<sup>rd</sup> index.
+</li><li>Implement more complex designs using standard gCode (such as software simulation of rosettes or a geometric chuck).
+</li></ol><p class="vspace">We designed Rosetta to be one which:
+</p><ol><li>Is powerful enough to 
+<ol style="list-style: lower-alpha;"><li> Drive simultaneous movement on up to 10 axes <sup><a href="#Note_01">①</a></sup>,<sup><a href="#Note_02">②</a></sup> (AKA, channels), each of which can be set to any of:
+<ul><li>2 spindles
+<ul><li>Traditional spindle (Sp0)
+</li><li>Rosette phaser/multiplier (Sp1)
+</li></ul></li><li>Linear axes: X, Z, U, V, or W
+</li><li>Rotary axes: A, B, or C 
+</li></ul></li><li> Handle inputs from up to 6 limit switches
+</li><li> Accommodate the use of an E-Stop button
+</li><li> Use a signal tower with 2 lights and a siren to help the user monitor long-running activities (and alert the user when things go awry).
+</li></ol></li><li>Can control complex movement using standard gCode.
+</li><li>Is integrated with the devices provided by ornamental turning vendors.
+</li><li>Can have the software upgraded easily by the user as new functionality becomes available.
+</li></ol><hr/>
+<h1 id="Rosetta-is-more-than-the-software-or-the-hardware"><span style="color: #00008b;"> Rosetta is more than the software or the hardware</span></h1>
+<p>The ornamental turner needs a system which is not just powerful, but which has a set of tools surrounding it to make it functionally easy to use. To that end, there are additional pieces which have been provided.
+</p>
+<p class="vspace"><strong>Designed with the ornamental turner in mind</strong>
+</p><div class="indent">The system configuration files are developed around the needs of an ornamental turner using a rose engine.  These functions are not typical for such control systems, but have been implemented on Rosetta.
+</div><p class="vspace"><strong>Online user manual</strong>
+</p><div class="indent">There is an on-line user manual which will be continually updated.
+</div><p class="vspace"><strong>And a user forum</strong>
+</p><div class="indent">There is an on-line user forum where users can share information.
+</div><p class="vspace"><strong>Based on Debian Linux, but easy to use</strong>
+</p><div class="img imgcaption"><span class="rfloat"> <img alt="" src="Images/Rosetta_7px.png" width="75px"/><br/><span class="caption"><strong><span class="pmS1">Turk’s head</span></strong></span></span></div>
+<div class="indent">Though it is based on Debian Linux, the user interface has been customized so that the usage of the system will be very intuitive (you only need to double click on the Turk's head icon on the desktop).  If you know how to use Linux, that's OK, but it is not required to use the system.
+</div><div class="indent"><strong>Note:</strong> The Rosetta emblem is a <em>Turk’s head</em> - a pattern cut with an eccentric cutting frame.  (See also,  <a class="online" href="https://otbok.info/index.php?n=Main.ECFOnFlatSurfaces" rel="noopener" target="_blank" title="Opens on the Internet">ECF on Flat Surfaces</a> in the  <a class="online" href="https://otbok.info" rel="noopener" target="_blank" title="Opens on the Internet">Ornamental Turning Book of Knowledge</a>.)
+</div><p class="vspace"><strong>Supports very complex work using gCode</strong>
+</p><div class="indent">Rosetta is an implementation of LinuxCNC, and thusly it allows for the use of standard gCode. The LinuxCNC gCode language is based on the U.S. National Institute of Standards and Technology’s  <a class="online" href="https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=823374" rel="noopener" target="_blank" title="Opens on the Internet">RS274/NGC</a> language, and is also outlined in the International Organization for Standardization’s standard,  <a class="online" href="https://www.iso.org/standard/34608.html" rel="noopener" target="_blank" title="Opens on the Internet">ISO 6983-1</a>.  You do not need to study those; instead there is a  <a class="online" href="https://linuxcnc.org/docs/html/gcode.html" rel="noopener" target="_blank" title="Opens on the Internet">gcode quick reference</a> to help you if you choose to go this path.
+</div><div class="indent">We are providing an online library for gCode programs developed by ornamental turners, allowing for re-use of the code by other ornamental turners. The intent is that the gCode will be documented in such a way that users can easily take a bit of gCode and modify it as needed for their own needs. This library will continue to grow over time.
+</div><p class="vspace"><strong>OT equipment vendor support</strong>
+</p><div class="indent">We are working with vendors of ornamental turning hardware to have their parts designed for use with Rosetta. For example, a curvilinear slide could come with a stepper motor attached, and also have the necessary jack to plug it into Rosetta.
+</div><div class="indent">We have also architected the configuration files so that updated files can be supplied by the vendors when they supply the hardware (e.g., a new definition for the Z axis could be supplied with the curvilinear slide, ensuring that the configuration works as expected).
+</div><p class="vspace"><strong>A system for now ... and the future</strong>
+</p><div class="indent">Rosetta’s software can be upgraded using an easy mouse click from the Applications menu. And unlike many annoying systems we had at work, this system will not constantly harass you to upgrade; and the upgrades will not take many hours to complete.
+</div><div class="indent">We selected vendors for all the components (especially the cabling) which show reliability for being around for a while, and supplying quality parts at reasonable prices.
+</div><p class="vspace"><strong>Buy it off-the-shelf</strong>
+</p><div class="indent">We want Rosetta to be one which can be purchased as a completed system, needing no user design nor development. Just plug it in and go.
+</div><div class="indent">And we are designing it so that you can expand as your needs grow.  The Expansion Box<sup><a href="#Note_02">②</a></sup> can be added later if you find the Base Box<sup><a href="#Note_01">①</a></sup> does not support enough axes of movement.
+</div><hr/>
+<h1 id="What-are-some-examples-of-how-it-can-be-used"><span style="color: #00008b;"> What are some examples of how it can be used?</span></h1>
+<p>Some examples of the way Rosetta can be used include:
+</p>
+<ul><li>Run the rose engine as a typical machine:
+<ul><li>Spindle by itself,
+</li><li>Rosette phaser/multiplier (RPM) by itself, or
+</li><li>Spindle and RPM together (which can be at different speeds).
+</li></ul></li><li>Index one of the axes of movement:
+<ul><li>Spindle by itself,
+</li><li>RPM by itself (i.e., phasing the rosette relative to the object, as would be done when using a <a class="online" href="https://otbok.info/index.php?n=Main.CrossingWheel" rel="noopener" target="_blank" title="Opens on the Internet">crossing wheel</a>),
+</li><li>Spindle and RPM together,
+</li><li>Any linear axis (X, Z, U, V, or W), or
+</li><li>Any rotary / angular axis (A, B, or C).
+</li></ul></li><li>Coordinate the movement of any of the axes, or make other complex movements possible, through the use of gCode (e.g., a software simulation of a geometric chuck).
+</li><li>Add threads to an object with many advanced options available but not required.
+</li><li>Using the <a href="RosetteDesigner.html">Rosette Designer</a>, the ornamental turner can use emulate the use of an actual, physical rosette to confirm the design imparted meets their artistic goals.  And then, the designed rosette can be exported for 3D printing or machining.
+</li></ul><hr/>
+<h1 id="What-is-Rosetta-not-designed-to-do"><span style="color: #00008b;"> What is Rosetta not designed to do?</span></h1>
+<p>Rosetta is not intended to be used to replace the ornamental turner. It is not a system built to enable the user to develop a complete design, load it into Rosetta, and then press <strong>GO</strong>.
+</p>
+<p class="vspace">We believe that workmanship at risk<sup><a href="#Note_03">③</a></sup> makes for the most beautiful products.
+</p>
+<p class="vspace">Certainly, a user could develop a sufficiently complex gCode program which would do all the work for the user, making it work similarly to what is done for 3D printing or a CNC woodworking router. But even that has risk in the ornamental turning world. Wood is a natural material, and the opportunity for a problem is ever present. An operator needs to be managing the process, not leaving it to a computer.
+</p>
+<p class="vspace">But more importantly, the process of ornamental turning should be fun. Rosetta is designed to help you with that journey.
+</p>
+<hr/>
+<h1 id="Why-is-LinuxCNC-being-used"><span style="color: #00008b;"> Why is LinuxCNC being used?</span></h1>
+<p>LinuxCNC ...
+</p>
+<ol><li>Can be configured to meet the design goals needed for use on a rose engine, without having to develop a set of programs which may be difficult to support later.
+</li><li>Is powerful enough to handle the design goals we established for Rosetta.
+</li><li>Has been around for many years, having been initially designed by the U.S. <a class="online" href="https://www.nist.gov/" rel="noopener" target="_blank" title="Opens on the Internet">National Institute of Standards and Technology</a> in 1993. It has a strong user community with good support. And it continues to be upgraded to provide support needed for new computing hardware.
+</li><li>Continues to support the same basic ideas and interfaces as it has for years, and it does not require the user to re-learn the system each time it is upgraded.
+</li><li>Runs on a very stable and powerful operating system (which also does not require relearning to use when upgraded).
+</li><li>Uses off-the-shelf, readily available parts.
+</li><li>Does not have a high license cost to get started, nor a high maintenance cost for continued use.
+</li></ol><p class="vspace">All this provides for a system which can meet the current needs at a reasonable cost, and provide for good long-term support.
+</p>
+<hr/>
+<h1 id="What-is-the-underlying-technology-being-used"><span style="color: #00008b;"> What is the underlying technology being used?</span></h1>
+<p>Rosetta uses:
+</p>
+<ol><li> <a class="online" href="https://en.wikipedia.org/wiki/LinuxCNC" rel="noopener" target="_blank" title="Opens on the Internet">LinuxCNC</a>, an  <a class="online" href="https://en.wikipedia.org/wiki/Open-source_software" rel="noopener" target="_blank" title="Opens on the Internet">open-source system</a> which runs on  <a class="online" href="https://www.debian.org/" rel="noopener" target="_blank" title="Opens on the Internet">Debian</a> <a class="online" href="https://en.wikipedia.org/wiki/Linux" rel="noopener" target="_blank" title="Opens on the Internet">Linux</a>.  
+<ul><li>Linux is an operating system which runs on general purpose computers like a PC or  <a class="online" href="https://en.wikipedia.org/wiki/Raspberry_Pi" rel="noopener" target="_blank" title="Opens on the Internet">Raspberry Pi</a>.
+</li></ul></li><li>A  <a class="online" href="https://www.raspberrypi.com/news/introducing-raspberry-pi-5/" rel="noopener" target="_blank" title="Opens on the Internet">Raspberry Pi 5</a>, which is a powerful, low cost, general-purpose computer.  The Raspberry Pi 5 has shown it is powerful enough for the computations needed to make LinuxCNC run smoothly.
+</li><li>Readily available, off-the-shelf parts:
+<ul><li> <a class="online" href="https://store.mesanet.com/index.php?route=product/product&amp;product_id=381" rel="noopener" target="_blank" title="Opens on the Internet">Mesa 7i92TH Programmable I/O Card</a>
+</li><li> <a class="online" href="https://www.omc-stepperonline.com/digital-stepper-driver-1-0-4-2a-20-50vdc-for-nema-17-23-24-stepper-motor-dm542t" rel="noopener" target="_blank" title="Opens on the Internet">Stepper Online DM542T Stepper Motor Drivers</a>
+</li><li>Standard computer monitor
+</li><li>Standard computer keyboard and mouse
+</li></ul></li><li>A custom printed circuit board (PCB), developed to make the wiring of the system easier, faster, and more reliable.
+</li></ol><hr/>
+<h1 id="Notes"><span style="color: #00008b;"> Notes</span></h1>
+<ol><li value="1"> <a id="Note_01"></a>The Base Box supports 
+<ul><li>6 channels (axes)
+</li><li>3 limit switches
+</li><li>1 E-stop button
+</li><li>a signal tower with two lights and a siren 
+</li></ul></li><li value="2"> <a id="Note_02"></a>The Expansion Box adds capabilities for 
+<ul><li>4 channels (axes)
+</li><li>3 limit switches
+</li></ul></li><li value="3"> <a id="Note_03"></a><em>Workmanship at risk</em> is an idea outlined by David Pye in his book, “The Nature and Art of Workmanship”.
+</li></ol>
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

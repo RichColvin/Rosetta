@@ -1,0 +1,67 @@
+%
+(N Pass - repeated Z stroke with X step-in per pass, time-based Z feed rate)
+(Assumes machine has already been homed via LinuxCNC before running)
+
+(---- ADJUSTABLE PARAMETERS ----)
+#<z_stroke>   = -2.2      (Z stroke length away from headstock, inches, length of cut)
+#<z_time>     = 4000       (time to complete each pass, seconds)
+#<sp0_rpm>    = 0.75      (spindle 0 speed, RPM)
+#<n_passes>   = 2        (number of times to repeat the stroke)
+#<x_backoff>  = 0.1      (X retract "away" for clearance before Z recycle, inches)
+#<x_step>     = 0.003     (X step "in" toward work after Z recycle completes, inches)
+#<x_feed>     = 2.0      (X feed rate for backoff/step moves, in/min)
+#<rtz>        = 1        (1 = rapid return to zero before starting and after each stroke)
+
+(---- DERIVED VALUES ----)
+#<z_feed>    = [ABS[#<z_stroke>] / #<z_time> * 60]   (Z feed rate, in/min, from stroke length and time)
+#<sp0_dwell> = [60 / #<sp0_rpm>]                      (seconds for one spindle revolution, from sp0_rpm)
+
+(LOGOPEN,/home/reuben/Documents/n_pass_debug.log)
+(LOG, at current values: z_stroke=#<z_stroke>, sp0_rpm=#<sp0_rpm>, z_time=#<z_time>, z_feed=#<z_feed>, n_passes=#<n_passes>, rtz=#<rtz>, x_backoff=#<x_backoff>, x_step=#<x_step>, x_feed=#<x_feed>, sp0_dwell=#<sp0_dwell>)
+(-------------------------------)
+
+G20             (inch units)
+G90             (absolute distance mode)
+G94             (feed per minute mode)
+G18             (XZ plane - lathe convention)
+G97             (spindle RPM mode, not constant surface speed)
+
+o302 if [#<rtz> EQ 1]
+  G0 Z0           (rapid return to zero before starting)
+o302 endif
+
+S#<sp0_rpm> M3  (start spindle 0 clockwise at set RPM)
+
+#<current_pass> = 0
+
+o301 repeat [#<n_passes>]
+
+  #<current_pass> = [#<current_pass> + 1]
+  (LOG, Pass #<current_pass> of #<n_passes>)
+
+  G4 P#<sp0_dwell>  (dwell for one full spindle revolution before starting the stroke)
+
+  G1 Z#<z_stroke> F#<z_feed>  (Z stroke out, timed to z_time)
+
+  G4 P#<sp0_dwell>  (dwell for one full spindle revolution before retracting/returning to zero)
+
+  o303 if [#<rtz> EQ 1]
+    G91                             (incremental for X backoff)
+    G1 X#<x_backoff> F#<x_feed>     (X: back off "away" for clearance before recycle)
+    G90                             (absolute mode for Z recycle)
+
+    G0 Z0                          (rapid return to zero)
+
+    o304 if [#<current_pass> LT #<n_passes>]
+      G91                             (incremental for X step-in)
+      G1 X-[#<x_backoff> + #<x_step>] F#<x_feed>       (X: undo backoff, then step cutter "in" toward work)
+      G90                             (back to absolute mode)
+    o304 endif
+  o303 endif
+
+o301 endrepeat
+
+M5              (stop spindle)
+(LOGCLOSE)
+M2              (end program)
+%

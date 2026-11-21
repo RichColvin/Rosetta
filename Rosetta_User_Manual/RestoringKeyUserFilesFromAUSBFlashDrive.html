@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restoring Key User Files from a USB Flash Drive – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Restoring Key User Files from a USB Flash Drive</span></p>
+  <h1>Restoring Key User Files from a USB Flash Drive</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Before-you-start">Before you start</a></li><li class="toc-l0"><a href="#Restoring-a-backup">Restoring a backup</a></li><li class="toc-l0"><a href="#After-the-restore-finishes-the-USB-flash-drive-is-ejected">After the restore finishes:  the USB flash drive is ejected</a></li><li class="toc-l0"><a href="#What-the-restore-does-not-change">What the restore does not change</a></li><li class="toc-l0"><a href="#A-backup-from-a-different-machine">A backup from a different machine</a></li></ul></nav>
+  <div class="content">
+
+<p class="vspace">The Restore from USB command copies a backup made by <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">Back Up to USB</a> from a USB flash drive back onto the Raspberry Pi.  Use it, for example, after the Raspberry Pi's memory card has been replaced, or to move your own files onto a new Rosetta system.
+</p>
+<p class="vspace">It puts back the same files Back Up to USB copies: your settings files, your gcode programs, your HAL additions and tool table, and your subroutines and user M-codes.  See <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html#WhatGetsCopied">What Gets Copied</a> for the full list.
+</p>
+<hr/>
+<h1 id="Before-you-start"><span style="color: #00008b;"> Before you start</span></h1>
+<ul><li><span style="color: red;">Do not run Restore from USB while LinuxCNC is running.</span>  LinuxCNC saves its settings as it closes, which would undo the restore.  Close LinuxCNC first.  (Rosetta Settings cannot be opened while LinuxCNC is running anyway, and Restore from USB checks again before it starts.)
+</li><li><span style="color: red;">Do not remove the USB flash drive while the restore is running.</span>  Wait until Rosetta says it is safe to remove it.
+</li></ul><p class="vspace"><strong>Note:</strong> Every file the restore replaces is first copied to the folder /home/reuben/Documents/Before_Restore, in a folder named with the date and time of the restore.  If you restore the wrong backup, your previous files are still there.
+</p>
+<hr/>
+<h1 id="Restoring-a-backup"><span style="color: #00008b;"> Restoring a backup</span></h1>
+<ol><li>Plug the USB flash drive that holds the backup into the Raspberry Pi.
+</li><li>Open the <a href="AxisSelection.html">Rosetta Settings</a> program.
+</li><li>Click on <strong>File</strong> at the top left corner of the Rosetta Settings window.
+</li><li>Click on <strong>Restore from USB...</strong>  The Restore from USB window opens.
+</li><li>Under <strong>USB stick</strong>, pick the USB flash drive (if more than one is plugged in).
+</li><li>Under <strong>Backup</strong>, pick the backup to restore.  Each backup is listed by the date and time it was made, newest first.  The window shows how many files of each kind the backup holds.
+</li><li>Click <strong>Restore</strong>.  A box lists what will be replaced.  Click <strong>Restore</strong> again to go ahead, or <strong>Cancel</strong> to stop.
+</li><li>Wait for the <strong>Restore complete</strong> box, then click <strong>OK</strong>.  The USB flash drive is ejected for you, so it can be removed (see <a href="#AfterRestore">After the restore finishes</a> below).
+</li><li>Rosetta Settings closes by itself.  Open it again to see the restored settings.
+</li></ol><p class="vspace"><strong>Note:</strong> Rosetta Settings closes after a restore so that it cannot save the settings it was showing over the ones just restored.  If you have changed any Scale, speed, acceleration or PID values without saving them, Restore from USB asks first whether to save them.
+</p>
+<p class="vspace"><a id="AfterRestore"></a>
+</p><hr/>
+<h1 id="After-the-restore-finishes-the-USB-flash-drive-is-ejected"><span style="color: #00008b;"> After the restore finishes:  the USB flash drive is ejected</span></h1>
+<p>When the restore finishes, Rosetta <strong>ejects</strong> the USB flash drive.  Ejecting means the Raspberry Pi has finished with the flash drive and has disconnected from it, so that it is safe to pull out.  The flash drive is still plugged in, but the Raspberry Pi can no longer use it:  it no longer shows in the File Manager, or in the Back Up to USB or Restore from USB windows.
+</p>
+<ul><li><span style="color: red;">Do not pull the USB flash drive out while the restore is running.</span>  Wait until Rosetta says <strong>It is now safe to remove the USB stick.</strong>
+</li></ul><p class="vspace">To use the USB flash drive again - for example, to make another backup, to restore a backup, or to copy a gcode program from it - you have to take it out and put it back in:
+</p><ol><li>Pull the USB flash drive out of the Raspberry Pi.
+</li><li>Wait about 5 seconds.
+</li><li>Plug the USB flash drive back into the Raspberry Pi.
+</li><li>Wait a few seconds for the Raspberry Pi to find it.  A File Manager window may open showing what is on the flash drive; you can close that window.
+</li></ol><p class="vspace">The USB flash drive can now be used again.
+</p>
+<p class="vspace"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
+</p>
+<hr/>
+<h1 id="What-the-restore-does-not-change"><span style="color: #00008b;"> What the restore does not change</span></h1>
+<ul><li>Files on the Raspberry Pi that are not in the backup are left as they are.  For example, a gcode program you saved after the backup was made is kept.
+</li><li>Backups made before Rose Engine Butler was renamed Rosetta (in a folder named REB_Backup on the USB flash drive) can be restored too.  Their old file names are changed to the new ones as they are copied.
+</li></ul><hr/>
+<h1 id="A-backup-from-a-different-machine"><span style="color: #00008b;"> A backup from a different machine</span></h1>
+<p>If the backup's axis selection (which axis uses each plug) or expansion box setting is different from this machine's, the Restore from USB window says so in red, listing each difference - for example, <strong>Channel 04: C here, B in the backup.</strong>
+</p>
+<ul><li><span style="color: red;">Do not restore a backup from a machine set up differently unless you mean to.</span>  The restore copies that machine's axis selection along with its other settings.  After restoring, check the <a href="AxisSelection.html">Axis Selection</a> tab in Rosetta Settings, and change it to match how this machine's motors are plugged in, before you start LinuxCNC.
+</li></ul>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

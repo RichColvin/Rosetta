@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cabling Stepper Motors to Rosetta – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Cabling Stepper Motors to Rosetta</span></p>
+  <h1>Cabling Stepper Motors to Rosetta</h1>
+  
+  <div class="content">
+
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/GX16-4.png" width="130px"/><br/><span class="caption"><strong><em>GX-16/4 Plug</em></strong></span></span></div>
+<h1 id="Cable-Connector"><span style="color: #00008b;"> Cable Connector</span></h1>
+<p>The connector used to attach a stepper motor to the Rosetta system is a GX-16/4 female plug.  This plug is sometimes called an <em>aviation connector</em>.
+</p>
+<h1 id="Cable-Sizing"><span style="color: #00008b;"> Cable Sizing</span></h1>
+<p>The cable between the Rosetta system and your stepper motor should:
+</p><ul><li>Have 4 conductors within the cable
+</li><li>Be stranded - this is more flexible than solid wire
+</li><li>Be 20 AWG (gauge) - This will ensure the wire can easily handle the amperage for the NEMA 23 stepper motors, and is easily soldered to the GX-12 connector
+</li><li>Be shielded, with the shield connected to ground at the Rosetta box end only - this will help isolate the signal from noise which could be encountered in adjacent cables (e.g., for stepper motors) 
+</li></ul><h1 id="Wiring-the-Motors"><span style="color: #00008b;"> Wiring the Motors</span></h1>
+<table style="width: calc(100% - 30px); margin-left: 15px; margin-bottom: 24px; border-collapse: collapse; "><tr><td rowspan="2" style="width: 65px; background-color: #00416a; text-align: center; vertical-align: bottom; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> <strong>GX-16 Pin</strong></span>
+</p></td><td colspan="2" style="background-color: #00416a; text-align: center; vertical-align: bottom; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> <strong>Stepper Motor</strong></span>
+</p></td><td rowspan="2" style="background-color: #00416a; text-align: center; vertical-align: bottom; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> <strong>Comments</strong></span>
+</p></td></tr><tr><td style="width: 85px; background-color: #00416a; text-align: center; vertical-align: bottom; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> <strong>Stepper Online Wire Color</strong></span>
+</p></td><td style="width: 65px; background-color: #00416a; text-align: center; vertical-align: bottom; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> <strong>Purpose</strong></span>
+</p></td></tr><tr><td style="text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>1</strong>
+</p></td><td style="background-color: black; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> Black</span>
+</p></td><td style="text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>A+
+</p></td><td rowspan="4" style="text-align: left; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>If the motor is driving the operation in the wrong direction, the recommended solution is to reverse the polarity of the <a href="AxisAndStepperMotorTuning.html">Scale</a> (i.e., make a positive number into a negative number, or vice versa).
+</p>
+<p class="vspace">You could also swap the A+ and A- wires, but that is not recommended.
+</p></td></tr><tr><td style="background-color: #90ee90; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>2</strong>
+</p></td><td style="background-color: green; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> Green</span>
+</p></td><td style="background-color: #90ee90; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>A-
+</p></td></tr><tr><td style="background-color: #ff9999; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>3</strong>
+</p></td><td style="background-color: red; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> Red</span>
+</p></td><td style="background-color: #ff9999; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>B+
+</p></td></tr><tr><td style="background-color: #add8e6; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>4</strong>
+</p></td><td style="background-color: blue; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p><span style="color: white;"> Blue</span>
+</p></td><td style="background-color: #add8e6; text-align: center; vertical-align: middle; border-style: solid; border-color: black; border-width: thin; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>B-
+</p></td></tr></table>
+
+<table border="0" width="100%"><tr><td valign="top">  
+</td></tr></table>
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

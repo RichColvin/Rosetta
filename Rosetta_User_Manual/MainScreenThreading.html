@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Threading – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Threading</span></p>
+  <h1>Threading</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#Threading-Tab">Threading Tab</a></li><li class="toc-l1"><a href="#Data-Entry">Data Entry</a></li><li class="toc-l1"><a href="#Cut-the-Threads">Cut the Threads</a></li><li class="toc-l1"><a href="#After-Cutting-the-Threads">After Cutting the Threads</a></li></ul></nav>
+  <div class="content">
+
+<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
+</td></tr><tr><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #E5A50A;">Yellow</span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">X</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">U</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">A</span></strong></span>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xpos.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Aneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Apos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #A51D2D;">Red</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">V</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">B</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Yneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Ypos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #1A5FB4;">Blue</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">Z</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">W</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">C</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zpos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> Black
+</td><td colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <strong>Spindles</strong> <br class="clearboth"/>(Sp0 &amp; Sp1)
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindleneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindlepos.png" width="100%"/>
+</td></tr></table>
+<p>On this page, the axis letters are colored to assist the user.  (Note: LinuxCNC does not allow for a Y axis when running as a lathe.)
+</p>
+<p class="vspace">Every axis has a row of controls on the user screens, but only the <a href="AxisSelection.html">axes selected for use</a> can be operated - the others are grayed out.  For example, in the screen shown below, the user has selected to use the X, Z, U, V, W, and C axes, so the A and B rows are grayed out.
+</p>
+<p class="vspace">The table at the bottom of the user screen titled, <span style="color: #00008b;"> Axis Assignments</span>, shows the current axis assignments.  It is updated the next time Rosetta is started after the selected axes are changed.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Threading-Tab"><span style="color: #00008b;"> Threading Tab</span></h1>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta-Threading.png" width="300px"/></span></div>
+<p>The <strong>Threading</strong> tab is used to cut threads with any number of starts.
+</p>
+<p class="vspace">This uses a Rosetta threading routine which cuts the same passes as LinuxCNC's G76 threading cycle.  (G76 itself cannot be used on Rosetta, because it expects the work to be turned by the Sp0 spindle, and here it is turned by the C axis.)  It uses a multi-pass approach: the first pass cuts to the <strong>First cut depth</strong>, and each following pass goes that much deeper again, until the <strong>Final depth</strong> is reached.  With more than one start, each start is cut to full depth before C turns to the next start.  
+</p>
+<p class="vspace">You can also set the number of spring passes.  These are passes at full depth made after the thread has been fully cut, and are used to smooth out the cuts.
+</p>
+<p class="vspace">You can also notice in this screen that I have reconfigured the spindle to be the C axis.  Sp0 cannot be used for this operation.
+</p>
+<p class="vspace">The axes used are: X, Z, &amp; C.  The cutter is driven by a drilling spindle.
+</p>
+<h2 id="Data-Entry"><span style="color: #00008b;"> Data Entry</span></h2>
+<table border="1" width="100%"><tr><td style="width: 150px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Field</span>
+</td><td style="background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Data Description</span>
+</td><td style="width: 30px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Value Saved?</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Starts
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Select the number of starts you wish to use. 1 is typical, but it can be any integer value (though I wouldn't go too high). 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> TPI
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Select the number of starts you wish to use. 1 is typical, but it can be any integer value (though I wouldn't go too high). 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Thread Length
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Enter the thread length. This is the distance you want threads to be placed onto the piece. 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Thread Angle
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Enter the thread cutter’s angle. This is only used to calculate the maximum thread depth. 60° cutters are most commonly used, but 90° and even 120° cutters are also seen. 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Handedness
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Select if the threads are right handed (standard) or left handed.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Inside or Outside Threads
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Select if you are cutting the threads on the inside of a piece, or the outside. This determines how the cutter is pulled away from the piece between passes. 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Direction
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Select the direction of the cutting: left to right, or right to left.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Clearance Distance
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Set the clearance distance. This is how much the cutter is placed away from the piece before starting, and is used for pulling the cutter away from the piece when re-positioning it. 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> 1st Cut Depth
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Set the first cut depth. This should be driven by the material’s hardness. 
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Final Cut Depth
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Set the final cut depth. The maximum this can be is calculated based on the cutter’s thread angle.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px; color: #00008b; font-weight: bold;" valign="top"> Spring Passes
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Set the number of spring passes. These are passes made using the cutter at full cutter depth, and are used to clean up any cutting from the final cut depth pass. It is generally recommended that this not be too high as it can also damage the threads already made.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr></table>
+<p class="vspace">As you complete these entries, you will see a message just above the buttons at the bottom which identifies the total number of passes which will be made.
+</p>
+<h2 id="Cut-the-Threads"><span style="color: #00008b;"> Cut the Threads</span></h2>
+<p>For this operation,
+</p><ul><li><strong>C</strong> is used to rotate the piece being threaded (AKA, the spindle)
+</li><li><strong>Z</strong> moves the cutter through the cutting cycle
+</li><li><strong>X</strong> moves the cutter into / away from the cutting
+</li></ul><p class="vspace">The steps are:
+</p>
+<table border="1" width="100%"><tr><td style="width: 20px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Step</span>
+</td><td style="background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Action</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 1
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Ensure the Z axis moves in a way that is parallel to the spindle’s axis of rotation.
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 2
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Install a thread cutter into the cutter holder (usually a drilling spindle), and ensure it is running in the correct direction.
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 3
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Position the cutter at the start of the cut (Z axis).
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 4
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Ensure the cutter is the distance away from the piece noted in the <strong>Clearance</strong> value (X axis).
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 5
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> ENAble the X, Z, and C axes.
+<p class="vspace">If any of them is not enabled when you click <strong>Cut Thread</strong>, Rosetta asks whether to enable it (see <a href="REBUserScreen.html#ENA">ENA</a>).
+</p></td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 6
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> Once you click <strong>Cut Thread</strong>, everything will happen automagically.
+<p class="vspace">As the cuts are being made, a message will appear below these buttons which indicates which pass is being performed.  Also, the image on the Preview screen will indicate what is happening.
+</p></td></tr></table>
+<h2 id="After-Cutting-the-Threads"><span style="color: #00008b;"> After Cutting the Threads</span></h2>
+<p>You can click <strong>Return to Start</strong> if you want to reposition the cutter back to the beginning.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

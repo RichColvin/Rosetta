@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indexing – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Indexing</span></p>
+  <h1>Indexing</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#Indexing-Tab">Indexing Tab</a></li><li class="toc-l1"><a href="#Counter">Counter</a></li><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Linear-Axes">Linear Axes</a></li><li class="toc-l1"><a href="#Angular-Rotary-Axes">Angular (Rotary) Axes</a></li></ul></nav>
+  <div class="content">
+
+<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
+</td></tr><tr><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #E5A50A;">Yellow</span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">X</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">U</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">A</span></strong></span>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xpos.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Aneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Apos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #A51D2D;">Red</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">V</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">B</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Yneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Ypos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #1A5FB4;">Blue</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">Z</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">W</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">C</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zpos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> Black
+</td><td colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <strong>Spindles</strong> <br class="clearboth"/>(Sp0 &amp; Sp1)
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindleneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindlepos.png" width="100%"/>
+</td></tr></table>
+<p>On this page, the axis letters are colored to assist the user.  (Note: LinuxCNC does not allow for a Y axis when running as a lathe.)
+</p>
+<p class="vspace">Every axis has a row of controls on the user screens, but only the <a href="AxisSelection.html">axes selected for use</a> can be operated - the others are grayed out.  For example, in the screen shown below, the user has selected to use the X, Z, U, V, W, and C axes, so the A and B rows are grayed out.
+</p>
+<p class="vspace">The table at the bottom of the user screen titled, <span style="color: #00008b;"> Axis Assignments</span>, shows the current axis assignments.  It is updated the next time Rosetta is started after the selected axes are changed.
+</p>
+
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Indexing-Tab"><span style="color: #00008b;"> Indexing Tab</span></h1>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta-Indexing.png" width="300px"/></span></div>
+<p>The <strong>Indexing</strong> tab is used to drive motors on the selected axis, one at a time.
+</p>
+<p class="vspace">The buttons to the right initiate the indexing operation in either the reverse (- movement) or forward (+ movement) direction.
+</p>
+<p class="vspace">Images on the buttons show the movement direction.
+</p>
+<p class="vspace">To index an axis, follow these steps:
+</p>
+<table border="1" width="100%"><tr><td style="width: 20px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Step</span>
+</td><td style="background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Action</span>
+</td><td style="width: 30px; background-color: #00008b; vertical-align: bottom; text-align: center;" valign="top"> <span style="color: white;"> Value Saved?</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 1
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The axis must be ENAbled.
+<p class="vspace">The ENAble status for an axis is not saved when exiting Rosetta.  It will always default to not enabled.
+</p>
+<p class="vspace">If it is not enabled when you index, Rosetta asks whether to enable it (see <a href="REBUserScreen.html#ENA">ENA</a>).
+</p></td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: red;">No</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 2
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The feed rate for the axis must be a non-zero number.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 3
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> The distance to move the axis must be a non-zero number.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: green;">Yes</span>
+</td></tr><tr><td style="vertical-align: top; text-align: center;" valign="top"> 4
+</td><td style="vertical-align: top; text-align: left; padding-left: 5px; padding-right: 5px;" valign="top"> To initiate the movement, click on the button showing the direction for the desired movement.
+</td><td style="vertical-align: top; text-align: center;" valign="top"> <span style="color: red;">No</span>
+</td></tr></table>
+<h2 id="Counter"><span style="color: #00008b;"> Counter</span></h2>
+<p>There is a counter for the number of indexing operations which have been performed.  This count is shown as the number to the left of the indexing <strong>Distance</strong>.
+</p>
+<ul><li>It is incremented by 1 for each Fwd indexing operation.
+</li><li>It is decremented by 1 for each Rev indexing operation.
+</li><li>The count starts at 0 when Rosetta is started.  (<em>It is not saved when you exit and then re-start Rosetta.</em>)
+</li><li>If the indexing <strong>Distance</strong> is changed, it reverts to 0.  (T<em>he assumption is that you are starting a different activity.</em>)
+</li><li>You can set it back to 0 yourself by double-clicking on the number (<em>double-clicking is implemented so you do not accidentally reset it</em>).
+</li></ul><h2 id="Spindles"><span style="color: #00008b;"> Spindles</span></h2>
+<p>For the spindles, this can be in either degrees or divisions of a circle.
+</p>
+<p class="vspace">Additionally, you can choose to index:
+</p><ul><li>the main spindle (Sp0),
+</li><li>the rosette phaser multiplier (Sp1), or
+</li><li>both
+</li></ul><p class="vspace">If neither is selected, nothing happens.
+</p>
+<p class="vspace"><strong>A spindle index always turns in the direction of the button you click</strong>, for the full distance, even when going the other way round would be shorter.  For example, a Fwd index of 270 degrees turns the spindle 270 degrees forward; it does not turn it 90 degrees in reverse.  An index of 180 degrees (2 divisions) also turns the same way every time.
+</p>
+<p class="vspace">The reason is backlash - the small amount of free play in the gears or belt between the motor and the spindle.  Each time the spindle changes direction, the motor has to take up that play before the spindle starts to move, so an index which reversed would stop short by the amount of backlash.  Turning the same way for every index keeps the index positions evenly spaced.
+</p>
+<ul><li><span style="color: red;">Do not mix Fwd and Rev indexes while you are working around a pattern.</span>  Click the same direction button for every index of the pattern, so the backlash is always taken up the same way.
+</li><li><span style="color: red;">Do not back up one index with a single click of the other direction button.</span>  The spindle would stop short by the amount of backlash.  If you go one index too far, click the other direction button <strong>twice</strong>, then click the original direction button <strong>once</strong> - the spindle then arrives at the position from the usual direction.
+</li></ul><p class="vspace"><strong>Note:</strong> Each index is measured from where the previous index was meant to stop, not from where the spindle actually stopped, so the tiny differences in where it stops do not add up as you work around the circle.  For example, 24 divisions done all the way round end back where they started.  After the spindle has been run (not indexed), the next index starts from wherever the spindle is.
+</p>
+<h2 id="Linear-Axes"><span style="color: #00008b;"> Linear Axes</span></h2>
+<p>For linear axes, this is a distance.  The UOM shown for these axes, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
+</p>
+<h2 id="Angular-Rotary-Axes"><span style="color: #00008b;"> Angular (Rotary) Axes</span></h2>
+<p>For the angular axes (A, B, and C), this is a rotary indexing, in degrees or divisions of a circle.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

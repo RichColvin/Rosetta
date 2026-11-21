@@ -57,6 +57,9 @@
 #         submenu and the bottom bar (Rosetta_Add_Shut_Down.sh).
 #   2.3 - 17 November 2026 - Step 14: adds the Geometric Chuck Designer
 #         to the Applications menu (Rosetta_Add_GeoChuck_Designer.sh).
+#   2.4 - 21 November 2026 - Step 15: adds the offline User Manual and
+#         Gcode Library icons to the desktop and the Applications menu
+#         (Rosetta_Add_Manuals.sh).
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -352,6 +355,13 @@ echo -e "${TITLE}                                                               
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_GeoChuck_Designer.sh
+
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Step 15 - Add the User Manual and Gcode Library icons                  ${NOCOLOR}"
+echo -e "${TITLE}                                                                       ${NOCOLOR}"
+# Machines installed before this step get it from
+# Rosetta_Update_Settings.py on their next update.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Manuals.sh
 
 # ********************************************************************
 # Success

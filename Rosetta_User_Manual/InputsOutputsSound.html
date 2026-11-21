@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inputs, Outputs, and Sounds – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Inputs, Outputs, and Sounds</span></p>
+  <h1>Inputs, Outputs, and Sounds</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Limit-Switches">Limit Switches</a></li><li class="toc-l1"><a href="#Assign-a-Limit-Switch-to-an-Axis">Assign a Limit Switch to an Axis</a></li><li class="toc-l1"><a href="#Limit-Switch-Types">Limit Switch Types</a></li><li class="toc-l1"><a href="#Switch-Configuration">Switch Configuration</a></li><li class="toc-l1"><a href="#Pause-Button">Pause Button</a></li><li class="toc-l0"><a href="#E-Stop-Button">E-Stop Button</a></li><li class="toc-l0"><a href="#Signal-Tower">Signal Tower</a></li><li class="toc-l0"><a href="#Sounds_">Sounds</a></li><li class="toc-l0"><a href="#Phone-Alerts">Phone Alerts</a></li><li class="toc-l1"><a href="#Setting-Up-Phone-Alerts">Setting Up Phone Alerts</a></li><li class="toc-l1"><a href="#What-Is-Sent">What Is Sent</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
+  <div class="content">
+
+<p><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
+</p>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-InputsOutputsSounds-Expansion.png" width="300px"/><br/><span class="caption"><strong><em>Inputs, Outputs, and Sounds</em></strong></span></span></div>
+<hr/>
+<p><a id="LimitSwitches"></a>
+</p><h1 id="Limit-Switches"><span style="color: #00008b;"> Limit Switches</span></h1>
+<p>When a limit switch is tripped, LinuxCNC turns the machine off.  
+</p>
+<h2 id="Assign-a-Limit-Switch-to-an-Axis"><span style="color: #00008b;"> Assign a Limit Switch to an Axis</span></h2>
+<p>To use a limit switch, you need to assign it to an axis.  Rosetta is configured to accommodate 6 limit switches: 
+</p><ul><li>Limit Jacks 1 - 3 are on the Base Box, and 
+</li><li>Limit Jacks 4 - 6 are on the optional Expansion Box.  These can only be used when the Expansion Box is ticked as <strong>Connected</strong> on the <a href="AxisSelection.html#ExpansionBox">Axis Selection</a> tab.  Otherwise they are greyed out; they keep their setting, ready for when the Expansion Box is connected.
+</li></ul><p class="vspace">Each Limit Jack only lists the axes which are assigned to a channel.
+</p>
+<p class="vspace">By default, all limit jacks are not enabled.
+</p>
+<h2 id="Limit-Switch-Types"><span style="color: #00008b;"> Limit Switch Types</span></h2>
+<p>The limit switches default to normally closed (NC), but the user can change them to be normally open (NO).  Normally closed is strongly recommended - see  <a class="online" href="https://otbok.info/index.php?n=Main.LimitSwitch#NCvsNO" rel="noopener" target="_blank" title="Opens on the Internet">Limit Switch</a> in the Ornamental Turning Book of Knowledge for why, and for more on wiring and placing limit switches.
+</p>
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>NC</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The axis to which a limit switch is assigned will be in a limit mode until
+</p><ol><li>a switch is connected to the system, and
+</li><li>that switch is not triggered.
+</li></ol></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>NO</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The axis to which a limit switch is assigned will <ins>not</ins> be in a limit mode until
+</p><ol><li>a switch is connected to the system, and
+</li><li>that switch is triggered.
+</li></ol><p class="vspace"><ins><strong>Note</strong></ins>: The axis to which a limit switch is assigned will <ins>not</ins> be in a limit mode if there is a break in the wire.  Thusly, you should test to ensure it works before expecting it to (and find out it does not).
+</p></td></tr></table>
+<h2 id="Switch-Configuration"><span style="color: #00008b;"> Switch Configuration</span></h2>
+<p>Limit switches can be configured these ways.
+</p>
+
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Both ends</strong>
+<p><br class="clearboth"/>(for a selected axis)
+</p></td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>This will enable the user to connect two or more switches for the same axis, and either switch can trigger a limit.
+</p><ul><li>For NC connections, the switches would be wired in series, and if any of those breaks the circuit, the limit is triggered for that axis.
+</li><li>For NO connections, the switches would be wired in parallel, and if any of those closes the circuit, the limit is triggered for that axis.
+</li></ul><p class="vspace">With this configuration, when an axis’ limit switch is triggered, LinuxCNC can't tell which end was triggered.  Thusly, you will need to power the machine back on (F2), then check <strong>Override Limits</strong> (in LinuxCNC's Machine menu) to jog movement on this axis to disengage the switch.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Min</strong> end
+<p><br class="clearboth"/>(for a selected axis)
+</p></td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p><strong>Min</strong> end (for a selected axis):  This will trigger a limit when movement hits the minimum movement.  By convention, this is in the negative side of movement.  For example, on the Z axis, this would be on the left side.
+</p>
+<p class="vspace">With this configuration, when an axis’ limit switch is triggered, LinuxCNC will allow you to power the machine back on (F2), then jog movement on this axis away from the limit switch position (e.g., in the positive direction).
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Max</strong> end
+<p><br class="clearboth"/>(for a selected axis)
+</p></td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p><strong>Max</strong> end (for a selected axis):  This will trigger a limit when movement hits the maximum movement.  By convention, this is in the positive side of movement.  For example, on the Z axis, this would be on the right side.
+</p>
+<p class="vspace">With this configuration, when an axis’ limit switch is triggered, LinuxCNC will allow you to power the machine back on (F2), then jog movement on this axis away from the limit switch position (e.g., in the negative direction).
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Pause button</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>For any jack used for the <a href="#PauseButton">Pause button</a> instead of a limit switch.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Not used</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>For any jack with nothing plugged into it.  For NC connections, this is critical if no switch it is to be used.  Otherwise, there will be an open circuit and a limit will be triggered for that axis.
+</p></td></tr></table>
+<p class="vspace">For any axis, the limit switches can be configured for that axis with:
+</p><ol><li>One <strong>both ends</strong> jack, or
+</li><li>One <strong>min</strong> jack, or
+</li><li>One <strong>max</strong> jack, or
+</li><li>One <strong>min</strong> and one <strong>max</strong> jack, and
+</li><li>One <strong>pause button</strong>
+</li></ol><p class="vspace"><strong><ins>Notes</ins>:</strong>
+</p><ol><li>Spindles using the Sp0 or Sp1 connections cannot have limit switches assigned to them.
+</li><li>Cabling for the <a href="LimitSwitchCabling.html">limit switches</a>.
+</li></ol><p class="vspace"><a id="PauseButton"></a>
+</p><h2 id="Pause-Button"><span style="color: #00008b;"> Pause Button</span></h2>
+<p>Instead of a limit switch, one limit jack may be used as a <strong>Pause button</strong> (i.e., a push button you can reach quickly at the machine).  To use a pause button, set the jack you wish to use to <strong>Pause button</strong>.  
+</p>
+<p class="vspace">Only one jack can be the Pause button; choosing it on a second jack is flagged as <strong>Duplicate!</strong> and is not saved until it is corrected.
+</p>
+<p class="vspace">Pressing the Pause button pauses:
+</p><ul><li>a <strong>Sync Move</strong> - carry on with <strong>Continue</strong> on the main screen, or use <strong>Return to Start</strong> (see <a href="MainScreenSynchronizedMovement.html#Pause">Pausing a Sync Move</a>), or
+</li><li>a <strong>G-code program</strong> - carry on with LinuxCNC's <strong>Resume</strong> button, or with <strong>Continue</strong> on the main screen's <strong>Sync Move</strong> tab.
+</li></ul><p class="vspace">The Pause button only pauses.  Pressing it again does not resume the operation:  that is always done using a button on the screen.  It does not pause <strong>Cut Thread</strong> or indexing. 
+</p>
+<p class="vspace">Using the pause button does not drive a fault: there is no red light or siren as there is with the use of an E-stop.
+</p>
+<p class="vspace">The Pause button uses the same <strong>Limit Switch Type</strong> as the limit switches:
+</p><ul><li>with <strong>NC</strong> (normally closed), use a normally closed push button.
+</li><li>with <strong>NO</strong> (normally open), use a normally open push button.
+</li></ul><p class="vspace"><span style="color: red;"><strong>Do not plug in a push button of the other type.</strong></span>  It would read as pressed all the time.
+</p>
+<p class="vspace">The pause button is engaged:
+</p><ul><li>When the button reads as pressed
+</li><li>When the circuit is configured as NC and:
+<ul><li>a NO button is plugged into the circuit, or
+</li><li>there is a broken wire
+</li></ul></li><li>When the circuit is configured as NO and:
+<ul><li>a NC button is plugged into the circuit
+</li></ul></li></ul><p class="vspace">When a pause button is engaged, <strong>Sync Move</strong> and LinuxCNC's <strong>Run</strong> will not start.  The system will note that the Pause button is pressed or disconnected.
+</p>
+<p class="vspace"><strong><ins>Notes</ins>:</strong>
+</p><ol><li>The Pause button is wired like a limit switch - see <a href="LimitSwitchCabling.html">Limit Switch Cabling</a>.
+</li></ol><hr/>
+<p><a id="EStopButton"></a>
+</p><h1 id="E-Stop-Button"><span style="color: #00008b;"> E-Stop Button</span></h1>
+<p>For the E-Stop button, this is either set as connected, or not.  The E-Stop button plugs into the Base Box.
+</p>
+<p class="vspace">The E-Stop button is defined as a normally closed (NC) circuit, so once the circuit encounters a break (i.e., when the E-Stop button is engaged), the system will move to an Emergency Stop status.  
+</p>
+<p class="vspace"><strong><ins>Key Note</ins>:</strong>  As this is a normally closed circuit, once the use of an E-Stop button is enabled, the system cannot be taken out of Emergency Stop until 
+</p><ol><li>a button is attached to the system and 
+</li><li>it is in a disengaged state.
+</li></ol><p class="vspace"><strong><ins>Note</ins>:</strong>
+</p><ol><li>Cabling for the <a href="E-StopCabling.html">E-Stop button</a>
+</li><li>Usage instructions for the <a href="E-Stop.html">E-Stop button</a>
+</li><li>The E-Stop button cannot be setup to be normally open.
+</li></ol><hr/>
+<p><a id="SignalTower"></a>
+</p><h1 id="Signal-Tower"><span style="color: #00008b;"> Signal Tower</span></h1>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/SignalTower.png" width="100px"/></span></div>
+<p>The signal tower plugs into the Base Box.  It is setup in Rosetta to have 3 outputs:
+</p>
+
+<table border="0"><tr><td style="text-align: center;" valign="top"> <img alt="" src="Images/SignalTower-RedLight.png" width="40px"/>
+</td><td valign="top"> <span style="color: red;"><strong><span class="pmL1">RED LIGHT</span></strong>:</span> A signal which lights a red light when:
+<ul><li>A following error is encountered on any active axis.  The red light stays lit until the machine is turned back on (F2).
+</li><li>A limit switch is tripped on any in-use limit jack.  The red light stays lit until the limit switch is no longer tripped.
+</li><li>The Base Box or Expansion Box loses contact with the Raspberry Pi (see <a href="E-Stop.html#LostContact">Lost contact</a>).
+</li></ul><p class="vspace">It does not light for:
+</p><ul><li>E-stop - pressing the E-Stop button or F1
+</li><li>Program problems:
+<ul><li>Gcode errors
+</li><li>Programs which are stopped or aborted
+</li></ul></li><li>Normal Machine off - turning the machine off (F2)
+</li></ul></td></tr><tr><td style="text-align: center;" valign="top"> <img alt="" src="Images/SignalTower-GreenLight.png" width="40px"/>
+</td><td valign="top"> <span style="color: green;"><strong><span class="pmL1">GREEN LIGHT</span></strong>:</span> A signal which lights a green light to indicate that the system is running an operation:
+<ul><li>Running one of the defined operations in the operator panel
+</li><li>Running a Gcode command
+</li><li>Running an MDI command
+</li><li>While a running program is paused
+</li></ul><p class="vspace">It does not light for:
+</p><ul><li>Jogging
+</li><li>When the system is idle
+</li><li>When the system has finished an operation (or the operation was aborted)
+</li><li>When the machine is in either Emergency Stop status, or is in a Powered Off status
+</li></ul></td></tr><tr><td style="text-align: center;" valign="top"> <img alt="" src="Images/SignalTower-Siren.png" width="60px"/>
+</td><td valign="top"> <span style="color: red;"><strong><span class="pmL1">BUZZER</span></strong>:</span> A buzzer is set to sound for certain situations.  Those are outlined below in <a href="Sounds.html">sounds</a>.
+</td></tr></table>
+<p class="vspace"><strong><ins>Note</ins>:</strong>
+</p><ol><li>Cabling for the <a href="SignalTowerCabling.html">signal tower</a>.
+</li></ol><hr/>
+<p><a id="Sounds"></a>
+</p><h1 id="Sounds_"><span style="color: #00008b;"> Sounds</span></h1>
+<p>Most sounds are available to heard on either of two output devices, or both:
+</p><ul><li>Signal tower’s siren,
+</li><li>Monitor’s speaker (via HDMI), or
+</li><li>Both
+</li></ul><p class="vspace">There is one sound which cannot be played on the signal tower’s siren:  that is the one alerting the user that a <a href="RunningGcodePrograms.html#Naming-Your-Gcode-Programs">reserved name</a> has been used for a gcode program in the gcode directory.  That is because this error is identified and sounded before LinuxCNC is started.
+</p>
+<p class="vspace"><a href="Sounds.html">More information about sounds</a>.
+</p>
+<hr/>
+<p><a id="PhoneAlerts"></a>
+</p><h1 id="Phone-Alerts"><span style="color: #00008b;"> Phone Alerts</span></h1>
+<p>Rosetta can send a message to your phone when something happens at the machine, so you can leave it while it works.  The messages come through <strong>ntfy</strong>, a free app for the iPhone (App Store) and Android phones (Google Play).
+</p>
+<h2 id="Setting-Up-Phone-Alerts"><span style="color: #00008b;"> Setting Up Phone Alerts</span></h2>
+<ol><li>Install the <strong>ntfy</strong> app on your phone.
+</li><li>In Rosetta Settings, on the <strong>Inputs, Outputs, and Sounds</strong> tab, check <strong>Send alerts to my phone</strong>.  The <strong>ntfy topic</strong> box is filled in with <em>Rosetta-</em> and your machine's serial number, for example <em>Rosetta-Rosetta003</em>.
+</li><li>In the ntfy app, tap <strong>+</strong>, type in the topic <strong>exactly as Rosetta Settings shows it</strong> (capital letters matter), and tap <strong>Subscribe</strong>.
+</li><li>In Rosetta Settings, press <strong>Send Test Message</strong>.  It shows <strong>Sent - check your phone</strong>, and the test message arrives on your phone within a few seconds.
+</li><li>Under <strong>Send When</strong>, tick the events you want to be told about.
+</li><li>Start Rosetta.  Phone alerts take effect the next time Rosetta starts.
+</li></ol><h2 id="What-Is-Sent"><span style="color: #00008b;"> What Is Sent</span></h2>
+<p>Each message's title is <em>Rosetta, S/N</em> and your machine's serial number, so you can tell which machine sent it.
+</p>
+
+<table border="1" style="margin-top: 0px; margin-bottom: 0px; margin-left: 20px;"><tr><td style="width: 150px; padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Finished</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>A G-code program, a Sync Move or a Cut Thread finished.  For example: <em>Program finished (Geo1216.ngc).</em>  Nothing is sent when you stop one part way.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Paused (M0/M1)</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>A G-code program stopped at an M0 or M1 to wait for you.  For example: <em>Program paused at line 42 (Geo1216.ngc) - waiting for you.</em>
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Fault siren</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>A following error or a tripped limit switch stopped the machine - the same time the <a href="#Sounds">fault siren</a> sounds and the signal tower's red light comes on.  Sent as urgent.
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Pi too hot</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The Raspberry Pi reached its <strong>Alarm</strong> temperature (see <a href="Other.html#PiTemperature">Pi Temperature</a>).
+</p></td></tr><tr><td style="padding-left: 6px; padding-right: 6px;" valign="top"> <strong>Box lost contact</strong>
+</td><td style="padding-left: 6px; padding-right: 6px;" valign="top">
+<p>The Base Box or the Expansion Box lost contact with the Raspberry Pi, and the machine is in E-stop (see <a href="E-Stop.html#LostContact">Lost contact</a>).  Sent as urgent.
+</p></td></tr></table>
+<p class="vspace"><span style="color: red;"><strong>Do not rely on phone alerts to keep the machine safe.</strong></span>  They are a convenience.  If the Raspberry Pi can't reach the internet, or your phone has no signal, the message is lost and is not sent again.  Never leave a running machine where you couldn't get back to it quickly.
+</p>
+<p class="vspace"><span style="color: red;"><strong>Do not give your topic to anyone you don't want reading your alerts.</strong></span>  Anyone who knows the topic can subscribe to it in the ntfy app and see your messages.  To make it harder to guess, add a word of your own to the end of the topic in Rosetta Settings, for example <em>Rosetta-Rosetta003-bluebird</em>, <strong>then subscribe to that same topic in the ntfy app</strong>.
+</p>
+<p class="vspace"><strong><ins>Notes</ins>:</strong>
+</p><ol><li>Phone alerts are sent whatever the <a href="#Sounds">Sounds</a> are set to.  For example, with the Fault Siren set to <strong>Off</strong>, the Fault siren alert is still sent.
+</li><li>If you have more than one Rosetta, subscribe to each machine's topic in the ntfy app.
+</li><li>The Raspberry Pi needs the internet for phone alerts - see <a href="WiFi.html">Setting up Wi-Fi</a>.
+</li><li>If an alert doesn't arrive, see <a href="Troubleshooting.html#phonealerts">Phone alerts don't arrive</a>.
+</li></ol>
+<table bgcolor="darkblue" border="0" width="100%"><tr><td valign="top" width="100%">
+</td></tr></table>
+<h1 id="Running-the-Rosetta-Settings-Program"><span style="color: #00008b;"> Running the Rosetta Settings Program</span></h1>
+<p>To access the Rosetta Settings program, there are 2 options:
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-1-Use-the-icon-on-the-desktop"><span style="color: #00008b;"> Option 1:  Use the icon on the desktop</span></h2>
+<div class="img"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/> </span></div>
+<p>Double-click on the Rosetta Settings icon on the desktop (the big gear)
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-2-Use-the-Applications-menu"><span style="color: #00008b;"> Option 2:  Use the Applications menu</span></h2>
+<ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
+</li><li>Click on the arrow to the right of Rosetta
+</li><li>Click on Rosetta Settings (the one with a gear)
+</li></ol>
+<table style="margin-left: 75px; margin-bottom: 10px; border: 0px solid darkgray; "><tr><td colspan="2" valign="top"> Applications
+</td></tr><tr><td rowspan="6" style="width: 200px; vertical-align: top;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta   &gt;
+</td><td style="width: 225px; vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta
+</td></tr><tr><td style="background-color: #00aae4; vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_SettingsGear.png" width="20px"/> <span style="color: white;">Rosetta Settings</span>
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Backup.png" width="20px"/> Backup Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Update.png" width="20px"/> Update Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_GeoChuck.png" width="20px"/> Geometric Chuck Designer
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_Rosette.png" width="20px"/> Rosette Designer
+</td></tr></table>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

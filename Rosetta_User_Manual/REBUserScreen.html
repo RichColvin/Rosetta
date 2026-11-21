@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Main Screen – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Main Screen</span></p>
+  <h1>Main Screen</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Axes-Colors">Axes Colors</a></li><li class="toc-l0"><a href="#At-Startup">At Startup</a></li><li class="toc-l0"><a href="#After-Startup">After Startup</a></li><li class="toc-l1"><a href="#Raspberry-Pi-Temperature">Raspberry Pi Temperature</a></li><li class="toc-l1"><a href="#ENA_">ENA</a></li><li class="toc-l1"><a href="#Feed-Rate">Feed Rate</a></li><li class="toc-l1"><a href="#Run-Operation">Run Operation</a></li><li class="toc-l1"><a href="#Device">Device</a></li></ul></nav>
+  <div class="content">
+
+<h1 id="Axes-Colors"><span style="color: #00008b;"> Axes Colors</span></h1>
+<table style="border-collapse: collapse; border: 1px solid black; margin-right: 15px; margin-bottom: 12px; float: left;"><tr><td align="center" bgcolor="#00416a" rowspan="2" style="border: 1px solid black;" valign="bottom" width="60px"> <span style="color: white;"> <strong>Color</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="3" rowspan="2" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Axis</strong></span>
+</td><td align="center" bgcolor="#00416a" colspan="4" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Movement Control</strong></span>
+</td></tr><tr><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Neg</strong></span>
+</td><td align="center" bgcolor="#00416a" style="border: 1px solid black;" valign="bottom"> <span style="color: white;"> <strong>Pos</strong></span>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #E5A50A;">Yellow</span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">X</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">U</span></strong></span>
+</td><td style="border: 1px solid black; width: 30px; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #E5A50A;"><strong><span class="pmL1">A</span></strong></span>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Xpos.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Aneg.png" width="100%"/>
+</td><td style="border: 1px solid black; width: 25px; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Apos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #A51D2D;">Red</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">V</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #A51D2D;"><strong><span class="pmL1">B</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Yneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Ypos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Bpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> <span style="color: #1A5FB4;">Blue</span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">Z</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">W</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <span style="color: #1A5FB4;"><strong><span class="pmL1">C</span></strong></span>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Zpos.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Axis-Cpos.png" width="100%"/>
+</td></tr><tr><td style="border: 1px solid black; vertical-align: middle; padding: 5px;" valign="top"> Black
+</td><td colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;" valign="top"> <strong>Spindles</strong> <br class="clearboth"/>(Sp0 &amp; Sp1)
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; background-color: lightgray;" valign="top">  
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindleneg.png" width="100%"/>
+</td><td style="border: 1px solid black; text-align: center; vertical-align: middle; padding: 5px;" valign="top"> <img alt="" src="Images/Spindlepos.png" width="100%"/>
+</td></tr></table>
+<p>On this page, the axis letters are colored to assist the user.  (Note: LinuxCNC does not allow for a Y axis when running as a lathe.)
+</p>
+<p class="vspace">Every axis has a row of controls on the user screens, but only the <a href="AxisSelection.html">axes selected for use</a> can be operated - the others are grayed out.  For example, in the screen shown below, the user has selected to use the X, Z, U, V, W, and C axes, so the A and B rows are grayed out.
+</p>
+<p class="vspace">The table at the bottom of the user screen titled, <span style="color: #00008b;"> Axis Assignments</span>, shows the current axis assignments.  It is updated the next time Rosetta is started after the selected axes are changed.
+</p>
+
+<table border="0" style="width: 100%; "><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="At-Startup"><span style="color: #00008b;"> At Startup</span></h1>
+<p>When the Rosetta system is started, the screen shown below will be displayed.  At this point, the LinuxCNC system is still in an "Estop" and "off" state. 
+</p>
+
+<table style="margin-left: 10px; margin-bottom: 10px; width: 100%; float: right; background-color: #F6F5F4;  border: 1px solid darkgray; "><tr><td valign="top"> <img alt="" src="Images/RoseEngineButler-Startup-Base.png"/> <br class="clearboth"/> <strong><em>System at startup</em></strong> (Base Box)
+</td></tr></table>
+<p class="vspace">After 
+</p><ol><li><a href="E-Stop.html">releasing the Estop (F1)</a>, and 
+</li><li><a href="PowerOn.html">powering the system on (F2)</a>, 
+</li></ol><p class="vspace">the same screen will no longer be grayed out, and will be as shown below.
+</p>
+<p class="vspace"><strong><ins>Note</ins>:</strong>  This state can be also encountered if an error is encountered.
+</p>
+
+<table border="0" style="width: 100%; "><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="After-Startup"><span style="color: #00008b;"> After Startup</span></h1>
+<p>After 
+</p><ol><li><a href="E-Stop.html">releasing the Estop (F1)</a>, and 
+</li><li><a href="PowerOn.html">powering the system on (F2)</a>, 
+</li></ol><p class="vspace">the screen below will be shown.
+</p>
+
+<table style="margin-left: 10px; margin-bottom: 10px; width: 100%; float: right; background-color: #F6F5F4;  border: 1px solid darkgray; "><tr><td valign="top"> <img alt="" src="Images/RoseEngineButler-AfterF1F2-WithExpansionBox.png"/> <br class="clearboth"/> <strong><em>System after startup</em></strong> (Base Box with Expansion Box)
+</td></tr></table>
+<p>For the panel on the right side of the screen, all the axes which Rosetta supports are shown.  The axes which are not assigned to a channel using the <a href="AxisSelection.html">Rosetta Settings</a> are grayed out.
+</p>
+<p class="vspace">The controls on this panel to the right are outlined below.
+</p>
+<p class="vspace"><a id="PiTemperature"></a>
+</p><h2 id="Raspberry-Pi-Temperature"><span style="color: #00008b;"> Raspberry Pi Temperature</span></h2>
+<p>There is a Raspberry Pi inside the Rosetta system.  This is a small computer inside the Base Box that is used to run Rosetta.
+</p>
+<p class="vspace">At the top right of the panel, beside the Rosetta logo, is the temperature of the Raspberry Pi (for example, <strong>Raspberry Pi 66 °C</strong>).  This displayed text changes colors if the Raspberry Pi’s temperature rises too high.
+</p><ul><li><span style="color: #c06000;"><strong>Orange</strong></span> - the Raspberry Pi is warm (at or above the <strong>Warning</strong> temperature).  Rosetta also shows a notice in the bottom right corner of its window.
+</li><li><span style="color: #c01c28;"><strong>Red</strong></span> - the Raspberry Pi is too hot (at or above the <strong>Alarm</strong> temperature).  A message box appears and an alarm sounds on the speaker.
+</li></ul><p class="vspace">There is also an indicator if the Raspberry Pi’s supply voltage is not where either should be.  
+</p><ul><li><strong>⚡</strong> - the power supply isn't keeping up (undervoltage). There will also be a notice.
+</li></ul><p class="vspace">Nothing is stopped by any of these.  
+</p>
+<p class="vspace">The temperature ranges used for alerting the user, and whether the alarm sounds, are set on the <a href="Other.html#PiTemperature">Other</a> page of Rosetta Settings.  
+</p>
+<p class="vspace">Should any of these conditions occur, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
+</p>
+<p class="vspace"><a id="ENA"></a>
+</p><h2 id="ENA_"><span style="color: #00008b;"> ENA</span></h2>
+<p>These buttons are used to enable or disable an axis.
+</p><ul><li>When red, the axis is disabled.
+</li><li>When green, the axis is enabled.
+</li><li>When gray, the axis is not configured for use.
+</li></ul><p class="vspace">If you click an index, <strong>Sync Move</strong> or <strong>Cut Thread</strong> button which would move using an axis or spindle which is not enabled, one of two things will happen
+</p>
+
+<table border="1" width="100%"><tr><td style="width: 200px; text-align: center; vertical-align: bottom; background-color: #00008b;" valign="top"> <span style="color: white;"><strong>Axis Not Enabled Setting</strong></span>
+</td><td style="text-align: center; vertical-align: bottom; background-color: #00008b;" valign="top"> <span style="color: white;"><strong>What Happens</strong></span>
+</td></tr><tr><td valign="top"> <strong>Ask</strong>
+</td><td valign="top">
+<p>a pop-up box names the axes which are not enabled, and offers two buttons:
+</p><ul><li><strong>Enable ... and Run</strong> or <strong>Enable ... and Move</strong>.  If this is selected, it turns those ENA buttons on, the same as clicking them, then carries on.
+</li><li><strong>Cancel</strong>.  If this is selected, the ENAble buttons stay off, and nothing moves.
+</li></ul></td></tr><tr><td valign="top"> <strong>Enable it automatically</strong>
+</td><td valign="top">
+<p>The ENA buttons are turned on with no box, and Rosetta carries on. For a Gcode program, a short note in the bottom right corner of the LinuxCNC window says which axes were enabled.
+</p></td></tr></table>
+<p class="vspace"><strong>Axis Not Enabled</strong> is set on <a href="Other.html">Settings - Other</a>.
+</p>
+<h2 id="Feed-Rate"><span style="color: #00008b;"> Feed Rate</span></h2>
+<p>Used to set the feed rate (speed) for movements on this page.  The unit of measure (UOM) for that speed is shown on the screen.
+</p>
+<p class="vspace">These feed rates are not used on the <a href="ManualControl.html">Manual Control / Jogging (F3)</a> nor the <a href="MDITab.html">MDI Tab (F5)</a>.
+</p>
+<p class="vspace">The UOM shown, and used by the system, is based on the <a href="Other.html">Measurement System</a> selection.
+</p>
+<h2 id="Run-Operation"><span style="color: #00008b;"> Run Operation</span></h2>
+<p>These 3 buttons are used for running the spindles.
+</p>
+
+<table border="0" width="100%"><tr><td style="width: 30px; padding: 5px;" valign="top"> <img alt="" src="Images/Spindleneg.png" width="100%"/>
+</td><td style="padding: 5px;" valign="top"> Starts the spindle(s) running in the negative direction.  It will continue running in this direction until stopped.
+</td></tr><tr><td style="width: 30px; padding: 5px;" valign="top"> <img alt="" src="Images/SpindleStop.png" width="100%"/>
+</td><td style="padding: 5px;" valign="top"> Stops the spindle(s) from running.
+</td></tr><tr><td style="padding: 5px;" valign="top"> <img alt="" src="Images/Spindlepos.png" width="100%"/>
+</td><td style="padding: 5px;" valign="top"> Starts the spindle(s) running in the positive direction.  It will continue running in this direction until stopped.
+</td></tr></table>
+<p class="vspace">Notes for the Sp1 spindle (rosette phaser/multiplier):
+</p><ol><li>The feed rate for the Sp1 spindle is a percentage of the Sp0 spindle's speed.  At 100%, they run the same speed.
+</li><li>This feed rate can be set anywhere in the range of +1,000% to -1,000%.  
+</li><li>If the feed rate is set to 0, the Sp1 will not run.
+</li><li>If the Sp1 spindle is disabled, it will not run.
+</li></ol><h2 id="Device"><span style="color: #00008b;"> Device</span></h2>
+<p>This allows the user to denote the use of the non-spindle axes.  The values shown are in the <strong>Device Names</strong> list on <a href="Other.html">Settings - Other</a>.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

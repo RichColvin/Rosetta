@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Starting Up Your New System – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Starting Up Your New System</span></p>
+  <h1>Starting Up Your New System</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Additional-Notes">Additional Notes</a></li><li class="toc-l0"><a href="#System-Usage-Notes">System Usage Notes</a></li><li class="toc-l1"><a href="#Changes-to-System-Settings">Changes to System Settings</a></li><li class="toc-l1"><a href="#Switching-the-System-Off">Switching the System Off</a></li><li class="toc-l1"><a href="#Entering-Data-Values">Entering Data Values</a></li><li class="toc-l1"><a href="#User-Settings-Files">User Settings Files</a></li></ul></nav>
+  <div class="content">
+
+<p>These are the steps for getting your new Rosetta system started up.
+</p>
+<p class="vspace">
+</p><ol><li value="1"> Connect all the hardware together:
+<ul><li>Connect the display, keyboard, and mouse to the system.  
+</li><li>If you have an Expansion Box, plug its network cable and power into the Base Box.  
+</li><li>Connect the power cord to an outlet from the Base Box.
+</li><li>Power on
+</li></ul></li></ol><div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/WiFi.png" width="100px"/><br/><span class="caption"><strong><em>WiFi Icon</em></strong></span></span></div>
+<dl><dd><dl><dd><ul><li>the monitor, and
+</li><li>the Base Box on (this will also power on the Expansion Box). 
+</li></ul></dd></dl></dd></dl><p class="vspace">
+</p><ol><li value="2"> Connect to Wifi - click on the Wi-Fi icon located on the title bar at the top of the system.  It is the one indicated on the image to the right.  
+</li></ol><p class="vspace">
+</p><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_Update.png" width="45px"/></span></div>
+<ol><li value="3"> <a href="UpdateRoseEngineButler.html">Update the Rosetta software</a> on your Rosetta system:  click on <strong>Applications</strong> at the top left corner of the screen, then the arrow to the right of Rosetta, then <strong>Update Rosetta</strong> (the green arrow).  
+</li></ol><p class="vspace">
+</p><ol><li value="4"> Connect the stepper motors to the machine.  If you need to add connectors to your cables, there is a <a href="StepperMotorCabling.html">wiring diagram</a> in this user manual.  If you are using <a href="LimitSwitchCabling.html">limit switches</a>, an <a href="E-StopCabling.html">E-stop button</a>, or a <a href="SignalTowerCabling.html">signal tower</a>, connect those too.
+</li></ol><p class="vspace">
+</p><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/></span></div>
+<ol><li value="5"> Use the big gear on the desktop to run the <strong>Rosetta Settings</strong> program.
+<ol style="list-style: lower-alpha;"><li> <a href="AxisSelection.html">Axis Selection</a> tab
+<ol style="list-style: lower-roman;"><li> Tick <strong>Expansion Box - Connected</strong> if you have one
+</li><li> Choose which axis each plug is used for.  
+</li></ol></li><li> <a href="InputsOutputsSound.html">Inputs, Outputs, and Sounds</a> tab
+<ol style="list-style: lower-roman;"><li> Set up limit switches, E-stop button, signal tower, and sounds.  
+</li></ol></li><li> <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab
+<ol style="list-style: lower-roman;"><li> Set the scales needed for the devices you are using. 
+</li><li> We recommend you leave the other settings at the default until you use the system a bit.
+</li></ol></li><li> <a href="Other.html">Other</a> tab
+<ol style="list-style: lower-roman;"><li> Select the Measurement System you wish to use
+</li><li> We recommend you leave the other settings at the default until you use the system a bit.
+</li></ol></li><li> <a href="AxisSelection.html">Axis Selection</a> tab
+<ol style="list-style: lower-roman;"><li> Click <strong>Save All Settings</strong>, then close the program.
+</li></ol></li></ol></li></ol><p class="vspace">
+</p><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta_10px.png" width="50px"/></span></div>
+<ol><li value="6"> Start Rosetta (double-click on the Turk's head icon), then press <strong>F1</strong> to release the E-stop and <strong>F2</strong> to power the machine on.
+</li></ol>
+<table border="0" width="100%"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Additional-Notes"><span style="color: #00008b;"> Additional Notes</span></h1>
+<p>If you run the update program too soon after starting up your system, you may encounter an error.  This is because the virus scanning is still running.
+</p>
+<p class="vspace">Wait 30 minutes and run it again.  This should clear up any issues.
+</p>
+<hr/>
+<h1 id="System-Usage-Notes"><span style="color: #00008b;"> System Usage Notes</span></h1>
+<h2 id="Changes-to-System-Settings"><span style="color: #00008b;"> Changes to System Settings</span></h2>
+<p>Settings are changed in the separate <strong>Rosetta Settings</strong> program, which cannot run while Rosetta is running.  To change a setting:
+</p><ol><li>Close Rosetta by clicking on the X in the top right of the screen, and give it a minute or so to let the shutdown program complete.
+</li><li>Run the Settings program, make your changes, and click <strong>Save All Settings</strong> on the Axis Selection tab.
+</li><li>Close the Settings program, then double-click on the Turk's head icon to restart Rosetta.
+</li></ol><p class="vspace"><a id="SwitchingOff"></a>
+</p><h2 id="Switching-the-System-Off"><span style="color: #00008b;"> Switching the System Off</span></h2>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Rosetta_Shut_Down.png" width="45px"/></span></div>
+<p><span style="color: red;"><strong>Do not switch the power off while the computer is running.</strong></span>  Switching off a running computer can damage the files on its memory card.  Instead:
+</p><ol><li>Close Rosetta, and any other Rosetta program that is open.
+</li><li>Click on <strong>Shut Down</strong> - at the bottom of the <strong>Applications</strong> menu, or the red power symbol on the bar that pops up at the bottom middle of the screen.
+</li><li>Click <strong>Shut Down</strong> to confirm.  If a Rosetta program is still open, it asks you to close it first.
+</li><li>When the screen has gone dark, wait 10 seconds, then switch the power off.
+</li></ol><h2 id="Entering-Data-Values"><span style="color: #00008b;"> Entering Data Values</span></h2>
+<p>The system used for building screens in LinuxCNC has some quirks.
+</p><ol><li>To change a value, you must have the mouse over that field.
+</li><li>To have the system accept the value you entered, you must depress the <strong>Enter</strong> key after entering the value.
+</li><li>System checks are built into many fields to help you verify that you are not entering invalid values.  For example, there is a relationship between the axis scaling and the axis max speed.  Thusly, we have the system ensure you do not enter a set of values which is too high (and which would not work correctly, thusly bringing up an error message).
+</li></ol><h2 id="User-Settings-Files"><span style="color: #00008b;"> User Settings Files</span></h2>
+<p>Your settings are saved in the file
+</p>
+<table border="0" style="width: calc(100% - 40px); margin-left: 30px; margin-top: 10px; margin-bottom: 10px;"><tr><td style="width: 100%; font-family: Courier; padding-left: 5px; padding-right: 5px;" valign="top">
+<p>~/Documents/RosettaSet_v1.ini
+</p></td></tr></table>
+<p>The Settings program can also save a copy of all your settings, or just some of them, into another file, and load settings back from a file.  See <a href="SavingAndSharingSettings.html">Saving and Sharing Settings</a>.
+</p>
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

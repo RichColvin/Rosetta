@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENAble – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>ENAble</span></p>
+  <h1>ENAble</h1>
+  
+  <div class="content">
+
+<p>When we note that an axis is enabled, it really means that the stepper motor on that axis is enabled.  With stepper motors, the motor for an axis can be enabled or not.  
+</p>
+
+<table border="1" style="width: 100%;"><tr><td style="width: 100px; padding-left: 5px; padding-right: 5px; background-color: moccasin; text-align: center; vertical-align: bottom;" valign="top">
+<p><strong>Axis Status</strong>
+</p></td><td style="width: 100px; padding-left: 5px; padding-right: 5px; background-color: moccasin; text-align: center; vertical-align: bottom;" valign="top">
+<p><strong>Motor Shaft Can be Rotated by Hand</strong>
+</p></td><td style="width: 100px; padding-left: 5px; padding-right: 5px; background-color: moccasin; text-align: center; vertical-align: bottom;" valign="top">
+<p><strong>Motor Can Be Operated by LinuxCNC</strong>
+</p></td><td style="padding-left: 5px; padding-right: 5px; background-color: moccasin; text-align: center; vertical-align: bottom;" valign="top">
+<p><strong>Comments</strong>
+</p></td></tr><tr><td style="padding-left: 5px; padding-right: 5px; text-align: center; background-color: green; vertical-align: middle" valign="top">
+<p><span style="color: white;"><strong>ENA</strong></span>
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>No
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>Yes
+</p></td><td style="padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>Axis is Enabled</strong> <br class="clearboth"/>
+An axis must be enabled for Rosetta to drive the motor, making the motor rotate its shaft.  
+</p>
+<p class="vspace">When performing indexing operations, it is recommended to leave the axis enabled between indexing movements. This helps ensure there is no movement before the next indexing operation.
+</p>
+<p class="vspace">There is a configuration setting which is related to this. <a href="Other.html#AxisNotEnabled">Axis Not Enabled</a> can be set to warn the user if the a needed axis is not enabled, or to automatically enable the needed axes.
+</p></td></tr><tr><td style="padding-left: 5px; padding-right: 5px; text-align: center; background-color: red; vertical-align: middle;" valign="top">
+<p><span style="color: white;"><strong>ENA</strong></span>
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>Yes
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>No
+</p></td><td style="padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>Axis is not Enabled</strong> <br class="clearboth"/>
+When an axis is not enabled, the motor’s shaft can be turned by hand. This is a useful option if there is a hand wheel used to position the cutter manually. An example of this is for cross slides and curvilinear slides.
+</p>
+<p class="vspace">This setting allows the axis to be automatically enabled whenever needed.
+</p>
+<p class="vspace">If an axis is automatically enabled for use, it is not un-enabled when the operation completes.  Un-enabling the axis must be done manually.
+</p></td></tr><tr><td style="padding-left: 5px; padding-right: 5px; text-align: center; background-color: gray; vertical-align: middle;" valign="top">
+<p><span style="color: white;"><strong>ENA</strong></span>
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>Yes
+</p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
+<p>No
+</p></td><td style="padding-left: 5px; padding-right: 5px;" valign="top">
+<p><strong>Axis is not configured for use</strong> <br class="clearboth"/>
+Within the Settings program, the <a href="AxisSelection.html">Axis Selection</a> tab can be used to make an axis availlable for use.
+</p></td></tr></table>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backing Up Key User Files to a USB Flash Drive – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Backing Up Key User Files to a USB Flash Drive</span></p>
+  <h1>Backing Up Key User Files to a USB Flash Drive</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#What-Gets-Copied">What Gets Copied</a></li><li class="toc-l1"><a href="#Settings">Settings</a></li><li class="toc-l1"><a href="#Gcode-Programs">Gcode Programs</a></li><li class="toc-l1"><a href="#HAL-Additions">HAL Additions</a></li><li class="toc-l1"><a href="#Your-Subroutines-and-User-M-codes">Your Subroutines and User M-codes</a></li><li class="toc-l0"><a href="#Backing-up-the-Rosetta-Settings-files">Backing up the Rosetta Settings files</a></li><li class="toc-l1"><a href="#Option-1-Use-the-Applications-menu">Option 1:  Use the Applications menu</a></li><li class="toc-l1"><a href="#Option-2-Use-the-File-menu-in-Rosetta-Settings">Option 2:  Use the File menu in Rosetta Settings</a></li><li class="toc-l0"><a href="#After-the-backup-finishes-the-USB-flash-drive-is-ejected">After the backup finishes:  the USB flash drive is ejected</a></li></ul></nav>
+  <div class="content">
+
+<p class="vspace">The Back Up to USB program copies your own Rosetta files onto a USB flash drive plugged into the Raspberry Pi.  Each backup goes into its own dated folder, so earlier backups on the flash drive are never overwritten.
+</p>
+<p class="vspace">To copy a backup back onto the Raspberry Pi - for example after replacing its memory card - see <a href="RestoringKeyUserFilesFromAUSBFlashDrive.html">Restoring Key User Files from a USB Flash Drive</a>.
+</p>
+<p class="vspace"><a id="WhatGetsCopied"></a>
+</p><h1 id="What-Gets-Copied"><span style="color: #00008b;"> What Gets Copied</span></h1>
+<p>These are the files which get backed up to a USB flash drive when this program gets run.
+</p>
+<p class="vspace">Note: hidden files (names starting with a period) are not copied.
+</p>
+<hr/>
+<h2 id="Settings"><span style="color: #00008b;"> Settings</span></h2>
+<p>Your settings, and any settings files you have exported get backed up.
+</p>
+
+<table border="1" style="width: 100%;"><tr><td bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Files</strong></span>
+</td><td bgcolor="#00416a" valign="bottom" width="125px"> <span style="color: white;"> <strong>Folder on the USB Flash Drive</strong></span>
+</td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/Documents/*.ini
+</td><td style="font-family: Courier;" valign="top"> Documents
+</td></tr></table>
+<p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>Settings files (*.ini) saved in other directories are not backed up by this program.
+</li></ol><hr/>
+<h2 id="Gcode-Programs"><span style="color: #00008b;"> Gcode Programs</span></h2>
+<p>Your gcode programs in the default directory.
+</p>
+
+<table border="1" style="width: 100%;"><tr><td bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Files</strong></span>
+</td><td bgcolor="#00416a" valign="bottom" width="125px"> <span style="color: white;"> <strong>Folder on the USB Flash Drive</strong></span>
+</td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/gcode/*.*
+</td><td style="font-family: Courier;" valign="top"> gcode
+</td></tr></table>
+<p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>Gcode programs in sub-directories of this folder are backed up.  However, gcode programs in other directories are not backed up by this program.
+</li></ol><hr/>
+<h2 id="HAL-Additions"><span style="color: #00008b;"> HAL Additions</span></h2>
+<p>Your own HAL additions and your tool table.
+</p>
+
+<table border="1" style="width: 100%;"><tr><td bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Files</strong></span>
+</td><td bgcolor="#00416a" valign="bottom" width="125px"> <span style="color: white;"> <strong>Folder on the USB Flash Drive</strong></span>
+</td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/configs/Rosetta/Rosetta_Custom/Rosetta_Custom.hal
+<p class="vspace">/home/reuben/linuxcnc/configs/Rosetta/Rosetta_Custom/Rosetta_Tool.tbl
+</p></td><td style="font-family: Courier;" valign="top"> Rosetta_Custom
+</td></tr></table>
+<p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>If these files are saved in other directories, they are not backed up by this program.
+</li></ol><hr/>
+<h2 id="Your-Subroutines-and-User-M-codes"><span style="color: #00008b;"> Your Subroutines and User M-codes </span></h2>
+<p>Your own subroutines and user M-codes in LinuxCNC's nc_files directory.
+</p>
+
+<table border="1" style="width: 100%;"><tr><td bgcolor="#00416a" valign="bottom"> <span style="color: white;"> <strong>Files</strong></span>
+</td><td bgcolor="#00416a" valign="bottom" width="125px"> <span style="color: white;"> <strong>Folder on the USB Flash Drive</strong></span>
+</td></tr><tr><td style="font-family: Courier;" valign="top"> /home/reuben/linuxcnc/nc_files/*.*
+</td><td style="font-family: Courier;" valign="top"> nc_files
+</td></tr></table>
+<p class="vspace"><strong>Key Note:</strong>
+</p><ol><li>If these files are saved in other directories, they are not backed up by this program.
+</li></ol>
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h1 id="Backing-up-the-Rosetta-Settings-files"><span style="color: #00008b;"> Backing up the Rosetta Settings files</span></h1>
+<p>To back up these files, there are 2 options.
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-1-Use-the-Applications-menu"><span style="color: #00008b;"> Option 1:  Use the Applications menu</span></h2>
+<ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
+</li><li>Click on the arrow to the right of Rosetta
+</li><li>Click on Backup Rosetta
+</li></ol>
+<table style="margin-left: 75px; margin-bottom: 10px; border: 0px solid darkgray; "><tr><td colspan="2" valign="top"> Applications
+</td></tr><tr><td rowspan="6" style="width: 200px; vertical-align: top;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta   &gt;
+</td><td style="width: 225px; vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_SettingsGear.png" width="20px"/> Rosetta Settings
+</td></tr><tr><td style="background-color: #00aae4; vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Backup.png" width="20px"/> <span style="color: white;">Backup Rosetta</span>
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Update.png" width="20px"/> Update Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_GeoChuck.png" width="20px"/> Geometric Chuck Designer
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_Rosette.png" width="20px"/> Rosette Designer
+</td></tr></table>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-2-Use-the-File-menu-in-Rosetta-Settings"><span style="color: #00008b;"> Option 2:  Use the File menu in Rosetta Settings</span></h2>
+<ol><li>Open the <a href="AxisSelection.html">Rosetta Settings</a> program.
+</li><li>Click on <strong>File</strong> at the top left corner of the Rosetta Settings window.
+</li><li>Click on <strong>Back Up to USB...</strong>
+</li></ol><p class="vspace">The same Back Up to USB window opens.  When you close it, you are back in Rosetta Settings.
+</p>
+<p class="vspace"><strong>Note:</strong> Rosetta Settings cannot be run while LinuxCNC is running, so this option is only there when LinuxCNC is closed.
+</p><hr/>
+<h1 id="After-the-backup-finishes-the-USB-flash-drive-is-ejected"><span style="color: #00008b;"> After the backup finishes:  the USB flash drive is ejected</span></h1>
+<p>When the backup finishes, Rosetta <strong>ejects</strong> the USB flash drive.  Ejecting means the Raspberry Pi has finished with the flash drive and has disconnected from it, so that it is safe to pull out.  The flash drive is still plugged in, but the Raspberry Pi can no longer use it:  it no longer shows in the File Manager, or in the Back Up to USB or Restore from USB windows.
+</p>
+<ul><li><span style="color: red;">Do not pull the USB flash drive out while the backup is running.</span>  Wait until Rosetta says <strong>It is now safe to remove the USB stick.</strong>
+</li></ul><p class="vspace">To use the USB flash drive again - for example, to make another backup, to restore a backup, or to copy a gcode program from it - you have to take it out and put it back in:
+</p><ol><li>Pull the USB flash drive out of the Raspberry Pi.
+</li><li>Wait about 5 seconds.
+</li><li>Plug the USB flash drive back into the Raspberry Pi.
+</li><li>Wait a few seconds for the Raspberry Pi to find it.  A File Manager window may open showing what is on the flash drive; you can close that window.
+</li></ol><p class="vspace">The USB flash drive can now be used again.
+</p>
+<p class="vspace"><strong>Note:</strong> If Rosetta says <strong>The stick could not be ejected automatically</strong>, eject it yourself before pulling it out:  open the File Manager, and in the list on the left side of its window, click the eject symbol (⏏) next to the USB flash drive's name.  When the flash drive's name disappears from the list, it is safe to pull it out.
+</p>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

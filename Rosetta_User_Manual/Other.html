@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Other Configuration Settings – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Other Configuration Settings</span></p>
+  <h1>Other Configuration Settings</h1>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Other-Tuning-Jog-Speeds">Other Tuning (Jog Speeds)</a></li><li class="toc-l0"><a href="#General">General</a></li><li class="toc-l1"><a href="#Device-Names">Device Names</a></li><li class="toc-l1"><a href="#Startup-File-Check">Startup File Check</a></li><li class="toc-l1"><a href="#Axis-Not-Enabled">Axis Not Enabled</a></li><li class="toc-l1"><a href="#Raspberry-Pi-Temperature">Raspberry Pi Temperature</a></li><li class="toc-l1"><a href="#Measurement-System">Measurement System</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
+  <div class="content">
+
+<p><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
+</p>
+<div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-Other.png" width="300px"/><br/><span class="caption"><strong><em>Other Settings</em></strong></span></span></div>
+<h1 id="Other-Tuning-Jog-Speeds"><span style="color: #00008b;"> Other Tuning (Jog Speeds)</span></h1>
+<p>These are the speed options which can be used on the <a href="ManualControl.html">Manual Control</a> / Jogging (F3) screen.
+</p>
+<p class="vspace">Use this to set the maximum, default, and minimum jogging speeds for
+</p><ul><li>Linear axes: Jog speed for the X, Z, U, V, &amp; W axes.
+</li><li>Rotary (Angular) axis:  Jog speed for the A, B, &amp; C axes.
+</li></ul><p class="vspace">These are used when moving under Manual Control [F3].
+</p>
+<p class="vspace">Linear jog speeds are in inches (or mm) per second, and rotary jog speeds are in degrees per second.  The jog speed slider in Rosetta shows the same speeds per minute - for example, a Default of 5.8333 deg/sec shows there as 350 deg/min.
+</p>
+<p class="vspace">For each, the values must be in order: 
+</p>
+<div class="indent"><strong>Minimum</strong> ≤ <strong>Default</strong> ≤ <strong>Maximum</strong>
+</div><p class="vspace">A change that would break that order is not accepted - the field goes back to its saved value and a message explains why.  To move a value further, change the others first (for example, raise the Maximum before raising the Default above it).
+</p>
+<p class="vspace">These changes are saved as soon as you make them, and take effect the next time Rosetta starts.
+</p><hr/>
+<h1 id="General"><span style="color: #00008b;"> General</span></h1>
+<p>There are some general values which get set here.
+</p>
+<h2 id="Device-Names"><span style="color: #00008b;"> Device Names</span></h2>
+<p>These get used for the selection fields on the main panel (to the right side).  You enter them as one device name per line.
+</p>
+<div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/Button-SaveSubsetofSettingsAs.png" width="125px"/></span></div>
+<p>When using <a href="SavingAndSharingSettings.html">Save Subset of Settings</a> from the <a href="AxisSelection.html">Axis Selection</a> screen, you can pick one of these names to label which physical device the exported axis' values belong to.
+</p>
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
+<hr/>
+</td><td valign="top">
+</td></tr></table>
+<h2 id="Startup-File-Check"><span style="color: #00008b;"> Startup File Check</span></h2>
+<p>When Rosetta is started, it checks to determine if you are using a <a href="RunningGcodePrograms.html#Naming-Your-Gcode-Programs">reserved file name</a> for a gcode program’s name.
+</p>
+<p class="vspace">This selection determines what happens if a reserved file name is found. 
+</p>
+<ul><li><strong>Abort startup</strong> (the default) - LinuxCNC does not start until the file is renamed.  This is the recommended approach as there are potential problems if a file with a reserved name is saved in the gcode directory.
+</li><li><strong>Warn, but let me continue</strong> - LinuxCNC starts anyway, once you close the warning.  <span style="color: red;">This is NOT recommended.</span>
+</li></ul><p class="vspace"><strong>Note:</strong>  A short sound plays if startup is aborted - see <a href="Sounds.html">Sounds</a>.
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
+<hr/>
+</td><td valign="top">
+</td></tr></table>
+<p><a id="AxisNotEnabled"></a>
+</p><h2 id="Axis-Not-Enabled"><span style="color: #00008b;"> Axis Not Enabled</span></h2>
+<p>This dictates what happens when an activity is meant to move an axis or spindle, and that axis is not enabled (i.e., the <strong>ENA</strong> button is off / red).  Those activities include:
+</p><ul><li>using the index operation,
+</li><li>using the synchronized movement,
+</li><li>using the cut thread operation, or
+</li><li>running a Gcode program (when you click Run), 
+</li></ul><p class="vspace">Without its ENA on, an axis stops with a <a href="Troubleshooting.html#ferror">Joint following error</a> as soon as it has to move, and a spindle does not turn, so its index never finishes.
+</p>
+<p class="vspace">The options available for these scenarios are:
+</p>
+<ul><li><strong>Ask</strong> (the default) - a pop-up box names the axes which are not enabled, and offers two buttons:
+<ul><li><strong>Enable ... and Run</strong> (on the main screen, <strong>Enable ... and Move</strong>) - turns those ENA buttons on, the same as clicking them, then carries on.  This is the default button, so pressing Enter chooses it.
+</li><li><strong>Cancel</strong> - leaves them off, and nothing moves.
+</li></ul></li><li><strong>Enable it automatically</strong> - the ENA buttons are turned on with no box, and Rosetta carries on.  For a Gcode program, a short note in the bottom right corner of the LinuxCNC window says which axes were enabled.
+</li></ul><p class="vspace"><strong>Notes:</strong>
+</p><ol><li>If the system is set to automatically enable an axis when needed, that axis cannot be enabled if it is not configured for use.  See also, <a href="AxisSelection.html">Axis Selection</a>.
+</li><li>This choice is saved as soon as you make it, and takes effect the next time Rosetta starts.
+</li></ol>
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
+<hr/>
+</td><td valign="top">
+</td></tr></table>
+<p><a id="PiTemperature"></a>
+</p><h2 id="Raspberry-Pi-Temperature"><span style="color: #00008b;"> Raspberry Pi Temperature</span></h2>
+<p>The Raspberry Pi is the small computer inside the Base Box that runs Rosetta and LinuxCNC.  Like any computer it gets warm while it works, and it has a fan to keep it cool.
+</p>
+<p class="vspace">Its temperature is shown at the top of the main screen, beside the Rosetta logo (see <a href="REBUserScreen.html#PiTemperature">Raspberry Pi Temperature</a>).  A Raspberry Pi that gets too hot slows itself down (near 85 °C), and that can cause a <a href="Troubleshooting.html#ferror">Joint following error</a> or a lost-contact E-stop part way through a program.  Rosetta warns you before it gets that hot:
+</p>
+<ul><li><strong>Warning at</strong> (default 75 °C) - the temperature turns orange, and LinuxCNC shows a notice in the bottom right corner of its window.
+</li><li><strong>Alarm at</strong> (default 82 °C) - the temperature turns red, a message box appears, and, if <strong>Sound the alarm on the speaker</strong> is ticked, an alarm sounds on the Pi's speaker.
+</li></ul><p class="vspace">Nothing is paused or stopped - a program carries on.  Each warning appears once; it appears again only after the temperature has dropped a few degrees and risen again.
+</p>
+<p class="vspace"><strong>Notes:</strong>
+</p><ol><li>The Warning temperature must be below the Alarm temperature.  If it isn't, <strong>Warning must be below Alarm - not saved.</strong> is shown, and nothing is saved until it is corrected.
+</li><li>These choices are saved as soon as you make them, and take effect the next time Rosetta starts.
+</li><li>For what to do when the Pi gets hot, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
+</li></ol>
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
+<hr/>
+</td><td valign="top">
+</td></tr></table>
+<h2 id="Measurement-System"><span style="color: #00008b;"> Measurement System</span></h2>
+<p>Select if you wish measurements to be performed using Imperial or metric values.
+</p>
+<p class="vspace">This is normally set once, when the machine is first set up, so it is the last item in this section.
+</p>
+
+<table bgcolor="darkblue" border="0" width="100%"><tr><td valign="top" width="100%">
+</td></tr></table>
+<h1 id="Running-the-Rosetta-Settings-Program"><span style="color: #00008b;"> Running the Rosetta Settings Program</span></h1>
+<p>To access the Rosetta Settings program, there are 2 options:
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-1-Use-the-icon-on-the-desktop"><span style="color: #00008b;"> Option 1:  Use the icon on the desktop</span></h2>
+<div class="img imgonly"><span class="lfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/></span></div>
+<p>Double-click on the Rosetta Settings icon on the desktop (the big gear)
+</p>
+
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td valign="top">
+<hr/>
+</td></tr></table>
+<h2 id="Option-2-Use-the-Applications-menu"><span style="color: #00008b;"> Option 2:  Use the Applications menu</span></h2>
+<ol><li>Click on <strong>Applications</strong> at the top left corner of the screen
+</li><li>Click on the arrow to the right of Rosetta
+</li><li>Click on Rosetta Settings (the one with a gear)
+</li></ol>
+<table style="margin-left: 75px; margin-bottom: 10px; border: 0px solid darkgray; "><tr><td colspan="2" valign="top"> Applications
+</td></tr><tr><td rowspan="6" style="width: 200px; vertical-align: top;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta   &gt;
+</td><td style="width: 225px; vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_7px.png" width="20px"/> Rosetta
+</td></tr><tr><td style="background-color: #00aae4; vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_SettingsGear.png" width="20px"/> <span style="color: white;">Rosetta Settings</span>
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Backup.png" width="20px"/> Backup Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/REB_Update.png" width="20px"/> Update Rosetta
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_GeoChuck.png" width="20px"/> Geometric Chuck Designer
+</td></tr><tr><td style="vertical-align: middle;" valign="top"> <img alt="" src="Images/Rosetta_Rosette.png" width="20px"/> Rosette Designer
+</td></tr></table>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>

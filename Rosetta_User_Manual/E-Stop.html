@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-Stop (F1) – Rosetta User Manual</title>
+<link rel="stylesheet" href="rosetta-docs.css">
+<link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <img src="Images/RosettaLogo.png" alt="" width="44" height="44">
+    <span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span>
+  </a>
+  <nav class="site-nav" aria-label="Manuals">
+    <a href="index.html">Contents</a>
+    <a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a>
+  </nav>
+</header>
+<main class="page">
+  <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>E-Stop (F1)</span></p>
+  <h1>E-Stop (F1)</h1>
+  
+  <div class="content">
+
+<div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/F1-Estop.png" width="150px"/></span></div>
+<p>E-STOP is always engaged when the system is started. You must disengage the E-STOP before any other operations can be performed. This can be done by either clicking on the indicated icon, or by using the F1 key. Either will toggle this state.
+</p>
+<p class="vspace"><span style="color: red;"><strong><ins>Key Note</ins>:</strong></span> <span style="color: red;">If something is going awry, use the F1 button to put the machine into an E-STOP mode.</span>  That will stop all movement.  And, when the E-STOP status is reset, the settings you were using will be waiting for you to resume or restart the operation.
+</p>
+<hr/>
+<p><a id="LostContact"></a>
+</p><h1 id="Lost-Contact-with-a-Box"><span style="color: #00008b;"> Lost Contact with a Box</span></h1>
+<p>Rosetta also goes into E-STOP by itself if the Raspberry Pi loses contact with the Base Box or the Expansion Box while it is running - for example, a network cable comes loose, or a box is switched off.  All the axes stop, a message such as <strong>Expansion box lost contact - E-stop</strong> says which box it was, and (if used) the signal tower's red light comes on and the fault siren sounds.
+</p>
+<p class="vspace">Check that box's network cable, the network switch in the Base Box, and the box's power.  Once the box is back in contact, press F1 to clear the E-STOP.
+</p>
+<hr/>
+<h1 id="E-Stop-Button"><span style="color: #00008b;"> E-Stop Button</span></h1>
+<p>If an <a href="E-StopCabling.html">E-stop button</a> is connected, pressing it also puts the system into E-STOP, and the E-STOP cannot be released (F1) until the button is released.
+</p>
+<h2 id="Using-the-E-Stop-Button"><span style="color: #00008b;"> Using the E-Stop Button</span></h2>
+<table border="1" style="width: 100%; background-color: #F6F5F4; border: 1px solid darkgray; "><tr><td style="width: 80px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> Machine State</span>
+</td><td style="width: 100px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> E-Stop Button Status</span>
+</td><td style="width: 175px; background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> Action Taken</span>
+</td><td style="background-color: #00008b; text-align: center; vertical-align: bottom;" valign="top"> <span style="color: white;"> What Happens</span>
+</td></tr><tr><td rowspan="5" valign="top"> Emergency Stop
+</td><td rowspan="3" valign="top"> Engaged
+</td><td valign="top"> Press the F1 button
+</td><td rowspan="2" valign="top"> Nothing happens.  These cannot clear having the E-Stop button engaged.
+</td></tr><tr><td valign="top">
+<div class="img"><span class="lfloat"> <img alt="" src="Images/EmergencyStopButton.png" width="30px"/> </span></div>
+<p>Click the Emergency Stop icon 
+</p></td></tr><tr><td valign="top"> Disengage E-Stop Button
+</td><td valign="top"> Nothing happens.  The E-Stop button will not toggle the Emergency Stop condition to off.
+</td></tr><tr><td rowspan="2" valign="top"> Disengaged
+</td><td valign="top"> Press the F1 button
+</td><td rowspan="2" valign="top"> The Emergency Stop status is cleared.
+</td></tr><tr><td valign="top">
+<div class="img"><span class="lfloat"> <img alt="" src="Images/EmergencyStopButton.png" width="30px"/> </span></div>
+<p>Click the Emergency Stop icon 
+</p></td></tr><tr><td rowspan="3" valign="top"> Machine is running
+</td><td rowspan="3" valign="top"> Disengaged
+</td><td valign="top"> Engage the E-Stop Button
+</td><td rowspan="3" valign="top"> The machine drops into Emergency Stop
+</td></tr><tr><td valign="top"> Press the F1 button
+</td></tr><tr><td valign="top">
+<div class="img"><span class="lfloat"> <img alt="" src="Images/EmergencyStopButton.png" width="30px"/> </span></div>
+<p>Click the Emergency Stop icon 
+</p></td></tr></table>
+
+
+
+
+
+
+
+
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Links marked <span class="online-eg">↗</span> open on the Internet. Without a connection, use another computer or a phone.
+     The latest version of this manual is at <a class="online" href="https://rosetta.colvintools.com/UserManual/" target="_blank" rel="noopener">https://rosetta.colvintools.com/UserManual/</a>.</p>
+  <p><a class="online" href="https://rosetta.colvintools.com/Rosetta_Overview.html" target="_blank" rel="noopener">About the Rosetta System</a> ·
+     <a class="online" href="https://rosetta.colvintools.com/TermsofUse.html" target="_blank" rel="noopener">Terms of Use</a> ·
+     Questions or comments? <a href="mailto:ColvinTools@Gmail.com">ColvinTools@Gmail.com</a></p>
+  <p class="copyright">Copyright © 2026 Colvin Tools and Brainwave Embedded.</p>
+</footer>
+</body>
+</html>
