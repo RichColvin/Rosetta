@@ -24,6 +24,17 @@ body {
   font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "DejaVu Sans", Arial, sans-serif;
 }
 
+/* Hyphenation, as in the Sharpening Handbook: on for running text
+   (needs lang="en" on <html>), off for headings, navigation and code. */
+body { -webkit-hyphens: auto; hyphens: auto; }
+h1, h2, h3, h4, .site-header, .crumbs, .toc, .footer-links, code, pre, kbd, .content a {
+  -webkit-hyphens: manual; hyphens: manual;
+}
+
+/* Trial (21 November 2026): the Sharpening Handbook's light grey page,
+   on the User Manual contents page only (<html class="tinted">). */
+html.tinted, html.tinted body, html.tinted .page { background: #e6e6e6; }
+
 a { color: var(--link); }
 a:hover { color: var(--navy); }
 
