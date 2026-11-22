@@ -64,6 +64,11 @@
 #             only packages it would remove are automatically
 #             installed libraries and none is part of LinuxCNC;
 #             otherwise it lists them and leaves them for support.
+#   2.0 - 22 November 2026 - then runs "apt autoremove" (e.g. old
+#             standard kernels), after marking the running kernel's
+#             packages as installed in their own right, and only
+#             when nothing it would remove is LinuxCNC's or the
+#             running kernel's; otherwise it lists them.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -314,6 +319,53 @@ else
             echo -e "${KEYNOTE}update carries on.                                               ${NOCOLOR}"
         else
             echo -e "${TITLE}Packages kept back are now installed                                   ${NOCOLOR}"
+        fi
+    fi
+fi
+# Added 22 November 2026 - remove packages nothing needs any more,
+# mostly old standard kernels left behind by kernel updates. Rosetta
+# boots a real-time kernel (config.txt's kernel=kernel8_rt.img, a file
+# no package owns) whose drivers in /lib/modules come from its
+# linux-image package; if that package were marked as automatically
+# installed, autoremove could take the drivers away and with them the
+# network the Mesa cards use. So mark the running kernel's packages as
+# installed in their own right first, then see what autoremove would do
+# and only go ahead when nothing on the list belongs to the running
+# kernel (any package naming its version, e.g. 6.12.34+rpt) or to
+# LinuxCNC/Mesa. Otherwise list the packages and carry on.
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Remove packages no longer needed                                       ${NOCOLOR}"
+running_kernel=$(uname -r)
+kernel_version=${running_kernel%%-*}
+for pkg in "linux-image-$running_kernel" "linux-headers-$running_kernel"; do
+    if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed" \
+       && apt-mark showauto 2>/dev/null | grep -qx "$pkg"; then
+        sudo apt-mark manual "$pkg" > /dev/null && echo "Kept the running kernel's $pkg"
+    fi
+done
+unneeded=$(LC_ALL=C apt-get -s autoremove 2>/dev/null | sed -n 's/^Remv \([^ ]*\).*/\1/p')
+if [ -z "$unneeded" ]; then
+    echo -e "${TITLE}No packages to remove                                                  ${NOCOLOR}"
+else
+    unneeded_blocked=""
+    for pkg in $unneeded; do
+        if [[ "$pkg" == *"$kernel_version"* ]] || [[ "$pkg" == *linuxcnc* ]] \
+           || [[ "$pkg" == *mesaflash* ]]; then
+            unneeded_blocked="$unneeded_blocked $pkg"
+        fi
+    done
+    if [ -n "$unneeded_blocked" ]; then
+        echo -e "${KEYNOTE}apt would remove packages Rosetta may need:                          ${NOCOLOR}"
+        echo "   $unneeded_blocked"
+        echo -e "${KEYNOTE}so nothing is removed. Please tell Rosetta support.                  ${NOCOLOR}"
+    else
+        echo "Removing:" $unneeded
+        sudo apt-get autoremove -y
+        if [ $? != 0 ]; then
+            echo -e "${KEYNOTE}WARNING: could not remove the packages no longer needed - the    ${NOCOLOR}"
+            echo -e "${KEYNOTE}Rosetta update carries on.                                       ${NOCOLOR}"
+        else
+            echo -e "${TITLE}Packages no longer needed are removed                                  ${NOCOLOR}"
         fi
     fi
 fi
