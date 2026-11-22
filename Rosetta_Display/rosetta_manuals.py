@@ -49,6 +49,8 @@
 #   1.0 - 21 November 2026
 #   1.1 - 21 November 2026 - document_url(): documents shipped with the
 #         User Manual, such as the Ornamental Turner's Handy Book (PDF)
+#   1.2 - 22 November 2026 - the website fallback is the website's copy
+#         of the HTML folders, not the PmWiki pages
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -63,15 +65,14 @@ import webbrowser
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# section -> (folder in the repo, the website's address for a page).
-# While the website still runs the PmWiki copies, a page is
-# index.php?n=Main.<Page> there and the contents page is Main.HomePage;
-# change these when the website serves the HTML folders instead.
+# section -> (folder in the repo, the website's copy of that folder).
+# The website serves the same HTML folders (since 22 November 2026), so
+# a page is <folder>/<page>.html there too.
 SECTIONS = {
     "manual": ("Rosetta_User_Manual",
-               "https://rosetta.colvintools.com/UserManual/index.php?n=Main."),
+               "https://rosetta.colvintools.com/Rosetta_User_Manual/"),
     "gcode":  ("Rosetta_Gcode_Library",
-               "https://rosetta.colvintools.com/Gcode/index.php?n=Main."),
+               "https://rosetta.colvintools.com/Rosetta_Gcode_Library/"),
 }
 
 # Browsers that accept a file:// address with an anchor, by command.
@@ -88,7 +89,7 @@ def page_url(page="index", anchor="", section="manual"):
     path = os.path.join(REPO_DIR, folder, page + ".html")
     if os.path.isfile(path):
         return pathlib.Path(path).as_uri() + fragment
-    return online + ("HomePage" if page == "index" else page) + fragment
+    return online + page + ".html" + fragment
 
 
 def document_url(name, online):
