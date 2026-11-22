@@ -157,6 +157,9 @@ html.on-this-machine .local-only { display: inline; color: #9a4300; }
 .left { text-align: left; } .center { text-align: center; } .right { text-align: right; }
 .rfloat { float: right; margin: 4px 0 12px 20px; }
 .lfloat { float: left; margin: 4px 20px 12px 0; }
+.side-icon { float: right; width: 64px; margin: 2px 0 10px 16px; text-align: center; }   /* a small icon beside a section - floats at every width */
+.side-icon img { width: 100%; height: auto; display: block; }
+.side-icon figcaption { font-size: 13px; font-style: italic; font-weight: bold; color: var(--muted); padding-top: 3px; line-height: 1.2; }
 .img { margin: 0; }
 .frame { display: inline-block; padding: 6px; background: #fff; border: 1px solid var(--rule); border-radius: 4px; }
 .frame.rfloat, .frame.lfloat { display: block; }
