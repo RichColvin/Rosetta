@@ -35,6 +35,8 @@
 #   1.0 - 22 November 2026
 #   1.1 - 22 November 2026 - What's New button hidden until release
 #         (SHOW_WHATS_NEW).
+#   1.2 - 22 November 2026 - asks for a restart while the computer's
+#         new name (Rosetta_Set_Machine_Name.sh) is waiting for one.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -72,6 +74,7 @@
 import argparse
 import os
 import re
+import socket
 import sys
 import gi
 gi.require_version("Gtk", "3.0")
@@ -102,6 +105,16 @@ def installed_version():
     return match.group(1).strip() if match else None
 
 
+def renamed_name():
+    """The computer's new name if it takes effect at the next restart."""
+    try:
+        with open("/etc/hostname") as f:
+            saved = f.read().strip()
+    except OSError:
+        return None
+    return saved if saved and saved != socket.gethostname() else None
+
+
 def message(args):
     """(message type, headline, detail text) for the box."""
     now = installed_version()
@@ -130,7 +143,12 @@ def message(args):
     else:
         lines.append("No system packages needed updating.")
     lines.append("")
-    if args.restart:
+    new_name = renamed_name()
+    if new_name:
+        lines.append("Please restart the computer - its new name, \"%s\", "
+                     "takes effect then. Use Shut Down, then switch the power "
+                     "off and on again." % new_name)
+    elif args.restart:
         lines.append("Please restart the computer before using Rosetta - "
                      "the update changed part of the operating system. "
                      "Use Shut Down, then switch the power off and on again.")

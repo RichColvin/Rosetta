@@ -60,6 +60,10 @@
 #   2.4 - 21 November 2026 - Step 15: adds the offline User Manual and
 #         Gcode Library icons to the desktop and the Applications menu
 #         (Rosetta_Add_Manuals.sh).
+#   2.5 - 22 November 2026 - Step 11 also names the computer after
+#         the serial number, e.g. rosetta-003
+#         (Rosetta_Set_Machine_Name.sh --install), so an owner's
+#         machines don't share a name on the network.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -326,7 +330,7 @@ echo -e "${TITLE}                                                               
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Shortcuts.sh
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}Step 11 - Record this machine's serial number                         ${NOCOLOR}"
+echo -e "${TITLE}Step 11 - Record this machine's serial number and name the computer    ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 # Optional - leave it blank if there isn't one (e.g. a self-built
 # machine). The system reports its version every update, identified by
@@ -334,6 +338,10 @@ echo -e "${TITLE}                                                               
 # a label for talking to support. Machines installed before this step
 # get asked on their next update instead.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Set_Serial_Number.sh
+# Then name the computer after it (rosetta-003), so two machines on one
+# network never share a name - without a serial number, after the Pi's
+# own hardware serial. Takes effect at the restart that ends the install.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Set_Machine_Name.sh --install
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Step 12 - Add the Rosette Designer to the Applications menu            ${NOCOLOR}"

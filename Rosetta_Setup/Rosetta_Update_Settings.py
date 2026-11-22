@@ -74,6 +74,8 @@
 #         (one-time step; they stay in the menu)                      #
 #   1.13 - 21 November 2026 - adds the offline User Manual and Gcode  #
 #         Library icons (desktop and menu; one-time step)             #
+#   1.14 - 22 November 2026 - offers once to name the computer after  #
+#         its serial number, e.g. rosetta-003 (one-time step)         #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -100,6 +102,8 @@ SEED_PATH = os.path.join(REPO_DIR, "Rosetta_Setup", "RosettaSet_v1.ini")
 ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shortcuts.sh"),       # 20 October 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Set_Serial_Number.sh"),   # 23 October 2026
+    # Right after the serial number, which it names the computer from.
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Set_Machine_Name.sh"),    # 22 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Rosette_Designer.sh"),  # 15 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Shut_Down.sh"),          # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_GeoChuck_Designer.sh"),  # 17 November 2026
