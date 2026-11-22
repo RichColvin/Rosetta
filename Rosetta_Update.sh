@@ -58,6 +58,12 @@
 #             unsaved tuning, a backup may be copying.
 #   1.8 - 17 November 2026 - also asks for the Geometric Chuck
 #             Designer to be closed.
+#   1.9 - 22 November 2026 - after "apt upgrade", also installs
+#             packages it kept back (an upgrade needing a new
+#             package, e.g. libcamera0.7 -> 0.8), but only when the
+#             only packages it would remove are automatically
+#             installed libraries and none is part of LinuxCNC;
+#             otherwise it lists them and leaves them for support.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -269,5 +275,47 @@ if [ $? != 0 ]; then
     exit 1
 fi
 echo -e "${TITLE}System Updated                                                         ${NOCOLOR}"
+# Added 22 November 2026 - "apt upgrade" never installs or removes a
+# package, so it keeps back any upgrade that needs a new package (e.g.
+# Raspberry Pi's camera software moving from libcamera0.7 to 0.8, which
+# installs libcamera0.8 and removes libcamera0.7). "full-upgrade" can do
+# that, but can also remove packages that matter, so first see what it
+# would do and only go ahead when everything it removes is an
+# automatically installed library ("lib..." - pulled in by another
+# package, not installed in its own right) and nothing it removes is
+# part of LinuxCNC. Otherwise list the packages and carry on.
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Check for packages kept back                                           ${NOCOLOR}"
+held_plan=$(LC_ALL=C apt-get -s full-upgrade 2>/dev/null)
+held_installs=$(echo "$held_plan" | sed -n 's/^Inst \([^ ]*\).*/\1/p')
+held_removals=$(echo "$held_plan" | sed -n 's/^Remv \([^ ]*\).*/\1/p')
+if [ -z "$held_installs" ] && [ -z "$held_removals" ]; then
+    echo -e "${TITLE}No packages kept back                                                  ${NOCOLOR}"
+else
+    held_auto=$(apt-mark showauto 2>/dev/null)
+    held_blocked=""
+    for pkg in $held_removals; do
+        name=${pkg%%:*}
+        if [[ "$name" != lib* ]] || [[ "$name" == *linuxcnc* ]] \
+           || ! grep -qx -e "$name" -e "$pkg" <<< "$held_auto"; then
+            held_blocked="$held_blocked $pkg"
+        fi
+    done
+    if [ -n "$held_blocked" ]; then
+        echo -e "${KEYNOTE}Some packages were kept back. Installing them would remove:          ${NOCOLOR}"
+        echo "   $held_blocked"
+        echo -e "${KEYNOTE}so they are left as they are. Please tell Rosetta support.           ${NOCOLOR}"
+    else
+        echo "Installing packages kept back:" $held_installs
+        [ -n "$held_removals" ] && echo "Replacing:" $held_removals
+        sudo apt-get full-upgrade -y
+        if [ $? != 0 ]; then
+            echo -e "${KEYNOTE}WARNING: could not install the packages kept back - the Rosetta  ${NOCOLOR}"
+            echo -e "${KEYNOTE}update carries on.                                               ${NOCOLOR}"
+        else
+            echo -e "${TITLE}Packages kept back are now installed                                   ${NOCOLOR}"
+        fi
+    fi
+fi
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Update finished - Rosetta and its programs can be opened again.        ${NOCOLOR}"
