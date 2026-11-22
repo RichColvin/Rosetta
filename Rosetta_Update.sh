@@ -69,6 +69,12 @@
 #             packages as installed in their own right, and only
 #             when nothing it would remove is LinuxCNC's or the
 #             running kernel's; otherwise it lists them.
+#   2.1 - 22 November 2026 - ends with a message box
+#             (Rosetta_Display/Rosetta_Update_Done.py) giving the
+#             version now installed and the one before, how many
+#             system packages changed, whether to restart, and
+#             anything the update couldn't do - also when it stops
+#             part way, since the terminal window closes then.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -181,6 +187,34 @@ else
 fi
 cd "$REPO_DIR"
 
+# Added 22 November 2026 - the end-of-update message box. Things the
+# operator should know are collected in "notices" as the update goes.
+rosetta_version() {
+    sed -n 's/.*>\(REB \)\{0,1\}O\/S \([^<]*\)<\/property>.*/\2/p' \
+        "$REPO_DIR/Rosetta_Display/Rosetta_Panel_v1.ui" 2>/dev/null | head -1
+}
+version_before=$(rosetta_version)
+commit_before=$(git rev-parse -q HEAD 2>/dev/null)
+notices=()
+packages_changed=0
+restart_needed=false
+# Shows the message box (only if it exists - not before the pull that
+# brings it - and with a desktop to show it on). $1: why the update
+# stopped, or nothing when it finished.
+finish_window() {
+    local done_py="$REPO_DIR/Rosetta_Display/Rosetta_Update_Done.py"
+    [ -f "$done_py" ] || return 0
+    local args=(--before "$version_before" --packages "$packages_changed")
+    [ "$restart_needed" = true ] && args+=(--restart)
+    [ "$(git rev-parse -q HEAD 2>/dev/null)" != "$commit_before" ] && args+=(--files-changed)
+    [ -n "$1" ] && args+=(--failed "$1")
+    local text
+    for text in "${notices[@]}"; do
+        args+=(--notice "$text")
+    done
+    python3 "$done_py" "${args[@]}" > /dev/null 2>&1 || true
+}
+
 # Set aside any local changes to tracked files - e.g. the operator's tool
 # table (Rosetta_Custom/Rosetta_Tool.tbl) or HAL additions (Rosetta_Custom/Rosetta_Custom.hal)
 # - so they can't make the pull fail, then put them back afterwards.
@@ -201,6 +235,7 @@ if [ $? != 0 ]; then
         git stash pop
     fi
     echo -e "${KEYNOTE}PROGRAM TERMINATED PREMATURELY                                       ${NOCOLOR}"
+    finish_window "The update couldn't be fetched from GitHub. Check that the computer is connected to the Internet."
     exit 1
 fi
 
@@ -215,6 +250,7 @@ if [ "$stashed" = true ]; then
         echo -e "${KEYNOTE}WARNING: local changes could not be re-applied automatically.       ${NOCOLOR}"
         echo -e "${KEYNOTE}They are saved - see 'git stash list' (Rosetta_Update ...) and the   ${NOCOLOR}"
         echo -e "${KEYNOTE}Support Manual page 'Updating Rosetta' to restore them.              ${NOCOLOR}"
+        notices+=("Your own changes (e.g. the tool table) clashed with the update and were set aside - contact Rosetta support to get them back.")
     fi
 fi
 echo -e "${TITLE}Latest files pulled from GitHub                                        ${NOCOLOR}"
@@ -228,6 +264,7 @@ echo -e "${TITLE}Add any new settings to this machine's settings file           
 python3 "$REPO_DIR/Rosetta_Setup/Rosetta_Update_Settings.py"
 if [ $? != 0 ]; then
     echo -e "${KEYNOTE}WARNING: settings file could not be checked - see the message above.  ${NOCOLOR}"
+    notices+=("The settings file couldn't be checked for new settings.")
 fi
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Refresh the EtherLab package signing key                               ${NOCOLOR}"
@@ -268,15 +305,19 @@ sudo apt update
 if [ $? != 0 ]; then
     echo -e "${KEYNOTE}ERROR: Package update failed                                         ${NOCOLOR}"
     echo -e "${KEYNOTE}PROGRAM TERMINATED PREMATURELY                                       ${NOCOLOR}"
+    finish_window "Rosetta's own files were updated, but the list of system packages couldn't be fetched, so the system wasn't updated. Check the Internet connection."
     exit 1
 fi
 echo -e "${TITLE}Latest package updates secured                                         ${NOCOLOR}"
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Update the system                                                      ${NOCOLOR}"
+# What's installed before the system update, to count what changed.
+packages_before=$(dpkg-query -W -f='${Package} ${Version}\n' 2>/dev/null | sort)
 sudo apt upgrade -y
 if [ $? != 0 ]; then
     echo -e "${KEYNOTE}ERROR: System upgrade failed                                         ${NOCOLOR}"
     echo -e "${KEYNOTE}PROGRAM TERMINATED PREMATURELY                                       ${NOCOLOR}"
+    finish_window "Rosetta's own files were updated, but updating the system packages failed."
     exit 1
 fi
 echo -e "${TITLE}System Updated                                                         ${NOCOLOR}"
@@ -310,12 +351,14 @@ else
         echo -e "${KEYNOTE}Some packages were kept back. Installing them would remove:          ${NOCOLOR}"
         echo "   $held_blocked"
         echo -e "${KEYNOTE}so they are left as they are. Please tell Rosetta support.           ${NOCOLOR}"
+        notices+=("Some system packages were held back, to keep packages Rosetta may need - please tell Rosetta support.")
     else
         echo "Installing packages kept back:" $held_installs
         [ -n "$held_removals" ] && echo "Replacing:" $held_removals
         sudo apt-get full-upgrade -y
         if [ $? != 0 ]; then
             echo -e "${KEYNOTE}WARNING: could not install the packages kept back - the Rosetta  ${NOCOLOR}"
+            notices+=("Some system packages held back couldn't be installed.")
             echo -e "${KEYNOTE}update carries on.                                               ${NOCOLOR}"
         else
             echo -e "${TITLE}Packages kept back are now installed                                   ${NOCOLOR}"
@@ -358,11 +401,13 @@ else
         echo -e "${KEYNOTE}apt would remove packages Rosetta may need:                          ${NOCOLOR}"
         echo "   $unneeded_blocked"
         echo -e "${KEYNOTE}so nothing is removed. Please tell Rosetta support.                  ${NOCOLOR}"
+        notices+=("Packages no longer needed were left, as Rosetta may need some of them - please tell Rosetta support.")
     else
         echo "Removing:" $unneeded
         sudo apt-get autoremove -y
         if [ $? != 0 ]; then
             echo -e "${KEYNOTE}WARNING: could not remove the packages no longer needed - the    ${NOCOLOR}"
+            notices+=("Packages no longer needed couldn't be removed.")
             echo -e "${KEYNOTE}Rosetta update carries on.                                       ${NOCOLOR}"
         else
             echo -e "${TITLE}Packages no longer needed are removed                                  ${NOCOLOR}"
@@ -371,3 +416,16 @@ else
 fi
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Update finished - Rosetta and its programs can be opened again.        ${NOCOLOR}"
+# Count the system packages installed, upgraded or removed, and ask for
+# a restart when the kernel, the Pi's firmware or a core library
+# changed (those take effect only after one).
+packages_after=$(dpkg-query -W -f='${Package} ${Version}\n' 2>/dev/null | sort)
+changed_names=$(comm -3 <(echo "$packages_before") <(echo "$packages_after") \
+    | sed 's/^[[:space:]]*//' | cut -d' ' -f1 | sort -u)
+if [ -n "$changed_names" ]; then
+    packages_changed=$(echo "$changed_names" | wc -l)
+    if echo "$changed_names" | grep -qE '^(linux-image-|raspi-firmware|rpi-eeprom|libc6|systemd|dbus)'; then
+        restart_needed=true
+    fi
+fi
+finish_window
