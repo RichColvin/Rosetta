@@ -33,6 +33,8 @@
 #
 # Version
 #   1.0 - 22 November 2026
+#   1.1 - 22 November 2026 - What's New button hidden until release
+#         (SHOW_WHATS_NEW).
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -83,6 +85,10 @@ PANEL_UI_PATH = os.path.join(REPO_DIR, "Rosetta_Display", "Rosetta_Panel_v1.ui")
 # renaming).
 VERSION_LABEL_PATTERN = re.compile(r">(?:REB )?O/S ([^<]+?)</property>")
 WHATS_NEW_PAGE = "ReleaseNotes"
+# Hidden until release (about April 2027) - the Release Notes page isn't
+# kept up to date before then, so it would look out of date. Set True
+# once it is (the tracker's "Release Notes page" row).
+SHOW_WHATS_NEW = False
 WHATS_NEW = 1
 
 
@@ -157,7 +163,7 @@ def main():
     if os.path.exists(ICON):
         dialog.set_icon_from_file(ICON)
     dialog.format_secondary_text(detail)
-    if not args.failed:
+    if SHOW_WHATS_NEW and not args.failed:
         dialog.add_button("What's New", WHATS_NEW)
     dialog.add_button("OK", Gtk.ResponseType.OK)
     dialog.set_default_response(Gtk.ResponseType.OK)
