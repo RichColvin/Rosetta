@@ -245,12 +245,18 @@ a.download:hover { background: #2c2c9a; color: #fff; }
   /* Phones (23 November 2026): tables laid out in columns (class
      "stack" - the contents page, How All the Parts Fit Together) go one
      under the other; other tables scroll sideways if they must; long
-     file paths break; fixed indents and side boxes come in to the edge. */
+     paths break at their slashes (<wbr> in the pages); fixed indents and side boxes come in to the edge. */
   .content table.stack, .content table.stack > tbody, .content table.stack > tr,
   .content table.stack > tbody > tr, .content table.stack > tr > td,
   .content table.stack > tbody > tr > td { display: block; width: auto !important; }
   .content table:not(.stack) { display: block; overflow-x: auto; }
-  .content td, .content th { overflow-wrap: anywhere; }
+  .content td, .content th { overflow-wrap: break-word; }
+  /* worked formulas: the name above, the formula under it */
+  .content table.equation, .content table.equation > tbody, .content table.equation tr,
+  .content table.equation td { display: block; }
+  .content table.equation td.eq-lhs { text-align: left; padding-right: 0; }
+  .content table.equation td.eq-lhs:empty { display: none; }
+  .content table.equation td.eq-rhs { padding-left: 1em; }
   .content table[style*="margin-left"], .content table[style*="margin-right"] {
     margin-left: 0 !important; margin-right: 0 !important; width: auto !important;
   }

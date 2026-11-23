@@ -8,6 +8,40 @@
 <script src="search-index.js" defer></script>
 <script src="rosetta-docs.js" defer></script>
 <link rel="icon" type="image/png" href="Images/RosettaLogo.png">
+<style>
+/* Microstep Calculator page (23 November 2026) */
+.ms-title { margin-bottom: 6px; }
+.ms-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.content .ms-table, .content .ms-compare, .content .calc { border-collapse: collapse; }
+.content .ms-table th, .content .ms-table td, .content .ms-compare th, .content .ms-compare td,
+.content .calc td { border: 1px solid #000; }
+.content .ms-table th, .content .ms-compare th { background: Moccasin; text-align: center; vertical-align: bottom; }
+.content .ms-table th { width: 70px; font-size: 14px; }
+.content .ms-table td { text-align: center; }
+.content .ms-compare { width: 100%; }
+.content .ms-compare th { width: 50%; }
+.content .ms-compare p:first-child { margin-top: 0; } .content .ms-compare p:last-child { margin-bottom: 0; }
+.content .calc { width: 100%; background: LightGray; }
+.content .calc .calc-head td { background: Moccasin; color: blue; }
+.content .calc .calc-head span { float: right; font-weight: normal; }
+.content .calc-field { white-space: nowrap; text-align: right; }
+.content .calc-label { width: 300px; }
+.content .calc p { margin: 0; }
+.content .calc select, .content .calc input { font-size: 16px; text-align: right; width: 80px; background: #FFEE9C; }
+.calc-ok { color: darkgreen; } .calc-bad { color: red; }
+.calc-button { text-align: center; }
+.calc-button button { font-size: 20px; background: #0404B4; color: #fff; border: 0; border-radius: 4px; padding: 6px 16px; }
+@media (max-width: 760px) {
+  .content table.calc, .content table.calc > tbody { display: block; width: auto; }
+  .content table.calc tr { display: grid; grid-template-columns: 1fr auto; border: 1px solid #000; border-top: 0; }
+  .content table.calc tr:first-child { border-top: 1px solid #000; }
+  .content table.calc td { border: 0; width: auto; }
+  .content table.calc td.calc-note { grid-column: 1 / -1; padding-top: 0; }
+  .content table.calc td.calc-note:empty { display: none; }
+  .content table.calc .calc-head td { grid-column: 1 / -1; }
+  .content table.calc .calc-head span { float: none; display: block; }
+}
+</style>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Rosetta Manual">
 <meta name="theme-color" content="#191970">
@@ -31,51 +65,51 @@
 <script>
     function calcValues()    {
 
-	var fmmInch = 0.0393701;
-	var x = document.getElementById("frm1");
+    var fmmInch = 0.0393701;
+    var x = document.getElementById("frm1");
 
 // ###################################################
 // Get the DM542 Pulses / Motor Rev
 //
-	sDM542MicroSteps = Number(x.elements[0].value);
+    sDM542MicroSteps = Number(x.elements[0].value);
 
 // ###################################################
 // Get the stepper motor gearing ratio
 //
-	iGearingRatio = Number(x.elements[1].value);
+    iGearingRatio = Number(x.elements[1].value);
 
 // ###################################################
 // Get the Leadscrew movement per revolution
 //
-	fLeadscrewMvmtPerRev = Number(x.elements[2].value);
+    fLeadscrewMvmtPerRev = Number(x.elements[2].value);
 
 // ###################################################
 // Get the leadscrew starts
 //
-	iLeadscrewStarts = Number(x.elements[3].value);
+    iLeadscrewStarts = Number(x.elements[3].value);
 
 // ###################################################
 // Get the object radius
 //
-	fObjectRadius = Number(x.elements[4].value);
+    fObjectRadius = Number(x.elements[4].value);
 
 // ###################################################
 // Calculate the Values for Linear Movement
 //
     var fLinearMovement = 0.0000;
-	fLinearMovement = (fLeadscrewMvmtPerRev / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
+    fLinearMovement = (fLeadscrewMvmtPerRev / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
 
     document.getElementById("DM542PulPerMotorRev").innerHTML = sDM542MicroSteps.toFixed(0) + " pulses per motor revolution";
 
     document.getElementById("LinearMovement").innerHTML = fLinearMovement.toFixed(5);
 
-	var LinearMovementResultRed = "";
-	var LinearMovementResultGreen = "";
-	if (fLinearMovement > 0.0005) {
-		LinearMovementResultRed = "Granularity of linear movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
-	} else {
-		LinearMovementResultGreen = "Granularity of linear movement is less than 0.0005&rdquo;.";
-	}
+    var LinearMovementResultRed = "";
+    var LinearMovementResultGreen = "";
+    if (fLinearMovement > 0.0005) {
+        LinearMovementResultRed = "Granularity of linear movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
+    } else {
+        LinearMovementResultGreen = "Granularity of linear movement is less than 0.0005&rdquo;.";
+    }
 
     document.getElementById("LinearMovementResultRed").innerHTML = LinearMovementResultRed;
     document.getElementById("LinearMovementResultGreen").innerHTML = LinearMovementResultGreen;
@@ -83,18 +117,18 @@
 // ###################################################
 // Calculate the Values for Angular Movement
 //
-	var fDegPerMicrostep = (360 / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
-	var fArcLength = (fDegPerMicrostep / 360 ) * 2 * Math.PI * fObjectRadius;
+    var fDegPerMicrostep = (360 / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
+    var fArcLength = (fDegPerMicrostep / 360 ) * 2 * Math.PI * fObjectRadius;
 
     document.getElementById("AngularMovement").innerHTML = fArcLength.toFixed(5);
 
-	var AngularMovementResultRed = "";
-	var AngularMovementResultGreen = "";
-	if (fArcLength > 0.0005) {
-		AngularMovementResultRed = "Granularity of angular movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
-	} else {
-		AngularMovementResultGreen = "Granularity of angular movement is less than 0.0005&rdquo;.";
-	}
+    var AngularMovementResultRed = "";
+    var AngularMovementResultGreen = "";
+    if (fArcLength > 0.0005) {
+        AngularMovementResultRed = "Granularity of angular movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
+    } else {
+        AngularMovementResultGreen = "Granularity of angular movement is less than 0.0005&rdquo;.";
+    }
 
     document.getElementById("AngularMovementResultRed").innerHTML = AngularMovementResultRed;
     document.getElementById("AngularMovementResultGreen").innerHTML = AngularMovementResultGreen;
@@ -108,439 +142,46 @@
 <h2 id="Stepper-Motor-Drive-Options" style="color: darkblue; margin-bottom: 6px;">Stepper Motor Drive Options</h2>
 <p style="margin-top: 6px;">Each DM542T Stepper Drives can be set to one of these settings.
 
-<b>DM542T Microstepping Options</b>
-<table style="border-collapse: collapse; margin-left: auto; margin-right: auto;">
-<tr style="">
-<th style="background-color: Moccasin; width: 60px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Micro-steps</b>
-</th>
-<th style="background-color: Moccasin; width: 100px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Pulses / Motor Rev</b>
-</th>
-<th style="width: 5px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-		        border-left-width: thin; border-right-width: thin; ">
-             
-    	</th>
-<th style="background-color: Moccasin; width: 60px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Micro-steps</b>
-</th>
-<th style="background-color: Moccasin; width: 100px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Pulses / Motor Rev</b>
-</th>
-<th style="width: 75px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-		        border-left-width: thin; border-right-width: thin; ">
-             
-    	</th>
-<th style="background-color: Moccasin; width: 60px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Micro-steps</b>
-</th>
-<th style="background-color: Moccasin; width: 100px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Pulses / Motor Rev</b>
-</th>
-<th style="width: 10px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-		        border-left-width: thin; border-right-width: thin; ">
-             
-    	</th>
-<th style="background-color: Moccasin; width: 60px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Micro-steps</b>
-</th>
-<th style="background-color: Moccasin; width: 100px; border-style: solid; text-align: center;  vertical-align: bottom; 
-            	border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Pulses / Motor Rev</b>
-</th>
-</tr>
-<tr>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			1
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			200
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			16
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			3,200
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			5
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			1,000
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			40
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			8,000
-		</td>
-</tr>
-<tr>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			2
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			400
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			32
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			6,400
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			10
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			2,000
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			50
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			10,000
-		</td>
-</tr>
-<tr>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			4
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			800
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			64
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			12,800
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			20
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			4,000
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			100
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			20,000
-		</td>
-</tr>
-<tr>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			8
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			1,600
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			128
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			25,600
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			25
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			5,000
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: 0px; border-bottom-width: 0px; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			125
-		</td>
-<td style="border-style: solid;  text-align: right; vertical-align: top; 
-        		border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			25,000
-		</td>
-</tr>
+<p class="ms-title"><b>DM542T Microstepping Options</b></p>
+<div class="ms-groups">
+<table class="ms-table">
+<tr><th>Micro-steps</th><th>Pulses / Motor Rev</th></tr>
+<tr><td>1</td><td>200</td></tr>
+<tr><td>2</td><td>400</td></tr>
+<tr><td>4</td><td>800</td></tr>
+<tr><td>8</td><td>1,600</td></tr>
 </table>
+<table class="ms-table">
+<tr><th>Micro-steps</th><th>Pulses / Motor Rev</th></tr>
+<tr><td>16</td><td>3,200</td></tr>
+<tr><td>32</td><td>6,400</td></tr>
+<tr><td>64</td><td>12,800</td></tr>
+<tr><td>128</td><td>25,600</td></tr>
+</table>
+<table class="ms-table">
+<tr><th>Micro-steps</th><th>Pulses / Motor Rev</th></tr>
+<tr><td>5</td><td>1,000</td></tr>
+<tr><td>10</td><td>2,000</td></tr>
+<tr><td>20</td><td>4,000</td></tr>
+<tr><td>25</td><td>5,000</td></tr>
+</table>
+<table class="ms-table">
+<tr><th>Micro-steps</th><th>Pulses / Motor Rev</th></tr>
+<tr><td>40</td><td>8,000</td></tr>
+<tr><td>50</td><td>10,000</td></tr>
+<tr><td>100</td><td>20,000</td></tr>
+<tr><td>125</td><td>25,000</td></tr>
+</table>
+</div>
 <!-- ####################################################################### -->
 <!-- Calculator                                                              -->
 <!-- ####################################################################### -->
 <p>Input fields are <span style="background-color: #FFEE9C"><b> colored </b></span>.  Once the values have been entered, click the <b>Calculate Granularity</b> button below the table.
 
-<form id="frm1">
-<table style="width: 100%; border-collapse: collapse;">
-<tr bgcolor="Moccasin">
-<td colspan="3" style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p style="color: blue; margin-top: 0px; margin-bottom: 0px;"><b>Fixed Values</b></p>
-</td>
-<td style="
-				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p style="color: blue; margin-top: 0px; margin-bottom: 0px;">These are based on your machine</p>
-</td>
-</tr>
-<tr bgcolor="LightGray"> <!-- DM542T Microsteps -->
-<!-- Field description -->
-<td style="width: 300px;
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			DM542T Microsteps Setting
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<label for="DM542MicroSteps"></label>
-<select id="DM542MicroSteps" name="DM542MicroSteps" style="font-size:14px; 
-					text-align: right; width: 65px; 
- 					background-color:#FFEE9C">
+<form id="frm1" oninput="calcValues()">
+<table class="calc">
+<tr class="calc-head"><td colspan="3"><b>Fixed Values</b><span>These are based on your machine</span></td></tr>
+<tr><td class="calc-label">DM542T Microsteps Setting</td><td class="calc-field"><select id="DM542MicroSteps" name="DM542MicroSteps" aria-label="DM542T Microsteps Setting">
 <option value="200">1</option>
 <option value="400">2</option>
 <option value="800">4</option>
@@ -557,276 +198,20 @@
 <option value="10000">50</option>
 <option value="20000">100</option>
 <option value="25000">125</option>
-</select>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			 
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p id="DM542PulPerMotorRev" style="margin: 0px; padding: 0px;"></p>
-</td>
-</tr>
-<tr bgcolor="LightGray"> <!-- Gearing Ratio -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Stepper Motor Gearing Ratio
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<input name="GearingRatio" placeholder="1" step="1" style="font-size:14px; text-align: right; width: 65px; background-color:#FFEE9C" type="number" value="1"/>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			:1
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			The gearing ratio for the stepper motor driving the moved part.  For spindles on the MDF Rose Engine, this is 9:1, so a 9 would be entered here.
-		</td>
-</tr>
-<tr bgcolor="LightGray"> <!-- Leadscrew Dist/Rev -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Leadscrew Movement per Revolution
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<input name="LeadscrewMvmtPerRev" placeholder="0.1000" step="0.0010" style="font-size:14px; text-align: right; width: 65px; background-color:#FFEE9C" type="number" value="0.1000"/>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			inch
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			This is the distance the cutter is moved for each revolution of the leadscrew.
-		</td>
-</tr>
-<tr bgcolor="LightGray"> <!-- Leadscrew Starts -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Leadscrew Starts
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<input name="LeadscrewStarts" placeholder="1" step="1" style="font-size:14px; text-align: right; width: 35px; background-color:#FFEE9C" type="number" value="1"/>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			 
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-</tr>
-<tr bgcolor="LightGray"> <!-- Radius for Angular Calculations -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Object Radius
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<input name="ObjectRadius" placeholder="1.00" step="0.01" style="font-size:14px; text-align: right; width: 65px; background-color:#FFEE9C" type="number" value="1.00"/>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			inch
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			For cutting on the perimeter, this is the angular movement.
-		</td>
-</tr>
-<tr bgcolor="Moccasin">
-<td colspan="3" style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p style="color: blue; margin-top: 0px; margin-bottom: 0px;"><b>Calculated Values</b></p>
-</td>
-<td style="
-				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			 
-		</td>
-</tr>
-<tr bgcolor="white"> <!-- Linear Movement per Microstep -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Linear Movement per Microstep
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<p id="LinearMovement" style="margin: 0px; padding: 0px;"></p>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			inch
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p id="LinearMovementResultGreen" style="margin: 0px; padding: 0px; color: darkgreen;"></p>
-<p id="LinearMovementResultRed" style="margin: 0px; padding: 0px; color: red;"></p>
-</td>
-</tr>
-<tr bgcolor="white"> <!-- Angular Movement per Microstep -->
-<!-- Field description -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-			Angular Movement per Microstep
-		</td>
-<!-- Field -->
-<td style="
- 				text-align: right; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: thin; border-right-width: 0px; 
-				padding-left: 5px; padding-right: 1px;">
-<p id="AngularMovement" style="margin: 0px; padding: 0px;"></p>
-</td>
-<!-- Field UOM -->
-<td style="
-				text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 1px; padding-right: 5px;">
-			inch
-		</td>
-<!-- Field comment -->
-<td style="text-align: left; vertical-align: top; 
-        		border-style: solid;  border-color: black; 
-				border-top-width: thin; border-bottom-width: thin; 
-				border-left-width: 0px; border-right-width: thin; 
-				padding-left: 5px; padding-right: 5px;">
-<p id="AngularMovementResultGreen" style="margin: 0px; padding: 0px; color: darkgreen;"></p>
-<p id="AngularMovementResultRed" style="margin: 0px; padding: 0px; color: red;"></p>
-</td>
-</tr>
+</select></td><td class="calc-note"><p id="DM542PulPerMotorRev"></p></td></tr>
+<tr><td class="calc-label">Stepper Motor Gearing Ratio</td><td class="calc-field"><input name="GearingRatio" aria-label="Stepper Motor Gearing Ratio" placeholder="1" step="1" type="number" inputmode="decimal" value="1"> :1</td><td class="calc-note">The gearing ratio for the stepper motor driving the moved part.  For spindles on the MDF Rose Engine, this is 9:1, so a 9 would be entered here.</td></tr>
+<tr><td class="calc-label">Leadscrew Movement per Revolution</td><td class="calc-field"><input name="LeadscrewMvmtPerRev" aria-label="Leadscrew Movement per Revolution" placeholder="0.1000" step="0.0010" type="number" inputmode="decimal" value="0.1000"> inch</td><td class="calc-note">This is the distance the cutter is moved for each revolution of the leadscrew.</td></tr>
+<tr><td class="calc-label">Leadscrew Starts</td><td class="calc-field"><input name="LeadscrewStarts" aria-label="Leadscrew Starts" placeholder="1" step="1" type="number" inputmode="decimal" value="1"></td><td class="calc-note"></td></tr>
+<tr><td class="calc-label">Object Radius</td><td class="calc-field"><input name="ObjectRadius" aria-label="Object Radius" placeholder="1.00" step="0.01" type="number" inputmode="decimal" value="1.00"> inch</td><td class="calc-note">For cutting on the perimeter, this is the angular movement.</td></tr>
+<tr class="calc-head"><td colspan="3"><b>Calculated Values</b></td></tr>
+<tr><td class="calc-label">Linear Movement per Microstep</td><td class="calc-field"><span id="LinearMovement"></span> inch</td><td class="calc-note"><p id="LinearMovementResultGreen" class="calc-ok"></p>
+<p id="LinearMovementResultRed" class="calc-bad"></p></td></tr>
+<tr><td class="calc-label">Angular Movement per Microstep</td><td class="calc-field"><span id="AngularMovement"></span> inch</td><td class="calc-note"><p id="AngularMovementResultGreen" class="calc-ok"></p>
+<p id="AngularMovementResultRed" class="calc-bad"></p></td></tr>
 </table>
 </form>
-<p>
-<center>
-<button autofocus="" onclick="calcValues()" style="font-size:20px; background-color: #0404B4; color: white;" type="button">
-	Calculate Granularity
-    </button>
-</center>
+<p class="calc-button"><button onclick="calcValues()" type="button">Calculate Granularity</button></p>
+<script>calcValues();</script>
 <!-- ####################################################################### -->
 <!-- Determining the Setting to Use                                          -->
 <!-- ####################################################################### -->
@@ -834,41 +219,11 @@
 <h1 id="Determining-the-Setting-to-Use" style="color: darkblue; margin-bottom: 6px;">Determining the Setting to Use</h1>
 <p style="margin-top: 6px;">The microsteps setting to use should be based on weighing accuracy vs. speed.
 
-<table style="width: 100%; border-collapse: collapse;">
-<tr style="">
-<th style="width: 50%; background-color: Moccasin; 
-        		text-align: center;  vertical-align: bottom;         		
-        		border-style: solid; border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Higher Number of Micro-steps</b>
-</th>
-<th style="width: 50%; background-color: Moccasin; 
-        		text-align: center;  vertical-align: bottom;         		
-        		border-style: solid; border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; ">
-<b>Lower Number of Micro-steps</b>
-</th>
-</tr>
-<tr style="">
-<td style="text-align: left;  vertical-align: top;         		
-        		border-style: solid; border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; 
-		        padding-left: 5px; padding-right: 5px;">
-            A higher setting for the microsteps allows for a finer granularity of movement.
-    	</td>
-<td style="text-align: left;  vertical-align: top;         		
-        		border-style: solid; border-color: black; 
-		        border-top-width: thin; border-bottom-width: thin; 
-		        border-left-width: thin; border-right-width: thin; 
-		        padding-left: 5px; padding-right: 5px;">
-<p style="margin-top: 0px;">There is a limit to the number of pulses which LinuxCNC can send to a stepper motor in a given timeframe (i.e., there is a maximum pulses/second).  
-            
-            <p style="margin-bottom: 0px;">Defining the pulses per revolution lower allows LinuxCNC to drive the motion faster.
-    	</p></p></td>
-</tr>
+<table class="ms-compare">
+<tr><th>Higher Number of Micro-steps</th><th>Lower Number of Micro-steps</th></tr>
+<tr><td>A higher setting for the microsteps allows for a finer granularity of movement.</td>
+<td><p>There is a limit to the number of pulses which LinuxCNC can send to a stepper motor in a given timeframe (i.e., there is a maximum pulses/<wbr>second).</p>
+<p>Defining the pulses per revolution lower allows LinuxCNC to drive the motion faster.</p></td></tr>
 </table>
 <!-- ####################################################################### -->
 <!-- Background                                                              -->
@@ -902,7 +257,6 @@ Arc length can then be calculated for the perimeter of the piece which has a 2�
 <!-- ####################################################################### -->
 <!-- Footer                                                                  -->
 <!-- ####################################################################### -->
-</p></p></p></p></p></p></p></p></p></p>
   </div>
 <!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="ScaleSettingsForADevice.html"><span>Previous</span>Scale Settings for a Device</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="Other.html"><span>Next</span>Other Configuration Settings</a></nav><!--/pager-->
 </main>

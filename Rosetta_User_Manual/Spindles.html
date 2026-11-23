@@ -32,7 +32,7 @@
 <table border="0" style="width: 300px; float: right; background-color: LightGray; padding: 5px; margin-left: 10px; margin-bottom: 10px;"><tr><td valign="top">
 <p><span style="color: #00008b;"> <span class="pmL2">Gcode Example</span> <br class="clearboth"/></span>
 <strong>m3 s5 $1</strong>
-</p><div class="indent">run the rosette phaser/multiplier ($1) in the forward direction (m3) at a feed rate of 5 rpm (s5)
+</p><div class="indent">run the rosette phaser/<wbr>multiplier ($1) in the forward direction (m3) at a feed rate of 5 rpm (s5)
 </div></td></tr></table>
 <p class="vspace">There are two spindles catered for on this system:
 </p><ul><li>Sp0 = the main spindle (also known as $0 with Gcode commands), and
@@ -69,7 +69,7 @@
 <ul><li><strong>Note:</strong> If the setting <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong>, then commands to run a motor will automatically ENAble the axis, and leave it ENAbled after the operation finishes.
 </li></ul></div><div class="indent">The speed for the spindle is called the <strong>feed rate</strong>.
 <ul><li>For Sp0 (main spindle), the maximum is 10 rpm, but that is probably too fast for most rose engine work.
-</li><li>For Sp1 (rosette phaser/multiplier), the feed rate is set as a percentage of the Sp0 spindle.
+</li><li>For Sp1 (rosette phaser/<wbr>multiplier), the feed rate is set as a percentage of the Sp0 spindle.
 <ul><li>It has range of up to 1,000% (10x) of the speed of the Sp0 spindle.
 </li><li>If it is set at a negative number, it runs in the opposite direction.
 </li><li>If it is set to 0, it will not run.
