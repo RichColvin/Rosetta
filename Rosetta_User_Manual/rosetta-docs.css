@@ -242,7 +242,19 @@ a.download:hover { background: #2c2c9a; color: #fff; }
   [id] { scroll-margin-top: 8px; }
   .footer-contact { text-align: left; }
   .rfloat, .lfloat, .content table[style*="float"] { float: none !important; width: auto !important; margin: 12px 0 !important; }
-  .content table { display: block; overflow-x: auto; }
+  /* Phones (23 November 2026): tables laid out in columns (class
+     "stack" - the contents page, How All the Parts Fit Together) go one
+     under the other; other tables scroll sideways if they must; long
+     file paths break; fixed indents and side boxes come in to the edge. */
+  .content table.stack, .content table.stack > tbody, .content table.stack > tr,
+  .content table.stack > tbody > tr, .content table.stack > tr > td,
+  .content table.stack > tbody > tr > td { display: block; width: auto !important; }
+  .content table:not(.stack) { display: block; overflow-x: auto; }
+  .content td, .content th { overflow-wrap: anywhere; }
+  .content table[style*="margin-left"], .content table[style*="margin-right"] {
+    margin-left: 0 !important; margin-right: 0 !important; width: auto !important;
+  }
+  .content table[align="right"], .content table[align="left"] { float: none; margin: 12px 0; }
   .indent { margin-left: 1em; }
   h1 { font-size: 26px; }
 }
