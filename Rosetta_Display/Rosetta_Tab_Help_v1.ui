@@ -29,6 +29,7 @@
 #                                                                     #
 # Version                                                             #
 #   1.0 - 21 July 2026                                                #
+#   1.1 - 23 November 2026 - Website button: rosetta.colvintools.com  #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -125,7 +126,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="HAL_Button" id="Library">
-                    <property name="label" translatable="yes">colvintools.com/Rosetta</property>
+                    <property name="label" translatable="yes">rosetta.colvintools.com</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="has-focus">True</property>

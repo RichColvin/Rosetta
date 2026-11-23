@@ -35,6 +35,7 @@
 #         tile                                                        #
 #   1.4 - 20 October 2026 - Settings note removed, library button up  #
 #   1.5 - 20 October 2026 - Program progress bar beside Sync Move     #
+#   1.6 - 23 November 2026 - Website button: rosetta.colvintools.com  #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -1877,7 +1878,7 @@ feed rate</property>
             </child>
             <child>
               <object class="HAL_Button" id="Open Library">
-                <property name="label" translatable="yes">colvintools.com/Rosetta</property>
+                <property name="label" translatable="yes">rosetta.colvintools.com</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
