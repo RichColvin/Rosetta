@@ -39,6 +39,8 @@
 # Version
 #   1.0 - 21 November 2026
 #   1.1 - 21 November 2026 - the version line moved to the header
+#   1.2 - 23 November 2026 - <wbr> joins the words either side in the
+#         search index (it was read as a space)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -71,6 +73,7 @@ class Page(HTMLParser):
         self._content_depth = 0
         self._skip = 0
         self._head = None
+        self._glue = False
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -86,6 +89,8 @@ class Page(HTMLParser):
             self._head = [a["id"], ""]
         if self._content and tag == "a" and a.get("href"):
             self.links.append(a["href"])
+        if tag == "wbr":
+            self._glue = True             # a break point, not a space
 
     def handle_endtag(self, tag):
         if tag in self.SKIP and self._skip:
@@ -104,9 +109,13 @@ class Page(HTMLParser):
         if self._in_h1:
             self.title += data
         if self._content and not self._skip:
-            self.text.append(data)
+            if self._glue and self.text:
+                self.text[-1] += data
+            else:
+                self.text.append(data)
             if self._head:
                 self._head[1] += data
+        self._glue = False
 
 
 def parse(path):
