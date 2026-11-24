@@ -67,6 +67,16 @@ Built and committed, but not yet seen working on real hardware.
 
 Ideas and designs not yet being built. Nothing here has code yet.
 
+### Change the drives away from 6,400 microsteps - later
+
+Rich, 24 November 2026: strongly looking to move the stepper drives off 6,400 microsteps per motor turn, but not yet. The User Manual's microsteps note (Axis and Stepper Motor Tuning) was reworded the same day to say "leave the drives as they were set up" instead of naming 6,400, so it needn't change. Places that name 6,400 or a Scale worked out from it, to change with it:
+- User Manual `AxisAndStepperMotorTuning.html`: "normally set to 6,400 microsteps" and the "Rosetta's fastest speed" table (X, Z, Sp0 at 6,400).
+- User Manual `ScaleAndMicrosteps.html` (Microstep Calculator): its table and the calculator's choices (check which it starts on) and `SwitchSettingsOnTheDM542Ts.html` (SW5-SW8).
+- `Rosetta_Setup/RosettaSet_v1.ini` (the seed's `scale` values - 387650, 387100, 160, 67000 - set for 6,400) and the shipped defaults in `Rosetta.ini` / `rosetta_settings_io.py`; a change there reaches only new machines - existing ones keep their own Scale, and their drives' switches must match it.
+- `Rosetta_Setup/Rosetta_Checkout.py` `DEFAULT_STEPS_PER_REV` (6400) - the bench checkout's test Scale.
+- Support Manual: `HardwareBuildCommonSteps.html` and `InstallationAndSetupForDebian13Trixie.html` (drive switch settings for a new build).
+- The Ornamental Turning Book of Knowledge's Stepper Motor page, if it names 6,400 for Rosetta.
+
 ### Geometric Chuck Designer as a web page - dropped 18 November 2026
 
 Rich spoke with Roy Lindley 18 November 2026: they don't want the Geometric Chuck Designer (or Roy's Bazley catalogue) on a public web page, and a web Rosette Designer is dropped too (Rich: likely to bring many unforeseen problems). Don't revisit unless Rich raises it. (The idea, for the record: a draw-only page, no G-code, for turners using Roy's technique without Rosetta.)
