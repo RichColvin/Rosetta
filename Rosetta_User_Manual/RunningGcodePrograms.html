@@ -38,11 +38,11 @@
 <table border="0" style="width: calc(100% - 40px); margin-left: 20px;"><tr><td style="font-family: Courier;" valign="top"> ~/<wbr>linuxcnc/<wbr>configs/<wbr>Rosetta/<wbr>gcode/
 </td></tr></table>
 <p class="note"><strong>Note:</strong> ~ means your home folder - <strong>Home</strong> in the file manager (/home/rosetta on a Rosetta).</p>
-<p class="note"><strong>Key Notes:</strong>
-</p><ol><li>Storing gcode files in this directory (or a sub-directory of this directory) will ensure the <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">backup program</a> will copy them to a USB flash drive.
+<div class="note"><p><strong>Key Notes:</strong></p>
+<ol><li>Storing gcode files in this directory (or a sub-directory of this directory) will ensure the <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">backup program</a> will copy them to a USB flash drive.
 </li><li>Gcode programs in other directories are not backed up using the <a href="BackingUpKeyUserFilesToAUSBMemoryStick.html">backup program</a>.
 </li><li>The Gcode files for LinuxCNC have a file type of <strong>.ngc</strong>.
-</li></ol>
+</li></ol></div>
 <table border="0" width="100%"><tr><td valign="top">
 <hr/>
 </td></tr></table>
@@ -62,9 +62,9 @@
 </li><li><strong>Warn, but let me continue</strong> - the same message is shown, but LinuxCNC starts anyway once you close it.
 </li></ul><p class="vspace">A short sound plays with the message if startup is aborted - see <a href="Sounds.html">Sounds</a>.
 </p>
-<p class="note"><strong>Key Note:</strong>
-</p><ol><li>Updating the Rosetta system never changes or removes the files in the <strong>gcode</strong> directory.
-</li></ol><hr/>
+<div class="note"><p><strong>Key Note:</strong></p>
+<ol><li>Updating the Rosetta system never changes or removes the files in the <strong>gcode</strong> directory.
+</li></ol></div><hr/>
 <h1 id="Editing-a-Gcode-Program">Editing a Gcode Program</h1>
 <div class="img imgcaption"><span class="frame lfloat"> <img alt="" src="Images/Thunar.png" width="65px"/><br/><span class="caption"><strong><em>Thunar</em></strong></span></span></div>
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/Thunar-Desktop.png" width="300px"/><br/><span class="caption"><strong><em>Thunar</em></strong></span></span></div>
@@ -101,9 +101,9 @@
 </li></ul></li></ol><div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/GoButton.png" width="200px"/><br/><span class="caption"><strong><em>Gcode Go Button</em></strong></span></span></div>
 <ol><li value="4"> Press the <strong>R</strong> button<sup><a href="#Note_01">①</a></sup> on the keyboard to run the program, or click on the <strong>Go</strong> button.  This is the one shown in the image to the right.
 <ul><li>If you prefer to step the Gcode program one step at a time, either press the <strong>T</strong> button<sup><a href="#Note_01">①</a></sup>, or use the button to the right of the <strong>Go</strong> button.  If you experience errors with what is happening, this may be useful for you.
-</li></ul></li></ol><p class="note"><strong>Key Note:</strong>
-</p><ol><li>If you open a program from a different directory, the <strong>Open</strong> window will open that directory for the rest of the session.  It will reset to defaulting in the <strong>gcode</strong> directory again each time LinuxCNC is started.
-</li></ol><h2 id="If-an-axis-is-not-available-for-use">If an axis is not available for use</h2>
+</li></ul></li></ol><div class="note"><p><strong>Key Note:</strong></p>
+<ol><li>If you open a program from a different directory, the <strong>Open</strong> window will open that directory for the rest of the session.  It will reset to defaulting in the <strong>gcode</strong> directory again each time LinuxCNC is started.
+</li></ol></div><h2 id="If-an-axis-is-not-available-for-use">If an axis is not available for use</h2>
 <p>When you click <strong><ins>O</ins>pen</strong> to open the gcode program you wish to run, Rosetta will check to confirm that the needed axes are configured for use.  If an axis has not been assigned to one of the available channels, the gcode program cannot run.
 </p>
 <p class="vspace">For example,

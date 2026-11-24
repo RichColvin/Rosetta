@@ -91,10 +91,10 @@
 <ul><li><strong>Enable ... and Run</strong> (on the main screen, <strong>Enable ... and Move</strong>) - turns those ENA buttons on, the same as clicking them, then carries on.  This is the default button, so pressing Enter chooses it.
 </li><li><strong>Cancel</strong> - leaves them off, and nothing moves.
 </li></ul></li><li><strong>Enable it automatically</strong> - the ENA buttons are turned on with no box, and Rosetta carries on.  For a Gcode program, a short note in the bottom right corner of the LinuxCNC window says which axes were enabled.
-</li></ul><p class="note"><strong>Notes:</strong>
-</p><ol><li>If the system is set to automatically enable an axis when needed, that axis cannot be enabled if it is not configured for use.  See also, <a href="AxisSelection.html">Axis Selection</a>.
+</li></ul><div class="note"><p><strong>Notes:</strong></p>
+<ol><li>If the system is set to automatically enable an axis when needed, that axis cannot be enabled if it is not configured for use.  See also, <a href="AxisSelection.html">Axis Selection</a>.
 </li><li>This choice is saved as soon as you make it, and takes effect the next time Rosetta starts.
-</li></ol>
+</li></ol></div>
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
 <hr/>
 </td><td valign="top">
@@ -109,11 +109,11 @@
 </li><li><strong>Alarm at</strong> (default 82 °C) - the temperature turns red, a message box appears, and, if <strong>Sound the alarm on the speaker</strong> is ticked, an alarm sounds on the Pi's speaker.
 </li></ul><p class="vspace">Nothing is paused or stopped - a program carries on.  Each warning appears once; it appears again only after the temperature has dropped a few degrees and risen again.
 </p>
-<p class="note"><strong>Notes:</strong>
-</p><ol><li>The Warning temperature must be below the Alarm temperature.  If it isn't, <strong>Warning must be below Alarm - not saved.</strong> is shown, and nothing is saved until it is corrected.
+<div class="note"><p><strong>Notes:</strong></p>
+<ol><li>The Warning temperature must be below the Alarm temperature.  If it isn't, <strong>Warning must be below Alarm - not saved.</strong> is shown, and nothing is saved until it is corrected.
 </li><li>These choices are saved as soon as you make them, and take effect the next time Rosetta starts.
 </li><li>For what to do when the Pi gets hot, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
-</li></ol>
+</li></ol></div>
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
 <hr/>
 </td><td valign="top">
@@ -124,10 +124,10 @@
 </p>
 <p class="vspace">Untick it to start Rosetta from its desktop icon instead - for example, while the computer is mostly being used for something else.
 </p>
-<p class="note"><strong>Notes:</strong>
-</p><ol><li>This is saved as soon as you change it, and takes effect the next time the computer starts.
+<div class="note"><p><strong>Notes:</strong></p>
+<ol><li>This is saved as soon as you change it, and takes effect the next time the computer starts.
 </li><li>If Rosetta was set to start this way by hand (in the desktop's <strong>Session and Startup</strong> settings), the tick box shows it, and unticking it switches that off too.
-</li></ol>
+</li></ol></div>
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
 <hr/>
 </td><td valign="top">
