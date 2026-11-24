@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="brand" href="index.html">
     <img src="Images/RosettaLogo-White.png" alt="" width="44" height="44">
-    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.19 - 22 November 2026<!--/version--></span></span>
+    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.20 - 24 November 2026<!--/version--></span></span>
   </a>
   <nav class="site-nav" aria-label="Manuals">
     <a href="index.html">Contents</a>
@@ -51,16 +51,18 @@
 </td><td style="text-align: left; vertical-align: top; padding-left: 5px; padding-right: 5px;" valign="top"> GND (ground)
 </td></tr></table>
 <h1 id="Limit-Switch-Notes">Limit Switch Notes</h1>
-<p>Limit switches are typically wired as <ins>normally closed</ins> (NC), and the circuit becomes open when the switch is triggered.  If you wire them as normally open (NO), there is a setting in the <a href="InputsOutputsSound.html#LimitSwitches">configuration program</a> you will need to use to make this work as you expect.
+<p>Limit switches are typically wired as <ins>normally closed</ins> (NC), and the circuit becomes open when the switch is triggered.</p>
+
+<p>If you wire them as normally open (NO), there is a setting in the <a href="InputsOutputsSound.html#LimitSwitches">configuration program</a> you will need to use to make this work as you expect.  Do note that this selection applies to all limit switches; you cannot have some wired as NO and others NC.
 </p>
-<p class="vspace">The switch simply connects the two pins together when it is not triggered. The Rosetta box supplies the signal itself, so never connect either wire to a power supply.
+<p class="vspace">For NO switches, the switch simply connects the two pins together when it is not triggered. NC switches connect the pins together when triggered.  In either case, the Rosetta box supplies the signal itself, so never connect either wire to a power supply.
 </p>
 <p class="vspace">Each jack takes either:
 </p><ul><li>one switch, for one end of an axis's travel (set the jack to <strong>min</strong> or <strong>max</strong>), or
 </li><li>two switches wired in series, one at each end (set the jack to <strong>both ends</strong>).
 </li></ul><p class="vspace">To protect both ends of an axis and still let LinuxCNC tell which end was hit (for example, each end of a curvilinear slide), use two jacks - one set to <strong>min</strong> and one to <strong>max</strong>.
 </p>
-<p class="vspace">A limit jack can take an external Pause button instead of a limit switch, wired the same way - see <a href="InputsOutputsSound.html#PauseButton">Pause Button</a>.
+<p class="vspace">One limit jack can take an external Pause button instead of a limit switch, wired the same way - see <a href="InputsOutputsSound.html#PauseButton">Pause Button</a>.
 </p>
 <p class="vspace">Route limit switch cables away from stepper motor cables where you can, and cross them at right angles rather than bundling them together, so electrical noise doesn't cause false trips.
 </p>

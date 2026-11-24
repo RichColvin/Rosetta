@@ -98,12 +98,59 @@
 <ul><li>If you open a program from a different directory, the <strong>Open</strong> window will start there for the rest of the session.  It starts in the <strong>gcode</strong> directory again each time LinuxCNC is started.
 </li><li>You may notice an error.  For example, if the Gcode program is expecting to use the B axis but you do not have your system configured to use the B axis, this will generate an error.
 </li><li>You will have to correct any errors for LinuxCNC to load the Gcode program.
-</li></ul></li></ol><div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/GoButton.png" width="200px"/><br/><span class="caption"><strong><em>Gcode Go Button</em></strong></span></span></div>
+</li></ul></li></ol>
+
+<div style="float: right; width: 50px;
+        margin-left: 0px; margin-right: 10px;
+        margin-top: 5px; margin-bottom: 10px;
+        padding-left: 5px; padding-right: 5px;
+        padding-top: 5px; padding-bottom: 5px;
+        border: 1px solid darkgray; text-align: center;
+        ">
+    <img alt="" src="Images/RoseEngineButler-RunGcode-Run.png" width="30px"/>
+</div>
 <ol><li value="4"> Press the <strong>R</strong> button<sup><a href="#Note_01">①</a></sup> on the keyboard to run the program, or click on the <strong>Go</strong> button.  This is the one shown in the image to the right.
 <ul><li>If you prefer to step the Gcode program one step at a time, either press the <strong>T</strong> button<sup><a href="#Note_01">①</a></sup>, or use the button to the right of the <strong>Go</strong> button.  If you experience errors with what is happening, this may be useful for you.
 </li></ul></li></ol><div class="note"><p><strong>Key Note:</strong></p>
 <ol><li>If you open a program from a different directory, the <strong>Open</strong> window will open that directory for the rest of the session.  It will reset to defaulting in the <strong>gcode</strong> directory again each time LinuxCNC is started.
-</li></ol></div><h2 id="If-an-axis-is-not-available-for-use">If an axis is not available for use</h2>
+</li></ol></div>
+<table style="width: 100%;">
+	<tr>
+		<td>Once the gcode program is loaded, you can choose to step through it one line at a time.   This uses the button shown on the right.
+		</td>
+		<td>
+    <img alt="" src="Images/RoseEngineButler-RunGcode-Step.png" style="width: 60px;
+        padding-left: 5px; padding-right: 5px;
+        padding-top: 5px; padding-bottom: 5px;
+        border: 1px solid darkgray; text-align:
+        center;"/>
+		</td>
+	</tr>
+	<tr>
+		<td>Once the gcode program is running, you can pause it.  This uses the button shown on the right. 
+		</td>
+		<td>
+    <img alt="" src="Images/RoseEngineButler-RunGcode-Pause.png" style="width: 60px;
+        padding-left: 5px; padding-right: 5px;
+        padding-top: 5px; padding-bottom: 5px;
+        border: 1px solid darkgray; text-align:
+        center;"/>
+		</td>
+	</tr>
+	<tr>
+		<td>Once the gcode program is running, you can also stop it.  This uses the button shown on the right. 
+		</td>
+		<td>
+    <img alt="" src="Images/RoseEngineButler-RunGcode-Stop.png" style="width: 60px;
+        padding-left: 5px; padding-right: 5px;
+        padding-top: 5px; padding-bottom: 5px;
+        border: 1px solid darkgray; text-align:
+        center;"/>
+		</td>
+	</tr>
+</table>
+
+<h2 id="If-an-axis-is-not-available-for-use">If an axis is not available for use</h2>
 <p>When you click <strong><ins>O</ins>pen</strong> to open the gcode program you wish to run, Rosetta will check to confirm that the needed axes are configured for use.  If an axis has not been assigned to one of the available channels, the gcode program cannot run.
 </p>
 <p class="vspace">For example,
@@ -148,13 +195,6 @@
 <ol><li value="1"> <a id="Note_01"></a>Using either upper case or lower case letters for this is acceptable.
 </li><li value="2"> <a id="Note_02"></a>If an error is encountered, LinuxCNC will usually turn the machine off (<a href="PowerOn.html#PowerOffMeaning">LinuxCNC&rsquo;s power off</a> &ndash; the Raspberry Pi and Rosetta keep running).  You will have to power on (F2) again to resume operations.
 </li></ol>
-
-
-
-
-
-
-
   </div>
 <!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="ENAble.html"><span>Previous</span>ENAble</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="E-Stop.html"><span>Next</span>E-Stop (F1)</a></nav><!--/pager-->
 </main>

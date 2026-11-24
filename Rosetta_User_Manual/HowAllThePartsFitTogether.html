@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="brand" href="index.html">
     <img src="Images/RosettaLogo-White.png" alt="" width="44" height="44">
-    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.19 - 22 November 2026<!--/version--></span></span>
+    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.20 - 24 November 2026<!--/version--></span></span>
   </a>
   <nav class="site-nav" aria-label="Manuals">
     <a href="index.html">Contents</a>
@@ -29,11 +29,11 @@
   <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Programs-on-the-System">Programs on the System</a></li><li class="toc-l0"><a href="#Manuals-on-the-Raspberry-Pi-and-the-Internet">Manuals on the Raspberry Pi and the Internet</a></li><li class="toc-l0"><a href="#Websites-on-the-Internet">Websites on the Internet</a></li><li class="toc-l0"><a href="#How-Base-LinuxCNC-is-Different-from-Rosetta">How Base LinuxCNC is Different from Rosetta</a></li><li class="toc-l1"><a href="#More-Than-a-Few-Add-ons">More Than a Few Add-ons</a></li><li class="toc-l1"><a href="#And-Some-Bases-to-Help-Users">And Some Bases to Help Users</a></li></ul></nav>
   <div class="content">
 
-<p>Rosetta is not one program; instead, on the Rosetta system box(es), there are six programs on the machine which work together.  Each one has its own job, its own icon, and its own entry on the <strong>Applications</strong> menu (click on <strong>Applications</strong>, then the arrow to the right of Rosetta).  
+<p>Rosetta is not a single program; rather, it is a set of programs:  some reside on the Rosetta system box(es), whilst others reside on an Internet site.  Each program has its own job, its own icon, and its own entry on the <strong>Applications</strong> menu (click on <strong>Applications</strong>, then the arrow to the right of Rosetta).  
 </p>
+<p class="vspace">The programs are related, but they are independent: each one is started on its own, and none of them starts the others.
 <p class="vspace"><strong>Rosetta</strong> and <strong>Rosetta Settings</strong>, the two you use every day, also have icons on the desktop.  So do the <strong>Rosetta User Manual</strong> and <strong>Rosetta Gcode Library</strong> (see <a href="#Manuals-on-the-Raspberry-Pi-and-the-Internet">Manuals on the Raspberry Pi and the Internet</a>, below).  
 </p>
-<p class="vspace">The six programs are related, because they all work on the same machine and share the same settings, but they are independent: each one is started on its own, and none of them starts the others.
 </p>
 <p class="vspace">Knowing which program does what is the key to finding your way around the system.  For example, if you are looking for a setting and cannot find it on the Rosetta screen, it is almost certainly in the <strong>Rosetta Settings</strong> program.
 </p>
@@ -46,7 +46,7 @@
 </td><td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 10px;" valign="top"> <img alt="" src="Images/REB_SettingsGear.png" width="90px"/> <br class="clearboth"/><em>The gear</em>
 </td><td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 10px;" valign="top"> <img alt="" src="Images/REB_Update.png" width="90px"/> <br class="clearboth"/><em>The green up arrow</em>
 </td></tr><tr><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>What it is:</strong> the machine control.  It starts LinuxCNC with the Rosetta screens.
-</td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>What it is:</strong> the settings program.  It tells Rosetta what is connected to the box, and how each device should behave.
+</td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>What it is:</strong> the settings program.  It tells Rosetta what is connected to the box, how each device should behave, and sets other options for the user&rsquo;s preference.
 </td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>What it is:</strong> the software updater.
 </td></tr><tr><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>Use it to:</strong>
 <ul><li>Jog the axes
@@ -84,26 +84,26 @@
 </td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>What it is:</strong> a program for implementing a <a class="online" href="https://otbok.info/index.php?n=Main.GeometricChuck" rel="noopener" target="_blank" title="Opens on the Internet">geometric chuck</a> using software and stepper motors (usually attached to the cross slide).
 </td></tr><tr><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>Use it to:</strong>
 <ul><li>Save all your key files just in case something crashes.
-</li></ul><p class="vspace">There is an option to restore these files in the <strong>Rosetta Settings</strong> program.
+</li></ul><p class="vspace">There is an option to restore these files in the <img alt="" src="Images/REB_SettingsGear.png" width="15px"/> <strong>Rosetta Settings</strong> program.
 </p></td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>Use it to:</strong>
 <ul><li>Try a rosette before buying or making one.
 </li><li>Cut with a rosette you would need too rarely to be worth making - the program is a software-defined rosette.
 </li><li>Save the rosette design for 3D printing, or machining.
 </li></ul></td><td style="vertical-align: top; border: 1px solid black; padding: 8px;" valign="top"> <strong>Use it to:</strong>
 <ul><li>Try a geometric chuck pattern before cutting it.
-</li><li>Cut geometric chuck patterns without a geometric chuck - the program is a software-defined geometric chuck.
+</li><li>Cut geometric chuck patterns without a geometric chuck - the program is a software-defined geometric chuck which uses the cross slide to move the cutter.
 </li></ul></td></tr></table>
 <div class="img imgonly"><span class="lfloat"> <img alt="" src="Images/Rosetta_Shut_Down.png" width="45px"/></span></div>
 <p><strong>Shut Down</strong> - used to shut the computer down properly before you switch the power off.  (See also, <a href="NewSystemStartup.html#SwitchingOff">Switching the System Off</a>.)
 </p>
 <hr/>
 <h1 id="Manuals-on-the-Raspberry-Pi-and-the-Internet">Manuals on the Raspberry Pi and the Internet</h1>
-<p>These two manuals are installed on your Rosetta, so they work without an Internet connection, and each update of the Rosetta software brings their latest version. Open them with the <strong>Rosetta User Manual</strong> and <strong>Rosetta Gcode Library</strong> icons on the desktop, from <strong>Applications</strong> &gt; <strong>Rosetta</strong>, or from the Help tab on Rosetta&rsquo;s main screen. The same pages are on the Rosetta website.
+<p>These two manuals are installed on your Rosetta, so they can be used without an Internet connection, and each update of the Rosetta software brings their latest version. Open them with the <strong>Rosetta User Manual</strong> and <strong>Rosetta Gcode Library</strong> icons on the desktop, from <strong>Applications</strong> &gt; <strong>Rosetta</strong>, or from the Help tab on Rosetta&rsquo;s main screen. The same pages you find on the Rosetta system are also on the Rosetta website.
 </p>
 <ul><li><span style="color: #00008b;"><strong>User Manual</strong></span> - the documentation you are now viewing (on the Internet: <a class="online" href="https://rosetta.colvintools.com/Rosetta_User_Manual/" rel="noopener" target="_blank" title="Opens on the Internet">https://rosetta.colvintools.com/Rosetta_User_Manual/</a>).
 </li><li><span style="color: #00008b;"><strong><a href="../Rosetta_Gcode_Library/index.html">Gcode Library</a></strong></span> - a library of Gcode programs which should be useful to the ornamental turner (on the Internet: <a class="online" href="https://rosetta.colvintools.com/Rosetta_Gcode_Library/" rel="noopener" target="_blank" title="Opens on the Internet">https://rosetta.colvintools.com/Rosetta_Gcode_Library/</a>).
 <ul><li>These have been vetted and documented to assist you in using them.
-</li><li>To use one of the Gcode programs, save it to your gcode library (~/linuxcnc/configs/Rosetta/gcode).
+</li><li>To use one of the Gcode programs, save it to your gcode library (we strongly recommend you use ~/linuxcnc/configs/Rosetta/gcode).
 </li></ul></li></ul><div class="indent">Some of these programs you will run as is; others you might modify or use as the basis for building your own Gcode programs. The online LinuxCNC <a class="online" href="https://linuxcnc.org/docs/html/gcode.html" rel="noopener" target="_blank" title="Opens on the Internet">Gcode Quick Reference</a> is good if you do decide to make your own Gcode program.
 </div>
 <hr/>
@@ -118,13 +118,13 @@
 <p>Rosetta is based on LinuxCNC with the  <a class="online" href="https://linuxcnc.org/docs/html/gui/axis.html" rel="noopener" target="_blank" title="Opens on the Internet">Axis GUI</a>.  To that, we added programs and configurations which make LinuxCNC more useful for the ornamental turner.  Graphically, you can see the difference in the images below.
 </p>
 
-<table border="0" style="margin-left: auto; margin-right: auto;"><tr><td valign="top"> <img alt="" height="325px" src="Images/LinuxCNCAxisGUI.png"/>
-</td><td valign="top" width="25px">   
-</td><td valign="top"> <img alt="" height="325px" src="Images/RoseEngineButler-AfterF1F2-WithExpansionBox.png"/>
-</td></tr><tr><td valign="top"> <strong><em>Base LinuxCNC</em></strong> using the Axis GUI
-</td><td valign="top">   
-</td><td valign="top"> <strong><em>Rosetta</em></strong> (with the Expansion Box)
-</td></tr></table>
+<!-- the two pictures share one height: each one's share of the width is its width / height (720/649 and 1920/1053) -->
+<div style="display: flex; gap: 25px; align-items: flex-start; max-width: 980px; margin: 0 auto;">
+<div style="flex: 1.1094 1 0; min-width: 0;"><img alt="Base LinuxCNC using the Axis GUI" src="Images/LinuxCNCAxisGUI.png" width="720" height="649" style="width: 100%; height: auto; display: block;"/>
+<strong><em>Base LinuxCNC</em></strong> using the Axis GUI</div>
+<div style="flex: 1.8234 1 0; min-width: 0;"><img alt="Rosetta with the Expansion Box" src="Images/RoseEngineButler-AfterF1F2-WithExpansionBox.png" width="1920" height="1053" style="width: 100%; height: auto; display: block;"/>
+<strong><em>Rosetta</em></strong> (with the Expansion Box)</div>
+</div>
 <p class="vspace"><span style="color: #00008b;"><strong>Debian Linux</strong></span> - Both systems run on  <a class="online" href="https://www.debian.org/" rel="noopener" target="_blank" title="Opens on the Internet">Debian Linux</a> which is a very solid version of Linux, and which also allows for operation as a  <a class="online" href="https://en.wikipedia.org/wiki/Real-time_operating_system" rel="noopener" target="_blank" title="Opens on the Internet">real-time operating system</a>.  Debian is an <a class="online" href="https://en.wikipedia.org/wiki/Open-source_software" rel="noopener" target="_blank" title="Opens on the Internet">open-source software</a> operating system developed and maintained by the Debian Project.
 </p>
 <p class="vspace"><span style="color: #00008b;"><strong>LinuxCNC</strong></span> - LinuxCNC (initially called Enhanced Machine Controller, or EMC2) was built by the  <a class="online" href="https://www.nist.gov/" rel="noopener" target="_blank" title="Opens on the Internet">U.S. National Institute of Standards and Technology</a> in  <a class="online" href="https://web.archive.org/web/20201208080506/https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir5331.pdf" rel="noopener" target="_blank" title="Opens on the Internet">1993</a> to reduce the cost for implementing an automation system for manufacturing.
@@ -148,7 +148,7 @@
 </div><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_Update.png" width="50px"/></span></div>
 <ul><li><span style="color: #00008b;"><strong>Fixes to the Update Process</strong></span> - As with many operating systems, there are occasional issues encountered with the upgrade process (sudo apt update / sudo apt upgrade).  When we encounter these, we add the fix for that issue into the Rosetta Upgrade program (the big green arrow) so that you do not have to research the needed actions.  It may require you to run the Upgrade program twice, but the issue will be resolved for you.
 </li></ul><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_Update.png" width="50px"/></span></div>
-<ul><li><span style="color: #00008b;"><strong>Rosetta Code Updates</strong></span> - We expect to provide updates over time. The Rosetta Upgrade program (the big green arrow) will pull these down to your system, and will make any updates to the on-board files for you. 
+<ul><li><span style="color: #00008b;"><strong>Rosetta Code Updates</strong></span> - We expect to provide updates over time. The Rosetta Upgrade program (the big green arrow) will pull these down to your system, and will make any updates to the on-board files for you. The on-board User Manual will also be updated so that it will match the code installed on your system, and the Gcode Library will also be udated with any newly published objects.
 </li></ul><h2 id="And-Some-Bases-to-Help-Users">And Some Bases to Help Users</h2>
 <ul><li><span style="color: #00008b;"><strong>Rosetta User Manual</strong></span> - the on-line <a href="index.html">user manual</a> for Rosetta is provided for helping users of the system.
 </li><li><span style="color: #00008b;"><strong>Rosetta Support Manual</strong></span> - the on-line <a class="online" href="https://rosetta.colvintools.com/Rosetta_Support_Manual/" rel="noopener" target="_blank" title="Opens on the Internet">support manual</a> for Rosetta is where we document a lot of technical details to keep those documents readily at hand.
@@ -164,7 +164,7 @@
 </li></ul><div class="indent">The cable ends were selected to provide:
 <ul><li>Ease of use
 </li><li>Secure connections (so the cables do not get accidentally disconnected)
-</li><li>Sizes and types which ensure you do not plug each device into the wrong jack
+</li><li>Sizes and types which ensure you do not accidentally plug a device into the wrong jack
 </li></ul></div><div class="img imgonly"><span class="rfloat"> <img alt="" src="Images/REB_SettingsGear.png" width="50px"/></span></div>
 <ul><li><span style="color: #00008b;"><strong>Rosetta Configuration Application</strong></span> - A rose engine's user needs the ability to reconfigure the system as necessary for the art to be produced.  These changes can necessitate changes to the way LinuxCNC is configured.  Traditionally, that was done by editing a text file, and requires a good knowledge of what to change (and what to not change).
 </li></ul><div class="indent">The Rosetta Settings program (the big gear) makes all this much easier, and has protections built in to help ensure you do not make settings which would make your system work poorly (or not work).
@@ -173,14 +173,7 @@
 </li><li><span style="color: #00008b;"><strong>LinuxCNC User Manual</strong></span> - the on-line <a class="online" href="https://www.linuxcnc.org/docs/html/" rel="noopener" target="_blank" title="Opens on the Internet">user manual</a> for LinuxCNC is very good.  It applies to the base system, and we doubt you will ever need it, but it can be useful for the Rosetta user also.
 </li><li><span style="color: #00008b;"><strong>LinuxCNC User Forum</strong></span> - the on-line <a class="online" href="https://forum.linuxcnc.org/" rel="noopener" target="_blank" title="Opens on the Internet">user forum</a> for LinuxCNC is also very good.  It applies to the base system, and we doubt you will ever need it, but it can be useful for the Rosetta user also.
 </li></ul>
-
-
-
-
-
-
-
-  </div>
+</div>
 <!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-prev" href="Overview.html"><span>Previous</span>Overview</a><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="NewSystemStartup.html"><span>Next</span>Starting Up Your New System</a></nav><!--/pager-->
 </main>
 <footer class="site-footer">

@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="brand" href="index.html">
     <img src="Images/RosettaLogo-White.png" alt="" width="44" height="44">
-    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.19 - 22 November 2026<!--/version--></span></span>
+    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.20 - 24 November 2026<!--/version--></span></span>
   </a>
   <nav class="site-nav" aria-label="Manuals">
     <a href="index.html">Contents</a>
@@ -66,8 +66,11 @@
 </p>
 <div class="img imgonly"><span class="frame rfloat"> <img alt="" src="Images/EnableSpeed.png" width="250px"/></span></div>
 <div class="indent"><strong>ENA</strong> is used to enable or disable the spindle's operation.  If a command is sent to the spindle’s stepper motor, but it is not enabled, no operation will happen, and an error message will eventually popup (usually a “following error”).
-<ul><li><strong>Note:</strong> If the setting <strong>Axis Not Enabled</strong> is set to <strong>Enable it automatically</strong>, then commands to run a motor will automatically ENAble the axis, and leave it ENAbled after the operation finishes.
-</li></ul></div><div class="indent">The speed for the spindle is called the <strong>feed rate</strong>.
+<p><strong>Notes</strong> regarding the setting <strong>Axis Not Enabled</strong>:
+<ul>
+<li><strong>Ask - recommended</strong>, you will be asked what you want to do:  enable the axes, or cancel the request.</li>
+<li><strong>Enable it automatically</strong>, then commands to run a motor will automatically ENAble the axis, and leave it ENAbled after the operation finishes.</li>
+</ul></div><div class="indent">The speed for the spindle is called the <strong>feed rate</strong>.
 <ul><li>For Sp0 (main spindle), the maximum is 10 rpm, but that is probably too fast for most rose engine work.
 </li><li>For Sp1 (rosette phaser/<wbr>multiplier), the feed rate is set as a percentage of the Sp0 spindle.
 <ul><li>It has range of up to 1,000% (10x) of the speed of the Sp0 spindle.
@@ -106,7 +109,7 @@
 <hr/>
 </td></tr></table>
 <h3 id="Connections">Connections</h3>
-<p>For this, the spindles are connected to whichever jacks are assigned to Sp0 (the main spindle) and Sp1 (the rosette phaser/multiplier) on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program.  By default, these are channels 04 and 05, the right-hand pair of plugs on the Base Box.
+<p>For this, the spindles are connected to whichever jacks are assigned to Sp0 (the main spindle) and Sp1 (the rosette phaser/multiplier) on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program.
 </p>
 <hr/>
 <h2 id="Synchronized-Usage">Synchronized Usage</h2>

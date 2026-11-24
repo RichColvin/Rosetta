@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="brand" href="index.html">
     <img src="Images/RosettaLogo-White.png" alt="" width="44" height="44">
-    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.19 - 22 November 2026<!--/version--></span></span>
+    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.20 - 24 November 2026<!--/version--></span></span>
   </a>
   <nav class="site-nav" aria-label="Manuals">
     <a href="index.html">Contents</a>
@@ -40,7 +40,7 @@
 </li><li>Implement more complex designs using standard gCode (such as software simulation of rosettes or a geometric chuck).
 </li></ol><p class="vspace">We designed Rosetta to be one which:
 </p><ol><li>Is powerful enough to 
-<ol style="list-style: lower-alpha;"><li> Drive simultaneous movement on up to 10 axes <sup><a href="#Note_01">①</a></sup>,<sup><a href="#Note_02">②</a></sup> (AKA, channels), each of which can be set to any of:
+<ol style="list-style: lower-alpha;"><li> Drive simultaneous movement on up to 10 axes <sup><a href="#Note_01">①</a>,<a href="#Note_02">②</a></sup> (AKA, channels), each of which can be set to any of:
 <ul><li>2 spindles
 <ul><li>Traditional spindle (Sp0)
 </li><li>Rosette phaser/multiplier (Sp1)
@@ -129,13 +129,14 @@
 </p>
 <ol><li> <a class="online" href="https://en.wikipedia.org/wiki/LinuxCNC" rel="noopener" target="_blank" title="Opens on the Internet">LinuxCNC</a>, an  <a class="online" href="https://en.wikipedia.org/wiki/Open-source_software" rel="noopener" target="_blank" title="Opens on the Internet">open-source system</a> which runs on  <a class="online" href="https://www.debian.org/" rel="noopener" target="_blank" title="Opens on the Internet">Debian</a> <a class="online" href="https://en.wikipedia.org/wiki/Linux" rel="noopener" target="_blank" title="Opens on the Internet">Linux</a>.  
 <ul><li>Linux is an operating system which runs on general purpose computers like a PC or  <a class="online" href="https://en.wikipedia.org/wiki/Raspberry_Pi" rel="noopener" target="_blank" title="Opens on the Internet">Raspberry Pi</a>.
-</li></ul></li><li>A  <a class="online" href="https://www.raspberrypi.com/news/introducing-raspberry-pi-5/" rel="noopener" target="_blank" title="Opens on the Internet">Raspberry Pi 5</a>, which is a powerful, low cost, general-purpose computer.  The Raspberry Pi 5 has shown it is powerful enough for the computations needed to make LinuxCNC run smoothly.
-</li><li>Readily available, off-the-shelf parts:
+</li></ul></li><li style="margin-top: 12px;">A  <a class="online" href="https://www.raspberrypi.com/news/introducing-raspberry-pi-5/" rel="noopener" target="_blank" title="Opens on the Internet">Raspberry Pi 5</a>, which is a powerful, low cost, general-purpose computer.  The Raspberry Pi 5 has shown it is powerful enough for the computations needed to make LinuxCNC run smoothly.
+</li><li style="margin-top: 12px;">Readily available, off-the-shelf parts:
 <ul><li> <a class="online" href="https://store.mesanet.com/index.php?route=product/product&amp;product_id=381" rel="noopener" target="_blank" title="Opens on the Internet">Mesa 7i92TH Programmable I/O Card</a>
 </li><li> <a class="online" href="https://www.omc-stepperonline.com/digital-stepper-driver-1-0-4-2a-20-50vdc-for-nema-17-23-24-stepper-motor-dm542t" rel="noopener" target="_blank" title="Opens on the Internet">Stepper Online DM542T Stepper Motor Drivers</a>
 </li><li>Standard computer monitor
 </li><li>Standard computer keyboard and mouse
-</li></ul></li><li>A custom printed circuit board (PCB), developed to make the wiring of the system easier, faster, and more reliable.
+</li></ul></li><li style="margin-top: 12px;">A custom printed circuit board (PCB), developed to make the wiring of the system easier, faster, and more reliable.
+<p style="margin-bottom: 0px;">Note:  we are not selling these PCBs, so if you build your own system, you will need to connect the components to the Mesa board(s) using an IDC26 breakout board.
 </li></ol><hr/>
 <h1 id="Notes">Notes</h1>
 <ol><li value="1"> <a id="Note_01"></a>The Base Box supports 
@@ -148,12 +149,6 @@
 </li><li>3 limit switches
 </li></ul></li><li value="3"> <a id="Note_03"></a><em>Workmanship at risk</em> is an idea outlined by David Pye in his book, “The Nature and Art of Workmanship”.
 </li></ol>
-
-
-
-
-
-
   </div>
 <!--pager--><nav class="pager" aria-label="Previous and next page"><a class="pager-contents" href="index.html"><span>User Manual</span>Contents</a><a class="pager-next" href="HowAllThePartsFitTogether.html"><span>Next</span>How the Rosetta Programs Fit Together</a></nav><!--/pager-->
 </main>

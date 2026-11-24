@@ -112,27 +112,29 @@
 </p><h2 id="Raspberry-Pi-Temperature">Raspberry Pi Temperature</h2>
 <p>There is a Raspberry Pi inside the Rosetta system.  This is a small computer inside the Base Box that is used to run Rosetta.
 </p>
-<p class="vspace">At the top right of the panel, beside the Rosetta logo, is the temperature of the Raspberry Pi (for example, <strong>Raspberry Pi 66 °C</strong>).  This displayed text changes colors if the Raspberry Pi’s temperature rises too high.
-</p><ul><li><span style="color: #c06000;"><strong>Orange</strong></span> - the Raspberry Pi is warm (at or above the <strong>Warning</strong> temperature).  Rosetta also shows a notice in the bottom right corner of its window.
-</li><li><span style="color: #c01c28;"><strong>Red</strong></span> - the Raspberry Pi is too hot (at or above the <strong>Alarm</strong> temperature).  A message box appears and an alarm sounds on the speaker.
-</li></ul><p class="vspace">There is also an indicator if the Raspberry Pi’s supply voltage is not where either should be.  
+<p class="vspace">At the top right of the panel, beside the Rosetta logo, is the temperature of the Raspberry Pi (for example, <strong>Raspberry Pi 66 °C</strong>).  This displayed text changes colors if the Raspberry Pi’s temperature rises too high.  For example,
+</p><ul><li><span style="color: #c06000;"><strong>Raspberry Pi 76 °C</strong></span> (shown in orange) - the Raspberry Pi is warm (at or above the <strong>Warning</strong> temperature).  Rosetta also shows a notice in the bottom right corner of its window. 
+<p>The default warning limit is 75 °C.  It is recommended that you not change this.
+</li><li><span style="color: #c01c28;"><strong>Raspberry Pi 83 °C</strong></span> (shown in red) - the Raspberry Pi is too hot (at or above the <strong>Alarm</strong> temperature).  A message box appears and an alarm sounds on the speaker. 
+<p>The default alarm limit is 82 °C.  It is recommended that you not change this.
+</li></ul>
+<p class="vspace">The temperature ranges used for alerting the user, and whether the alarm sounds, are set on the <a href="Other.html#PiTemperature">Other</a> page of Rosetta Settings.  
+Should any of these conditions occur, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
+</p>
+<p class="vspace">There is also an indicator if the Raspberry Pi’s supply voltage is not where either should be.  
 </p><ul><li><strong>⚡</strong> - the power supply isn't keeping up (undervoltage). There will also be a notice.
 </li></ul><p class="vspace">Nothing is stopped by any of these.  
-</p>
-<p class="vspace">The temperature ranges used for alerting the user, and whether the alarm sounds, are set on the <a href="Other.html#PiTemperature">Other</a> page of Rosetta Settings.  
-</p>
-<p class="vspace">Should any of these conditions occur, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
 </p>
 <p class="vspace"><a id="ENA"></a>
 </p><h2 id="ENA_">ENA</h2>
 <p>These buttons are used to enable or disable an axis.
-</p><ul><li>When red, the axis is disabled.
-</li><li>When green, the axis is enabled.
-</li><li>When gray, the axis is not configured for use.
+</p><ul><li>When the <span style="color: red;">button is red</span>, the axis is disabled.
+</li><li>When the <span style="color: green;">button is green</span>, the axis is enabled.
+</li><li>When the <span style="color: gray;">button is gray</span>, the axis is not configured for use.
 </li></ul><p class="vspace">If you click an index, <strong>Sync Move</strong> or <strong>Cut Thread</strong> button which would move using an axis or spindle which is not enabled, one of two things will happen
 </p>
 
-<table border="1" width="100%"><tr><td style="width: 200px; text-align: center; vertical-align: bottom; background-color: #00008b;" valign="top"> <span style="color: white;"><strong>Axis Not Enabled Setting</strong></span>
+<table border="1" width="100%"><tr><td style="width: 150px; text-align: center; vertical-align: bottom; background-color: #00008b;" valign="top"> <span style="color: white;"><strong>Axis Not Enabled Setting</strong></span>
 </td><td style="text-align: center; vertical-align: bottom; background-color: #00008b;" valign="top"> <span style="color: white;"><strong>What Happens</strong></span>
 </td></tr><tr><td valign="top"> <strong>Ask</strong>
 </td><td valign="top">
