@@ -40,6 +40,8 @@
 #         website
 #   1.5 - 21 November 2026 - Ornamental Turner's Handy Book button
 #         opens this machine's copy of the PDF too
+#   1.6 - 24 November 2026 - a negative Sp1 % turns Sp1 the opposite
+#         way to Sp0 (M3/M4, never a negative S word)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1697,7 +1699,7 @@ class HandlerClass:
 #                       Note:  sends M4, not M3 - see the Gcode0/Gcode1
 #                           comment below. This is an intentional,
 #                           empirically-verified swap, not a typo.
-# Updated:              ver 1.2, 08 August 2026
+# Updated:              ver 1.3, 24 November 2026
 # ---------------------------------------------------------------------
 # Called from:
 #   UI:                 Rosetta_Panel
@@ -1744,9 +1746,6 @@ class HandlerClass:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete() # Wait for mode change to complete
 
-        # Set the feed rates
-        Sp1_Feed = self.Sp1_Pct * self.Sp0_Feed / 100
-
         # Sends M4, not M3, despite this being the Fwd handler - an
         # empirical workaround, not a mistake. Live halcmd pin tracing
         # (spindle.0.forward/reverse/speed-out, which are motion-controller
@@ -1770,7 +1769,7 @@ class HandlerClass:
         # rotation match the button pressed, at the cost of the M-code
         # sent no longer matching the function name/button label.
         Gcode0 = "M4 $0 S" + str(self.Sp0_Feed)
-        Gcode1 = "M4 $1 S" + str(Sp1_Feed)
+        Gcode1 = self._sp1_start_gcode("M4")
 
         print(Gcode0)
         c.mdi(Gcode0)
@@ -1940,8 +1939,7 @@ class HandlerClass:
             GcodeStr1 = "S0 " + str(self.Sp0_Feed)
             idx_log(GcodeStr1)
 
-            Sp1_Feed = self.Sp0_Feed * self.Sp1_Pct / 100
-            GcodeStr2 = "S1 " + str(Sp1_Feed)
+            GcodeStr2 = "S1 " + str(self._sp1_speed())   # never negative - see _sp1_speed
             idx_log(GcodeStr2)
 
             c.mdi(GcodeStr1)
@@ -2048,8 +2046,7 @@ class HandlerClass:
             GcodeStr1 = "S0 " + str(self.Sp0_Feed)
             idx_log(GcodeStr1)
 
-            Sp1_Feed = self.Sp0_Feed * self.Sp1_Pct / 100
-            GcodeStr2 = "S1 " + str(Sp1_Feed)
+            GcodeStr2 = "S1 " + str(self._sp1_speed())   # never negative - see _sp1_speed
             idx_log(GcodeStr2)
 
             c.mdi(GcodeStr1)
@@ -2099,7 +2096,7 @@ class HandlerClass:
 #                           comment below (and Sp0_Move_Fwd's). This is
 #                           an intentional, empirically-verified swap,
 #                           not a typo.
-# Updated:              ver 1.2, 08 August 2026
+# Updated:              ver 1.3, 24 November 2026
 # ---------------------------------------------------------------------
 # Called from:
 #   UI:                 Rosetta_Panel
@@ -2137,10 +2134,6 @@ class HandlerClass:
                 c.mode(linuxcnc.MODE_MDI)
                 c.wait_complete() # Wait for mode change to complete
 
-        # In case the values had not already been written to the
-        # Gcode S values, write them.
-        Sp1_Feed = self.Sp1_Pct * self.Sp0_Feed / 100
-
         # Sends M3, not M4, despite this being the Rev handler - see the
         # Gcode0/Gcode1 comment in Sp0_Move_Fwd for the full explanation
         # (live pin tracing showed M4 here reliably commanding forward
@@ -2149,7 +2142,7 @@ class HandlerClass:
         # between the two spindles' mdi() calls, and a redundant
         # unconditional mode switch). This is the matching pragmatic swap.
         Gcode0 = "M3 $0 S" + str(self.Sp0_Feed)
-        Gcode1 = "M3 $1 S" + str(Sp1_Feed)
+        Gcode1 = self._sp1_start_gcode("M3")
 
         print(Gcode0)
         c.mdi(Gcode0)
@@ -2223,6 +2216,48 @@ class HandlerClass:
 # ---------------------------------------------------------------------
 # Gcodes Called:        S
 #######################################################################
+    # -----------------------------------------------------------------
+    # Sp1's speed and direction (24 November 2026). Sp1 runs at Sp1 %
+    # of Sp0's speed, and a negative % turns it the opposite way to Sp0.
+    # G-code has no negative speeds - S is always the size, and the
+    # direction is the M-code (M3 or M4) - so a negative % used to send
+    # "S-50 $1", which LinuxCNC refuses. These give Sp1 the size of the
+    # speed and, when the % is negative, the other M-code to Sp0's.
+    # -----------------------------------------------------------------
+    def _sp1_speed(self):
+        '''Sp1's speed: Sp1 % of Sp0's, always positive.'''
+        return abs(round(self.Sp0_Feed * self.Sp1_Pct / 100, 2))
+
+    def _sp1_mcode(self, sp0_mcode):
+        '''The M-code for Sp1 when Sp0 is sent sp0_mcode ("M3"/"M4").'''
+        if self.Sp1_Pct >= 0:
+            return sp0_mcode
+        return "M3" if sp0_mcode == "M4" else "M4"
+
+    def _sp1_start_gcode(self, sp0_mcode):
+        '''Starting the spindles: Sp1's line to go with Sp0's sp0_mcode.'''
+        return self._sp1_mcode(sp0_mcode) + " $1 S" + str(self._sp1_speed())
+
+    def _sp1_change_gcode(self):
+        '''
+        A speed change: just "S<speed> $1" while Sp1 is stopped, but while
+        both are turning, Sp1's M-code again too - so taking the % across
+        0 turns Sp1 round at once. Sp0's M-code is read from LinuxCNC
+        (direction 1 = M3, -1 = M4), not assumed from the button pressed,
+        since Fwd/Rev send swapped M-codes (see Sp0_Move_Fwd).
+        '''
+        speed = str(self._sp1_speed())
+        try:
+            s.poll()
+            sp0_dir = s.spindle[0]['direction']
+            sp1_dir = s.spindle[1]['direction']
+        except (linuxcnc.error, IndexError, KeyError):
+            sp0_dir = sp1_dir = 0
+        if sp0_dir == 0 or sp1_dir == 0:
+            return "S" + speed + " $1"
+        sp0_mcode = "M3" if sp0_dir > 0 else "M4"
+        return self._sp1_mcode(sp0_mcode) + " $1 S" + speed
+
     def Sp0_Set_Feed(self,widget):
 
         print("=================================================")
@@ -2250,10 +2285,8 @@ class HandlerClass:
 
         self.Sp0_Feed_debounce_id = None
 
-        Sp1_Feed = round(self.Sp0_Feed * self.Sp1_Pct / 100, 2)
-
         Gcode0 = "S" + str(self.Sp0_Feed) + " $0"
-        Gcode1 = "S" + str(Sp1_Feed) + " $1"
+        Gcode1 = self._sp1_change_gcode()
 
         # MDI mode, or tell the operator why the speed can't change now
         # (19 November 2026 - see _ensure_mdi_mode).
@@ -2527,7 +2560,7 @@ class HandlerClass:
 # Purpose:              This is used to set the speed for the rosette
 #                           phaser / multiplier (Sp0) as a percentage
 #                           of the spindle speed.
-# Updated:              ver 1.0, 21 July 2026
+# Updated:              ver 1.1, 24 November 2026
 # ---------------------------------------------------------------------
 # Called from:
 #   UI:                 Rosetta_Panel
@@ -2567,18 +2600,18 @@ class HandlerClass:
 
         self.Sp1_Pct_debounce_id = None
 
-        Sp1_Feed = round(self.Sp0_Feed * self.Sp1_Pct / 100, 2)
-        Gcode1 = "S" + str(Sp1_Feed) + " $1"
-
         print("self.Sp0_Feed = " + str(self.Sp0_Feed))
         print("self.Sp1_Pct = " + str(self.Sp1_Pct))
-        print("Sp1_Feed = " + str(Sp1_Feed))
 
         if not _ensure_mdi_mode():      # see _Sp0_Send_Feed
             print("Spindle speed not sent - LinuxCNC is not in MDI mode")
             c.text_msg("Spindle speed not changed: a program is running, or LinuxCNC couldn't "
                        "switch to MDI mode.  It will be used the next time the spindles start.")
             return False
+
+        # Built after the mode check: it reads which way the spindles
+        # are turning now.
+        Gcode1 = self._sp1_change_gcode()
 
         # Send an MDI command to set the spindle speed.
         print(Gcode1)
