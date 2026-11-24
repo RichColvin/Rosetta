@@ -26,7 +26,7 @@
 <main class="page">
   <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Other Configuration Settings</span></p>
   <h1>Other Configuration Settings</h1>
-  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Other-Tuning-Jog-Speeds">Other Tuning (Jog Speeds)</a></li><li class="toc-l0"><a href="#General">General</a></li><li class="toc-l1"><a href="#Device-Names">Device Names</a></li><li class="toc-l1"><a href="#Startup-File-Check">Startup File Check</a></li><li class="toc-l1"><a href="#Axis-Not-Enabled">Axis Not Enabled</a></li><li class="toc-l1"><a href="#Raspberry-Pi-Temperature">Raspberry Pi Temperature</a></li><li class="toc-l1"><a href="#Measurement-System">Measurement System</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Other-Tuning-Jog-Speeds">Other Tuning (Jog Speeds)</a></li><li class="toc-l0"><a href="#General">General</a></li><li class="toc-l1"><a href="#Device-Names">Device Names</a></li><li class="toc-l1"><a href="#Startup-File-Check">Startup File Check</a></li><li class="toc-l1"><a href="#Axis-Not-Enabled">Axis Not Enabled</a></li><li class="toc-l1"><a href="#Raspberry-Pi-Temperature">Raspberry Pi Temperature</a></li><li class="toc-l1"><a href="#Start-Rosetta">Start Rosetta</a></li><li class="toc-l1"><a href="#Measurement-System">Measurement System</a></li><li class="toc-l0"><a href="#Running-the-Rosetta-Settings-Program">Running the Rosetta Settings Program</a></li><li class="toc-l1"><a href="#Option-1-Use-the-icon-on-the-desktop">Option 1:  Use the icon on the desktop</a></li><li class="toc-l1"><a href="#Option-2-Use-the-Applications-menu">Option 2:  Use the Applications menu</a></li></ul></nav>
   <div class="content">
 
 <p class="note"><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
@@ -113,6 +113,20 @@
 </p><ol><li>The Warning temperature must be below the Alarm temperature.  If it isn't, <strong>Warning must be below Alarm - not saved.</strong> is shown, and nothing is saved until it is corrected.
 </li><li>These choices are saved as soon as you make them, and take effect the next time Rosetta starts.
 </li><li>For what to do when the Pi gets hot, see <a href="Troubleshooting.html#PiHot">The Pi is warm or too hot</a>.
+</li></ol>
+<table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
+<hr/>
+</td><td valign="top">
+</td></tr></table>
+<p><a id="StartRosetta"></a>
+</p><h2 id="Start-Rosetta">Start Rosetta</h2>
+<p>Tick <strong>Start Rosetta when the computer starts</strong> and Rosetta opens by itself each time the computer is switched on, once the desktop has appeared - there is no need to click the Rosetta icon.  This suits a machine used only for turning.
+</p>
+<p class="vspace">Untick it to start Rosetta from its desktop icon instead - for example, while the computer is mostly being used for something else.
+</p>
+<p class="note"><strong>Notes:</strong>
+</p><ol><li>This is saved as soon as you change it, and takes effect the next time the computer starts.
+</li><li>If Rosetta was set to start this way by hand (in the desktop's <strong>Session and Startup</strong> settings), the tick box shows it, and unticking it switches that off too.
 </li></ol>
 <table style="width: 100%; margin-top: 0px; margin-bottom: 0px;"><tr><td style="width: 40%;" valign="top">
 <hr/>

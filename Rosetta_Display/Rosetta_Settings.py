@@ -47,6 +47,8 @@
 #         Alerts (ntfy app)
 #   1.7 - 21 November 2026 - User Manual buttons open this machine's
 #         copy of the manual (rosetta_manuals.py), not the website
+#   1.8 - 24 November 2026 - Other page: Start Rosetta when the
+#         computer starts (an Xfce autostart entry)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -153,6 +155,19 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 UI_FILE = os.path.join(SCRIPT_DIR, "Rosetta_Settings_v1.ui")
 
 SETTINGS_PATH = os.path.expanduser("~/Documents/RosettaSet_v1.ini")
+
+# "Start Rosetta when the computer starts" (Other page) - an Xfce
+# autostart entry, not a RosettaSet_v1.ini setting: the desktop reads
+# ~/.config/autostart each time the Rosetta login starts its desktop
+# (on a Rosetta box, as the computer starts). Machines set up by hand (the Support Manual's old Session
+# and Startup step) already have an entry of their own, under whatever
+# name was typed - any entry whose command runs Rosetta_Launch.sh (or the
+# old REB_Launch.sh stand-in) counts, and unticking hides it the way
+# Session and Startup does (Hidden=true) rather than deleting it.
+REPO_DIR = os.path.dirname(SCRIPT_DIR)
+AUTOSTART_DIR = os.path.expanduser("~/.config/autostart")
+AUTOSTART_FILE = os.path.join(AUTOSTART_DIR, "rosetta-autostart.desktop")
+AUTOSTART_LAUNCHERS = ("Rosetta_Launch.sh", "REB_Launch.sh")
 
 # The friendly serial number an owner can set (Rosetta_Set_Serial_Number.sh) -
 # same path as Rosetta_Report_Version.py's own SERIAL_PATH and Rosetta_main.py's
@@ -893,6 +908,88 @@ def _warn_if_max_vel_exceeds_ceiling(self, widget, axis, stepgen_ch, scale, max_
 
     max_vel_widget.set_value(safe_max_vel)
 
+
+
+def _autostart_entries():
+    '''
+    Every ~/.config/autostart entry that starts Rosetta, as
+    (path, hidden) - hidden meaning switched off (Hidden=true, as Xfce's
+    Session and Startup writes when its tick is taken off).
+    '''
+    entries = []
+    try:
+        names = sorted(os.listdir(AUTOSTART_DIR))
+    except OSError:
+        return entries
+    for name in names:
+        if not name.endswith(".desktop"):
+            continue
+        path = os.path.join(AUTOSTART_DIR, name)
+        try:
+            with open(path, encoding="utf-8", errors="replace") as f:
+                lines = f.read().splitlines()
+        except OSError:
+            continue
+        execs = [l.split("=", 1)[1] for l in lines if l.startswith("Exec=")]
+        if not any(launcher in e for e in execs for launcher in AUTOSTART_LAUNCHERS):
+            continue
+        hidden = any(l.replace(" ", "").lower() == "hidden=true" for l in lines)
+        entries.append((path, hidden))
+    return entries
+
+
+def _set_hidden(path, hidden):
+    '''Sets Hidden= in an autostart entry's [Desktop Entry] section.'''
+    with open(path, encoding="utf-8", errors="replace") as f:
+        lines = f.read().splitlines()
+    value = "Hidden=" + ("true" if hidden else "false")
+    for i, line in enumerate(lines):
+        if line.replace(" ", "").lower().startswith("hidden="):
+            lines[i] = value
+            break
+    else:
+        at = next((i + 1 for i, l in enumerate(lines) if l.strip() == "[Desktop Entry]"), len(lines))
+        lines.insert(at, value)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def _set_autostart(on):
+    '''
+    Turns starting Rosetta at login on or off. On: an existing entry
+    (ours or one made by hand) is switched back on, else
+    rosetta-autostart.desktop is written. Off: ours is removed and any
+    made by hand are hidden, so a hand-made one isn't lost.
+    '''
+    entries = _autostart_entries()
+    if on:
+        if entries:
+            for path, hidden in entries:
+                if hidden:
+                    _set_hidden(path, False)
+            return
+        os.makedirs(AUTOSTART_DIR, exist_ok=True)
+        launch = os.path.join(REPO_DIR, "Rosetta_Launch.sh")
+        with open(AUTOSTART_FILE, "w", encoding="utf-8") as f:
+            f.write("[Desktop Entry]\n"
+                    "Type=Application\n"
+                    "Name=Rosetta\n"
+                    "Comment=Starts Rosetta when the computer starts - "
+                    "set by Rosetta Settings' Other page\n"
+                    'Exec=bash "%s"\n'
+                    'Path=%s\n'
+                    "Icon=%s\n"
+                    "Terminal=false\n"
+                    "Hidden=false\n"
+                    "X-GNOME-Autostart-enabled=true\n"
+                    % (launch, REPO_DIR,
+                       os.path.join(REPO_DIR, "Rosetta_Setup", "Images", "RosettaLogo.png")))
+        return
+    for path, _hidden in entries:
+        if os.path.abspath(path) == AUTOSTART_FILE:
+            os.remove(path)
+        else:
+            _set_hidden(path, True)
 
 class HandlerClass:
     '''
@@ -1901,6 +1998,31 @@ class HandlerClass:
     def Pi_Temp_Alarm_Sound_Toggled(self, widget):
         if not self._applying_pi_temp:
             self._save_pi_temp_from_page()
+
+    def _load_autostart(self):
+        '''Ticks "Start Rosetta when the computer starts" if it's on.'''
+        box = self.builder.get_object("Autostart_Rosetta")
+        if box is None:
+            return
+        self._applying_autostart = True
+        box.set_active(any(not hidden for _path, hidden in _autostart_entries()))
+        self._applying_autostart = False
+
+    def Autostart_Rosetta_Toggled(self, widget):
+        if self._applying_autostart:
+            return
+        try:
+            _set_autostart(widget.get_active())
+        except OSError as error:
+            # Put the box back to what's really there and say why.
+            self._load_autostart()
+            dialog = Gtk.MessageDialog(transient_for=widget.get_toplevel(), modal=True,
+                                       message_type=Gtk.MessageType.ERROR,
+                                       buttons=Gtk.ButtonsType.OK,
+                                       text="Couldn't change whether Rosetta starts with the computer.")
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def _load_limit_switch_type(self):
         '''
@@ -3273,6 +3395,10 @@ class HandlerClass:
         # controls on the Other page.
         self._applying_pi_temp = False
 
+        # Same suppression, for _load_autostart driving the Start Rosetta
+        # tick box on the Other page.
+        self._applying_autostart = False
+
         # Same suppression as above, for _load_limit_switch_type driving
         # the Limit_Switch_NC / _NO radios.
         self._applying_limit_switch_type = False
@@ -3357,6 +3483,7 @@ class HandlerClass:
         self._load_startup_file_check()
         self._load_not_enabled_action()
         self._load_pi_temp()
+        self._load_autostart()
         self._load_done_sound()
         self._load_fault_sound()
         self._load_phone_alerts()

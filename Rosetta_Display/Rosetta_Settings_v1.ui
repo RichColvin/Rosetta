@@ -10677,7 +10677,7 @@ Its temperature is shown at the top of the main screen.  At the Warning temperat
                               </object>
                               <packing>
                                 <property name="left-attach">2</property>
-                                <property name="top-attach">5</property>
+                                <property name="top-attach">6</property>
                               </packing>
                             </child>
                             <child>
@@ -10764,7 +10764,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">0</property>
-                                <property name="top-attach">5</property>
+                                <property name="top-attach">6</property>
                               </packing>
                             </child>
                             <child>
@@ -10786,7 +10786,7 @@ System</property>
                               </object>
                               <packing>
                                 <property name="left-attach">1</property>
-                                <property name="top-attach">5</property>
+                                <property name="top-attach">6</property>
                               </packing>
                             </child>
                             <child>
@@ -11168,6 +11168,69 @@ Temperature</property>
                               <packing>
                                 <property name="left-attach">1</property>
                                 <property name="top-attach">4</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-right">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="label" translatable="yes">Start Rosetta</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                  <attribute name="weight" value="bold" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">0</property>
+                                <property name="top-attach">5</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="Autostart_Rosetta">
+                                <property name="label" translatable="yes">Start Rosetta when the computer starts</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="receives-default">False</property>
+                                <property name="tooltip-text" translatable="yes">Opens Rosetta (LinuxCNC) by itself each time the computer starts, so the machine is ready without clicking the Rosetta icon.</property>
+                                <property name="halign">start</property>
+                                <property name="valign">start</property>
+                                <property name="margin-left">5</property>
+                                <property name="margin-start">5</property>
+                                <property name="margin-top">14</property>
+                                <property name="margin-bottom">4</property>
+                                <property name="draw-indicator">True</property>
+                                <signal name="toggled" handler="Autostart_Rosetta_Toggled" swapped="no" />
+                              </object>
+                              <packing>
+                                <property name="left-attach">1</property>
+                                <property name="top-attach">5</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="valign">start</property>
+                                <property name="margin-start">4</property>
+                                <property name="margin-end">4</property>
+                                <property name="hexpand">True</property>
+                                <property name="margin-top">14</property>
+                                <property name="label" translatable="yes">When ticked, Rosetta opens by itself each time the computer is switched on and has started up - handy if the machine is only used for turning.  Untick it to start Rosetta from its desktop icon instead.  Saved at once; takes effect the next time the computer starts.</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <attributes>
+                                  <attribute name="font-desc" value="DejaVu Serif 10" />
+                                </attributes>
+                              </object>
+                              <packing>
+                                <property name="left-attach">2</property>
+                                <property name="top-attach">5</property>
                               </packing>
                             </child>
                           </object>
