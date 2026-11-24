@@ -47,6 +47,8 @@
 #
 # Version
 #   1.0 - 24 November 2026
+#   1.1 - 24 November 2026 - checks the weekly virus scan is
+#         scheduled and the signatures update themselves
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -131,7 +133,9 @@ MARKERS = (
     ("Shut Down menu entry and launcher", "shut-down-added-2"),
     ("Geometric Chuck Designer menu entry", "geochuck-designer-added"),
     ("User Manual and Gcode Library icons", "manuals-added"),
+    ("Weekly virus scan", "virus-scan-added"),
 )
+SCAN_CRON = "/etc/cron.d/rosetta-virus-scan"
 
 results = []           # (status, section, text)
 section = ""
@@ -299,6 +303,38 @@ def check_network(before_jumpers, expansion_box):
         warn("WiFi isn't connected - updates need it")
 
 
+# --- Virus scanning --------------------------------------------------
+def check_virus_scan():
+    heading("Virus scanning")
+    text = read(SCAN_CRON)
+    scan_dir = os.path.join(HOME, "ClamAv")
+    if text is not None:
+        lines = [l for l in text.splitlines() if "clamscan" in l and not l.lstrip().startswith("#")]
+        st = os.stat(SCAN_CRON)
+        if not lines:
+            fail("%s has no clamscan line" % SCAN_CRON)
+        elif "--move=%s/SuspiciousFiles" % scan_dir not in lines[0] or " %s " % HOME not in lines[0]:
+            fail("%s scans another home folder, not %s (run Rosetta_Add_Virus_Scan.sh --force)" % (SCAN_CRON, HOME))
+        elif st.st_uid != 0 or st.st_mode & 0o022:
+            fail("%s must belong to root and not be writable by others, or cron ignores it" % SCAN_CRON)
+        else:
+            ok("Weekly scan scheduled (%s): Mondays at 03:00" % SCAN_CRON)
+    else:
+        code, out = run(["sudo", "-n", "crontab", "-l"])
+        if code == 0 and any("clamscan" in l and not l.lstrip().startswith("#") for l in out.splitlines()):
+            ok("Weekly scan scheduled in root's schedule (added by hand)")
+        elif code == 0:
+            fail("The weekly virus scan isn't scheduled (Rosetta_Add_Virus_Scan.sh)")
+        else:
+            warn("No %s; root's own schedule can't be read without the password - "
+                 "check with: sudo crontab -l" % SCAN_CRON)
+    code, out = run(["systemctl", "is-active", "clamav-freshclam"])
+    if out.strip() == "active":
+        ok("Virus signatures update themselves (clamav-freshclam is running)")
+    else:
+        fail("clamav-freshclam isn't running (%s) - virus signatures won't update" % (out.strip() or "not found"))
+
+
 # --- This machine ----------------------------------------------------
 def check_machine():
     heading("This machine")
@@ -447,6 +483,7 @@ def main():
     check_files()
     check_programs()
     check_network(before_jumpers, expansion_box)
+    check_virus_scan()
     check_machine()
     check_menu()
     check_desktop()

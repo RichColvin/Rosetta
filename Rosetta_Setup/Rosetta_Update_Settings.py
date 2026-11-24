@@ -78,6 +78,8 @@
 #         its serial number, e.g. rosetta-003 (one-time step)         #
 #   1.15 - 24 November 2026 - sets up the Rosetta submenu and desktop #
 #         icons where none were made by hand (one-time step)          #
+#   1.16 - 24 November 2026 - schedules the weekly virus scan where   #
+#         none was added by hand (one-time step)                      #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -113,6 +115,7 @@ ONE_TIME_STEPS = (
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_GeoChuck_Designer.sh"),  # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Remove_Desktop_Icons.sh"),   # 17 November 2026
     os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Manuals.sh"),            # 21 November 2026
+    os.path.join(REPO_DIR, "Rosetta_Setup", "Rosetta_Add_Virus_Scan.sh"),         # 24 November 2026
 )
 SETTINGS_PATH = rosetta_settings_io.SETTINGS_PATH
 

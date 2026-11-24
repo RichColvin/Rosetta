@@ -69,6 +69,8 @@
 #         with MenuLibre until now); Steps 12-15 became 13-16; Step
 #         17 checks the install (Rosetta_Install_Check.py), and the
 #         full check is run again once the card's jumper is moved.
+#   2.7 - 24 November 2026 - Step 4 also schedules the weekly virus
+#         scan (Rosetta_Add_Virus_Scan.sh - by hand until now).
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -238,6 +240,9 @@ if [ $? != 0 ]; then
    echo -e "${KEYNOTE}PROGRAM TERMINATED PREMATURELY                                       ${NOCOLOR}"
    exit 1
 fi
+# The weekly scan (Mondays 03:00, skipped while LinuxCNC runs) - done by
+# hand with "sudo crontab -e" before this. The signatures update themselves.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Virus_Scan.sh
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 echo -e "${TITLE}Step 5 - Install MenuLibre                                             ${NOCOLOR}"
