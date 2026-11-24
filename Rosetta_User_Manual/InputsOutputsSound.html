@@ -34,7 +34,7 @@
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-InputsOutputsSounds-Expansion.png" width="300px"/><br/><span class="caption"><strong><em>Inputs, Outputs, and Sounds</em></strong></span></span></div>
 <p><a id="LimitSwitches"></a>
 </p><h1 id="Limit-Switches">Limit Switches</h1>
-<p>When a limit switch is tripped, LinuxCNC turns the machine off.  
+<p>When a limit switch is tripped, LinuxCNC stops all motion and turns the machine&rsquo;s power off &ndash; the same as pressing <a href="PowerOn.html"><strong>Power On (F2)</strong></a> to turn it off.  This &ldquo;power off&rdquo; is only inside LinuxCNC: the Raspberry Pi and Rosetta keep running, and nothing needs restarting.  Clear the error, press <strong>F2</strong> to turn the machine back on, then jog the axis off the switch (for a switch set to <strong>Both ends</strong>, see <a href="#Switch-Configuration">Switch Configuration</a> below).
 </p>
 <h2 id="Assign-a-Limit-Switch-to-an-Axis">Assign a Limit Switch to an Axis</h2>
 <p>To use a limit switch, you need to assign it to an axis.  Rosetta is configured to accommodate 6 limit switches: 
@@ -59,6 +59,7 @@
 </li><li>that switch is triggered.
 </li></ol><p class="vspace"><ins><strong>Note</strong></ins>: The axis to which a limit switch is assigned will <ins>not</ins> be in a limit mode if there is a break in the wire.  Thusly, you should test to ensure it works before expecting it to (and find out it does not).
 </p></td></tr></table>
+<p><strong>Note:</strong> This setting applies to all limit switches configured for the system.  You cannot have one limit switch be configured as NC and another as NO.
 <h2 id="Switch-Configuration">Switch Configuration</h2>
 <p>Limit switches can be configured these ways.
 </p>
