@@ -16,8 +16,6 @@
 #<z_feed>    = [ABS[#<z_stroke>] / #<z_time> * 60]   (Z feed rate, in/min, from stroke length and time)
 #<sp0_dwell> = [60 / #<sp0_rpm>]                      (seconds for one spindle revolution, from sp0_rpm)
 
-(LOGOPEN,/home/reuben/Documents/n_pass_debug.log)
-(LOG, at current values: z_stroke=#<z_stroke>, sp0_rpm=#<sp0_rpm>, z_time=#<z_time>, z_feed=#<z_feed>, n_passes=#<n_passes>, rtz=#<rtz>, x_backoff=#<x_backoff>, x_step=#<x_step>, x_feed=#<x_feed>, sp0_dwell=#<sp0_dwell>)
 (-------------------------------)
 
 G20             (inch units)
@@ -37,7 +35,6 @@ S#<sp0_rpm> M3  (start spindle 0 clockwise at set RPM)
 o301 repeat [#<n_passes>]
 
   #<current_pass> = [#<current_pass> + 1]
-  (LOG, Pass #<current_pass> of #<n_passes>)
 
   G4 P#<sp0_dwell>  (dwell for one full spindle revolution before starting the stroke)
 
@@ -62,6 +59,5 @@ o301 repeat [#<n_passes>]
 o301 endrepeat
 
 M5              (stop spindle)
-(LOGCLOSE)
 M2              (end program)
 %
