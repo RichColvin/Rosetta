@@ -69,33 +69,30 @@
 // ###################################################
 // Get the DM542 Pulses / Motor Rev
 //
-    sDM542MicroSteps = Number(x.elements[0].value);
+    sDM542MicroSteps = Number(x.elements["DM542MicroSteps"].value);
 
 // ###################################################
 // Get the stepper motor gearing ratio
 //
-    iGearingRatio = Number(x.elements[1].value);
+    iGearingRatio = Number(x.elements["GearingRatio"].value);
 
 // ###################################################
 // Get the Leadscrew movement per revolution
 //
-    fLeadscrewMvmtPerRev = Number(x.elements[2].value);
-
-// ###################################################
-// Get the leadscrew starts
-//
-    iLeadscrewStarts = Number(x.elements[3].value);
+    fLeadscrewMvmtPerRev = Number(x.elements["LeadscrewMvmtPerRev"].value);
 
 // ###################################################
 // Get the object radius
 //
-    fObjectRadius = Number(x.elements[4].value);
+    fObjectRadius = Number(x.elements["ObjectRadius"].value);
 
 // ###################################################
 // Calculate the Values for Linear Movement
 //
     var fLinearMovement = 0.0000;
-    fLinearMovement = (fLeadscrewMvmtPerRev / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
+    // Movement per revolution is the lead - it already allows for the
+    // thread's starts, so they aren't multiplied in (24 November 2026).
+    fLinearMovement = (fLeadscrewMvmtPerRev / sDM542MicroSteps) * (1 / iGearingRatio);
 
     document.getElementById("DM542PulPerMotorRev").innerHTML = sDM542MicroSteps.toFixed(0) + " pulses per motor revolution";
 
@@ -115,8 +112,6 @@
 // ###################################################
 // Calculate the Values for Angular Movement
 //
-    // Leadscrew Starts has no part in this - nothing turns through a leadscrew
-    // (fixed 24 November 2026).
     var fDegPerMicrostep = (360 / sDM542MicroSteps) * (1 / iGearingRatio);
     var fArcLength = (fDegPerMicrostep / 360 ) * 2 * Math.PI * fObjectRadius;
 
@@ -200,8 +195,7 @@
 <option value="25000">125</option>
 </select></td><td class="calc-note"><p id="DM542PulPerMotorRev"></p></td></tr>
 <tr><td class="calc-label">Stepper Motor Gearing Ratio</td><td class="calc-field"><input name="GearingRatio" aria-label="Stepper Motor Gearing Ratio" placeholder="1" step="1" type="number" inputmode="decimal" value="1"> :1</td><td class="calc-note">The gearing ratio for the stepper motor driving the moved part.  For spindles on the MDF Rose Engine, this is 9:1, so a 9 would be entered here.</td></tr>
-<tr><td class="calc-label">Leadscrew Movement per Revolution</td><td class="calc-field"><input name="LeadscrewMvmtPerRev" aria-label="Leadscrew Movement per Revolution" placeholder="0.1000" step="0.0010" type="number" inputmode="decimal" value="0.1000"> inch</td><td class="calc-note">This is the distance the cutter is moved for each revolution of the leadscrew.</td></tr>
-<tr><td class="calc-label">Leadscrew Starts</td><td class="calc-field"><input name="LeadscrewStarts" aria-label="Leadscrew Starts" placeholder="1" step="1" type="number" inputmode="decimal" value="1"></td><td class="calc-note"></td></tr>
+<tr><td class="calc-label">Leadscrew Movement per Revolution</td><td class="calc-field"><input name="LeadscrewMvmtPerRev" aria-label="Leadscrew Movement per Revolution" placeholder="0.1000" step="0.0010" type="number" inputmode="decimal" value="0.1000"> inch</td><td class="calc-note">This is the distance the cutter is moved for each revolution of the leadscrew (its lead).  For a leadscrew with more than one start, this is the thread pitch times the number of starts.</td></tr>
 <tr><td class="calc-label">Object Radius</td><td class="calc-field"><input name="ObjectRadius" aria-label="Object Radius" placeholder="1.00" step="0.01" type="number" inputmode="decimal" value="1.00"> inch</td><td class="calc-note">For cutting on the perimeter, this is the angular movement.</td></tr>
 <tr class="calc-head"><td colspan="3"><b>Calculated Values</b></td></tr>
 <tr><td class="calc-label">Linear Movement per Microstep</td><td class="calc-field"><span id="LinearMovement"></span> inch</td><td class="calc-note"><p id="LinearMovementResultGreen" class="calc-ok"></p>
@@ -245,14 +239,13 @@ Arc length can then be calculated for the perimeter of the piece which has a 2�
 
 <table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Arc</mtext><mspace width="0.167em"></mspace><mtext>Length</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mn>0.025</mn><mfrac><mrow><mtext>deg</mtext></mrow><mrow><mtext>microstep</mtext></mrow></mfrac></mrow><mrow><mn>360</mn><mspace width="0.167em"></mspace><mtext>deg</mtext></mrow></mfrac><mi>×</mi><mn>2</mn><mi>π</mi><mi>×</mi><mn>2</mn><mspace width="0.167em"></mspace><mtext>inch</mtext></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>0.000</mn><mspace width="0.167em"></mspace><mn>83</mn><mspace width="0.167em"></mspace><mfrac><mrow><mtext>inch</mtext></mrow><mrow><mtext>microstep</mtext></mrow></mfrac></mrow></mstyle></math></td></tr></table>
 <h2 id="Linear-Movement" style="color: darkblue; margin-bottom: 6px;">Linear Movement</h2>
-<p style="margin-top: 6px;">For a linear axis movement, the movement is driven by a leadscrew which has these parameters:
+<p style="margin-top: 6px;">For a linear axis movement, the movement is driven by a leadscrew, which has
 <ol>
-<li>a distance of movement per revolution (in this case, 0.100” is used), and</li>
-<li>a number of starts for the threads (in this case, 4 is used).</li>
+<li>a distance of movement per revolution - its lead (in this case, 0.100” is used).  For a leadscrew with more than one start, the lead is the thread pitch times the number of starts.</li>
 </ol>
 <p>And this too can have a gearing ratio.  In this case, a 6:1 ratio is used.
 
-<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Movement</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mn>0.100</mn><mfrac><mrow><mtext>inches</mtext></mrow><mrow><mtext>rev</mtext></mrow></mfrac></mrow><mrow><mn>1600</mn><mfrac><mrow><mtext>microsteps</mtext></mrow><mrow><mtext>rev</mtext></mrow></mfrac></mrow></mfrac><mi>×</mi><mfrac><mrow><mn>1</mn><mspace width="0.167em"></mspace><mtext>leadscrew</mtext><mspace width="0.167em"></mspace><mtext>rev</mtext></mrow><mrow><mn>6</mn><mspace width="0.167em"></mspace><mtext>motor</mtext><mspace width="0.167em"></mspace><mtext>revs</mtext></mrow></mfrac><mi>×</mi><mn>4</mn></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>0.000</mn><mspace width="0.167em"></mspace><mn>042</mn><mspace width="0.167em"></mspace><mfrac><mrow><mtext>inches</mtext></mrow><mrow><mtext>microstep</mtext></mrow></mfrac></mrow></mstyle></math></td></tr></table>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Movement</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mn>0.100</mn><mfrac><mrow><mtext>inches</mtext></mrow><mrow><mtext>rev</mtext></mrow></mfrac></mrow><mrow><mn>1600</mn><mfrac><mrow><mtext>microsteps</mtext></mrow><mrow><mtext>rev</mtext></mrow></mfrac></mrow></mfrac><mi>×</mi><mfrac><mrow><mn>1</mn><mspace width="0.167em"></mspace><mtext>leadscrew</mtext><mspace width="0.167em"></mspace><mtext>rev</mtext></mrow><mrow><mn>6</mn><mspace width="0.167em"></mspace><mtext>motor</mtext><mspace width="0.167em"></mspace><mtext>revs</mtext></mrow></mfrac></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>0.000</mn><mspace width="0.167em"></mspace><mn>010</mn><mspace width="0.167em"></mspace><mfrac><mrow><mtext>inches</mtext></mrow><mrow><mtext>microstep</mtext></mrow></mfrac></mrow></mstyle></math></td></tr></table>
 <!-- ####################################################################### -->
 <!-- Footer                                                                  -->
 <!-- ####################################################################### -->
