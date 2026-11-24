@@ -29,8 +29,6 @@
 .content .calc p { margin: 0; }
 .content .calc select, .content .calc input { font-size: 16px; text-align: right; width: 80px; background: #FFEE9C; }
 .calc-ok { color: darkgreen; } .calc-bad { color: red; }
-.calc-button { text-align: center; }
-.calc-button button { font-size: 20px; background: #0404B4; color: #fff; border: 0; border-radius: 4px; padding: 6px 16px; }
 @media (max-width: 760px) {
   .content table.calc, .content table.calc > tbody { display: block; width: auto; }
   .content table.calc tr { display: grid; grid-template-columns: 1fr auto; border: 1px solid #000; border-top: 0; }
@@ -105,7 +103,7 @@
 
     var LinearMovementResultRed = "";
     var LinearMovementResultGreen = "";
-    if (fLinearMovement > 0.0005) {
+    if (fLinearMovement >= 0.0005) {
         LinearMovementResultRed = "Granularity of linear movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
     } else {
         LinearMovementResultGreen = "Granularity of linear movement is less than 0.0005&rdquo;.";
@@ -117,14 +115,16 @@
 // ###################################################
 // Calculate the Values for Angular Movement
 //
-    var fDegPerMicrostep = (360 / sDM542MicroSteps) * (1 / iGearingRatio) * iLeadscrewStarts;
+    // Leadscrew Starts has no part in this - nothing turns through a leadscrew
+    // (fixed 24 November 2026).
+    var fDegPerMicrostep = (360 / sDM542MicroSteps) * (1 / iGearingRatio);
     var fArcLength = (fDegPerMicrostep / 360 ) * 2 * Math.PI * fObjectRadius;
 
     document.getElementById("AngularMovement").innerHTML = fArcLength.toFixed(5);
 
     var AngularMovementResultRed = "";
     var AngularMovementResultGreen = "";
-    if (fArcLength > 0.0005) {
+    if (fArcLength >= 0.0005) {
         AngularMovementResultRed = "Granularity of angular movement is not less than 0.0005&rdquo;.  A higher microsteps setting should be used.";
     } else {
         AngularMovementResultGreen = "Granularity of angular movement is less than 0.0005&rdquo;.";
@@ -176,9 +176,9 @@
 <!-- ####################################################################### -->
 <!-- Calculator                                                              -->
 <!-- ####################################################################### -->
-<p>Input fields are <span style="background-color: #FFEE9C"><b> colored </b></span>.  Once the values have been entered, click the <b>Calculate Granularity</b> button below the table.
+<p>Input fields are <span style="background-color: #FFEE9C"><b> colored </b></span>.  The calculated values below them update as soon as a value is changed.
 
-<form id="frm1" oninput="calcValues()">
+<form id="frm1" oninput="calcValues()" onchange="calcValues()" onsubmit="return false;">
 <table class="calc">
 <tr class="calc-head"><td colspan="3"><b>Fixed Values</b><span>These are based on your machine</span></td></tr>
 <tr><td class="calc-label">DM542T Microsteps Setting</td><td class="calc-field"><select id="DM542MicroSteps" name="DM542MicroSteps" aria-label="DM542T Microsteps Setting">
@@ -210,7 +210,6 @@
 <p id="AngularMovementResultRed" class="calc-bad"></p></td></tr>
 </table>
 </form>
-<p class="calc-button"><button onclick="calcValues()" type="button">Calculate Granularity</button></p>
 <script>calcValues();</script>
 <!-- ####################################################################### -->
 <!-- Determining the Setting to Use                                          -->
