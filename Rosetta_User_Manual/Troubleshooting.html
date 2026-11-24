@@ -83,7 +83,7 @@
 <p class="vspace"><a id="ferror"></a>
 </p><h2 id="Joint-following-error-joint-0-following-error">Joint following error ("joint 0 following error")</h2>
 <div class="indent"><strong>What it means</strong>
-</div><div class="indent">LinuxCNC is always checking that each axis is where it was told to be.  If an axis falls too far behind, LinuxCNC turns the machine off and reports a following error.  The number in the message is the joint, not the plug.
+</div><div class="indent">LinuxCNC is always checking that each axis is where it was told to be.  If an axis falls too far behind, LinuxCNC turns the machine off (<a href="PowerOn.html#PowerOffMeaning">its own power off</a> &ndash; the Raspberry Pi keeps running; press F2 to turn it back on) and reports a following error.  The number in the message is the joint, not the plug.
 </div><div class="indent"><strong>What it does not mean</strong>
 <ul><li>It rarely means the motor or drive is damaged.
 </li><li>It doesn't mean the G-code program is wrong.
@@ -137,7 +137,7 @@
 <h1 id="Limit-Switches-and-Signal-Tower"><span style="color: #5D6532;"> Limit Switches and Signal Tower</span></h1>
 <p><a id="limit"></a>
 </p><h2 id="An-axis-stopped-on-a-limit-switch">An axis stopped on a limit switch</h2>
-<div class="indent">When a limit switch is tripped, LinuxCNC turns the machine off and shows an error.
+<div class="indent">When a limit switch is tripped, LinuxCNC stops all motion, turns the machine off (<a href="PowerOn.html#PowerOffMeaning">its own power off</a> &ndash; the Raspberry Pi and Rosetta keep running, and nothing needs restarting) and shows an error.
 <ol><li>Clear the error (click on the X), then power on (F2).
 </li><li>If the switch is set as a <strong>min</strong> or <strong>max</strong> limit, jog the axis away from the switch.
 </li><li>If the switch is set as <strong>both ends</strong>, check <strong>Override Limits</strong> in LinuxCNC's Machine menu, carefully jog the axis off the switch (away from it), then uncheck Override Limits.
