@@ -60,6 +60,9 @@
 #   1.1 - 17 November 2026 - at the bottom of the Applications menu,
 #         not in the Rosetta submenu (Rich); new marker, so a machine
 #         that ran 1.0 moves it
+#   1.2 - 24 November 2026 - also finds a Rosetta submenu named
+#         menulibre-rosetta (a machine whose submenu was made by
+#         hand in MenuLibre after the Rosetta renaming)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -105,7 +108,7 @@ if not os.path.exists(path):
     sys.exit(0)     # the standard menu: X-Xfce-Toplevel puts it in the top level
 text = original = open(path).read()
 # 1.0 listed it in the Rosetta submenu - take that out.
-submenu = re.search(r"<Menu>\s*<Name>menulibre-rose-engine-butler</Name>.*?</Menu>", text, re.S)
+submenu = re.search(r"<Menu>\s*<Name>menulibre-(?:rose-engine-butler|rosetta)</Name>.*?</Menu>", text, re.S)
 if submenu and entry in submenu.group(0):
     cleaned = re.sub(r"\n[ \t]*<Include>\s*<Filename>" + re.escape(entry) + r"</Filename>\s*</Include>",
                      "", submenu.group(0))

@@ -45,6 +45,9 @@
 #
 # Version
 #   1.0 - 17 November 2026
+#   1.1 - 24 November 2026 - also finds a Rosetta submenu named
+#         menulibre-rosetta (a machine whose submenu was made by
+#         hand in MenuLibre after the Rosetta renaming)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -85,7 +88,7 @@ try:
 except OSError:
     print("Geometric Chuck Designer menu entry: no " + path + " - Rosetta submenu not found.")
     sys.exit(2)
-block = re.search(r"<Menu>\s*<Name>menulibre-rose-engine-butler</Name>.*?</Menu>", text, re.S)
+block = re.search(r"<Menu>\s*<Name>menulibre-(?:rose-engine-butler|rosetta)</Name>.*?</Menu>", text, re.S)
 if not block:
     print("Geometric Chuck Designer menu entry: the Rosetta submenu isn't in " + path + ".")
     sys.exit(2)

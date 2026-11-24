@@ -64,6 +64,11 @@
 #         the serial number, e.g. rosetta-003
 #         (Rosetta_Set_Machine_Name.sh --install), so an owner's
 #         machines don't share a name on the network.
+#   2.6 - 24 November 2026 - Step 12 sets up the Rosetta menu and
+#         desktop icons (Rosetta_Add_Menu_And_Desktop.sh - by hand
+#         with MenuLibre until now); Steps 12-15 became 13-16; Step
+#         17 checks the install (Rosetta_Install_Check.py), and the
+#         full check is run again once the card's jumper is moved.
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -344,36 +349,61 @@ $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Set_Serial_Number.sh
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Set_Machine_Name.sh --install
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}Step 12 - Add the Rosette Designer to the Applications menu            ${NOCOLOR}"
+echo -e "${TITLE}Step 12 - Set up the Rosetta menu and desktop icons                    ${NOCOLOR}"
+echo -e "${TITLE}                                                                       ${NOCOLOR}"
+# The Applications menu's Rosetta submenu (Rosetta, Rosetta Settings,
+# Back Up to USB, Update Rosetta), Rosetta and Rosetta Settings on the
+# desktop, and the unneeded menus hidden - done by hand with MenuLibre
+# and Create Launcher before this step existed. Before Steps 13-16,
+# which add to that submenu.
+$HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Menu_And_Desktop.sh
+
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Step 13 - Add the Rosette Designer to the Applications menu            ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Rosette_Designer.sh
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}Step 13 - Add Shut Down to the menu and the bottom bar                 ${NOCOLOR}"
+echo -e "${TITLE}Step 14 - Add Shut Down to the menu and the bottom bar                 ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Shut_Down.sh
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}Step 14 - Add the Geometric Chuck Designer to the Applications menu    ${NOCOLOR}"
+echo -e "${TITLE}Step 15 - Add the Geometric Chuck Designer to the Applications menu    ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_GeoChuck_Designer.sh
 
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
-echo -e "${TITLE}Step 15 - Add the User Manual and Gcode Library icons                  ${NOCOLOR}"
+echo -e "${TITLE}Step 16 - Add the User Manual and Gcode Library icons                  ${NOCOLOR}"
 echo -e "${TITLE}                                                                       ${NOCOLOR}"
 # Machines installed before this step get it from
 # Rosetta_Update_Settings.py on their next update.
 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Add_Manuals.sh
 
+echo -e "${TITLE}#######################################################################${NOCOLOR}"
+echo -e "${TITLE}Step 17 - Check the install                                            ${NOCOLOR}"
+echo -e "${TITLE}                                                                       ${NOCOLOR}"
+# Checks everything the steps above should have put in place. The card
+# only answers at 10.10.10.10 once its jumper is moved (below), so until
+# then that is only noted; the full check is run again afterwards.
+python3 $HOME/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Install_Check.py --before-jumpers
+check_result=$?
+
 # ********************************************************************
 # Success
-echo -e "${TITLE}System successfully installed.                                         ${NOCOLOR}"
+if [ $check_result = 0 ]; then
+    echo -e "${TITLE}System successfully installed.                                         ${NOCOLOR}"
+else
+    echo -e "${KEYNOTE}The install finished, but some checks FAILED - see the list above   ${NOCOLOR}"
+    echo -e "${KEYNOTE}(also saved in ~/Documents/Rosetta_Install_Check.txt). The Support  ${NOCOLOR}"
+    echo -e "${KEYNOTE}Manual's Installation page, 3.3, says how to do each step by hand.  ${NOCOLOR}"
+fi
 echo -e "${TITLE}#######################################################################${NOCOLOR}"
 
 # The Mesa card's new address (Step 2) takes effect once its W5/W6
@@ -385,9 +415,9 @@ echo -e "${CMNTTEXT}Last step - the Mesa card's jumpers:${NOCOLOR}"
 echo -e "${CMNTTEXT}  1. Shut the Pi down (next question) and wait for the screen to go dark.${NOCOLOR}"
 echo -e "${CMNTTEXT}  2. Switch the machine off.${NOCOLOR}"
 echo -e "${CMNTTEXT}  3. Move the card's W5/W6 jumpers to the setting the 7i92 manual calls EEPROM.${NOCOLOR}"
-echo -e "${CMNTTEXT}  4. Switch the machine on. Once the Pi has started, run${NOCOLOR}"
-echo -e "${CMNTTEXT}     ~/linuxcnc/configs/Rosetta/Rosetta_Change_Network.sh check${NOCOLOR}"
-echo -e "${CMNTTEXT}     - it should say the card at 10.10.10.10 answers.${NOCOLOR}"
+echo -e "${CMNTTEXT}  4. Switch the machine on. Once the Pi has started, run the full check:${NOCOLOR}"
+echo -e "${CMNTTEXT}     python3 ~/linuxcnc/configs/Rosetta/Rosetta_Setup/Rosetta_Install_Check.py${NOCOLOR}"
+echo -e "${CMNTTEXT}     - it should end with 0 failed, and say the base card answers.${NOCOLOR}"
 read -r -p "Shut the Pi down now? [y/N] " answer
 if [[ "$answer" =~ ^[Yy]([Ee][Ss])?$ ]]; then
     sudo poweroff
