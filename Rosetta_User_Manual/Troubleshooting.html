@@ -32,7 +32,7 @@
 <p>Find your problem in the list below, or look for the exact words of the error message on your screen.
 </p>
 <div class="indent"><strong>Starting Up:</strong> <a href="#nostart">Rosetta won't start</a> - <a href="#lostcontact">"lost contact - E-stop"</a>
-</div><div class="indent"><strong>General Usage:</strong> <a href="#grayrow">Axis row grayed out</a> - <a href="#estop">E-stop won't clear</a> - <a href="#sp1jog">Can't jog Sp1</a> - <a href="#settingnochange">A setting change had no effect</a> - <a href="#gcodeload">G-code program won't run</a> - <a href="#threading">Threading tab won't run</a>
+</div><div class="indent"><strong>General Usage:</strong> <a href="#grayrow">Axis row grayed out</a> - <a href="#estop">E-stop won't clear</a> - <a href="#sp1jog">Can't jog Sp1</a> - <a href="#settingnochange">A setting change had no effect</a> - <a href="#gcodeload">G-code program won't run</a> - <a href="#threading">Threading tab won't run</a> - <a href="#spindlesfight">Spindles fight or run rough</a>
 </div><div class="indent"><strong>Error Messages:</strong> <a href="#ferror">Joint following error</a> - <a href="#latency">Latency error</a>
 </div><div class="indent"><strong>Limit Switches and Signal Tower:</strong> <a href="#limit">Stopped on a limit switch</a> - <a href="#towerred">Red light / buzzer</a> - <a href="#towerboot">Tower on when Rosetta is off</a>
 </div><div class="indent"><strong>Settings Program:</strong> <a href="#settingsopen">Settings won't open</a> - <a href="#tuninglost">Tuning changes lost</a> - <a href="#jacknotassigned">"not assigned - cleared"</a> - <a href="#jogrefused">Jog speed change refused</a> - <a href="#sp1assign">Can't assign Sp1</a> - <a href="#phonealerts">Phone alerts don't arrive</a>
@@ -76,6 +76,12 @@
 </li></ul></div><p class="vspace"><a id="threading"></a>
 </p><h2 id="The-Threading-tab-won-t-run">The Threading tab won't run</h2>
 <div class="indent">Threading turns the work with the <strong>C</strong> axis, not with spindle Sp0, so C must be assigned to a channel.  For a threading setup, put <strong>C</strong> on the plug the main spindle drive is connected to (by default, Sp0 is on channel 04), in place of Sp0.  Assign it on the <a href="AxisSelection.html">Axis Selection</a> tab of the Settings program, then restart Rosetta.
+</div><p class="vspace"><a id="spindlesfight"></a>
+</p><h2 id="The-spindles-fight-each-other-or-run-rough">The spindles fight each other or run rough</h2>
+<div class="indent">If Sp0 and Sp1 run jerky or rough, or a motor sounds as if it is straining - most noticeably when Sp1 is set to a negative % so it turns the opposite way to Sp0 - check the pin that locks the rosette to <strong>Sp1's rosette drive pulley</strong>.
+<ul><li>If that pin is pushed in too far, it can also catch <strong>Sp0's spindle drive pulley</strong>.  The two spindles are then locked together, and the two motors drive against each other.
+</li><li>Pull the pin back so it only goes into the rosette drive pulley, then, with both spindles un-enabled (press <a href="ENAble.html#All-ENA-Off">All ENA Off</a>), check that Sp0 and Sp1 can each be turned by hand without the other one turning.
+</li></ul></div><div class="indent">Do this check <strong>before</strong> looking at the cables or the settings - Rosetta sends the right commands to each spindle even when the motors are fighting.
 </div><hr/>
 <h1 id="Error-Messages"><span style="color: #5D6532;"> Error Messages</span></h1>
 <p>Generally, these messages are seen on the lower right-hand corner of the screen when using LinuxCNC.
