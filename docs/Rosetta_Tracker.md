@@ -79,6 +79,8 @@ Rich, 24 November 2026: strongly looking to move the stepper drives off 6,400 mi
 - Support Manual: `HardwareBuildCommonSteps.html` and `InstallationAndSetupForDebian13Trixie.html` (drive switch settings for a new build).
 - The Ornamental Turning Book of Knowledge's Stepper Motor page, if it names 6,400 for Rosetta.
 
+**Trial on Rich's Pi (S/N 000), 25 November 2026:** X and Z (channels 02/03) moved to 1,600 microsteps - drive switches SW5-SW8 set by Rich; RosettaSet_v1.ini Scale / 4 (X -387100 -> -96775, Z -387650 -> -96912.5) and Stepgen Max Vel 0.517 -> 1.25 (the old step-rate ceiling had held them below Max Speed 1.0 in/s; the new ceiling is 2.07 in/s). Backup `~/Documents/RosettaSet_v1.ini.bak-20261125-120932-before-1600`. To judge: moves measure true (1.000" = 1.000"), faster rapids, and whether slow cuts are still smooth. Other channels stay at 6,400; A and C (1:1, 17.778/deg) would drop to 0.225 deg per step at 1,600 - the one place resolution may show.
+
 ### Geometric Chuck Designer as a web page - dropped 18 November 2026
 
 Rich spoke with Roy Lindley 18 November 2026: they don't want the Geometric Chuck Designer (or Roy's Bazley catalogue) on a public web page, and a web Rosette Designer is dropped too (Rich: likely to bring many unforeseen problems). Don't revisit unless Rich raises it. (The idea, for the record: a draw-only page, no G-code, for turners using Roy's technique without Rosetta.)
