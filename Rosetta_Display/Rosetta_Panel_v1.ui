@@ -36,6 +36,7 @@
 #   1.4 - 20 October 2026 - Settings note removed, library button up  #
 #   1.5 - 20 October 2026 - Program progress bar beside Sync Move     #
 #   1.6 - 23 November 2026 - Website button: rosetta.colvintools.com  #
+#   1.7 - 25 November 2026 - All ENA Off button under the ENA column  #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -5605,6 +5606,28 @@ direction</property>
                 <property name="top-attach">7</property>
                 <property name="width">4</property>
                 <property name="height">2</property>
+              </packing>
+            </child>
+            <child>
+              <!-- All ENA Off - Rosetta_PostGUI_v1.hal nets its pin to every
+                   ENA flipflop's reset, turning every ENA off. -->
+              <object class="HAL_Button" id="All_ENA_Off">
+                <property name="label" translatable="yes">All ENA Off</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="receives-default">False</property>
+                <property name="tooltip-text" translatable="yes">Turns off every axis's and spindle's ENA. Click an ENA button to turn that one back on.</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="margin-left">2</property>
+                <property name="margin-right">2</property>
+                <property name="margin-top">2</property>
+                <property name="margin-bottom">2</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">20</property>
+                <property name="width">3</property>
               </packing>
             </child>
             <child>

@@ -29,6 +29,7 @@
 #                                                                     #
 # Version                                                             #
 #   1.0 - 05 August 2025                                              #
+#   1.1 - 25 November 2026 - All ENA Off button                       #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -384,6 +385,27 @@ net w-ena-panel-allow                    => w-estop-and.in0
 net machine-is-on                        => w-estop-and.in1
 net w-enable                             <= w-estop-and.out
 net w-enable                             => gladevcp.W_ENA-light
+
+# ******************************************
+# All ENA Off button
+
+# Added 25 November 2026 - the main panel's All_ENA_Off button, under
+# the ENA column, turns every ENA off (all 8 axes and both spindles):
+# while it's held, each ENA flipflop's reset forces its panel bit
+# false, so each ENA light goes red and the next ENA click turns that
+# one back on as usual. Only the ENA flipflops are touched - Rosetta
+# Settings' overrides (<letter>-ena-settings-allow) are left alone.
+net ena-all-off                          <= gladevcp.All_ENA_Off
+net ena-all-off                          => x-ena-flip.reset
+net ena-all-off                          => z-ena-flip.reset
+net ena-all-off                          => u-ena-flip.reset
+net ena-all-off                          => v-ena-flip.reset
+net ena-all-off                          => w-ena-flip.reset
+net ena-all-off                          => a-ena-flip.reset
+net ena-all-off                          => b-ena-flip.reset
+net ena-all-off                          => c-ena-flip.reset
+net ena-all-off                          => sp0-ena-flip.reset
+net ena-all-off                          => sp1-ena-flip.reset
 
 # ******************************************
 # Sp0/Sp1 simultaneous indexing
