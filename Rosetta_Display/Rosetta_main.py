@@ -42,6 +42,9 @@
 #         opens this machine's copy of the PDF too
 #   1.6 - 24 November 2026 - a negative Sp1 % turns Sp1 the opposite
 #         way to Sp0 (M3/M4, never a negative S word)
+#   1.7 - 25 November 2026 - the index buttons set each spindle's
+#         speed with S<speed> $0 / $1 (S0 <speed> / S1 <speed> both
+#         set Sp0's speed)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1936,14 +1939,10 @@ class HandlerClass:
                     c.wait_complete() # Wait for mode change to complete
 
             # Set spindle rotational speeds
-            GcodeStr1 = "S0 " + str(self.Sp0_Feed)
-            idx_log(GcodeStr1)
-
-            GcodeStr2 = "S1 " + str(self._sp1_speed())   # never negative - see _sp1_speed
-            idx_log(GcodeStr2)
-
-            c.mdi(GcodeStr1)
-            c.mdi(GcodeStr2)
+            for gcode in self._index_speed_gcodes():
+                idx_log(gcode)
+                c.mdi(gcode)
+                c.wait_complete()
 
             if self.Sp0_Idx_Bool and self.Sp1_Idx_Bool:
                 # Both selected - drive both spindles' orient chains
@@ -2043,14 +2042,10 @@ class HandlerClass:
                     c.wait_complete() # Wait for mode change to complete
 
             # Set spindle rotational speeds
-            GcodeStr1 = "S0 " + str(self.Sp0_Feed)
-            idx_log(GcodeStr1)
-
-            GcodeStr2 = "S1 " + str(self._sp1_speed())   # never negative - see _sp1_speed
-            idx_log(GcodeStr2)
-
-            c.mdi(GcodeStr1)
-            c.mdi(GcodeStr2)
+            for gcode in self._index_speed_gcodes():
+                idx_log(gcode)
+                c.mdi(gcode)
+                c.wait_complete()
 
             if self.Sp0_Idx_Bool and self.Sp1_Idx_Bool:
                 # Both selected - see matching branch in Sp0_Move_Idx_Fwd.
@@ -2227,6 +2222,23 @@ class HandlerClass:
     def _sp1_speed(self):
         '''Sp1's speed: Sp1 % of Sp0's, always positive.'''
         return abs(round(self.Sp0_Feed * self.Sp1_Pct / 100, 2))
+
+    def _index_speed_gcodes(self):
+        '''
+        The S words the index buttons send first: "S<speed> $0" and
+        "S<speed> $1", each only if that spindle is assigned (a $ for a
+        spindle LinuxCNC doesn't have is an error). Fixed 25 November
+        2026 - they used to send "S0 <speed>" and "S1 <speed>", but
+        G-code ignores spaces, so those were S0<speed> and S1<speed> -
+        both set Sp0's speed (to 110 for a speed of 10), and Sp1's was
+        never set.
+        '''
+        gcodes = []
+        if "Sp0" in _ACTIVE_ROLES_AT_STARTUP:
+            gcodes.append("S" + str(self.Sp0_Feed) + " $0")
+        if "Sp1" in _ACTIVE_ROLES_AT_STARTUP:
+            gcodes.append("S" + str(self._sp1_speed()) + " $1")   # never negative - see _sp1_speed
+        return gcodes
 
     def _sp1_mcode(self, sp0_mcode):
         '''The M-code for Sp1 when Sp0 is sent sp0_mcode ("M3"/"M4").'''
