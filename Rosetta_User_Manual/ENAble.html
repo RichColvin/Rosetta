@@ -16,7 +16,7 @@
 <header class="site-header">
   <a class="brand" href="index.html">
     <img src="Images/RosettaLogo-White.png" alt="" width="44" height="44">
-    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.20 - 24 November 2026<!--/version--></span></span>
+    <span class="brand-lines"><span class="brand-text"><span class="brand-name">Rosetta</span> <span class="brand-section">User Manual</span></span><span class="brand-version"><!--version-->O/S 1.0 Beta 1.21 - 25 November 2026<!--/version--></span></span>
   </a>
   <nav class="site-nav" aria-label="Manuals">
     <a href="index.html">Contents</a>
@@ -52,7 +52,7 @@ An axis must be enabled for Rosetta to drive the motor, making the motor rotate 
 </p>
 <p class="vspace">When performing indexing operations, it is recommended to leave the axis enabled between indexing movements. This helps ensure there is no movement before the next indexing operation.
 </p>
-<p class="vspace">There is a configuration setting which is related to this. <a href="Other.html#AxisNotEnabled">Axis Not Enabled</a> can be set to warn the user if the a needed axis is not enabled, or to automatically enable the needed axes.
+<p class="vspace">There is a configuration setting which is related to this. <a href="Other.html#Axis-Not-Enabled">Axis Not Enabled</a> can be set to warn the user if the a needed axis is not enabled, or to automatically enable the needed axes.
 </p></td></tr><tr><td style="padding-left: 5px; padding-right: 5px; text-align: center; background-color: red; vertical-align: middle;" valign="top">
 <p><span style="color: white;"><strong>ENA</strong></span>
 </p></td><td style="padding-left: 5px; padding-right: 5px; text-align: center; " valign="top">
@@ -76,6 +76,14 @@ When an axis is not enabled, the motor’s shaft can be turned by hand. This is 
 <p><strong>Axis is not configured for use</strong> <br class="clearboth"/>
 Within the Settings program, the <a href="AxisSelection.html">Axis Selection</a> tab can be used to make an axis availlable for use.
 </p></td></tr></table>
+
+<h2 id="All-ENA-Off">All ENA Off</h2>
+<p>The <strong>All ENA Off</strong> button, at the bottom of the main screen below the ENA buttons, un-enables every axis and both spindles with one press. Every ENA button turns red.
+</p>
+<p class="vspace">To enable an axis again, press its own ENA button once.
+</p>
+<p class="note"><strong>Note:</strong> All ENA Off acts at once, even while a program, a Sync Move or a spindle is running. Any motor that is moving stops where it is, and an axis that is moving will usually cause a following error, which turns the machine off. Press it while the machine is moving only to stop it.
+</p>
 
 
 
