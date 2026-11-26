@@ -54,7 +54,8 @@
 #         (Calculated Scale, Use button, warning when Scale Used is
 #         far from it); Scale renamed Scale Used; warns when Stepgen
 #         Max Vel is more than the step timing allows; a Scale change
-#         no longer tries to update LinuxCNC when it isn't running
+#         no longer tries to update LinuxCNC when it isn't running;
+#         the lead is entered in inches or mm, chosen per axis
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -658,7 +659,8 @@ CALCULATOR_NOTES = {
     "pulses": "The drive's microstep setting (DM542T switches SW5-SW8). Only used to work out Calculated Scale.",
     "gear": "Motor turns for one turn of the leadscrew, axis or spindle (9 for a 9:1 belt, 1 if direct). "
             "Blank until you enter it.",
-    "lead": "How far one turn of the leadscrew moves the slide (its pitch x number of starts).",
+    "lead": "How far one turn of the leadscrew moves the slide (its pitch x number of starts), "
+            "in inches or mm - whichever it's given in.",
     "result_linear": "Pulses / rev x gearing / lead. A starting point - Scale Used may be fine-tuned from it.",
     "result_rotary": "Pulses / rev x gearing / 360. A starting point - Scale Used may be fine-tuned from it.",
     "result_spindle": "Pulses / rev x gearing. A starting point - Scale Used may be fine-tuned from it.",
@@ -1566,7 +1568,7 @@ class HandlerClass:
     # (26 November 2026, Rich). The rows are made here rather than in
     # the .ui file - five rows of entries across three grids - and put
     # in just above Scale Used. Calculator values save as soon as they
-    # change (axes.<id> pulses_per_rev / gear_ratio / lead_inch); they
+    # change (axes.<id> pulses_per_rev / gear_ratio / lead + lead_unit); they
     # never reach LinuxCNC - only Scale Used does.
     # --------------------------------------------------------------
 
@@ -1581,7 +1583,6 @@ class HandlerClass:
         settings = rosetta_settings_io.load_settings()
         axes = settings.get("axes", {})
         self._calc = {}
-        self._calc_lead_uom = None
         self._channel_headers = {}
         self._applying_calculator = True
         for group, roles in TUNING_GROUPS:
@@ -1602,7 +1603,7 @@ class HandlerClass:
             rows = [("pulses", "Pulses / rev", "pulses / motor rev"),
                     ("gear", "Gearing Ratio", ": 1")]
             if linear:
-                rows.append(("lead", "Leadscrew Movement / rev", "in / rev"))
+                rows.append(("lead", "Leadscrew Movement / rev", ""))
             rows += [("result", "Calculated Scale", self.builder.get_object(group + "_Scale_UOM").get_text()),
                      ("use", "", "")]
             for offset, (field, title, uom) in enumerate(rows):
@@ -1612,8 +1613,6 @@ class HandlerClass:
                 if uom:
                     uom_label = self._calc_note_label(uom, uom=True)
                     grid.attach(uom_label, uom_col, row + offset, 1, 1)
-                    if field == "lead":
-                        self._calc_lead_uom = uom_label
                     if field == "result":
                         self._calc.setdefault("_result_uoms", []).append((group, uom_label))
                 note = CALCULATOR_NOTES["result_" + kind] if field == "result" else CALCULATOR_NOTES[field]
@@ -1621,7 +1620,12 @@ class HandlerClass:
                 for role, col in columns.items():
                     widget = self._calc_widget(role, field)
                     grid.attach(widget, col, row + offset, 1, 1)
-                    self._calc.setdefault(role, {})[field] = widget
+                    if field == "lead":
+                        # A box: the number, then its in/mm choice.
+                        self._calc.setdefault(role, {})["lead"] = widget.entry
+                        self._calc[role]["lead_unit"] = widget.unit
+                    else:
+                        self._calc.setdefault(role, {})[field] = widget
             for role in roles:
                 self._show_calculator_values(role, axes.get(role, {}))
         self._applying_calculator = False
@@ -1632,7 +1636,7 @@ class HandlerClass:
         if notebook is not None:
             notebook.connect("switch-page", lambda *_a: self._refresh_channel_headers())
         self._refresh_channel_headers()
-        self._refresh_lead_units()
+        self._refresh_calculator_units()
 
     def _calc_row_label(self, text):
         label = Gtk.Label(label=text, halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
@@ -1663,11 +1667,28 @@ class HandlerClass:
                 widget.append(str(pulses), "{:,}".format(pulses))
             widget.connect("changed", self._calc_pulses_changed, role)
             widget.get_style_context().add_class("rosetta-calc")
-        elif field in ("gear", "lead"):
+        elif field == "gear":
             widget = Gtk.Entry(halign=Gtk.Align.END, valign=Gtk.Align.CENTER, width_chars=9, xalign=1)
             widget.set_margin_start(5)
             widget.connect("changed", self._calc_entry_changed, role, field)
             widget.get_style_context().add_class("rosetta-calc")
+        elif field == "lead":
+            # The lead as written on the leadscrew, in inches or mm (Rich,
+            # 26 November 2026: 2 mm, not 0.0787").
+            widget = Gtk.Box(spacing=3, halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
+            widget.set_margin_start(5)
+            widget.entry = Gtk.Entry(width_chars=6, xalign=1)
+            widget.entry.connect("changed", self._calc_entry_changed, role, field)
+            widget.entry.get_style_context().add_class("rosetta-calc")
+            widget.unit = Gtk.ComboBoxText()
+            for unit in rosetta_settings_io.LEAD_UNITS:
+                widget.unit.append(unit, unit)
+            widget.unit.set_tooltip_text("Inches or millimetres - whichever the leadscrew's lead is given in.")
+            widget.unit.connect("changed", self._calc_lead_unit_changed, role)
+            widget.unit.get_style_context().add_class("rosetta-calc")
+            widget.pack_start(widget.entry, False, False, 0)
+            widget.pack_start(widget.unit, False, False, 0)
+            widget.show_all()
         elif field == "result":
             widget = Gtk.Label(label="-", halign=Gtk.Align.FILL, valign=Gtk.Align.CENTER, xalign=1)
             widget.set_margin_start(5)
@@ -1696,7 +1717,13 @@ class HandlerClass:
             combo.set_active_id(str(pulses))
         widgets["gear"].set_text(self._calc_format(entry.get("gear_ratio")))
         if "lead" in widgets:
-            widgets["lead"].set_text(self._calc_format(self._lead_for_display(entry.get("lead_inch"))))
+            entry = dict(entry)
+            rosetta_settings_io.migrate_lead(entry)
+            widgets["lead"].set_text(self._calc_format(entry.get("lead")))
+            unit = entry.get("lead_unit")
+            widgets["lead_unit"].set_active_id(
+                unit if unit in rosetta_settings_io.LEAD_UNITS
+                else rosetta_settings_io.system_lead_unit(self._measurement_system()))
         self._applying_calculator = applying
         self._update_calculated_scale(role)
 
@@ -1727,24 +1754,14 @@ class HandlerClass:
         text = combo.get_active_text() if combo is not None else None
         return text if text in ("Metric", "Imperial") else "Imperial"
 
-    def _lead_for_display(self, lead_inch):
-        if lead_inch is None or self._measurement_system() != "Metric":
-            return lead_inch
-        try:
-            return round(float(lead_inch) * rosetta_settings_io.MM_PER_INCH, 6)
-        except (TypeError, ValueError):
-            return None
-
     def _calc_entry(self, role):
         # The calculator's values for role as they stand on the page.
         widgets = self._calc[role]
         entry = {"pulses_per_rev": widgets["pulses"].get_active_id()}
         entry["gear_ratio"] = self._calc_parse(widgets["gear"].get_text())[1]
         if "lead" in widgets:
-            lead = self._calc_parse(widgets["lead"].get_text())[1]
-            if lead is not None and self._measurement_system() == "Metric":
-                lead /= rosetta_settings_io.MM_PER_INCH
-            entry["lead_inch"] = lead
+            entry["lead"] = self._calc_parse(widgets["lead"].get_text())[1]
+            entry["lead_unit"] = widgets["lead_unit"].get_active_id()
         return entry
 
     def _calculated_scale(self, role):
@@ -1752,10 +1769,17 @@ class HandlerClass:
             return None
         return rosetta_settings_io.calculated_scale(role, self._calc_entry(role), self._measurement_system())
 
-    def _save_calculator(self, role, key, value):
+    def _save_calculator(self, role, key, value, **more):
         settings = rosetta_settings_io.load_settings()
-        settings.setdefault("axes", {}).setdefault(role, {})[key] = value
+        entry = settings.setdefault("axes", {}).setdefault(role, {})
+        entry[key] = value
+        entry.update(more)
         rosetta_settings_io.save_settings(settings)
+
+    def _calc_lead_unit_changed(self, combo, role):
+        if not self._applying_calculator:
+            self._save_calculator(role, "lead_unit", combo.get_active_id())
+        self._update_calculated_scale(role)
 
     def _calc_pulses_changed(self, combo, role):
         if self._applying_calculator:
@@ -1769,9 +1793,10 @@ class HandlerClass:
         (style.remove_class if ok else style.add_class)("rosetta-calc-bad")
         if not self._applying_calculator and ok:
             if field == "lead":
-                if value is not None and self._measurement_system() == "Metric":
-                    value /= rosetta_settings_io.MM_PER_INCH
-                self._save_calculator(role, "lead_inch", value)
+                # With its unit, so a later Measurement System change
+                # can't change what it means.
+                self._save_calculator(role, "lead", value,
+                                      lead_unit=self._calc[role]["lead_unit"].get_active_id())
             else:
                 self._save_calculator(role, "gear_ratio", value)
         self._update_calculated_scale(role)
@@ -1800,22 +1825,21 @@ class HandlerClass:
         spin.set_value(value)
         print("Scale Used for " + role + " set to Calculated Scale " + str(value))
 
-    def _refresh_lead_units(self):
-        # After a Measurement System change: lead and result units, and
-        # the lead shown in the new units (the saved inches are kept).
+    def _refresh_calculator_units(self):
+        # After a Measurement System change: Calculated Scale's units,
+        # and the in/mm choice of any lead whose unit was never chosen
+        # (it follows the Measurement System until then).
         if not getattr(self, "_calc", None):
             return
-        metric = self._measurement_system() == "Metric"
-        if self._calc_lead_uom is not None:
-            self._calc_lead_uom.set_text("mm / rev" if metric else "in / rev")
         for group, label in self._calc.get("_result_uoms", ()):
             label.set_text(self.builder.get_object(group + "_Scale_UOM").get_text())
-        settings = rosetta_settings_io.load_settings()
+        axes = rosetta_settings_io.load_settings().get("axes", {})
+        unit = rosetta_settings_io.system_lead_unit(self._measurement_system())
         for role in CHANNEL_ROLES:
-            if role in self._calc and "lead" in self._calc[role]:
+            widgets = self._calc.get(role, {})
+            if "lead_unit" in widgets and axes.get(role, {}).get("lead_unit") not in rosetta_settings_io.LEAD_UNITS:
                 applying, self._applying_calculator = self._applying_calculator, True
-                lead = settings.get("axes", {}).get(role, {}).get("lead_inch")
-                self._calc[role]["lead"].set_text(self._calc_format(self._lead_for_display(lead)))
+                widgets["lead_unit"].set_active_id(unit)
                 self._applying_calculator = applying
             self._update_calculated_scale(role)
 
@@ -1899,7 +1923,7 @@ class HandlerClass:
                 if widget is not None:
                     widget.get_adjustment().set_upper(upper)
 
-        self._refresh_lead_units()
+        self._refresh_calculator_units()
 
     def _load_measurement_system(self):
         '''
@@ -3357,12 +3381,14 @@ class HandlerClass:
                         spin.set_value(scale)  # fires <Axis>_Set_Scale: abort/disable-if-enabled/halcmd setp
                         imported.append(axis_id + " Scale Used")
 
-            calc_keys = [k for k in ("pulses_per_rev", "gear_ratio", "lead_inch") if k in axis_entry]
+            calc_keys = [k for k in ("pulses_per_rev", "gear_ratio", "lead", "lead_unit", "lead_inch")
+                         if k in axis_entry]
             if calc_keys and axis_id in getattr(self, "_calc", {}):
                 settings = rosetta_settings_io.load_settings()
                 saved = settings.setdefault("axes", {}).setdefault(axis_id, {})
-                for key in calc_keys:
-                    saved[key] = axis_entry[key]
+                incoming = {key: axis_entry[key] for key in calc_keys}
+                rosetta_settings_io.migrate_lead(incoming)   # an export from before 26 November 2026
+                saved.update(incoming)
                 rosetta_settings_io.save_settings(settings)
                 self._show_calculator_values(axis_id, saved)
                 imported.append(axis_id + " Scale Calculator")

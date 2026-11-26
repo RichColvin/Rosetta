@@ -60,6 +60,8 @@
 #         (one copy of Rosetta Settings; LinuxCNC not started beside it)
 #   1.5 - 26 November 2026 - scale calculator settings (pulses_per_rev,
 #         gear_ratio, lead_inch) and calculated_scale / scale_mismatch
+#   1.6 - 26 November 2026 - the lead is kept as typed with its unit
+#         (lead, lead_unit "in"/"mm"); migrate_lead converts lead_inch
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -495,8 +497,12 @@ def _axis_type_for_letter(letter):
 # how far one leadscrew turn moves it - shown beside Scale Used, which
 # is still what LinuxCNC uses. Saved per axis in axes.<id>:
 # "pulses_per_rev", "gear_ratio" (None until entered) and, linear axes
-# only, "lead_inch" (always inches, whatever the Measurement System;
-# None until entered). New machines start at 1,600 pulses per turn;
+# only, "lead" and "lead_unit" - the lead as typed, in "in" or "mm"
+# (Rich, 26 November 2026: older slides such as Hardinge's are inch,
+# newer leadscrews often metric); None until entered, and a None unit
+# means the Measurement System's. The first version, the same day,
+# saved "lead_inch" (always inches) - migrate_lead converts it. New
+# machines start at 1,600 pulses per turn;
 # an axis saved before the calculator existed is set to 6,400, which
 # every Rosetta was built with until then (fill_missing_calculator).
 PULSES_PER_REV_CHOICES = (200, 400, 800, 1600, 3200, 6400, 12800, 25600,
@@ -506,22 +512,63 @@ PULSES_PER_REV_BEFORE = 6400
 # Scale Used further than this from Calculated Scale gets a warning.
 SCALE_MISMATCH_FRACTION = 0.05
 MM_PER_INCH = 25.4
+LEAD_UNITS = ("in", "mm")
+
+
+def system_lead_unit(measurement_system):
+    return "mm" if measurement_system == "Metric" else "in"
 
 
 def _calculator_defaults(axis_id, pulses_per_rev):
     values = {"pulses_per_rev": pulses_per_rev, "gear_ratio": None}
     if axis_id not in SPINDLE_IDS and _axis_type_for_letter(axis_id) == "LINEAR":
-        values["lead_inch"] = None
+        values["lead"] = None
+        values["lead_unit"] = None
     return values
+
+
+def migrate_lead(entry):
+    '''
+    Turns an old "lead_inch" into "lead" + "lead_unit" "in" (unless the
+    entry already has a "lead"), and removes it. True if it did.
+    '''
+    if "lead_inch" not in entry:
+        return False
+    lead_inch = entry.pop("lead_inch")
+    if "lead" not in entry:
+        entry["lead"], entry["lead_unit"] = _lead_as_typed(lead_inch)
+    return True
+
+
+def _lead_as_typed(lead_inch):
+    '''
+    (lead, unit) for an old inch value: a metric leadscrew's lead typed
+    in mm was saved converted (2 mm as 0.0787402), so a value that's
+    a round number of mm (to 0.05) but not of thousandths of an inch
+    goes back to mm; anything else stays inches.
+    '''
+    try:
+        inches = float(lead_inch)
+    except (TypeError, ValueError):
+        return None, None
+    mm = inches * MM_PER_INCH
+    round_mm = round(mm / 0.05) * 0.05
+    round_thou = abs(inches * 1000 - round(inches * 1000)) < 1e-6
+    if not round_thou and round_mm > 0 and abs(mm - round_mm) < 1e-3:
+        return round(round_mm, 2), "mm"
+    return inches, "in"
 
 
 def fill_missing_calculator(axis_id, entry):
     '''
     Gives an axis saved before the scale calculator its keys -
     pulses_per_rev 6,400 (what its drives were set to), gearing and
-    lead not yet entered. Returns a list of what was added.
+    lead not yet entered - and converts an old lead_inch. Returns a
+    list of what was added or changed.
     '''
     added = []
+    if migrate_lead(entry):
+        added.append("lead_inch -> lead %s %s" % (entry.get("lead"), entry.get("lead_unit")))
     for key, value in _calculator_defaults(axis_id, PULSES_PER_REV_BEFORE).items():
         if key not in entry:
             entry[key] = value
@@ -552,11 +599,20 @@ def calculated_scale(axis_id, entry, measurement_system="Imperial"):
         return pulses * gear
     if _axis_type_for_letter(axis_id) == "ANGULAR":
         return pulses * gear / 360.0
-    lead = _positive(entry.get("lead_inch"))
+    if "lead" in entry:
+        lead, unit = _positive(entry.get("lead")), entry.get("lead_unit")
+    else:
+        lead, unit = _positive(entry.get("lead_inch")), "in"
     if lead is None:
         return None
-    if measurement_system == "Metric":
+    if unit not in LEAD_UNITS:
+        unit = system_lead_unit(measurement_system)
+    # The lead in the Measurement System's units (Scale is per inch or mm).
+    wanted = system_lead_unit(measurement_system)
+    if unit == "in" and wanted == "mm":
         lead *= MM_PER_INCH
+    elif unit == "mm" and wanted == "in":
+        lead /= MM_PER_INCH
     return pulses * gear / lead
 
 

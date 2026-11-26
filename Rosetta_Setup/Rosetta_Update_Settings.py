@@ -82,6 +82,8 @@
 #         none was added by hand (one-time step)                      #
 #   1.17 - 26 November 2026 - gives each axis the scale calculator's  #
 #         settings, at 6,400 pulses per turn                          #
+#   1.18 - 26 November 2026 - converts the calculator's lead_inch to  #
+#         lead + lead_unit                                            #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -214,7 +216,8 @@ def fill_calculator(user):
     Gives every axis without them the scale calculator's settings
     (rosetta_settings_io.fill_missing_calculator) - 6,400 pulses per
     turn, what this machine's drives were set to before the calculator
-    existed, rather than the starting file's 1,600 for new machines.
+    existed, rather than the starting file's 1,600 for new machines -
+    and turns an old lead_inch into lead + lead_unit.
     Must run before add_missing. Returns a list of what was set.
     '''
     changed = []
