@@ -45,6 +45,8 @@
 #   1.7 - 25 November 2026 - the index buttons set each spindle's
 #         speed with S<speed> $0 / $1 (S0 <speed> / S1 <speed> both
 #         set Sp0's speed)
+#   1.8 - 26 November 2026 - a message box when a limit switch or the
+#         E-stop button reads open (tripped, or not plugged in)
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -493,6 +495,10 @@ OVERHEAT_SOUND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Sound
 # the fault siren, so the fault alert waits this long and isn't sent if
 # a card was lost - its own alert says more.
 FAULT_ALERT_DELAY_MS = 1500
+
+# Limit switch and E-stop button messages (see _poll_input_alerts).
+INPUT_ALERT_POLL_MS = 500
+ESTOP_BUTTON_SIGNAL = "estop-button"
 
 # Card contact (see _poll_card_contact). The cards' names on screen.
 CARD_NAMES = {0: "Base box", 1: "Expansion box"}
@@ -4595,6 +4601,110 @@ class HandlerClass:
 
 
 #######################################################################
+# Limit switch and E-stop button messages
+# Purpose:              An NC limit switch or E-stop button that's
+#                       ticked in Rosetta Settings but not plugged in
+#                       (or has a broken wire) reads as tripped: the
+#                       red light and siren come on, or the machine
+#                       stays in E-stop, with nothing on screen to say
+#                       why (Rich, 26 November 2026). This watches each
+#                       in-use limit jack's net and the estop-button net
+#                       (made by Rosetta_Generate_Local_Ini.py) and puts
+#                       up a message box - not modal - when one goes
+#                       active, including at startup, saying which one
+#                       and what to check. One box per input at a time,
+#                       so a bouncing switch can't stack them up. Main
+#                       panel only.
+# Updated:              ver 1.0, 26 November 2026
+#######################################################################
+    def _load_input_alerts(self):
+        if self.builder.get_object("Sync_Run") is None:
+            return
+        settings = rosetta_settings_io.load_settings()
+        expansion = settings.get("expansion_box") is True
+        normally_open = settings.get("limit_switch_type") == "NO"
+        self._input_alerts = {}
+        for jack, value in sorted(settings.get("limit_switches", {}).items()):
+            if not isinstance(value, str) or not value or value == PAUSE_JACK_VALUE:
+                continue
+            if jack in ("4", "5", "6") and not expansion:
+                continue
+            for suffix in (" min", " max", ""):
+                letter = value[:len(value) - len(suffix)] if suffix else value
+                if value == letter + suffix and letter in AXIS_SELECTION_LETTERS:
+                    break
+            else:
+                continue
+            net = letter.lower() + ("-limit-sw" if not suffix else "-limit-" + suffix.strip())
+            name = letter + suffix + " limit switch"
+            if normally_open:
+                cause = ("The axis is on its limit switch, or the switch is a normally-closed one "
+                         "while Rosetta Settings' Limit Switch Type is set to NO.")
+            else:
+                cause = ("The axis is on its limit switch, or no switch is plugged into limit jack "
+                         + jack + ", or its wire is broken.")
+            self._input_alerts[net] = {
+                "title": name + " (limit jack " + jack + ") is open",
+                "text": cause + "\n\nThis is what turns the signal tower red and sounds the "
+                        "siren.  If the axis is on the switch, jog it off (AXIS's Override Limits "
+                        "may be needed).  If no switch is meant to be on limit jack " + jack
+                        + ", set it to Not used on Rosetta Settings' Inputs, Outputs, and "
+                        "Sounds page.",
+            }
+        if settings.get("estop_button") is True:
+            self._input_alerts[ESTOP_BUTTON_SIGNAL] = {
+                "title": "E-stop button is pressed or not connected",
+                "text": "The E-stop button is pressed, or it isn't plugged in, or its wire is "
+                        "broken.  The machine stays in E-stop until it reads released - then "
+                        "press F1.\n\nIf no E-stop button is meant to be connected, untick E-Stop "
+                        "Button on Rosetta Settings' Inputs, Outputs, and Sounds page.",
+            }
+        # Only nets this session actually has (a jack whose axis has no
+        # channel, or that clashes with another jack, isn't wired).
+        for net in list(self._input_alerts):
+            try:
+                hal.get_value(net)
+            except Exception:
+                print("Input alert: no HAL net " + net + " this session - not watched")
+                del self._input_alerts[net]
+        if not self._input_alerts:
+            return
+        self._input_alert_was = {net: False for net in self._input_alerts}
+        self._input_alert_dialog = {}
+        GLib.timeout_add(INPUT_ALERT_POLL_MS, self._poll_input_alerts)
+
+    def _poll_input_alerts(self):
+        for net, alert in self._input_alerts.items():
+            try:
+                active = bool(hal.get_value(net))
+            except Exception:
+                continue
+            if active and not self._input_alert_was[net]:
+                print("Input alert: " + alert["title"])
+                if net not in self._input_alert_dialog:
+                    self._show_input_alert(net, alert)
+            self._input_alert_was[net] = active
+        return True
+
+    def _show_input_alert(self, net, alert):
+        dialog = Gtk.MessageDialog(
+            transient_for=self.builder.get_object("Sync_Run").get_toplevel(),
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text=alert["title"],
+        )
+        dialog.format_secondary_text(alert["text"])
+
+        def closed(d, _response):
+            self._input_alert_dialog.pop(net, None)
+            d.destroy()
+        dialog.connect("response", closed)
+        self._input_alert_dialog[net] = dialog
+        dialog.show()
+
+
+#######################################################################
 # __init__
 # Purpose:              This is used to initialize everything.
 # Updated:              ver 1.0, 21 July 2026
@@ -4761,6 +4871,7 @@ class HandlerClass:
         # E-stop on a card losing contact, and bringing it back (main
         # panel only) - see _load_card_contact.
         self._load_card_contact()
+        self._load_input_alerts()
 
         # Pi temperature and undervoltage (main panel only) - see
         # _load_pi_temp.
