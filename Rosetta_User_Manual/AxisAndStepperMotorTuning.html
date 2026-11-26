@@ -148,6 +148,7 @@
 </td></tr></table>
 <p class="vspace">The warnings are:
 </p><ul><li><strong>Max Speed is more than the step timing allows at this Scale</strong> - the stepper drive cannot be sent pulses fast enough for that speed.  Lower Max Speed (or, for a spindle, Max Vel).
+</li><li><strong>Stepgen Max Vel is more than the step timing allows at this Scale</strong> - an advanced setting is higher than the stepper drive can be sent pulses for.  LinuxCNC lowers it by itself, but shows a message (<em>maxvel is too big for current step timings</em>) each time the axis is enabled.  Click the axis's <strong>Restore Defaults</strong> button, or lower Stepgen Max Vel.
 </li><li><strong>Stepgen Max Vel is below Max Speed</strong>, <strong>Stepgen Max Accel is below 1.5 x Max Acceleration</strong>, or <strong>PID Max Output is below Max Speed</strong> - an advanced setting is too low.  The easiest fix is the axis's <strong>Restore Defaults</strong> button (see below).
 </li><li><strong>Scale Used is N% away from Calculated Scale</strong> - Scale Used and the scale calculator's values (above) disagree by more than 5%.  Most often the drive's microstep switches were changed without changing Scale Used, or the other way round.  Check the switches, then Pulses / rev, Gearing Ratio and Leadscrew Movement.
 </li><li><strong>Indexing Max Output is above Max Vel</strong> (spindles only) - lower Indexing Max Output, or click the spindle's <strong>Restore Defaults</strong> button.

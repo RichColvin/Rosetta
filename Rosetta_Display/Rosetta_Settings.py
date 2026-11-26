@@ -52,7 +52,8 @@
 #   1.9 - 26 November 2026 - Axis and Stepper Motor Tuning page: each
 #         axis's channel under its name, a scale calculator
 #         (Calculated Scale, Use button, warning when Scale Used is
-#         far from it); Scale renamed Scale Used
+#         far from it); Scale renamed Scale Used; warns when Stepgen
+#         Max Vel is more than the step timing allows
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -1453,6 +1454,14 @@ class HandlerClass:
         if ceiling is not None and top is not None and top > ceiling:
             problems.append("%s is more than the step timing allows at this Scale (%.4g)"
                             % ("Max Vel" if axis_id in SPINDLE_IDS else "Max Speed", ceiling))
+        # The card clips a stepgen maxvel above this, with a "too big for
+        # current step timings" message each time the axis is enabled
+        # (U and W on Rich's Pi, 26 November 2026). For a spindle Max Vel
+        # is the stepgen's, checked just above.
+        if (ceiling is not None and stepgen_vel is not None and axis_id not in SPINDLE_IDS
+                and stepgen_vel > ceiling):
+            problems.append("Stepgen Max Vel is more than the step timing allows at this Scale (%.4g)"
+                            % ceiling)
         return problems
 
     def _update_limit_warnings(self):
