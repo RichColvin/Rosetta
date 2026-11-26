@@ -49,6 +49,10 @@
 #         copy of the manual (rosetta_manuals.py), not the website
 #   1.8 - 24 November 2026 - Other page: Start Rosetta when the
 #         computer starts (an Xfce autostart entry)
+#   1.9 - 26 November 2026 - Axis and Stepper Motor Tuning page: each
+#         axis's channel under its name, a scale calculator
+#         (Calculated Scale, Use button, warning when Scale Used is
+#         far from it); Scale renamed Scale Used
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -100,6 +104,7 @@ gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk
 from gi.repository import GLib
 from gi.repository import Gtk
+from gi.repository import Pango
 
 @contextlib.contextmanager
 def _suppress_fd2():
@@ -619,6 +624,45 @@ def _limit_group(axis_id):
     if axis_id in SPINDLE_IDS:
         return "Spindle"
     return "RotaryAxes" if _axis_type_for_letter(axis_id) == "ANGULAR" else "LinearAxes"
+
+# The Axis and Stepper Motor Tuning page's three groups: the axes in
+# each, in column order.
+TUNING_GROUPS = (
+    ("LinearAxes", ("X", "Z", "U", "V", "W")),
+    ("RotaryAxes", ("A", "B", "C")),
+    ("Spindle", ("Sp0", "Sp1")),
+)
+
+# Scale calculator (26 November 2026, Rich) - rows added above Scale Used
+# by _build_scale_calculator; the maths and settings keys are in
+# rosetta_settings_io (calculated_scale). Its entries and result are
+# tinted so they read as a calculator, apart from the settings
+# LinuxCNC uses.
+CALCULATOR_CSS = b"""
+entry.rosetta-calc, combobox.rosetta-calc button {
+    background: #fdf1d4;
+}
+entry.rosetta-calc-bad {
+    color: #c01c28;
+}
+label.rosetta-calc-result {
+    background: #dde9f7;
+    border: 1px solid #a9c1de;
+    border-radius: 3px;
+    padding: 3px 8px;
+}
+"""
+CALCULATOR_NOTES = {
+    "pulses": "The drive's microstep setting (DM542T switches SW5-SW8). Only used to work out Calculated Scale.",
+    "gear": "Motor turns for one turn of the leadscrew, axis or spindle (9 for a 9:1 belt, 1 if direct). "
+            "Blank until you enter it.",
+    "lead": "How far one turn of the leadscrew moves the slide (its pitch x number of starts).",
+    "result_linear": "Pulses / rev x gearing / lead. A starting point - Scale Used may be fine-tuned from it.",
+    "result_rotary": "Pulses / rev x gearing / 360. A starting point - Scale Used may be fine-tuned from it.",
+    "result_spindle": "Pulses / rev x gearing. A starting point - Scale Used may be fine-tuned from it.",
+    "use": "Copies Calculated Scale into Scale Used, keeping its sign (the direction). "
+           "Saved with Save All Settings.",
+}
 
 # Settings widget field name -> HAL pid component pin name.
 PID_PARAM_PIN = {
@@ -1401,6 +1445,10 @@ class HandlerClass:
                 problems.append("Stepgen Max Accel is below 1.5 x Max Acceleration")
             if pid_out < top * rosetta_settings_io.PID_OUTPUT_MIN:
                 problems.append("PID Max Output is below Max Speed")
+        mismatch = rosetta_settings_io.scale_mismatch(scale, self._calculated_scale(axis_id))
+        if mismatch is not None:
+            problems.append("Scale Used is %.0f%% away from Calculated Scale - check the drive's "
+                            "microstep switches and the calculator's values" % (mismatch * 100))
         ceiling = rosetta_settings_io.step_rate_speed_ceiling(scale)
         if ceiling is not None and top is not None and top > ceiling:
             problems.append("%s is more than the step timing allows at this Scale (%.4g)"
@@ -1502,6 +1550,287 @@ class HandlerClass:
         self._update_limit_warnings()
         print("Restored " + axis_id + " advanced settings to defaults")
 
+
+    # --------------------------------------------------------------
+    # Channel under each axis's name, and the scale calculator
+    # (26 November 2026, Rich). The rows are made here rather than in
+    # the .ui file - five rows of entries across three grids - and put
+    # in just above Scale Used. Calculator values save as soon as they
+    # change (axes.<id> pulses_per_rev / gear_ratio / lead_inch); they
+    # never reach LinuxCNC - only Scale Used does.
+    # --------------------------------------------------------------
+
+    def _build_scale_calculator(self):
+        if self.builder.get_object("X_Set_Scale") is None:
+            return
+        provider = Gtk.CssProvider()
+        provider.load_from_data(CALCULATOR_CSS)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        settings = rosetta_settings_io.load_settings()
+        axes = settings.get("axes", {})
+        self._calc = {}
+        self._calc_lead_uom = None
+        self._channel_headers = {}
+        self._applying_calculator = True
+        for group, roles in TUNING_GROUPS:
+            first = self.builder.get_object(roles[0] + "_Set_Scale")
+            grid = first.get_parent()
+            row = grid.child_get_property(first, "top-attach")
+            uom_col = grid.child_get_property(self.builder.get_object(group + "_Scale_UOM"), "left-attach")
+            columns = {role: grid.child_get_property(self.builder.get_object(role + "_Set_Scale"), "left-attach")
+                       for role in roles}
+            for role, col in columns.items():
+                header = grid.get_child_at(col, 0)
+                if isinstance(header, Gtk.Label):
+                    header.set_justify(Gtk.Justification.CENTER)
+                    self._channel_headers[role] = header
+
+            linear = group == "LinearAxes"
+            kind = "linear" if linear else ("spindle" if group == "Spindle" else "rotary")
+            rows = [("pulses", "Pulses / rev", "pulses / motor rev"),
+                    ("gear", "Gearing Ratio", ": 1")]
+            if linear:
+                rows.append(("lead", "Leadscrew Movement / rev", "in / rev"))
+            rows += [("result", "Calculated Scale", self.builder.get_object(group + "_Scale_UOM").get_text()),
+                     ("use", "", "")]
+            for offset, (field, title, uom) in enumerate(rows):
+                grid.insert_row(row + offset)
+                if title:
+                    grid.attach(self._calc_row_label(title), 0, row + offset, 1, 1)
+                if uom:
+                    uom_label = self._calc_note_label(uom, uom=True)
+                    grid.attach(uom_label, uom_col, row + offset, 1, 1)
+                    if field == "lead":
+                        self._calc_lead_uom = uom_label
+                    if field == "result":
+                        self._calc.setdefault("_result_uoms", []).append((group, uom_label))
+                note = CALCULATOR_NOTES["result_" + kind] if field == "result" else CALCULATOR_NOTES[field]
+                grid.attach(self._calc_note_label(note), uom_col + 1, row + offset, 1, 1)
+                for role, col in columns.items():
+                    widget = self._calc_widget(role, field)
+                    grid.attach(widget, col, row + offset, 1, 1)
+                    self._calc.setdefault(role, {})[field] = widget
+            for role in roles:
+                self._show_calculator_values(role, axes.get(role, {}))
+        self._applying_calculator = False
+        for role in CHANNEL_ROLES:
+            self._update_calculated_scale(role)
+
+        notebook = self.builder.get_object("Settings_Notebook")
+        if notebook is not None:
+            notebook.connect("switch-page", lambda *_a: self._refresh_channel_headers())
+        self._refresh_channel_headers()
+        self._refresh_lead_units()
+
+    def _calc_row_label(self, text):
+        label = Gtk.Label(label=text, halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
+        label.set_justify(Gtk.Justification.RIGHT)
+        attrs = Pango.AttrList()
+        attrs.insert(Pango.attr_font_desc_new(Pango.FontDescription("DejaVu Serif 12")))
+        label.set_attributes(attrs)
+        return label
+
+    def _calc_note_label(self, text, uom=False):
+        label = Gtk.Label(label=text, halign=Gtk.Align.START, valign=Gtk.Align.CENTER, xalign=0)
+        attrs = Pango.AttrList()
+        attrs.insert(Pango.attr_font_desc_new(Pango.FontDescription("DejaVu Serif 10")))
+        if uom:
+            label.set_margin_start(4)
+        else:
+            label.set_margin_start(12)
+            label.set_line_wrap(True)
+            label.set_max_width_chars(80)
+            attrs.insert(Pango.attr_foreground_new(0x4040, 0x4040, 0x4040))
+        label.set_attributes(attrs)
+        return label
+
+    def _calc_widget(self, role, field):
+        if field == "pulses":
+            widget = Gtk.ComboBoxText(halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
+            for pulses in rosetta_settings_io.PULSES_PER_REV_CHOICES:
+                widget.append(str(pulses), "{:,}".format(pulses))
+            widget.connect("changed", self._calc_pulses_changed, role)
+            widget.get_style_context().add_class("rosetta-calc")
+        elif field in ("gear", "lead"):
+            widget = Gtk.Entry(halign=Gtk.Align.END, valign=Gtk.Align.CENTER, width_chars=9, xalign=1)
+            widget.set_margin_start(5)
+            widget.connect("changed", self._calc_entry_changed, role, field)
+            widget.get_style_context().add_class("rosetta-calc")
+        elif field == "result":
+            widget = Gtk.Label(label="-", halign=Gtk.Align.FILL, valign=Gtk.Align.CENTER, xalign=1)
+            widget.set_margin_start(5)
+            widget.get_style_context().add_class("rosetta-calc-result")
+        else:
+            widget = Gtk.Button(label="Use", halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
+            widget.set_tooltip_text("Copies Calculated Scale into Scale Used (keeping its sign).")
+            widget.connect("clicked", self._calc_use_clicked, role)
+        widget.show()
+        return widget
+
+    def _show_calculator_values(self, role, entry):
+        # Puts saved calculator values (an axes.<id> dict) into the widgets.
+        widgets = self._calc.get(role)
+        if not widgets:
+            return
+        applying, self._applying_calculator = self._applying_calculator, True
+        combo = widgets["pulses"]
+        try:
+            pulses = int(float(entry.get("pulses_per_rev", rosetta_settings_io.PULSES_PER_REV_DEFAULT)))
+        except (TypeError, ValueError):
+            pulses = rosetta_settings_io.PULSES_PER_REV_DEFAULT
+        if not combo.set_active_id(str(pulses)):
+            # A value off the DM542T's list (another drive) - offer it too.
+            combo.append(str(pulses), "{:,}".format(pulses))
+            combo.set_active_id(str(pulses))
+        widgets["gear"].set_text(self._calc_format(entry.get("gear_ratio")))
+        if "lead" in widgets:
+            widgets["lead"].set_text(self._calc_format(self._lead_for_display(entry.get("lead_inch"))))
+        self._applying_calculator = applying
+        self._update_calculated_scale(role)
+
+    @staticmethod
+    def _calc_format(value, places=6):
+        if value is None:
+            return ""
+        try:
+            text = ("{:,.%df}" % places).format(float(value))
+        except (TypeError, ValueError):
+            return ""
+        return text.rstrip("0").rstrip(".") if "." in text else text
+
+    @staticmethod
+    def _calc_parse(text):
+        # "" -> (True, None); a positive number -> (True, value); else (False, None).
+        text = text.replace(",", "").strip()
+        if not text:
+            return True, None
+        try:
+            value = float(text)
+        except ValueError:
+            return False, None
+        return (True, value) if value > 0 else (False, None)
+
+    def _measurement_system(self):
+        combo = self.builder.get_object("Measurement_System")
+        text = combo.get_active_text() if combo is not None else None
+        return text if text in ("Metric", "Imperial") else "Imperial"
+
+    def _lead_for_display(self, lead_inch):
+        if lead_inch is None or self._measurement_system() != "Metric":
+            return lead_inch
+        try:
+            return round(float(lead_inch) * rosetta_settings_io.MM_PER_INCH, 6)
+        except (TypeError, ValueError):
+            return None
+
+    def _calc_entry(self, role):
+        # The calculator's values for role as they stand on the page.
+        widgets = self._calc[role]
+        entry = {"pulses_per_rev": widgets["pulses"].get_active_id()}
+        entry["gear_ratio"] = self._calc_parse(widgets["gear"].get_text())[1]
+        if "lead" in widgets:
+            lead = self._calc_parse(widgets["lead"].get_text())[1]
+            if lead is not None and self._measurement_system() == "Metric":
+                lead /= rosetta_settings_io.MM_PER_INCH
+            entry["lead_inch"] = lead
+        return entry
+
+    def _calculated_scale(self, role):
+        if role not in getattr(self, "_calc", {}):
+            return None
+        return rosetta_settings_io.calculated_scale(role, self._calc_entry(role), self._measurement_system())
+
+    def _save_calculator(self, role, key, value):
+        settings = rosetta_settings_io.load_settings()
+        settings.setdefault("axes", {}).setdefault(role, {})[key] = value
+        rosetta_settings_io.save_settings(settings)
+
+    def _calc_pulses_changed(self, combo, role):
+        if self._applying_calculator:
+            return
+        self._save_calculator(role, "pulses_per_rev", int(combo.get_active_id()))
+        self._update_calculated_scale(role)
+
+    def _calc_entry_changed(self, entry, role, field):
+        ok, value = self._calc_parse(entry.get_text())
+        style = entry.get_style_context()
+        (style.remove_class if ok else style.add_class)("rosetta-calc-bad")
+        if not self._applying_calculator and ok:
+            if field == "lead":
+                if value is not None and self._measurement_system() == "Metric":
+                    value /= rosetta_settings_io.MM_PER_INCH
+                self._save_calculator(role, "lead_inch", value)
+            else:
+                self._save_calculator(role, "gear_ratio", value)
+        self._update_calculated_scale(role)
+
+    def _update_calculated_scale(self, role):
+        widgets = getattr(self, "_calc", {}).get(role)
+        if not widgets:
+            return
+        value = self._calculated_scale(role)
+        widgets["result"].set_text("-" if value is None else self._calc_format(value, 3))
+        widgets["use"].set_sensitive(value is not None)
+        self._update_limit_warnings()
+
+    def _calc_use_clicked(self, button, role):
+        value = self._calculated_scale(role)
+        spin = self.builder.get_object(role + "_Set_Scale")
+        if value is None or spin is None:
+            return
+        sign = -1.0 if spin.get_value() < 0 else 1.0
+        value = round(sign * value, spin.get_digits())
+        adjustment = spin.get_adjustment()
+        if not adjustment.get_lower() <= value <= adjustment.get_upper():
+            _show_settings_error(button, "Calculated Scale %s is more than Scale Used allows (%s)."
+                                 % (self._calc_format(abs(value), 3), self._calc_format(adjustment.get_upper(), 0)))
+            return
+        spin.set_value(value)
+        print("Scale Used for " + role + " set to Calculated Scale " + str(value))
+
+    def _refresh_lead_units(self):
+        # After a Measurement System change: lead and result units, and
+        # the lead shown in the new units (the saved inches are kept).
+        if not getattr(self, "_calc", None):
+            return
+        metric = self._measurement_system() == "Metric"
+        if self._calc_lead_uom is not None:
+            self._calc_lead_uom.set_text("mm / rev" if metric else "in / rev")
+        for group, label in self._calc.get("_result_uoms", ()):
+            label.set_text(self.builder.get_object(group + "_Scale_UOM").get_text())
+        settings = rosetta_settings_io.load_settings()
+        for role in CHANNEL_ROLES:
+            if role in self._calc and "lead" in self._calc[role]:
+                applying, self._applying_calculator = self._applying_calculator, True
+                lead = settings.get("axes", {}).get(role, {}).get("lead_inch")
+                self._calc[role]["lead"].set_text(self._calc_format(self._lead_for_display(lead)))
+                self._applying_calculator = applying
+            self._update_calculated_scale(role)
+
+    def _refresh_channel_headers(self):
+        # Each axis's name with the channel it's on - as saved on the
+        # Axis Selection page, so a change there shows at once (it takes
+        # effect at the next LinuxCNC start).
+        settings = rosetta_settings_io.load_settings()
+        assignments = settings.get("channel_assignments", {})
+        expansion = settings.get("expansion_box", False) is True
+        channel_of = {role: channel_id for channel_id, role in assignments.items()}
+        for role, header in getattr(self, "_channel_headers", {}).items():
+            channel_id = channel_of.get(role)
+            if channel_id is None:
+                line, tip = "no channel", role + " isn't assigned to a channel (Axis Selection page)."
+            elif channel_id in EXPANSION_CHANNELS and not expansion:
+                line = "Ch " + channel_id + " (off)"
+                tip = (role + " is on channel " + channel_id + ", in the expansion box, which isn't "
+                       "ticked as connected (Axis Selection page).")
+            else:
+                line = "Ch " + channel_id
+                tip = role + " is on channel " + channel_id + " (Axis Selection page)."
+            header.set_text(role + "\n" + line)
+            header.set_tooltip_text(tip)
+
     def _apply_measurement_system_labels(self, system):
         '''
         Sets the Scale/Max Vel/Max Accel unit-of-measure labels for the
@@ -1559,6 +1888,8 @@ class HandlerClass:
                 widget = self.builder.get_object(letter + suffix)
                 if widget is not None:
                     widget.get_adjustment().set_upper(upper)
+
+        self._refresh_lead_units()
 
     def _load_measurement_system(self):
         '''
@@ -2695,7 +3026,13 @@ class HandlerClass:
             spin = self.builder.get_object(axis_id + "_Set_Scale")
             if spin is not None:
                 get_axis_entry(axis_id)["scale"] = spin.get_value()
-                exported.append(axis_id + " Scale")
+                exported.append(axis_id + " Scale Used")
+
+            if axis_id in getattr(self, "_calc", {}):
+                calc = self._calc_entry(axis_id)
+                calc["pulses_per_rev"] = int(calc["pulses_per_rev"])
+                get_axis_entry(axis_id).update(calc)
+                exported.append(axis_id + " Scale Calculator")
 
             backlash_spin = self.builder.get_object(axis_id + "_Set_Backlash")
             if backlash_spin is not None:
@@ -3008,7 +3345,17 @@ class HandlerClass:
                         scale = None
                     if scale is not None:
                         spin.set_value(scale)  # fires <Axis>_Set_Scale: abort/disable-if-enabled/halcmd setp
-                        imported.append(axis_id + " Scale")
+                        imported.append(axis_id + " Scale Used")
+
+            calc_keys = [k for k in ("pulses_per_rev", "gear_ratio", "lead_inch") if k in axis_entry]
+            if calc_keys and axis_id in getattr(self, "_calc", {}):
+                settings = rosetta_settings_io.load_settings()
+                saved = settings.setdefault("axes", {}).setdefault(axis_id, {})
+                for key in calc_keys:
+                    saved[key] = axis_entry[key]
+                rosetta_settings_io.save_settings(settings)
+                self._show_calculator_values(axis_id, saved)
+                imported.append(axis_id + " Scale Calculator")
 
             if "backlash" in axis_entry:
                 spin = self.builder.get_object(axis_id + "_Set_Backlash")
@@ -3445,6 +3792,10 @@ class HandlerClass:
         self._applying_limits = False
         self._last_limits = {}
         self._load_limit_settings()
+
+        # Channel under each axis's name and the scale calculator rows -
+        # after the Measurement System is loaded (the lead's units).
+        self._build_scale_calculator()
         # Any value the warnings line checks - keep it current.
         for axis_id in CHANNEL_ROLES:
             for suffix in ("_Set_Scale", "_Set_Max_Vel", "_Set_Max_Accel"):

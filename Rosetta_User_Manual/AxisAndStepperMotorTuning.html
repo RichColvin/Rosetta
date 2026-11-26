@@ -26,7 +26,7 @@
 <main class="page">
   <p class="crumbs"><a href="index.html">User Manual</a> <span aria-hidden="true">›</span> <span>Axis and Stepper Motor Tuning</span></p>
   <h1>Axis and Stepper Motor Tuning</h1>
-  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Basic-Settings">Basic Settings</a></li><li class="toc-l1"><a href="#Scale_">Scale</a></li><li class="toc-l2"><a href="#Microsteps-and-Max-Speed">Microsteps and Max Speed</a></li><li class="toc-l1"><a href="#Max-Speed">Max Speed</a></li><li class="toc-l1"><a href="#Max-Acceleration">Max Acceleration</a></li><li class="toc-l1"><a href="#Backlash_">Backlash</a></li><li class="toc-l1"><a href="#The-warnings-line">The warnings line</a></li><li class="toc-l0"><a href="#Advanced-Settings">Advanced Settings</a></li><li class="toc-l1"><a href="#Linear-and-Rotary-Angular-axes">Linear and Rotary/Angular axes</a></li><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Restore-Defaults">Restore Defaults</a></li></ul></nav>
+  <nav class="toc" aria-label="On this page"><p>On this page</p><ul><li class="toc-l0"><a href="#Basic-Settings">Basic Settings</a></li><li class="toc-l1"><a href="#Scale-Calculator">Scale Calculator</a></li><li class="toc-l1"><a href="#Scale_">Scale Used</a></li><li class="toc-l2"><a href="#Microsteps-and-Max-Speed">Microsteps and Max Speed</a></li><li class="toc-l1"><a href="#Max-Speed">Max Speed</a></li><li class="toc-l1"><a href="#Max-Acceleration">Max Acceleration</a></li><li class="toc-l1"><a href="#Backlash_">Backlash</a></li><li class="toc-l1"><a href="#The-warnings-line">The warnings line</a></li><li class="toc-l0"><a href="#Advanced-Settings">Advanced Settings</a></li><li class="toc-l1"><a href="#Linear-and-Rotary-Angular-axes">Linear and Rotary/Angular axes</a></li><li class="toc-l1"><a href="#Spindles">Spindles</a></li><li class="toc-l1"><a href="#Restore-Defaults">Restore Defaults</a></li></ul></nav>
   <div class="content">
 
 <p class="note"><strong>Key Note:</strong> The configuration program cannot be run when the Rosetta program is running.  It is designed so that you configure the way Rosetta works, then run the system.
@@ -38,13 +38,24 @@
 </p>
 <p class="vspace">There are fields for every axis, including the ones not currently being used.  Only the values for the axes being used make any difference.
 </p>
+<p class="vspace">Under each axis's name is the channel it is plugged into, as set on the <a href="AxisSelection.html">Axis Selection</a> page - for example, <strong>Ch 02</strong>.  <strong>no channel</strong> means the axis is not assigned to a channel, and <strong>(off)</strong> means its channel is in the expansion box, which is not ticked as connected.
+</p>
 <p class="vspace">Each group shows these rows:
 </p>
 
 <table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Row</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Linear and Rotary/<wbr>Angular axes</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Spindles</strong></span>
-</td></tr><tr><td valign="top"> Scale
+</td></tr><tr><td valign="top"> Pulses / rev, Gearing Ratio
+</td><td valign="top"> Yes
+</td><td valign="top"> Yes
+</td></tr><tr><td valign="top"> Leadscrew Movement / rev
+</td><td valign="top"> Linear axes only
+</td><td valign="top"> No
+</td></tr><tr><td valign="top"> Calculated Scale, Use
+</td><td valign="top"> Yes
+</td><td valign="top"> Yes
+</td></tr><tr><td valign="top"> Scale Used
 </td><td valign="top"> Yes
 </td><td valign="top"> Yes
 </td></tr><tr><td valign="top"> Max Speed / Max Vel
@@ -57,8 +68,21 @@
 </td><td valign="top"> Yes
 </td><td valign="top"> Yes
 </td></tr></table>
+<h2 id="Scale-Calculator">Scale Calculator</h2>
+<p>The rows above <strong>Scale Used</strong>, with a coloured background, work out what Scale Used should be from how the axis is built.  They are only a calculator:  LinuxCNC never uses them, only Scale Used.  Each value is saved as soon as you change it.
+</p><ul><li><strong>Pulses / rev</strong> - the microsteps per motor turn that the axis's stepper drive is set to, by its switches SW5-SW8 (see <a href="SwitchSettingsOnTheDM542Ts.html">Switch Settings on the DM542Ts</a>).
+</li><li><strong>Gearing Ratio</strong> - how many times the motor turns for one turn of the leadscrew, the rotary axis, or the spindle.  For a 9:1 belt, enter 9; if the motor drives it directly, enter 1.  It stays blank until you enter it.
+</li><li><strong>Leadscrew Movement / rev</strong> (linear axes only) - how far one turn of the leadscrew moves the slide, in inches (or mm).  For a leadscrew with more than one start, this is the thread pitch times the number of starts.
+</li><li><strong>Calculated Scale</strong> - Pulses / rev × Gearing Ratio ÷ Leadscrew Movement for a linear axis, ÷ 360 for a rotary/angular axis (pulses per degree), and Pulses / rev × Gearing Ratio for a spindle.  It shows - until the values it needs are entered.
+</li><li><strong>Use</strong> - copies Calculated Scale into Scale Used, keeping Scale Used's sign (its direction).
+</li></ul><p class="vspace">For example, with the drive at 1,600 microsteps, a 6:1 belt and a 10 TPI leadscrew (0.1&quot; per turn), Calculated Scale is 1,600 × 6 ÷ 0.1 = 96,000 pulses per inch.
+</p>
+<ul><li><span style="color: red;">Do not forget to click Save All Settings after Use.</span>  Like the other values on this page, Scale Used is only kept when you click <strong>Save All Settings</strong>.
+</li><li><span style="color: red;">Do not change Pulses / rev here without setting the drive's switches to match.</span>  Changing it here changes nothing on the drive - it only changes Calculated Scale.
+</li></ul><p class="note"><strong>Note:</strong> Calculated Scale is a starting point.  Once an axis has been checked by measuring (see <a href="ScaleSettingsForADevice.html">Scale Settings for a Device</a>), Scale Used may be a little different from it - that is expected.  If they are more than 5% apart, the warnings line says so (see below).
+</p>
 <p class="vspace"><a id="Scale"></a>
-</p><h2 id="Scale_">Scale</h2>
+</p><h2 id="Scale_">Scale Used</h2>
 <p>This is the number of pulses Rosetta sends to the stepper drive to move the axis one unit:  one inch (or mm) for a linear axis, one degree for a rotary/angular axis, and one revolution for a spindle.  For example, in the screen to the right, 57,600 pulses are needed for the Sp0 spindle to turn 360°.
 </p>
 
@@ -66,7 +90,7 @@
 </td></tr></table>
 <p class="vspace">Rosetta's stepper drives are normally set to 6,400 microsteps per motor turn.  To work out the Scale for each axis and check it by measuring, see <a href="ScaleSettingsForADevice.html">Scale Settings for a Device</a>.
 </p>
-<ul><li>If the axis moves the wrong way, change the sign of the Scale (+ to -, or - to +).
+<ul><li>If the axis moves the wrong way, change the sign of Scale Used (+ to -, or - to +).
 </li></ul><p class="vspace"><a id="Microsteps"></a>
 </p><h3 id="Microsteps-and-Max-Speed">Microsteps and Max Speed</h3>
 <p>Rosetta can send at most 200,000 pulses a second to each stepper drive (the pulse timing the drives need).  So the bigger the Scale, the slower the axis's fastest speed:
@@ -125,6 +149,7 @@
 <p class="vspace">The warnings are:
 </p><ul><li><strong>Max Speed is more than the step timing allows at this Scale</strong> - the stepper drive cannot be sent pulses fast enough for that speed.  Lower Max Speed (or, for a spindle, Max Vel).
 </li><li><strong>Stepgen Max Vel is below Max Speed</strong>, <strong>Stepgen Max Accel is below 1.5 x Max Acceleration</strong>, or <strong>PID Max Output is below Max Speed</strong> - an advanced setting is too low.  The easiest fix is the axis's <strong>Restore Defaults</strong> button (see below).
+</li><li><strong>Scale Used is N% away from Calculated Scale</strong> - Scale Used and the scale calculator's values (above) disagree by more than 5%.  Most often the drive's microstep switches were changed without changing Scale Used, or the other way round.  Check the switches, then Pulses / rev, Gearing Ratio and Leadscrew Movement.
 </li><li><strong>Indexing Max Output is above Max Vel</strong> (spindles only) - lower Indexing Max Output, or click the spindle's <strong>Restore Defaults</strong> button.
 </li></ul><p class="note"><strong>Note:</strong> A warning does not stop you saving the values.  It tells you that LinuxCNC may stop with an error, or that the axis may not reach its Max Speed.
 </p>
@@ -171,7 +196,7 @@
 <h2 id="Restore-Defaults">Restore Defaults</h2>
 <p>Each axis and each spindle has a <strong>Restore Defaults</strong> button at the bottom of its column.  It puts that axis's advanced settings back to their normal values:  Stepgen Max Vel, Stepgen Max Accel and PID Max Output are worked out again from the axis's own Max Speed and Max Acceleration, and the PID gains go back to Rosetta's starting values.  (For a spindle:  Indexing Max Output and the indexing PID gains.)
 </p>
-<p class="vspace">Restore Defaults does not change <strong>Scale</strong>, <strong>Max Speed</strong>, <strong>Max Acceleration</strong> or <strong>Backlash</strong>.
+<p class="vspace">Restore Defaults does not change <strong>Scale Used</strong>, the scale calculator, <strong>Max Speed</strong>, <strong>Max Acceleration</strong> or <strong>Backlash</strong>.
 </p>
 <ul><li><span style="color: red;">Do not forget to click Save All Settings after Restore Defaults.</span>  Like the other values on this page, the restored values are only kept when you click <strong>Save All Settings</strong>.
 </li></ul><p class="vspace"><strong><ins>Notes</ins>:</strong>

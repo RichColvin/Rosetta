@@ -31,13 +31,13 @@
 
 <p>When working to tune your axis’ settings, you will use the <a href="AxisAndStepperMotorTuning.html">Axis and Stepper Motor Tuning</a> tab of the Rosetta Settings program.
 </p>
-<p class="vspace"><strong><ins>Note</ins>:</strong> the Settings program cannot run while Rosetta (LinuxCNC) is running.  So each round of tuning is: move and measure the axis in Rosetta, exit it, change the <strong>Scale</strong> in the Settings program, click <strong>Save All Settings</strong> on the Axis Selection tab, close the Settings program, then start Rosetta again and re-measure.
+<p class="vspace"><strong><ins>Note</ins>:</strong> the Settings program cannot run while Rosetta (LinuxCNC) is running.  So each round of tuning is: move and measure the axis in Rosetta, exit it, change <strong>Scale Used</strong> in the Settings program, click <strong>Save All Settings</strong> on the Axis Selection tab, close the Settings program, then start Rosetta again and re-measure.
 </p>
 <h1 id="Steps-for-Setting-the-Scale">Steps for Setting the Scale</h1>
 <p>The axis' <strong>scale</strong> is used by LinuxCNC to know how to convert your distance measurement (i.e., inches, mm, or degrees) into pulses sent to a stepper motor for rotation.  It is also used for speed (i.e., rpm) on the spindles.
 </p>
 <h2 id="Step-1-Identify-a-Starting-Scale-Value">Step 1 - Identify a Starting Scale Value</h2>
-<p>Use the table below to identify a starting scale value.
+<p>The easiest way is the <a href="AxisAndStepperMotorTuning.html#Scale-Calculator">Scale Calculator</a> on Rosetta Settings' Axis and Stepper Motor Tuning page:  enter the drive's Pulses / rev, the Gearing Ratio and (for a linear axis) the Leadscrew Movement, then click <strong>Use</strong> to copy the Calculated Scale into Scale Used.  Or use the table below to identify a starting scale value.
 </p>
 
 <table style="width: calc(100% - 60px); border-collapse: collapse; margin-left: 30px;"><tr><td style="border-style: solid; border-color: black; text-align: center; vertical-align: bottom; background-color: #00416a; border-top-width: thin; border-bottom-width: thin; border-left-width: thin; border-right-width: thin; " valign="top" width="55px"> <span style="color: white;"> <strong>Axis</strong></span>
@@ -138,7 +138,7 @@ The settings on the StepperOnline DM542T Stepper Drive are set to:
 <ol><li value="1"> Enable the axis you will be using.
 </li><li value="2"> Setup a measuring device (i.e., a  <a class="online" href="https://otbok.info/index.php?n=Main.DialIndicator" rel="noopener" target="_blank" title="Opens on the Internet">dial indicator</a>) to identify how far the axis actually moves.
 </li><li value="3"> Using the Rosetta system, set the axis to move a small distance.
-</li></ol><div class="indent">If the motor is driving the axis in the wrong direction, reverse the polarity of the <strong>Scale</strong> (i.e., make a + into a -, or a - into a +).
+</li></ol><div class="indent">If the motor is driving the axis in the wrong direction, reverse the polarity of <strong>Scale Used</strong> (i.e., make a + into a -, or a - into a +).
 </div><div class="indent">If you think the entered scale value is the right one to move one inch, test it by moving it 0.100” or even 0.010”.  This is a good practice as the scale value you entered could be off by an order of magnitude, and you could easily end up crashing the device.
 </div><div class="indent">This is especially the case where leadscrews have multiple starts.  A leadscrew with a 2mm pitch and 4 starts would actually move 8mm for each revolution (i.e., 4 times the distance you may have thought at first).
 </div><ol><li value="4"> Once you are satisfied that the magnitude is right, set the movement for the axis to be a distance which makes sense for the device.  A good starting point is 0.100” (especially as that is one complete revolution on a  <a class="online" href="https://otbok.info/index.php?n=Main.DialIndicator" rel="noopener" target="_blank" title="Opens on the Internet">dial indicator</a>).

@@ -58,6 +58,8 @@
 #         (pi_temp_settings)
 #   1.4 - 15 November 2026 - SETTINGS_LOCK_PATH / settings_program_open
 #         (one copy of Rosetta Settings; LinuxCNC not started beside it)
+#   1.5 - 26 November 2026 - scale calculator settings (pulses_per_rev,
+#         gear_ratio, lead_inch) and calculated_scale / scale_mismatch
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -486,13 +488,99 @@ def _axis_type_for_letter(letter):
     return "ANGULAR" if letter in ("A", "B", "C") else "LINEAR"
 
 
+# Scale calculator (26 November 2026, Rich): Rosetta Settings' Axis and
+# Stepper Motor Tuning page works out a Calculated Scale for each axis
+# from its drive's pulses per motor turn, the gearing (motor turns per
+# turn of the leadscrew, rotary axis or spindle) and, for a linear axis,
+# how far one leadscrew turn moves it - shown beside Scale Used, which
+# is still what LinuxCNC uses. Saved per axis in axes.<id>:
+# "pulses_per_rev", "gear_ratio" (None until entered) and, linear axes
+# only, "lead_inch" (always inches, whatever the Measurement System;
+# None until entered). New machines start at 1,600 pulses per turn;
+# an axis saved before the calculator existed is set to 6,400, which
+# every Rosetta was built with until then (fill_missing_calculator).
+PULSES_PER_REV_CHOICES = (200, 400, 800, 1600, 3200, 6400, 12800, 25600,
+                          1000, 2000, 4000, 5000, 8000, 10000, 20000, 25000)
+PULSES_PER_REV_DEFAULT = 1600
+PULSES_PER_REV_BEFORE = 6400
+# Scale Used further than this from Calculated Scale gets a warning.
+SCALE_MISMATCH_FRACTION = 0.05
+MM_PER_INCH = 25.4
+
+
+def _calculator_defaults(axis_id, pulses_per_rev):
+    values = {"pulses_per_rev": pulses_per_rev, "gear_ratio": None}
+    if axis_id not in SPINDLE_IDS and _axis_type_for_letter(axis_id) == "LINEAR":
+        values["lead_inch"] = None
+    return values
+
+
+def fill_missing_calculator(axis_id, entry):
+    '''
+    Gives an axis saved before the scale calculator its keys -
+    pulses_per_rev 6,400 (what its drives were set to), gearing and
+    lead not yet entered. Returns a list of what was added.
+    '''
+    added = []
+    for key, value in _calculator_defaults(axis_id, PULSES_PER_REV_BEFORE).items():
+        if key not in entry:
+            entry[key] = value
+            added.append(key + " " + str(value))
+    return added
+
+
+def _positive(value):
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return None
+    return value if value > 0 else None
+
+
+def calculated_scale(axis_id, entry, measurement_system="Imperial"):
+    '''
+    The Scale worked out from an axis's calculator values: pulses per
+    unit of movement (inch or mm, degree for A/B/C, revolution for a
+    spindle), always positive. None if the gearing (or a linear axis's
+    lead) hasn't been entered.
+    '''
+    pulses = _positive(entry.get("pulses_per_rev"))
+    gear = _positive(entry.get("gear_ratio"))
+    if pulses is None or gear is None:
+        return None
+    if axis_id in SPINDLE_IDS:
+        return pulses * gear
+    if _axis_type_for_letter(axis_id) == "ANGULAR":
+        return pulses * gear / 360.0
+    lead = _positive(entry.get("lead_inch"))
+    if lead is None:
+        return None
+    if measurement_system == "Metric":
+        lead *= MM_PER_INCH
+    return pulses * gear / lead
+
+
+def scale_mismatch(scale_used, calculated):
+    '''
+    How far Scale Used (its size - the sign is the direction) is from
+    Calculated Scale, as a fraction of Calculated Scale, or None if
+    there's nothing to compare or it's within SCALE_MISMATCH_FRACTION.
+    '''
+    if calculated is None or calculated <= 0 or scale_used is None:
+        return None
+    difference = abs(abs(scale_used) - calculated) / calculated
+    return difference if difference > SCALE_MISMATCH_FRACTION else None
+
+
 def _default_axis_entry(axis_id):
     if axis_id in SPINDLE_IDS:
         entry = {"scale": 1, "backlash": 0.0}
+        entry.update(_calculator_defaults(axis_id, PULSES_PER_REV_DEFAULT))
         entry.update(default_limits(axis_id))
         entry["pid_pos"] = default_pid(axis_id)
         return entry
     entry = {"scale": 1, "backlash": 0.0}
+    entry.update(_calculator_defaults(axis_id, PULSES_PER_REV_DEFAULT))
     entry.update(default_limits(axis_id))
     entry["usercomment"] = ""
     entry["pid"] = default_pid(axis_id)
@@ -598,6 +686,9 @@ def _merge_defaults(loaded):
                     for limit_key in LIMIT_KEYS:
                         if limit_key not in axis_value:
                             entry.pop(limit_key, None)
+                    # Likewise an axis saved before the scale calculator
+                    # had 6,400-pulse drives, not the new 1,600.
+                    fill_missing_calculator(axis_id, axis_value)
                     entry.update(axis_value)
                     fill_missing_limits(axis_id, entry, measurement_system=loaded.get(
                         "measurement_system", "Imperial"))

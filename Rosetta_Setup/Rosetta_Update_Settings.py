@@ -80,6 +80,8 @@
 #         icons where none were made by hand (one-time step)          #
 #   1.16 - 24 November 2026 - schedules the weekly virus scan where   #
 #         none was added by hand (one-time step)                      #
+#   1.17 - 26 November 2026 - gives each axis the scale calculator's  #
+#         settings, at 6,400 pulses per turn                          #
 #                                                                     #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.             #
 #                                                                     #
@@ -204,6 +206,22 @@ def fill_speed_limits(user, planner):
         else:
             continue
         changed += [axis_id + " " + note for note in notes]
+    return changed
+
+
+def fill_calculator(user):
+    '''
+    Gives every axis without them the scale calculator's settings
+    (rosetta_settings_io.fill_missing_calculator) - 6,400 pulses per
+    turn, what this machine's drives were set to before the calculator
+    existed, rather than the starting file's 1,600 for new machines.
+    Must run before add_missing. Returns a list of what was set.
+    '''
+    changed = []
+    for axis_id, entry in sorted(user.get("axes", {}).items()):
+        if isinstance(entry, dict) and axis_id in rosetta_settings_io.AXIS_IDS:
+            changed += [axis_id + " " + note
+                        for note in rosetta_settings_io.fill_missing_calculator(axis_id, entry)]
     return changed
 
 
@@ -426,6 +444,7 @@ def update_settings():
     except OSError as e:
         print("WARNING: could not read " + ROSETTA_INI_PATH + " (" + str(e) + ") - speed limits not filled in.")
         raised = []
+    raised += fill_calculator(user)
     raised += fix_spindle_index_pid(user)
     removed = remove_old_keys(user)
     added = add_missing(user, seed)
