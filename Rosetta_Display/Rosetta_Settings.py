@@ -53,7 +53,8 @@
 #         axis's channel under its name, a scale calculator
 #         (Calculated Scale, Use button, warning when Scale Used is
 #         far from it); Scale renamed Scale Used; warns when Stepgen
-#         Max Vel is more than the step timing allows
+#         Max Vel is more than the step timing allows; a Scale change
+#         no longer tries to update LinuxCNC when it isn't running
 #
 # Copyright (c) 2026 Colvin Tools and Brainwave Embedded.
 #
@@ -3536,6 +3537,13 @@ class HandlerClass:
         # startup auto-restore from RosettaSet_v1.ini), which runs before
         # the operator has powered on/reset E-stop, when there's no
         # spinning spindle to stop anyway.
+        if not self._linuxcnc_running:
+            # The value is kept and saved with Save All Settings; there's
+            # no machine to update (LinuxCNC can't run beside this
+            # program, and s.poll() fails without it - Use for Sp0/Sp1,
+            # 26 November 2026).
+            return
+
         s.poll()
         if s.task_state == linuxcnc.STATE_ON:
             if s.task_state != linuxcnc.MODE_MDI:
@@ -3615,6 +3623,13 @@ class HandlerClass:
         channel_id = _ROLE_CHANNEL_OF.get("Sp1")
         if channel_id is None:
             print("Sp1 is not currently assigned to a channel - value kept, no live HAL write")
+            return
+
+        if not self._linuxcnc_running:
+            # The value is kept and saved with Save All Settings; there's
+            # no machine to update (LinuxCNC can't run beside this
+            # program, and s.poll() fails without it - Use for Sp0/Sp1,
+            # 26 November 2026).
             return
 
         s.poll()
@@ -3934,6 +3949,13 @@ def _axis_set_scale_letter(letter):
         channel_id = _ROLE_CHANNEL_OF.get(letter)
         if channel_id is None:
             print(letter + " is not currently assigned to a channel - value kept, no live HAL write")
+            return
+
+        if not self._linuxcnc_running:
+            # The value is kept and saved with Save All Settings; there's
+            # no machine to update (LinuxCNC can't run beside this
+            # program, and s.poll() fails without it - Use for Sp0/Sp1,
+            # 26 November 2026).
             return
 
         c.abort()
