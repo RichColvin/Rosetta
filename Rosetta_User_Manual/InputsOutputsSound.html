@@ -60,6 +60,10 @@
 </li></ol><p class="vspace"><ins><strong>Note</strong></ins>: The axis to which a limit switch is assigned will <ins>not</ins> be in a limit mode if there is a break in the wire.  Thusly, you should test to ensure it works before expecting it to (and find out it does not).
 </p></td></tr></table>
 <p><strong>Note:</strong> This setting applies to all limit switches configured for the system.  You cannot have one limit switch be configured as NC and another as NO.
+</p>
+<p class="vspace">Whenever a limit switch reads open - at startup, or while running - Rosetta shows a message naming the axis and the limit jack, for example <em>X max limit switch (limit jack 2) is open</em>.  With NC switches this also happens when no switch is plugged into a jack that is assigned, or its wire is broken.  It is the same thing that turns the signal tower red and sounds the siren.
+</p><ul><li><span style="color: red;">Do not assign a limit jack that has no switch plugged into it.</span>  Set it to <strong>Not used</strong> instead, or the machine will always think that axis is on its limit.
+</li></ul>
 <h2 id="Switch-Configuration">Switch Configuration</h2>
 <p>Limit switches can be configured these ways.
 </p>
@@ -138,7 +142,9 @@
 <p class="vspace"><strong><ins>Key Note</ins>:</strong>  As this is a normally closed circuit, once the use of an E-Stop button is enabled, the system cannot be taken out of Emergency Stop until 
 </p><ol><li>a button is attached to the system and 
 </li><li>it is in a disengaged state.
-</li></ol><p class="vspace"><strong><ins>Note</ins>:</strong>
+</li></ol><p class="vspace">While the E-Stop button reads pressed - including when it is ticked as connected but not plugged in, or its wire is broken - Rosetta shows the message <em>E-stop button is pressed or not connected</em>.
+</p><ul><li><span style="color: red;">Do not tick the E-Stop button as connected unless one is plugged into the Base Box.</span>  If it is ticked with none plugged in, the machine stays in E-stop and F1 will not turn it on.
+</li></ul><p class="vspace"><strong><ins>Note</ins>:</strong>
 </p><ol><li>Cabling for the <a href="E-StopCabling.html">E-Stop button</a>
 </li><li>Usage instructions for the <a href="E-Stop.html">E-Stop button</a>
 </li><li>The E-Stop button cannot be setup to be normally open.
