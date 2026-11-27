@@ -36,47 +36,28 @@
 <div class="img imgcaption"><span class="frame rfloat"> <img alt="" src="Images/REBSettings-AxisStepperMotorTuning.png" width="325px"/><br/><span class="caption"><strong><em>Axis and Stepper Motor Tuning</em></strong></span></span></div>
 <p>This page has three groups:  <strong>Linear</strong> axes (X, Z, U, V, W), <strong>Rotary/Angular</strong> axes (A, B, C), and <strong>Spindles</strong> (Sp0, Sp1).  Each axis has its own column, and each setting has its own row.  The column to the right of each row explains that row.
 </p>
-<p class="vspace">There are fields for every axis, including the ones not currently being used.  Only the values for the axes being used make any difference.
+<p class="vspace">There are fields for every axis, including the axes not currently being used.  Only the values for the axes being used make any difference.
 </p>
 <p class="vspace">Under each axis's name is the channel it is plugged into, as set on the <a href="AxisSelection.html">Axis Selection</a> page - for example, <strong>Ch 02</strong>.  <strong>no channel</strong> means the axis is not assigned to a channel, and <strong>(off)</strong> means its channel is in the expansion box, which is not ticked as connected.
 </p>
-<p class="vspace">Each group shows these rows:
-</p>
-
-<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Row</strong></span>
-</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Linear and Rotary/<wbr>Angular axes</strong></span>
-</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Spindles</strong></span>
-</td></tr><tr><td valign="top"> Pulses / rev, Gearing Ratio
-</td><td valign="top"> Yes
-</td><td valign="top"> Yes
-</td></tr><tr><td valign="top"> Leadscrew Movement / rev
-</td><td valign="top"> Linear axes only
-</td><td valign="top"> No
-</td></tr><tr><td valign="top"> Calculated Scale, Use
-</td><td valign="top"> Yes
-</td><td valign="top"> Yes
-</td></tr><tr><td valign="top"> Scale Used
-</td><td valign="top"> Yes
-</td><td valign="top"> Yes
-</td></tr><tr><td valign="top"> Max Speed / Max Vel
-</td><td valign="top"> <strong>Max Speed</strong>
-</td><td valign="top"> <strong>Max Vel</strong>
-</td></tr><tr><td valign="top"> Max Acceleration / Max Accel
-</td><td valign="top"> <strong>Max Acceleration</strong>
-</td><td valign="top"> <strong>Max Accel</strong>
-</td></tr><tr><td valign="top"> Backlash
-</td><td valign="top"> Yes
-</td><td valign="top"> Yes
-</td></tr></table>
 <h2 id="Scale-Calculator">Scale Calculator</h2>
-<p>The rows above <strong>Scale Used</strong>, with a coloured background, work out what Scale Used should be from how the axis is built.  They are only a calculator:  LinuxCNC never uses them, only Scale Used.  Each value is saved as soon as you change it.
+<p>The rows above <strong>Scale Used</strong>, those with a coloured background, are used to work out what Scale Used should be based on how the axis is built.  They are only a calculator:  LinuxCNC never uses them.  Instead, it uses the value in <b>Scale Used</b>.  Each value is saved as soon as you change it.
 </p><ul><li><strong>Pulses / rev</strong> - the microsteps per motor turn that the axis's stepper drive is set to, by its switches SW5-SW8 (see <a href="SwitchSettingsOnTheDM542Ts.html">Switch Settings on the DM542Ts</a>).
-</li><li><strong>Gearing Ratio</strong> - how many times the motor turns for one turn of the leadscrew, the rotary axis, or the spindle.  For a 9:1 belt, enter 9; if the motor drives it directly, enter 1.  It stays blank until you enter it.
+</li><li><strong>Gearing Ratio</strong> - how many times the motor turns for one turn of the leadscrew, the rotary axis, or the spindle.  For a 9:1 gearing ratio, enter 9; if the motor drives it directly, enter 1.  It stays blank until you enter it.
 </li><li><strong>Leadscrew Movement / rev</strong> (linear axes only) - how far one turn of the leadscrew moves the slide.  Enter it as the leadscrew gives it and choose <strong>in</strong> or <strong>mm</strong> beside it - for example 0.1 in for a 10 TPI Hardinge cross slide, or 2 mm for a metric leadscrew.  Each axis has its own choice, whatever the Measurement System; Calculated Scale is worked out in the Measurement System's units.  For a leadscrew with more than one start, this is the thread pitch times the number of starts.
-</li><li><strong>Calculated Scale</strong> - Pulses / rev × Gearing Ratio ÷ Leadscrew Movement for a linear axis, ÷ 360 for a rotary/angular axis (pulses per degree), and Pulses / rev × Gearing Ratio for a spindle.  It shows - until the values it needs are entered.
+<ul><li>This field is only used with linear axes.</li></ul>
+</li><li><strong>Calculated Scale</strong> - worked out from the rows above, as shown below.  It shows - until the values it needs are entered.
+<p>For a linear axis (pulses per inch or per mm):</p>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Calculated</mtext><mspace width="0.167em"></mspace><mtext>Scale</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mtext>Pulses</mtext><mspace width="0.167em"></mspace><mtext>/</mtext><mspace width="0.167em"></mspace><mtext>rev</mtext><mspace width="0.3em"></mspace><mo>×</mo><mspace width="0.3em"></mspace><mtext>Gearing</mtext><mspace width="0.167em"></mspace><mtext>Ratio</mtext></mrow><mrow><mtext>Leadscrew</mtext><mspace width="0.167em"></mspace><mtext>Movement</mtext></mrow></mfrac></mrow></mstyle></math></td></tr></table>
+<p>For a rotary/angular axis (pulses per degree):</p>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Calculated</mtext><mspace width="0.167em"></mspace><mtext>Scale</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mtext>Pulses</mtext><mspace width="0.167em"></mspace><mtext>/</mtext><mspace width="0.167em"></mspace><mtext>rev</mtext><mspace width="0.3em"></mspace><mo>×</mo><mspace width="0.3em"></mspace><mtext>Gearing</mtext><mspace width="0.167em"></mspace><mtext>Ratio</mtext></mrow><mn>360</mn></mfrac></mrow></mstyle></math></td></tr></table>
+<p>For a spindle (pulses per turn):</p>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Calculated</mtext><mspace width="0.167em"></mspace><mtext>Scale</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mrow><mtext>Pulses</mtext><mspace width="0.167em"></mspace><mtext>/</mtext><mspace width="0.167em"></mspace><mtext>rev</mtext><mspace width="0.3em"></mspace><mo>×</mo><mspace width="0.3em"></mspace><mtext>Gearing</mtext><mspace width="0.167em"></mspace><mtext>Ratio</mtext></mrow></mrow></mstyle></math></td></tr></table>
 </li><li><strong>Use</strong> - copies Calculated Scale into Scale Used, keeping Scale Used's sign (its direction).
-</li></ul><p class="vspace">For example, with the drive at 1,600 microsteps, a 6:1 belt and a 10 TPI leadscrew (0.1&quot; per turn), Calculated Scale is 1,600 × 6 ÷ 0.1 = 96,000 pulses per inch.  A 2 mm leadscrew driven directly at 1,600 microsteps gives 1,600 ÷ 2 = 800 pulses per mm, or 20,320 pulses per inch.
-</p>
+</li></ul><p class="vspace">For example, with the drive at 1,600 microsteps, a 6:1 gearing ratio, and a 10 TPI leadscrew (0.1&quot; per turn):</p>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Calculated</mtext><mspace width="0.167em"></mspace><mtext>Scale</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mrow><mn>1,600</mn><mspace width="0.3em"></mspace><mo>×</mo><mspace width="0.3em"></mspace><mn>6</mn></mrow><mn>0.1</mn></mfrac></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>96,000</mn><mspace width="0.167em"></mspace><mfrac><mtext>pulses</mtext><mtext>in</mtext></mfrac></mrow></mstyle></math></td></tr></table>
+<p>A 2 mm leadscrew driven directly at 1,600 microsteps, in pulses per mm and then per inch:</p>
+<table class="equation"><tr><td class="eq-lhs"><math display="inline"><mstyle displaystyle="true"><mrow><mtext>Calculated</mtext><mspace width="0.167em"></mspace><mtext>Scale</mtext></mrow></mstyle></math></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mfrac><mn>1,600</mn><mn>2</mn></mfrac></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>800</mn><mspace width="0.167em"></mspace><mfrac><mtext>pulses</mtext><mtext>mm</mtext></mfrac></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>800</mn><mspace width="0.167em"></mspace><mfrac><mtext>pulses</mtext><mtext>mm</mtext></mfrac><mspace width="0.3em"></mspace><mo>×</mo><mspace width="0.3em"></mspace><mn>25.4</mn><mspace width="0.167em"></mspace><mfrac><mtext>mm</mtext><mtext>in</mtext></mfrac></mrow></mstyle></math></td></tr><tr><td class="eq-lhs"></td><td class="eq-rhs"><math display="inline"><mstyle displaystyle="true"><mrow><mo>=</mo><mn>20,320</mn><mspace width="0.167em"></mspace><mfrac><mtext>pulses</mtext><mtext>in</mtext></mfrac></mrow></mstyle></math></td></tr></table>
 <p class="vspace">The scale calculator's values are saved with each axis, so <strong>Export</strong> and <strong>Import</strong> (and Save All Settings As / Load) carry them with the axis's other settings - handy when one axis drives different devices, such as a cross slide one day and a curvilinear slide the next.
 </p>
 <ul><li><span style="color: red;">Do not forget to click Save All Settings after Use.</span>  Like the other values on this page, Scale Used is only kept when you click <strong>Save All Settings</strong>.
@@ -101,34 +82,65 @@
 <table border="0" style="width: calc(100% - 60px); margin-left: 40px; margin-bottom: 10px;"><tr><td style="padding-left: 10px; padding-right: 10px;" valign="top"><strong>Rosetta&rsquo;s fastest speed = 200,000 ÷ Scale</strong>
 </td></tr></table>
 
+<h4>Example 1:  6,400 Microsteps per Revolution</h4>
 <table border="1" cellpadding="5" style="border-collapse: collapse; margin-left: 40px;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Example</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Scale</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Fastest speed</strong></span>
-</td></tr><tr><td valign="top"> X:  6,400 microsteps, 6 : 1 pulleys, 10 turns per inch
-</td><td valign="top"> 384,000 per inch
+</td></tr><tr><td valign="top"> Axis X which has 
+<ul style="margin-top: 0; margin-bottom: 0;">
+<li>6:1 gearing ratio</li>
+<li>leadscrew with 10 turns per inch</li>
+</ul>
+</td><td valign="top"> 384,000 pulses per inch
 </td><td valign="top"> 0.52 inch / second
-</td></tr><tr><td valign="top"> The same X with the drive set to 3,200 microsteps
-</td><td valign="top"> 192,000 per inch
-</td><td valign="top"> 1.04 inch / second
-</td></tr><tr><td valign="top"> Sp0:  6,400 microsteps, 9 : 1 pulleys
-</td><td valign="top"> 57,600 per revolution
+</td></tr><tr><td valign="top"> Sp0 which has 
+<ul style="margin-top: 0; margin-bottom: 0;">
+<li>9:1 gearing ratio</li>
+</ul>
+</td><td valign="top"> 57,600 pulses per revolution
 </td><td valign="top"> 3.47 revolutions / second (208 rpm)
 </td></tr></table>
-<p class="vspace">If an axis's <strong>Max Speed</strong> is more than this, the warnings line (see below) says <strong>Max Speed is more than the step timing allows at this Scale</strong>.  Either lower Max Speed, or set the drive to fewer microsteps (half the microsteps = half the Scale = twice the fastest speed) and change the Scale to match.
+
+<h4>Example 2:  1,600 Microsteps per Revolution</h4>
+<table border="1" cellpadding="5" style="border-collapse: collapse; margin-left: 40px;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Example</strong></span>
+</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Scale</strong></span>
+</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Fastest speed</strong></span>
+</td></tr><tr><td valign="top"> Axis X which has 
+<ul style="margin-top: 0; margin-bottom: 0;">
+<li>6:1 gearing ratio</li>
+<li>leadscrew with 10 turns per inch</li>
+</ul>
+</td><td valign="top"> 96,000 pulses per inch
+</td><td valign="top"> 2.08 inch / second
+</td></tr><tr><td valign="top"> Sp0 which has 
+<ul style="margin-top: 0; margin-bottom: 0;">
+<li>9:1 gearing ratio</li>
+</td><td valign="top"> 14,400 pulses per revolution
+</td><td valign="top"> 13.89 revolutions / second (833 rpm)
+</td></tr></table>
+<p class="vspace">If an axis's <strong>Max Speed</strong> is set to be more than the fastest speed shown in the tables above, the warnings line (see below) says <strong>Max Speed is more than the step timing allows at this Scale</strong>.  Either lower Max Speed, or set the drive to fewer microsteps (half the microsteps = half the Scale = twice the fastest speed) and change the Scale to match.
 </p>
-<ul><li><span style="color: red;">Do not change the microstep switches on a stepper drive without changing that axis's Scale to match.</span>  If you do, every move on that axis is the wrong size - half, or double, what you asked for.
+<ul><li><span style="color: red;">Do not change the microstep switches on a stepper drive without changing that axis's Scale to match.</span>  If you do, every move on that axis is the wrong size - half, or double, or maybe far more than what you want.
 </li></ul><p class="vspace">The microstep switches are <strong>SW5 - SW8</strong> on each stepper drive.  The setting for each number of microsteps is on page 6 of the <a class="online" href="https://rosetta.colvintools.com/Rosetta_Support_Manual/Images/DM542T_V4.0.pdf" rel="noopener" target="_blank" title="Opens on the Internet">User Manual for the DM542T</a> - see also <a href="SwitchSettingsOnTheDM542Ts.html">Switch Settings on the DM542Ts</a>.
 </p><p class="note"><strong>Note:</strong> Fewer microsteps let an axis go faster, but it moves less smoothly at slow speeds.  For most rose engine work - slow, smooth movement - leave the drives as they were set up.  If an axis needs to go faster, use the <a href="ScaleAndMicrosteps.html">Microstep Calculator</a> to choose the setting and the Scale to match.  The motor itself can also run out of torque at high speed, before this limit is reached.  To understand why, see <a class="online" href="https://otbok.info/index.php?n=Main.StepperMotor#Microstepping" rel="noopener" target="_blank" title="Opens on the Internet">Stepper Motor:  Microstepping and Speed</a> in the Ornamental Turning Book of Knowledge.
 </p>
 <h2 id="Max-Speed">Max Speed</h2>
-<p>This is the fastest the axis may move - in a program, an MDI command, or a jog.  It is measured in distance per second:  inches (or mm) per second for a linear axis, and degrees per second for a rotary/angular axis.  For example, 30 degrees / second = 5 revolutions per minute.
+<p>This is the fastest the axis may move - in a program, an MDI command, or a jog.
+<ul>
+<li><b>Linear axes</b>: the value is inches (or mm) per second.  The Max Speed of a linear axis cannot be set above 1 inch / second (25.4 mm / second).</li>
+<li><b>Rotary/angular axes</b>: the value is degrees per second.</li>
+<li><b>Spindles</b>: the value is revolutions per second.  Also note that this row is called <strong>Max Vel</strong> for Spindles.</li>
+</ul>
 </p>
-<ul><li>The Max Speed of a linear axis cannot be set above 1 inch / second (25.4 mm / second).
-</li><li>For the spindles, this row is called <strong>Max Vel</strong>, and it is measured in revolutions per second.  For example, 0.167 revolutions / second = 10 revolutions per minute.
-</li></ul><p class="note"><strong>Note:</strong> When you change Max Speed, the advanced settings worked out from it (<strong>Stepgen Max Vel</strong> and <strong>PID Max Output</strong> - see below) change with it, so you do not need to open the advanced settings (unless you want to do so).
+<p class="note"><strong>Note:</strong> When you change Max Speed, the advanced settings worked out from it (<strong>Stepgen Max Vel</strong> and <strong>PID Max Output</strong> - see below) change with it, so you do not need to open the advanced settings (unless you want to do so).
 </p>
 <h2 id="Max-Acceleration">Max Acceleration</h2>
-<p>This is how quickly the axis may speed up and slow down.  It is measured in distance per second<sup><span class="pmS2">2</span></sup>:  inches (or mm) per second<sup><span class="pmS2">2</span></sup> for a linear axis, and degrees per second<sup><span class="pmS2">2</span></sup> for a rotary/angular axis.  For the spindles, this row is called <strong>Max Accel</strong>, and it is measured in revolutions per second<sup><span class="pmS2">2</span></sup>.
+<p>This is how quickly the axis may speed up and slow down.  It is measured in distance per second<sup><span class="pmS2">2</span></sup>
+<ul>
+<li><b>Linear axes</b>: the value is inches (or mm) per second<sup><span class="pmS2">2</span></sup>.</li>
+<li><b>Rotary/angular axes</b>: the value is degrees per second<sup><span class="pmS2">2</span></sup>.</li>
+<li><b>Spindles</b>: the value is revolutions per second<sup><span class="pmS2">2</span></sup>.  Also note that this row is called <strong>Max Accel</strong> for Spindles.</li>
+</ul>
 </p>
 <p class="vspace">A program made up of many short moves (such as a rosette pattern on C) finishes sooner with a higher Max Acceleration, because each short move spends most of its time speeding up and slowing down.
 </p>
@@ -138,7 +150,9 @@
 </p><h2 id="Backlash_">Backlash</h2>
 <p>Backlash is the slack in an axis's drive - play in the leadscrew, nut, gears or belt - which is taken up each time the axis changes direction, before the axis really moves.  Rosetta makes up for it:  each time the axis reverses, it first moves the motor this much further.
 </p>
-<p class="vspace">Enter the axis's lost motion, measured with a dial indicator (see <a href="RosetteDesigner.html#Backlash">Set the Backlash First</a> for how).  0 turns it off.  A little less than the measured value is better than too much, which makes the axis jump each time it reverses.
+<p class="vspace">Enter the axis's lost motion, measured with a dial indicator (see <a href="RosetteDesigner.html#Backlash">Set the Backlash First</a> for how).  0 turns it off.  A little less than the measured value is better than too much.</p>
+
+<p class="vspace">The way this works is that, when the axis reverses direction, the motor will run at a high speed until the backlash distance is consummed, then it will run at the planned speed for the movement.  Thusly, having the value too high makes the axis jump each time it reverses.
 </p>
 <p class="note"><strong>Note:</strong> Backlash is saved as soon as you change it.  For more on backlash, and what compensation can't fix, see  <a class="online" href="https://otbok.info/index.php?n=Main.Backlash#Compensation" rel="noopener" target="_blank" title="Opens on the Internet">Backlash</a> in the Ornamental Turning Book of Knowledge.
 </p>
@@ -164,9 +178,9 @@
 <p class="vspace">Most people never need to change these.  Each is explained in the column to the right of its row.
 </p>
 <h2 id="Linear-and-Rotary-Angular-axes">Linear and Rotary/Angular axes</h2>
-<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Row</strong></span>
+<table border="1" cellpadding="5" style="border-collapse: collapse;"><tr><td style="background-color: #00416a; width: 20%;" valign="top"> <span style="color: white;"> <strong>Row</strong></span>
 </td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>What it is</strong></span>
-</td><td style="background-color: #00416a;" valign="top"> <span style="color: white;"> <strong>Normally</strong></span>
+</td><td style="background-color: #00416a; width: 30%;" valign="top"> <span style="color: white;"> <strong>Normally set to</strong></span>
 </td></tr><tr><td valign="top"> Stepgen Max Vel
 </td><td valign="top"> The step generator's own speed limit.  Keep it at or above Max Speed.
 </td><td valign="top"> 1.25 x Max Speed
@@ -196,10 +210,11 @@
 </td></tr><tr><td valign="top"> Restore Defaults
 </td><td valign="top"> A button for each spindle - see below.
 </td></tr></table>
-<h2 id="Restore-Defaults">Restore Defaults</h2>
-<p>Each axis and each spindle has a <strong>Restore Defaults</strong> button at the bottom of its column.  It puts that axis's advanced settings back to their normal values:  Stepgen Max Vel, Stepgen Max Accel and PID Max Output are worked out again from the axis's own Max Speed and Max Acceleration, and the PID gains go back to Rosetta's starting values.  (For a spindle:  Indexing Max Output and the indexing PID gains.)
+<h2 id="Restore-Defaults">Defaults Button</h2>
+<p>Each axis and each spindle has a <strong>Defaults</strong> button at the bottom of its column.  This button is used to set that axis's advanced settings to their normal values based on the axis's own Max Speed and Max Acceleration.  In particular, it sets Stepgen Max Vel, Stepgen Max Accel and PID Max Output. </p>
+<p>The PID gains go back to Rosetta's starting values.
 </p>
-<p class="vspace">Restore Defaults does not change <strong>Scale Used</strong>, the scale calculator, <strong>Max Speed</strong>, <strong>Max Acceleration</strong> or <strong>Backlash</strong>.
+<p class="vspace">The Defaults button does not change the values shown above the Advanced settings twistie:  That includes <strong>Scale Used</strong>, <strong>Max Speed</strong>, <strong>Max Acceleration</strong>, <strong>Backlash</strong>, and the scale calculator values.
 </p>
 <ul><li><span style="color: red;">Do not forget to click Save All Settings after Restore Defaults.</span>  Like the other values on this page, the restored values are only kept when you click <strong>Save All Settings</strong>.
 </li></ul><p class="vspace"><strong><ins>Notes</ins>:</strong>
